@@ -49,24 +49,51 @@ class Client {
 	public $merchants;
 	/*************************/
 
-	/**
-	 * Alma client initialization.
-	 *
-	 * @param string $api_key a valid API key for the service
-	 *
-	 * @param $logger
-	 *
-	 * @throws DependenciesError
-	 * @throws ParamsError
-	 */
-    public function __construct($api_key, $logger) {
+    /**
+     * Alma client initialization.
+     *
+     * @param string $api_key a valid API key for the service
+     *
+     * @param $logger
+     *
+     * @param $options
+     *              - api_root  string|array[$mode => string]   API root URL to use. If you need different URLs for the
+     *                                                          test and live modes, provide an array with the keys
+     *                                                          'test' and 'live' and the URLs to use as values.
+     *                                                          Default: "https://api.getalma.eu"
+     *
+     *              - force_tls int|boolean 0, 1 or 2 will force TLS 1.0, 1.1 or 1.2 when connecting to the API.
+     *                                      `false` will not try to force TLS; `true` wil fallback to default value.
+     *                                      If set to 0/1/2/true, TLS will be forced even if the API ROOT uses the
+     *                                      "http://" scheme.
+     *                                      Default: 2
+     *              - mode      string  'test' or 'live'. Default: 'live'
+     *
+     * @throws DependenciesError
+     * @throws ParamsError
+     */
+    public function __construct($api_key, $logger, $options = array()) {
         $this->check_dependencies();
 
         if (empty($api_key)) {
             throw new ParamsError('An API key is required to instantiate new Alma\Client');
         }
 
-        $this->context = new ClientContext($api_key, $logger);
+        $options = array_merge(array(
+            'api_root' => self::API_URL,
+            'force_tls' => 2,
+            'mode' => 'live'
+        ), $options);
+
+        if ($options['force_tls'] === true) {
+            $options['force_tls'] = 2;
+        }
+
+        if (is_string($options['api_root'])) {
+            $options['api_root'] = array('test' => $options['api_root'], 'live' => $options['api_root']);
+        }
+
+        $this->context = new ClientContext($api_key, $logger, $options);
         $this->init_endpoints();
     }
 

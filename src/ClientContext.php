@@ -30,9 +30,29 @@ namespace Alma;
 class ClientContext {
     public $api_key;
 	public $logger;
+    private $options;
 
-	public function __construct($api_key, $logger) {
+    public function __construct($api_key, $logger, $options) {
         $this->api_key = $api_key;
 		$this->logger = $logger;
+		$this->options = $options;
 	}
+
+    /**
+     * Returns the full API endpoint URL for the given path, depending on the current mode (live or test)
+     *
+     * @param $path
+     * @return string
+     */
+	public function url_for($path) {
+        $root = $this->options['api_root'][$this->options['mode']];
+        return rtrim($root, '/') . '/' . ltrim($path, '/');
+    }
+
+    /**
+     * @return int|false    Either not to force TLS (false), or the TLS subversion to force (i.e. x for TLS 1.x)
+     */
+    public function forced_tls_version() {
+	    return $this->options['force_tls'];
+    }
 }

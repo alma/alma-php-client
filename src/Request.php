@@ -52,10 +52,21 @@ class Request {
     private $query_params = array();
     private $headers = array();
 
+    /**
+     * @param $context ClientContext    The current client context
+     * @param $url     string           The URL to build a request for
+     * @return Request
+     */
     static public function build($context, $url) {
         return new self($context, $url);
     }
 
+    /**
+     * HTTP request constructor.
+     *
+     * @param $context ClientContext    The current client context
+     * @param $url  string  The URL to build a request for
+     */
     public function __construct($context, $url) {
         $this->context = $context;
         $this->url = $url;
@@ -72,9 +83,20 @@ class Request {
 
         // Never *print out* request results
         curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, true);
-
         curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, true);
-	    curl_setopt ($this->curl_handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+
+        if ($forced_tls = $this->context->forced_tls_version()) {
+            $tls_version = CURL_SSLVERSION_TLSv1_2;
+            switch ($forced_tls) {
+                case 0:
+                    $tls_version = CURL_SSLVERSION_TLSv1_0;
+                    break;
+                case 1:
+                    $tls_version = CURL_SSLVERSION_TLSv1_1;
+            }
+
+	        curl_setopt ($this->curl_handle, CURLOPT_SSLVERSION, $tls_version);
+        }
     }
 
     private function build_url() {

@@ -45,7 +45,7 @@ class EligibilityResult {
 }
 
 class Payments extends Base {
-    const PAYMENTS_URL = Client::API_URL . '/v1/payments';
+    const PAYMENTS_PATH = '/v1/payments';
 
 	/**
 	 * @param array $order_data
@@ -54,7 +54,7 @@ class Payments extends Base {
 	 * @throws RequestError
 	 */
 	public function eligibility($order_data) {
-		$res = $this->request(self::PAYMENTS_URL . '/eligibility')->set_request_body($order_data)->post();
+		$res = $this->request(self::PAYMENTS_PATH . '/eligibility')->set_request_body($order_data)->post();
 
 		if ($res->response_code === 406) {
 			$this->logger->info("Eligibility check failed for following reasons: " . print_r($res->json["reasons"], true));
@@ -70,7 +70,7 @@ class Payments extends Base {
 	 * @throws RequestError
 	 */
 	public function create_payment($data) {
-		$res = $this->request(self::PAYMENTS_URL)->set_request_body($data)->post();
+		$res = $this->request(self::PAYMENTS_PATH)->set_request_body($data)->post();
 
 		if ($res->is_error()) {
 			throw new RequestError($res->error_message, null, $res);
@@ -86,7 +86,7 @@ class Payments extends Base {
 	 * @throws RequestError
 	 */
 	public function fetch($id) {
-	    $res = $this->request(self::PAYMENTS_URL . "/$id")->get();
+	    $res = $this->request(self::PAYMENTS_PATH . "/$id")->get();
 
 	    if ($res->is_error()) {
 		    throw new RequestError($res->error_message, null, $res);

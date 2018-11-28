@@ -27,18 +27,24 @@
 
 namespace Alma\Endpoints;
 
+use Alma\ClientContext;
 use Alma\Request;
 
 class Base {
+    /** @var ClientContext  */
 	protected $client_context;
 	protected $logger;
 
-	public function __construct($client_context) {
+    /**
+     * Base constructor.
+     * @param $client_context ClientContext
+     */
+    public function __construct($client_context) {
 		$this->client_context = $client_context;
 		$this->logger = $client_context->logger;
 	}
 
-	protected function request($url) {
-		return Request::build($this->client_context, $url);
+	protected function request($path) {
+		return Request::build($this->client_context, $this->client_context->url_for($path));
 	}
 }

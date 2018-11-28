@@ -32,14 +32,14 @@ use Alma\RequestError;
 
 
 class Merchants extends Base {
-	const MERCHANTS_URL = Client::API_URL . '/v1/merchants';
-	const ME_URL = Client::API_URL . '/v1/me';
+	const MERCHANTS_PATH = '/v1/merchants';
+	const ME_PATH = '/v1/me';
 
 	/**
 	 * @throws RequestError
 	 */
 	public function me() {
-		$res = $this->request(self::ME_URL . '/extended-data')->get();
+		$res = $this->request(self::ME_PATH . '/extended-data')->get();
 
 		if ($res->is_error()) {
 			throw new RequestError($res->error_message, null, $res);
