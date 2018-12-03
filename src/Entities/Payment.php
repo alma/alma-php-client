@@ -26,28 +26,30 @@
 
 namespace Alma\Entities;
 
-class Payment extends Base {
-	const STATE_IN_PROGRESS = 'in_progress';
+class Payment extends Base
+{
+    const STATE_IN_PROGRESS = 'in_progress';
 
-	public $url;
-	public $state;
-	public $purchase_amount;
-	public $payment_plan;
-	public $return_url;
-	public $custom_data;
+    public $url;
+    public $state;
+    public $purchase_amount;
+    public $payment_plan;
+    public $return_url;
+    public $custom_data;
 
-	public function __construct( $attributes ) {
-		// Manually process `payment_plan` to create Instalment instances
- 		if (array_key_exists('payment_plan', $attributes)) {
-			$this->payment_plan = array();
+    public function __construct($attributes)
+    {
+        // Manually process `payment_plan` to create Instalment instances
+        if (array_key_exists('payment_plan', $attributes)) {
+            $this->payment_plan = array();
 
-			foreach ($attributes['payment_plan'] as $instalment) {
-				$this->payment_plan[] = new Instalment($instalment);
-			}
+            foreach ($attributes['payment_plan'] as $instalment) {
+                $this->payment_plan[] = new Instalment($instalment);
+            }
 
-			unset($attributes['payment_plan']);
-		}
+            unset($attributes['payment_plan']);
+        }
 
-		parent::__construct( $attributes );
-	}
+        parent::__construct($attributes);
+    }
 }

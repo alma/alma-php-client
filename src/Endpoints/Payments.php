@@ -31,67 +31,73 @@ use Alma\Client;
 use Alma\Entities\Payment;
 use Alma\RequestError;
 
-class EligibilityResult {
-	public $is_eligible;
-	public $reasons;
+class EligibilityResult
+{
+    public $is_eligible;
+    public $reasons;
 
-	public function __construct($res) {
-		$this->is_eligible = ($res->response_code == 200);
+    public function __construct($res)
+    {
+        $this->is_eligible = ($res->response_code == 200);
 
-		if ($res->response_code === 406) {
-			$this->reasons = $res->json["reasons"];
-		}
-	}
+        if ($res->response_code === 406) {
+            $this->reasons = $res->json["reasons"];
+        }
+    }
 }
 
-class Payments extends Base {
+class Payments extends Base
+{
     const PAYMENTS_PATH = '/v1/payments';
 
-	/**
-	 * @param array $order_data
-	 *
-	 * @return EligibilityResult
-	 * @throws RequestError
-	 */
-	public function eligibility($order_data) {
-		$res = $this->request(self::PAYMENTS_PATH . '/eligibility')->set_request_body($order_data)->post();
+    /**
+     * @param array $order_data
+     *
+     * @return EligibilityResult
+     * @throws RequestError
+     */
+    public function eligibility($order_data)
+    {
+        $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->set_request_body($order_data)->post();
 
-		if ($res->response_code === 406) {
-			$this->logger->info("Eligibility check failed for following reasons: " . print_r($res->json["reasons"], true));
-		}
+        if ($res->response_code === 406) {
+            $this->logger->info("Eligibility check failed for following reasons: " . print_r($res->json["reasons"], true));
+        }
 
-		return new EligibilityResult($res);
+        return new EligibilityResult($res);
     }
 
-	/**
-	 * @param $data
-	 *
-	 * @return Payment
-	 * @throws RequestError
-	 */
-	public function create_payment($data) {
-		$res = $this->request(self::PAYMENTS_PATH)->set_request_body($data)->post();
+    /**
+     * @param $data
+     *
+     * @return Payment
+     * @throws RequestError
+     */
+    public function create_payment($data)
+    {
+        $res = $this->request(self::PAYMENTS_PATH)->set_request_body($data)->post();
 
-		if ($res->is_error()) {
-			throw new RequestError($res->error_message, null, $res);
-		}
+        if ($res->is_error()) {
+            throw new RequestError($res->error_message, null, $res);
+        }
 
-		return new Payment($res->json);
+        return new Payment($res->json);
     }
 
-	/**
-	 * @param $id string The external ID for the payment to fetch
-	 *
-	 * @return Payment
-	 * @throws RequestError
-	 */
-	public function fetch($id) {
-	    $res = $this->request(self::PAYMENTS_PATH . "/$id")->get();
+    /**
+     * @param $id string The external ID for the payment to fetch
+     *
+     * @return Payment
+     * @throws RequestError
+     */
+    public function fetch($id)
+    {
+        $res = $this->request(self::PAYMENTS_PATH . "/$id")->get();
 
-	    if ($res->is_error()) {
-		    throw new RequestError($res->error_message, null, $res);
-	    }
+        if ($res->is_error()) {
+            throw new RequestError($res->error_message, null, $res);
+        }
 
-	    return new Payment($res->json);
+        return new Payment($res->json);
     }
 }

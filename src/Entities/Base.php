@@ -27,12 +27,14 @@
 
 namespace Alma\Entities;
 
-class Base {
-	public $id;
+class Base
+{
+    public $id;
 
-	public function __construct($attributes) {
-		foreach ($attributes as $key => $value) {
-			$this->$key = $value;
-		}
-	}
+    public function __construct($attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            $this->$key = $value;
+        }
+    }
 }

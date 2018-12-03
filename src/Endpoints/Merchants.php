@@ -30,21 +30,22 @@ use Alma\Client;
 use Alma\Entities\Merchant;
 use Alma\RequestError;
 
+class Merchants extends Base
+{
+    const MERCHANTS_PATH = '/v1/merchants';
+    const ME_PATH = '/v1/me';
 
-class Merchants extends Base {
-	const MERCHANTS_PATH = '/v1/merchants';
-	const ME_PATH = '/v1/me';
+    /**
+     * @throws RequestError
+     */
+    public function me()
+    {
+        $res = $this->request(self::ME_PATH . '/extended-data')->get();
 
-	/**
-	 * @throws RequestError
-	 */
-	public function me() {
-		$res = $this->request(self::ME_PATH . '/extended-data')->get();
+        if ($res->is_error()) {
+            throw new RequestError($res->error_message, null, $res);
+        }
 
-		if ($res->is_error()) {
-			throw new RequestError($res->error_message, null, $res);
-		}
-
-		return new Merchant($res->json);
-	}
+        return new Merchant($res->json);
+    }
 }

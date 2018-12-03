@@ -27,25 +27,28 @@
 
 namespace Alma;
 
-class Response {
+class Response
+{
     public $response_code;
     public $json;
     public $error_message;
 
-    public function __construct($curl_handle, $curl_result) {
+    public function __construct($curl_handle, $curl_result)
+    {
         $this->response_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-		$this->json = json_decode($curl_result, true);
+        $this->json = json_decode($curl_result, true);
 
         if ($this->is_error()) {
-	        if ($this->json && array_key_exists('message', $this->json)) {
-	        	$this->error_message = $this->json['message'];
-	        } else {
-	        	$this->error_message = curl_error($curl_handle);
-	        }
+            if ($this->json && array_key_exists('message', $this->json)) {
+                $this->error_message = $this->json['message'];
+            } else {
+                $this->error_message = curl_error($curl_handle);
+            }
         }
     }
 
-    public function is_error() {
-    	return $this->response_code >= 400 && $this->response_code < 600;
+    public function is_error()
+    {
+        return $this->response_code >= 400 && $this->response_code < 600;
     }
 }

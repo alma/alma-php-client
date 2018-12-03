@@ -29,25 +29,30 @@ namespace Alma;
 
 use Alma\Endpoints;
 
-class ParamsError extends \Exception {};
-class DependenciesError extends \Exception {};
+class ParamsError extends \Exception
+{
+};
+class DependenciesError extends \Exception
+{
+};
 
-class Client {
+class Client
+{
     const API_URL = 'https://api.getalma.eu';
 
     protected $context;
 
     /***** API ENDPOINTS *****/
-	/**
-	 * @var Endpoints\Payments
-	 */
-	public $payments;
+    /**
+     * @var Endpoints\Payments
+     */
+    public $payments;
 
-	/**
-	 * @var Endpoints\Merchants
-	 */
-	public $merchants;
-	/*************************/
+    /**
+     * @var Endpoints\Merchants
+     */
+    public $merchants;
+    /*************************/
 
     /**
      * Alma client initialization.
@@ -72,7 +77,8 @@ class Client {
      * @throws DependenciesError
      * @throws ParamsError
      */
-    public function __construct($api_key, $logger, $options = array()) {
+    public function __construct($api_key, $logger, $options = array())
+    {
         $this->check_dependencies();
 
         if (empty($api_key)) {
@@ -100,7 +106,8 @@ class Client {
     /**
      * @throws DependenciesError
      */
-    private function check_dependencies() {
+    private function check_dependencies()
+    {
         if (!function_exists('curl_init')) {
             throw new DependenciesError('Alma requires the CURL PHP extension.');
         }
@@ -110,7 +117,7 @@ class Client {
         }
 
         $openssl_exception = new DependenciesError('Alma requires OpenSSL >= 1.0.1');
-        if (!defined( 'OPENSSL_VERSION_TEXT')) {
+        if (!defined('OPENSSL_VERSION_TEXT')) {
             throw $openssl_exception;
         }
 
@@ -124,8 +131,9 @@ class Client {
         }
     }
 
-    private function init_endpoints() {
-    	$this->payments = new Endpoints\Payments($this->context);
-    	$this->merchants = new Endpoints\Merchants($this->context);
+    private function init_endpoints()
+    {
+        $this->payments = new Endpoints\Payments($this->context);
+        $this->merchants = new Endpoints\Merchants($this->context);
     }
 }

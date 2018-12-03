@@ -26,14 +26,14 @@
 
 namespace Alma\Entities;
 
-class Instalment extends Base {
-	const STATE_PAID = 'paid';
-	const STATE_PENDING = "pending";
-	const STATE_INCIDENT = "incident";
-	const STATE_CLAIMED = "claimed";
-	const STATE_COVERED = "covered";
+class Instalment extends Base
+{
+    const STATE_PAID = 'paid';
+    const STATE_PENDING = "pending";
+    const STATE_INCIDENT = "incident";
+    const STATE_CLAIMED = "claimed";
+    const STATE_COVERED = "covered";
 
-	public $state;
-	public $purchase_amount;
-
+    public $state;
+    public $purchase_amount;
 }

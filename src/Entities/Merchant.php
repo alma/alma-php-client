@@ -26,12 +26,13 @@
 
 namespace Alma\Entities;
 
-class Merchant extends Base {
-	public $name;
-	public $website;
-	public $state;
-	public $manually_reviewed;
-	public $can_create_payments;
-	public $minimum_purchase_amount;
-	public $maximum_purchase_amount;
+class Merchant extends Base
+{
+    public $name;
+    public $website;
+    public $state;
+    public $manually_reviewed;
+    public $can_create_payments;
+    public $minimum_purchase_amount;
+    public $maximum_purchase_amount;
 }
