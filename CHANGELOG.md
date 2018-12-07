@@ -6,6 +6,8 @@ v0.0.2
 
 * Updates root namespace to `Alma\API` instead of just `Alma`
 * Adds PSR-4 autoload config to `composer.json`
+* Logger is now just an option to the Client creation
+* Uses PSR-3 logger spec
 
 v0.0.1
 ------
