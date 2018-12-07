@@ -23,32 +23,25 @@
  *
  */
 
-namespace Alma\Entities;
+namespace Alma\Endpoints\Results;
 
-class Payment extends Base
+use Alma\Response;
+
+class Eligibility
 {
-    const STATE_IN_PROGRESS = 'in_progress';
+    public $isEligible;
+    public $reasons;
 
-    public $url;
-    public $state;
-    public $purchaseAmount;
-    public $paymentPlan;
-    public $returnURL;
-    public $customData;
-
-    public function __construct($attributes)
+    /**
+     * Eligibility constructor.
+     * @param Response $res
+     */
+    public function __construct($res)
     {
-        // Manually process `payment_plan` to create Instalment instances
-        if (array_key_exists('payment_plan', $attributes)) {
-            $this->paymentPlan = array();
+        $this->isEligible = ($res->responseCode == 200);
 
-            foreach ($attributes['payment_plan'] as $instalment) {
-                $this->paymentPlan[] = new Instalment($instalment);
-            }
-
-            unset($attributes['payment_plan']);
+        if ($res->responseCode === 406) {
+            $this->reasons = $res->json["reasons"];
         }
-
-        parent::__construct($attributes);
     }
 }
