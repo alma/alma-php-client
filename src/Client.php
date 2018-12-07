@@ -28,6 +28,8 @@
 namespace Alma\API;
 
 use Alma\API\Endpoints;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 class ParamsError extends \Exception
 {
@@ -37,7 +39,7 @@ class DependenciesError extends \Exception
 {
 }
 
-class Client
+class Client implements LoggerAwareInterface
 {
     const API_URL = 'https://api.getalma.eu';
 
@@ -74,11 +76,12 @@ class Client
      *                                      "http://" scheme.
      *                                      Default: 2
      *              - mode      string  'test' or 'live'. Default: 'live'
+     *              - logger    Psr\Log\LoggerInterface The logger instance to use for errors/warnings
      *
      * @throws DependenciesError
      * @throws ParamsError
      */
-    public function __construct($api_key, $logger, $options = array())
+    public function __construct($api_key, $options = array())
     {
         $this->checkDependencies();
 
@@ -100,7 +103,7 @@ class Client
             $options['api_root'] = array('test' => $options['api_root'], 'live' => $options['api_root']);
         }
 
-        $this->context = new ClientContext($api_key, $logger, $options);
+        $this->context = new ClientContext($api_key, $options);
         $this->initEndpoints();
     }
 
@@ -136,5 +139,18 @@ class Client
     {
         $this->payments = new Endpoints\Payments($this->context);
         $this->merchants = new Endpoints\Merchants($this->context);
+    }
+
+    /**
+     * Sets a logger instance on the object.
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return void
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        // Simply pass the logger forward to the client context
+        $this->context->setLogger($logger);
     }
 }

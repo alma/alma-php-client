@@ -25,17 +25,26 @@
 
 namespace Alma\API;
 
-class ClientContext
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
+class ClientContext implements LoggerAwareInterface
 {
+    /** @var string */
     public $apiKey;
+
+    /** @var LoggerInterface  */
     public $logger;
+
+    /** @var array */
     private $options;
 
-    public function __construct($apiKey, $logger, $options)
+    public function __construct($apiKey, $options)
     {
         $this->apiKey = $apiKey;
-        $this->logger = $logger;
         $this->options = $options;
+        $this->setLogger($options['logger']);
     }
 
     /**
@@ -56,5 +65,21 @@ class ClientContext
     public function forcedTLSVersion()
     {
         return $this->options['force_tls'];
+    }
+
+    /**
+     * Sets a logger instance on the object.
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return void
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        if (!$logger) {
+            $this->logger = new NullLogger();
+        } else {
+            $this->logger = $logger;
+        }
     }
 }
