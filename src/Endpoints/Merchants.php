@@ -23,10 +23,10 @@
  *
  */
 
-namespace Alma\Endpoints;
+namespace Alma\API\Endpoints;
 
-use Alma\Entities\Merchant;
-use Alma\RequestError;
+use Alma\API\Entities\Merchant;
+use Alma\API\RequestError;
 
 class Merchants extends Base
 {

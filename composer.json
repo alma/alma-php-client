@@ -15,5 +15,10 @@
             "email": "olivier.lance@getalma.eu"
         }
     ],
-    "require": {}
+    "require": {},
+  "autoload": {
+    "psr-4": {
+      "Alma\\API\\": "src/"
+    }
+  }
 }

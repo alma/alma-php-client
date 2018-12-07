@@ -23,7 +23,7 @@
  *
  */
 
-namespace Alma;
+namespace Alma\API;
 
 class ClientContext
 {

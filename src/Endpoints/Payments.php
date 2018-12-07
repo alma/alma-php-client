@@ -23,11 +23,11 @@
  *
  */
 
-namespace Alma\Endpoints;
+namespace Alma\API\Endpoints;
 
-use Alma\Endpoints\Results\Eligibility;
-use Alma\Entities\Payment;
-use Alma\RequestError;
+use Alma\API\Endpoints\Results\Eligibility;
+use Alma\API\Entities\Payment;
+use Alma\API\RequestError;
 
 class Payments extends Base
 {

@@ -25,7 +25,7 @@
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 
-namespace Alma;
+namespace Alma\API;
 
 class RequestError extends \Exception
 {

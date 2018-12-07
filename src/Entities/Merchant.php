@@ -23,7 +23,7 @@
  *
  */
 
-namespace Alma\Entities;
+namespace Alma\API\Entities;
 
 class Merchant extends Base
 {

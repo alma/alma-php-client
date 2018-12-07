@@ -23,10 +23,10 @@
  *
  */
 
-namespace Alma\Endpoints;
+namespace Alma\API\Endpoints;
 
-use Alma\ClientContext;
-use Alma\Request;
+use Alma\API\ClientContext;
+use Alma\API\Request;
 
 class Base
 {

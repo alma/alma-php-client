@@ -25,9 +25,9 @@
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 
-namespace Alma;
+namespace Alma\API;
 
-use Alma\Endpoints;
+use Alma\API\Endpoints;
 
 class ParamsError extends \Exception
 {

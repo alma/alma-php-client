@@ -23,9 +23,9 @@
  *
  */
 
-namespace Alma\Endpoints\Results;
+namespace Alma\API\Endpoints\Results;
 
-use Alma\Response;
+use Alma\API\Response;
 
 class Eligibility
 {
