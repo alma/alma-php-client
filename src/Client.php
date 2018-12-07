@@ -31,6 +31,9 @@ use Alma\API\Endpoints;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
+const LIVE_MODE = 'live';
+const TEST_MODE = 'test';
+
 class ParamsError extends \Exception
 {
 }
@@ -92,7 +95,7 @@ class Client implements LoggerAwareInterface
         $options = array_merge(array(
             'api_root' => self::API_URL,
             'force_tls' => 2,
-            'mode' => 'live'
+            'mode' => LIVE_MODE
         ), $options);
 
         if ($options['force_tls'] === true) {
@@ -100,7 +103,7 @@ class Client implements LoggerAwareInterface
         }
 
         if (is_string($options['api_root'])) {
-            $options['api_root'] = array('test' => $options['api_root'], 'live' => $options['api_root']);
+            $options['api_root'] = array(TEST_MODE => $options['api_root'], LIVE_MODE => $options['api_root']);
         }
 
         $this->context = new ClientContext($api_key, $options);
