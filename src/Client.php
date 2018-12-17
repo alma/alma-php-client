@@ -45,7 +45,8 @@ class DependenciesError extends \Exception
 
 class Client implements LoggerAwareInterface
 {
-    const API_URL = 'https://api.getalma.eu';
+    const LIVE_API_URL = 'https://api.getalma.eu';
+    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
 
     protected $context;
 
@@ -93,8 +94,8 @@ class Client implements LoggerAwareInterface
             throw new ParamsError('An API key is required to instantiate new Alma\Client');
         }
 
-        $options = array_merge(array(
-            'api_root' => self::API_URL,
+        $options = alma_array_merge_recursive(array(
+            'api_root' => array(TEST_MODE => self::SANDBOX_API_URL, LIVE_MODE => self::LIVE_API_URL),
             'force_tls' => 2,
             'mode' => LIVE_MODE,
             'logger' => new NullLogger(),

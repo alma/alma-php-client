@@ -21,6 +21,9 @@
   "autoload": {
     "psr-4": {
       "Alma\\API\\": "src/"
-    }
+    },
+    "files": [
+      "src/lib/array.php"
+    ]
   }
 }

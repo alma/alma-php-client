@@ -2,6 +2,10 @@
 /**
  * From https://www.php-fig.org/psr/psr-4/examples/.
  */
+
+// Load helper functions that are not provided by classes
+require_once './src/lib/array.php';
+
 spl_autoload_register(function ($class) {
     // project-specific namespace prefix
     $prefix = 'Alma\\API\\';

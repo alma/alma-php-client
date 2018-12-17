@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v0.0.4
+------
+
+* Adds support for Sandbox API root
+
+
 v0.0.3
 ------
 
