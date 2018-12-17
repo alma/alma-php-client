@@ -31,19 +31,19 @@ class Payment extends Base
 
     public $url;
     public $state;
-    public $purchaseAmount;
-    public $paymentPlan;
-    public $returnURL;
-    public $customData;
+    public $purchase_amount;
+    public $payment_plan;
+    public $return_url;
+    public $custom_data;
 
     public function __construct($attributes)
     {
         // Manually process `payment_plan` to create Instalment instances
         if (array_key_exists('payment_plan', $attributes)) {
-            $this->paymentPlan = array();
+            $this->payment_plan = array();
 
             foreach ($attributes['payment_plan'] as $instalment) {
-                $this->paymentPlan[] = new Instalment($instalment);
+                $this->payment_plan[] = new Instalment($instalment);
             }
 
             unset($attributes['payment_plan']);
