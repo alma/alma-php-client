@@ -30,6 +30,7 @@ namespace Alma\API;
 use Alma\API\Endpoints;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 const LIVE_MODE = 'live';
 const TEST_MODE = 'test';
@@ -95,7 +96,8 @@ class Client implements LoggerAwareInterface
         $options = array_merge(array(
             'api_root' => self::API_URL,
             'force_tls' => 2,
-            'mode' => LIVE_MODE
+            'mode' => LIVE_MODE,
+            'logger' => new NullLogger(),
         ), $options);
 
         if ($options['force_tls'] === true) {
