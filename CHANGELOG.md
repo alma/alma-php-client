@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v0.0.3
+------
+
+* Bug fixes:
+    * Missing default Logger in Client instantiation - now using Psr\Log\NullLogger
+    * Alma\Api\Entity\Payment attributes had been wrongly converted to `camelCase`
+
 v0.0.2
 ------
 
