@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v0.0.5
+------
+
+* Adds `Alma\API\Payment::STATE_PAID`
+
+
 v0.0.4
 ------
 

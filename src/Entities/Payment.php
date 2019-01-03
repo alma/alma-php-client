@@ -28,6 +28,7 @@ namespace Alma\API\Entities;
 class Payment extends Base
 {
     const STATE_IN_PROGRESS = 'in_progress';
+    const STATE_PAID = 'paid';
 
     public $url;
     public $state;
