@@ -30,6 +30,9 @@ class Payment extends Base
     const STATE_IN_PROGRESS = 'in_progress';
     const STATE_PAID = 'paid';
 
+    const FRAUD_AMOUNT_MISMATCH = 'amount_mismatch';
+    const FRAUD_STATE_ERROR = 'state_error';
+
     public $url;
     public $state;
     public $purchase_amount;

@@ -86,4 +86,27 @@ class Payments extends Base
 
         return new Payment($res->json);
     }
+
+    /**
+     * @param $id       string  The ID of the payment to flag as potential fraud
+     * @param $reason   string  An optional message indicating why this payment is being flagged
+     *
+     * @return boolean
+     * @throws RequestError
+     */
+    public function flagAsPotentialFraud($id, $reason=null)
+    {
+        $req = $this->request(self::PAYMENTS_PATH . "/$id/potential-fraud");
+
+        if (!empty($reason)) {
+            $req->setRequestBody(array("reason" => $reason));
+        }
+
+        $res = $req->post();
+        if ($res->isError()) {
+            throw new RequestError($res->errorMessage, $req, $res);
+        }
+
+        return true;
+    }
 }

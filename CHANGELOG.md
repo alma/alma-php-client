@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v 0.0.6
+-------
+
+* Adds the possibility to flag a payment as potentially fraudulent
+
 v0.0.5
 ------
 
