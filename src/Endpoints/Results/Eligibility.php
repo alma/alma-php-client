@@ -31,6 +31,7 @@ class Eligibility
 {
     public $isEligible;
     public $reasons;
+    public $constraints;
 
     /**
      * Eligibility constructor.
@@ -48,6 +49,10 @@ class Eligibility
 
         if (array_key_exists("reasons", $res->json)) {
             $this->reasons = $res->json["reasons"];
+        }
+
+        if (array_key_exists("constraints", $res->json)) {
+            $this->constraints = $res->json["constraints"];
         }
     }
 }
