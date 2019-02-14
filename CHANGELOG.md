@@ -1,7 +1,15 @@
 CHANGELOG
 =========
 
-v 0.0.6
+v0.0.7
+-------
+
+* Eligibility check now returns `200 OK` with `{"eligible": false}` for non-eligible purchases:
+    supports legacy `406` status code and the new version
+* New eligibility check's negative response includes constraints that should be met to be eligible
+
+
+v0.0.6
 -------
 
 * Adds the possibility to flag a payment as potentially fraudulent
