@@ -38,9 +38,15 @@ class Eligibility
      */
     public function __construct($res)
     {
-        $this->isEligible = ($res->responseCode == 200);
+        // Supporting some legacy behaviour where the eligibility check would return a 406 error if not eligible,
+        // instead of 200 OK + {"eligible": false}
+        if (array_key_exists("eligible", $res->json)) {
+            $this->isEligible = $res->json["eligible"];
+        } else {
+            $this->isEligible = ($res->responseCode == 200);
+        }
 
-        if ($res->responseCode === 406) {
+        if (array_key_exists("reasons", $res->json)) {
             $this->reasons = $res->json["reasons"];
         }
     }

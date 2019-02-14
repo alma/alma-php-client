@@ -42,15 +42,16 @@ class Payments extends Base
     public function eligibility($orderData)
     {
         $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($orderData)->post();
+        $result = new Eligibility($res);
 
-        if ($res->responseCode === 406) {
+        if (!$result->isEligible) {
             $this->logger->info(
                 "Eligibility check failed for following reasons: " .
-                print_r($res->json["reasons"], true)
+                var_export($result->reasons, true)
             );
         }
 
-        return new Eligibility($res);
+        return $result;
     }
 
     /**

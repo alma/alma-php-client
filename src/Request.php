@@ -89,7 +89,7 @@ class Request
 
         // Never *print out* request results
         curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->curlHandle, CURLOPT_FAILONERROR, true);
+        curl_setopt($this->curlHandle, CURLOPT_FAILONERROR, false);
 
         if ($forced_tls = $this->context->forcedTLSVersion()) {
             $tls_version = CURL_SSLVERSION_TLSv1_2;
