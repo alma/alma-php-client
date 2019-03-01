@@ -40,11 +40,16 @@ class ClientContext implements LoggerAwareInterface
     /** @var array */
     private $options;
 
+    /** @var array */
+    private $userAgentComponents;
+
     public function __construct($apiKey, $options)
     {
         $this->apiKey = $apiKey;
         $this->options = $options;
         $this->setLogger($options['logger']);
+
+        $this->userAgentComponents = array();
     }
 
     /**
@@ -81,5 +86,15 @@ class ClientContext implements LoggerAwareInterface
         } else {
             $this->logger = $logger;
         }
+    }
+
+    public function addUserAgentComponent($component, $version)
+    {
+        $this->userAgentComponents[] = "$component/$version";
+    }
+
+    public function getUserAgentString()
+    {
+        return implode("; ", array_reverse($this->userAgentComponents));
     }
 }

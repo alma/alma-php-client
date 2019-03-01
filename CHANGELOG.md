@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+v1.0.0
+------
+
+Getting more serious with a 1.0.0 release! 🎉
+
+* Adds User-Agent with PHP and client version
+* Adds ability to add User-Agent "components" to the request
+
 v0.0.7
 -------
 
