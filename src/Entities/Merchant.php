@@ -34,4 +34,5 @@ class Merchant extends Base
     public $can_create_payments;
     public $minimum_purchase_amount;
     public $maximum_purchase_amount;
+    public $fee_plans;
 }
