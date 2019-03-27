@@ -60,7 +60,7 @@ class Payments extends Base
      * @return Payment
      * @throws RequestError
      */
-    public function createPayment($data)
+    public function create($data)
     {
         $res = $this->request(self::PAYMENTS_PATH)->setRequestBody($data)->post();
 
@@ -70,6 +70,19 @@ class Payments extends Base
 
         return new Payment($res->json);
     }
+
+    /**
+     * @param $data
+     *
+     * @return Payment
+     * @throws RequestError
+     * @deprecated Use Payments::create() instead
+     */
+    public function createPayment($data)
+    {
+        return $this->create($data);
+    }
+
 
     /**
      * @param $id string The external ID for the payment to fetch
