@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.2
+------
+
+* Bug fix: Always include a body for POST requests to prevent HTTP 411 error
+
 v1.0.1
 ------
 
