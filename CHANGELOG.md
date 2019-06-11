@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.3
+------
+
+* Adds payment_plan to eligibility result
+
 v1.0.2
 ------
 
