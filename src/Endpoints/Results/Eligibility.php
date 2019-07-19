@@ -25,39 +25,127 @@
 
 namespace Alma\API\Endpoints\Results;
 
-use Alma\API\Response;
-
 class Eligibility
 {
     public $isEligible;
     public $reasons;
     public $constraints;
     public $paymentPlan;
+    public $installmentsCount;
 
     /**
      * Eligibility constructor.
-     * @param Response $res
+     * @param Data $data
      */
-    public function __construct($res)
+    public function __construct($array = [], $responseCode = null)
     {
         // Supporting some legacy behaviour where the eligibility check would return a 406 error if not eligible,
         // instead of 200 OK + {"eligible": false}
-        if (array_key_exists("eligible", $res->json)) {
-            $this->isEligible = $res->json["eligible"];
+        if (array_key_exists('eligible', $array)) {
+            $this->setIsEligible($array['eligible']);
         } else {
-            $this->isEligible = ($res->responseCode == 200);
+            $this->setIsEligible($responseCode == 200);
         }
 
-        if (array_key_exists("reasons", $res->json)) {
-            $this->reasons = $res->json["reasons"];
+        if (array_key_exists('reasons', $array)) {
+            $this->setReasons($array['reasons']);
         }
 
-        if (array_key_exists("constraints", $res->json)) {
-            $this->constraints = $res->json["constraints"];
+        if (array_key_exists('constraints', $array)) {
+            $this->setConstraints($array['constraints']);
         }
 
-        if (array_key_exists("payment_plan", $res->json)) {
-            $this->paymentPlan = $res->json["payment_plan"];
+        if (array_key_exists('payment_plan', $array)) {
+            $this->setPaymentPlan($array['payment_plan']);
         }
+
+        if (array_key_exists('installments_count', $array)) {
+            $this->setInstallementsCount($array['installments_count']);
+        }
+    }
+
+    /**
+     * Is Eligible
+     * @return bool
+     */
+    public function isEligible()
+    {
+        return $this->isEligible;
+    }
+
+    /**
+     * Getter reasons
+     * @return string
+     */
+    public function getReasons()
+    {
+        return $this->reasons;
+    }
+
+    /**
+     * Getter constraints
+     * @return text
+     */
+    public function getConstraints()
+    {
+        return $this->constraints;
+    }
+
+    /**
+     * Getter paymentPlan
+     * @return array
+     */
+    public function getPaymentPlan()
+    {
+        return $this->paymentPlan;
+    }
+
+    /**
+     * Getter paymentPlan
+     * @return array
+     */
+    public function getInstallementsCount()
+    {
+        return $this->installmentsCount;
+    }
+
+    /**
+     * Setter isEligible
+     */
+    public function setIsEligible($isEligible)
+    {
+        $this->isEligible = $isEligible;
+    }
+
+    /**
+     * Setter reasons
+     */
+    public function setReasons($reasons)
+    {
+        $this->reasons = $reasons;
+    }
+
+    /**
+     * Setter constraints
+     */
+    public function setConstraints($constraints)
+    {
+        $this->constraints = $constraints;
+    }
+
+    /**
+     * Setter paymentPlan
+     */
+    public function setPaymentPlan($paymentPlan)
+    {
+        $this->paymentPlan = $paymentPlan;
+    }
+
+    /**
+     * Setter paymentPlan
+     */
+    public function setInstallementsCount($installmentsCount)
+    {
+        $this->installmentsCount = $installmentsCount;
     }
 }
