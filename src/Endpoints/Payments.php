@@ -42,13 +42,26 @@ class Payments extends Base
     public function eligibility($orderData)
     {
         $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($orderData)->post();
-        $result = new Eligibility($res);
-
-        if (!$result->isEligible) {
-            $this->logger->info(
-                "Eligibility check failed for following reasons: " .
-                var_export($result->reasons, true)
-            );
+        if (is_array($res->json) && !array_key_exists('eligible', $res->json)) {
+            $result = [];
+            foreach ($res->json as $data) {
+                $eligibility = new Eligibility($data, $res->responseCode);
+                $result[$eligibility->getInstallmentsCount()] = $eligibility;
+                if (!$eligibility->isEligible()) {
+                    $this->logger->info(
+                        "Eligibility check failed for following reasons: " .
+                        var_export($result->reasons, true)
+                    );
+                }
+            }
+        } else {
+            $result = new Eligibility($res->json, $res->responseCode);
+            if (!$result->isEligible()) {
+                $this->logger->info(
+                    "Eligibility check failed for following reasons: " .
+                    var_export($result->reasons, true)
+                );
+            }
         }
 
         return $result;

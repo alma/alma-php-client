@@ -45,7 +45,7 @@ class DependenciesError extends \Exception
 
 class Client implements LoggerAwareInterface
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.4';
 
     const LIVE_API_URL = 'https://api.getalma.eu';
     const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
@@ -62,6 +62,11 @@ class Client implements LoggerAwareInterface
      * @var Endpoints\Merchants
      */
     public $merchants;
+
+    /**
+     * @var Endpoints\Orders
+     */
+    public $orders;
     /*************************/
 
     /**
@@ -152,6 +157,7 @@ class Client implements LoggerAwareInterface
     {
         $this->payments = new Endpoints\Payments($this->context);
         $this->merchants = new Endpoints\Merchants($this->context);
+        $this->orders = new Endpoints\Orders($this->context);
     }
 
     private function initUserAgent()
