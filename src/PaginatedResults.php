@@ -70,6 +70,6 @@ class PaginatedResults implements \Iterator
         if (!array_key_exists('has_more', $this->response) ) {
             return self([], Base::class);
         }
-        return $this->nextPage(['starting_after' => $this->entities[-1]->id]);
+        return $this->nextPage(['starting_after' => array_slice($this->entities, -1, 1)->id]);
     }
 }
