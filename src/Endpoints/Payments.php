@@ -46,7 +46,7 @@ class Payments extends Base
             $result = [];
             foreach ($res->json as $data) {
                 $eligibility = new Eligibility($data, $res->responseCode);
-                $result[$eligibility->getInstallementsCount()] = $eligibility;
+                $result[$eligibility->getInstallmentsCount()] = $eligibility;
                 if (!$eligibility->isEligible()) {
                     $this->logger->info(
                         "Eligibility check failed for following reasons: " .

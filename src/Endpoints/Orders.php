@@ -85,7 +85,7 @@ class Orders extends Base
      * @return Order
      * @throws RequestError
      */
-    public function fetchOne($orderId)
+    public function fetch($orderId)
     {
         $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->get();
         return new Order($response);

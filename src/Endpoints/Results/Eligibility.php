@@ -60,7 +60,7 @@ class Eligibility
         }
 
         if (array_key_exists('installments_count', $array)) {
-            $this->setInstallementsCount($array['installments_count']);
+            $this->setInstallmentsCount($array['installments_count']);
         }
     }
 
@@ -104,7 +104,7 @@ class Eligibility
      * Getter paymentPlan
      * @return array
      */
-    public function getInstallementsCount()
+    public function getInstallmentsCount()
     {
         return $this->installmentsCount;
     }
@@ -144,7 +144,7 @@ class Eligibility
     /**
      * Setter paymentPlan
      */
-    public function setInstallementsCount($installmentsCount)
+    public function setInstallmentsCount($installmentsCount)
     {
         $this->installmentsCount = $installmentsCount;
     }
