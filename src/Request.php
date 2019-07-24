@@ -229,4 +229,21 @@ class Request
 
         return $this->exec();
     }
+
+    /**
+     * @return Response
+     * @throws RequestError
+     */
+    public function delete()
+    {
+        $this->setRequestBody(null);
+
+        curl_setopt_array($this->curlHandle, array(
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_HTTPGET => false,
+            CURLOPT_POST => false,
+        ));
+
+        return $this->exec();
+    }
 }
