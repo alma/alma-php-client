@@ -32,4 +32,34 @@ class Webhook extends Base
     public $id;
     public $type;
     public $url;
+
+    /**
+     * Verifies that the provided signature is valid for the given params and secret.
+     *
+     * @param string $signature The signature to validate
+     * @param array $params An associative array of the webhook parameters provided in the HTTP call (all except `signature`)
+     * @param string $secret The secret to use for signing
+     * @param bool $urlEncode Whether params values should be url-encoded. Defaults to true, set to false if your values
+     *             are already url-encoded
+     *
+     * @return bool Whether the signature is valid or not
+     */
+    public static function verifySignature($signature, $params, $secret, $urlEncode=true)
+    {
+        // Sort params by param name
+        ksort($params, SORT_STRING);
+
+        // Create string "param=value" pairs by URL encoding the value if required
+        $data = [];
+        foreach ($params as $param => $value) {
+            if ($urlEncode) {
+                $value = rawurlencode($value);
+            }
+
+            $data[] = "$param=$value";
+        }
+
+        $computed_signature = base64_encode(hash_hmac('sha256', implode("&", $data), $secret, true));
+        return hash_equals($signature, $computed_signature);
+    }
 }
