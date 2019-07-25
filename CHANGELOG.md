@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.0.4
+------
+
+* Adds the Orders endpoint and Order entity to handle orders associated to a payment
+* Improves the eligibility endpoint to handle multiple eligibility results (for different installments counts)
+* Adds the Webhooks endpoint to be able to register webhook URLs against the API
+
 v1.0.3
 ------
 
