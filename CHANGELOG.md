@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.5
+------
+
+* Fixes missing Webhooks endpoint instance on Client class
+
 v1.0.4
 ------
 
