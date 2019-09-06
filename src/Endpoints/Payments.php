@@ -50,7 +50,7 @@ class Payments extends Base
                 if (!$eligibility->isEligible()) {
                     $this->logger->info(
                         "Eligibility check failed for following reasons: " .
-                        var_export($result->reasons, true)
+                        var_export($eligibility->reasons, true)
                     );
                 }
             }
