@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.0.7
+------
+
+* Fixes eligibility response handling, which was buggy in case of non-eligibility responses and legacy response types
+
+
 v1.0.6
 ------
 
