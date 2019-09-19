@@ -42,7 +42,16 @@ class Payments extends Base
     public function eligibility($orderData)
     {
         $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($orderData)->post();
-        if (is_array($res->json) && !array_key_exists('eligible', $res->json)) {
+
+        if (is_assoc_array($res->json)) {
+            $result = new Eligibility($res->json, $res->responseCode);
+            if (!$result->isEligible()) {
+                $this->logger->info(
+                    "Eligibility check failed for following reasons: " .
+                    var_export($result->reasons, true)
+                );
+            }
+        } elseif (is_array($res->json)) {
             $result = [];
             foreach ($res->json as $data) {
                 $eligibility = new Eligibility($data, $res->responseCode);
@@ -55,13 +64,11 @@ class Payments extends Base
                 }
             }
         } else {
-            $result = new Eligibility($res->json, $res->responseCode);
-            if (!$result->isEligible()) {
-                $this->logger->info(
-                    "Eligibility check failed for following reasons: " .
-                    var_export($result->reasons, true)
-                );
-            }
+            $this->logger->info(
+                "Unexpected value from eligibility: " . var_export($res->json, true)
+            );
+
+            return new Eligibility(array("eligible" => false), $res->responseCode);
         }
 
         return $result;

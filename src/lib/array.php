@@ -39,3 +39,11 @@ function alma_array_merge_recursive() {
 
     return $merged;
 }
+
+function is_assoc_array($array) {
+    if (!is_array($array)) {
+        return false;
+    }
+
+    return count(array_filter(array_keys($array), 'is_string')) > 0;
+}
