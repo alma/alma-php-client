@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.8
+------
+
+* Fixes handling of server errors in eligibility endpoint
+
 v1.0.7
 ------
 

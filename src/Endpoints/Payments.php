@@ -43,7 +43,9 @@ class Payments extends Base
     {
         $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($orderData)->post();
 
-        if (is_assoc_array($res->json)) {
+        $serverError = $res->responseCode >= 500;
+
+        if (!$serverError && is_assoc_array($res->json)) {
             $result = new Eligibility($res->json, $res->responseCode);
             if (!$result->isEligible()) {
                 $this->logger->info(
@@ -51,7 +53,7 @@ class Payments extends Base
                     var_export($result->reasons, true)
                 );
             }
-        } elseif (is_array($res->json)) {
+        } elseif (!$serverError && is_array($res->json)) {
             $result = [];
             foreach ($res->json as $data) {
                 $eligibility = new Eligibility($data, $res->responseCode);
@@ -68,7 +70,7 @@ class Payments extends Base
                 "Unexpected value from eligibility: " . var_export($res->json, true)
             );
 
-            return new Eligibility(array("eligible" => false), $res->responseCode);
+            $result = new Eligibility(array("eligible" => false), $res->responseCode);
         }
 
         return $result;
