@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.9
+------
+
+* Document usage of the lib without Composer & release a ready-to-use zip of the API client
+
 v1.0.8
 ------
 
