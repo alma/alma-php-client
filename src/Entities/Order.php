@@ -27,5 +27,15 @@ namespace Alma\API\Entities;
 
 class Order extends Base
 {
+    /** @var string ID of the Payment owning this Order */
+    public $payment;
 
+    /** @var string Order reference from the merchant's platform */
+    public $merchant_reference;
+
+    /** @var string URL to the merchant's backoffice for that Order */
+    public $merchant_url;
+
+    /** @var array Free-form custom data */
+    public $data;
 }
