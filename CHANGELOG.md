@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.0.10
+-------
+
+* Properly deserialize orders array in Payment entity
+* Documents Order entity fields
+* Adds endpoint to add an Order to a Payment
+
 v1.0.9
 ------
 
