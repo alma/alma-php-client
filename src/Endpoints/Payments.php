@@ -26,6 +26,7 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Endpoints\Results\Eligibility;
+use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\RequestError;
 
@@ -170,4 +171,30 @@ class Payments extends Base
 
         return new Payment($res->json);
     }
+
+    /**
+     * Adds an Order to the given Payment, possibly overwriting existing orders
+     *
+     * @param string $id ID of the payment to which the order must be added
+     * @param array $orderData Data of the Order
+     * @param bool $overwrite Should the order replace any other order set on the payment, or be appended to the payment's orders (default: false)
+     *
+     * @return Order
+     *
+     * @throws RequestError
+     */
+    public function addOrder($id, $orderData, $overwrite = false)
+    {
+        $req = $this->request(self::PAYMENTS_PATH . "/$id/orders")->setRequestBody(array("order" => $orderData));
+
+        $res = null;
+        if ($overwrite) {
+            $res = $req->post();
+        } else {
+            $res = $req->put();
+        }
+
+        return new Order(end($res->json));
+    }
+
 }

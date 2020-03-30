@@ -234,6 +234,26 @@ class Request
      * @return Response
      * @throws RequestError
      */
+    public function put()
+    {
+        // If no data was set, force an empty body to make sure we don't get a 411 error from some servers
+        if (!$this->hasData) {
+            $this->setRequestBody(null);
+        }
+
+        curl_setopt_array($this->curlHandle, array(
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPGET => false,
+            CURLOPT_POST => true,
+        ));
+
+        return $this->exec();
+    }
+
+    /**
+     * @return Response
+     * @throws RequestError
+     */
     public function delete()
     {
         $this->setRequestBody(null);
