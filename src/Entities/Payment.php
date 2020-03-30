@@ -39,6 +39,7 @@ class Payment extends Base
     public $payment_plan;
     public $return_url;
     public $custom_data;
+    public $orders;
 
     public function __construct($attributes)
     {
@@ -51,6 +52,16 @@ class Payment extends Base
             }
 
             unset($attributes['payment_plan']);
+        }
+
+        if (array_key_exists('orders', $attributes)) {
+            $this->orders = array();
+
+            foreach ($attributes['orders'] as $order) {
+                $this->orders[] = new Order($order);
+            }
+
+            unset($attributes['orders']);
         }
 
         parent::__construct($attributes);

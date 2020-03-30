@@ -50,7 +50,7 @@ class Orders extends Base
      * @param string $orderId
      * @param array $orderData
      *
-     * @return Order
+     * @return PaginatedResults
      * @throws RequestError
      */
     public function fetchAll($limit = 20, $startingAfter = null, $filters = array())
