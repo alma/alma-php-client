@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.0.11
+-------
+
+* Adds endpoint to send payment link to customer via SMS
+
+
 v1.0.10
 -------
 
