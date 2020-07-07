@@ -29,6 +29,7 @@ use Alma\API\Endpoints\Results\Eligibility;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\RequestError;
+use Alma\API\Response;
 
 class Payments extends Base
 {
@@ -195,6 +196,26 @@ class Payments extends Base
         }
 
         return new Order(end($res->json));
+    }
+
+    /**
+     * Sends a SMS to the customer, containing a link to the payment's page
+     * /!\ Your account must be authorized by Alma to use that endpoint; it will otherwise fail with a 403 error
+     *
+     * @param string $id ID of the payment to send a SMS for
+     *
+     * @return bool
+     *
+     * @throws RequestError
+     */
+    public function sendSms(string $id)
+    {
+        $res = $this->request(self::PAYMENTS_PATH . "/$id/send-sms")->post();
+        if ($res->isError()) {
+            throw new RequestError($res->errorMessage, null, $res);
+        }
+
+        return true;
     }
 
 }
