@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2018-2019 Alma SAS
  *
@@ -44,7 +45,7 @@ class Webhook extends Base
      *
      * @return bool Whether the signature is valid or not
      */
-    public static function verifySignature($signature, $params, $secret, $urlEncode=true)
+    public static function verifySignature($signature, $params, $secret, $urlEncode = true)
     {
         // Sort params by param name
         ksort($params, SORT_STRING);
@@ -59,7 +60,7 @@ class Webhook extends Base
             $data[] = "$param=$value";
         }
 
-        $computed_signature = base64_encode(hash_hmac('sha256', implode("&", $data), $secret, true));
+        $computed_signature = rtrim(strtr(base64_encode(hash_hmac('sha256', implode("&", $data), $secret, true)), '+/', '-_'), '=');
         return hash_equals($signature, $computed_signature);
     }
 }
