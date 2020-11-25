@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.0.12
+-------
+
+* Fixes webhook signature computation (use url-safe base64 encoding)
+* Updates Webhook type constant name
+
 v1.0.11
 -------
 

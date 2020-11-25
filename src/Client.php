@@ -45,7 +45,7 @@ class DependenciesError extends \Exception
 
 class Client implements LoggerAwareInterface
 {
-    const VERSION = '1.0.11';
+    const VERSION = '1.0.12';
 
     const LIVE_API_URL = 'https://api.getalma.eu';
     const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
