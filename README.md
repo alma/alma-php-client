@@ -1,14 +1,17 @@
 Alma PHP API client
 =====================
 
-This is the official PHP API client for Alma.  
+This is the official PHP API client for [Alma](https://getalma.eu).  
 
-**⚠️ Still a work in progress**
+This PHP API Client is being used in production on thousands of e-commerce websites and provides the necessary 
+endpoints to build a full-fledge integration.  
+It does not, however, implement the full Alma API as [documented here](https://api.getalma.eu/docs) yet.  
+If you find yourself needing to use some endpoints that are not yet implemented, feel free to reach out! (or even better, submit a PR :))
 
 Installation
 ------------
 
-The Alma PHP API Client library requires at least PHP 5.6.
+The Alma PHP API Client library requires at least PHP 5.5.
 A modern, [supported PHP version](https://www.php.net/supported-versions.php) is highly recommended.
 
 ### Composer
@@ -36,7 +39,7 @@ Typical usage
 
 An example of using the API client for creating a payment and redirecting a customer to the payment page:
 ```php
-$alma = new Alma\API\Client($apiKey, ['mode' => Alma\API\TEST_MODE]);
+$alma = new Alma\API\Client($apiKey, ['mode' => Alma\API\Client::TEST_MODE]);
 
 // Fetch payment data from your backend
 $paymentData = dataFromCart();
