@@ -32,9 +32,6 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-const LIVE_MODE = 'live';
-const TEST_MODE = 'test';
-
 class ParamsError extends \Exception
 {
 }
@@ -45,7 +42,10 @@ class DependenciesError extends \Exception
 
 class Client implements LoggerAwareInterface
 {
-    const VERSION = '1.0.12';
+    const VERSION = '1.0.13';
+
+    const LIVE_MODE = 'live';
+    const TEST_MODE = 'test';
 
     const LIVE_API_URL = 'https://api.getalma.eu';
     const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
@@ -187,3 +187,8 @@ class Client implements LoggerAwareInterface
         $this->context->setLogger($logger);
     }
 }
+
+// Keep those here for backward compatibility
+const LIVE_MODE = Client::LIVE_MODE;
+const TEST_MODE = Client::TEST_MODE;
+

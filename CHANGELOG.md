@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.0.13
+-------
+
+* Move `LIVE_MODE` & `TEST_MODE` constants into the `Client` class so that they're more easily addressable using
+  `Alma\API\Client::LIVE_MODE` & `Alma\API\Client::TEST_MODE` 
+
+
 v1.0.12
 -------
 
