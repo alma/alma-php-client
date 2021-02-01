@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.0.14
+-------
+
+* Fix non-working code in the Orders endpoint & PaginatedResults class
+* Improve type hints
+* Fix compatibility with PHP versions older than 5.6
+
 v1.0.13
 -------
 
