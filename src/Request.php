@@ -23,10 +23,23 @@
  *
  */
 
-// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-
 namespace Alma\API;
 
+
+// In older versions of PHP (<= 5.5.19), those constants aren't defined – we do need them though
+if (!defined('CURL_SSLVERSION_TLSv1_0')) {
+    define('CURL_SSLVERSION_TLSv1_0', 4);
+}
+
+if (!defined('CURL_SSLVERSION_TLSv1_1')) {
+    define('CURL_SSLVERSION_TLSv1_1', 5);
+}
+
+if (!defined('CURL_SSLVERSION_TLSv1_2')) {
+    define('CURL_SSLVERSION_TLSv1_2', 6);
+}
+
+// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 class RequestError extends \Exception
 {
     /**

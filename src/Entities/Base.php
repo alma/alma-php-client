@@ -27,6 +27,7 @@ namespace Alma\API\Entities;
 
 class Base
 {
+    /** @var string */
     public $id;
 
     public function __construct($attributes)

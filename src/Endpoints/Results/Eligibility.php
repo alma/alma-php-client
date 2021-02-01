@@ -27,40 +27,53 @@ namespace Alma\API\Endpoints\Results;
 
 class Eligibility
 {
+    /**
+     * @var bool
+     */
     public $isEligible;
+    /**
+     * @var array
+     */
     public $reasons;
     public $constraints;
+    /**
+     * @var array
+     */
     public $paymentPlan;
+    /**
+     * @var int
+     */
     public $installmentsCount;
 
     /**
      * Eligibility constructor.
-     * @param Data $data
+     * @param array $data
+     * @param int|null $responseCode
      */
-    public function __construct($array = [], $responseCode = null)
+    public function __construct($data = [], $responseCode = null)
     {
         // Supporting some legacy behaviour where the eligibility check would return a 406 error if not eligible,
         // instead of 200 OK + {"eligible": false}
-        if (array_key_exists('eligible', $array)) {
-            $this->setIsEligible($array['eligible']);
+        if (array_key_exists('eligible', $data)) {
+            $this->setIsEligible($data['eligible']);
         } else {
             $this->setIsEligible($responseCode == 200);
         }
 
-        if (array_key_exists('reasons', $array)) {
-            $this->setReasons($array['reasons']);
+        if (array_key_exists('reasons', $data)) {
+            $this->setReasons($data['reasons']);
         }
 
-        if (array_key_exists('constraints', $array)) {
-            $this->setConstraints($array['constraints']);
+        if (array_key_exists('constraints', $data)) {
+            $this->setConstraints($data['constraints']);
         }
 
-        if (array_key_exists('payment_plan', $array)) {
-            $this->setPaymentPlan($array['payment_plan']);
+        if (array_key_exists('payment_plan', $data)) {
+            $this->setPaymentPlan($data['payment_plan']);
         }
 
-        if (array_key_exists('installments_count', $array)) {
-            $this->setInstallmentsCount($array['installments_count']);
+        if (array_key_exists('installments_count', $data)) {
+            $this->setInstallmentsCount($data['installments_count']);
         }
     }
 
@@ -84,7 +97,7 @@ class Eligibility
 
     /**
      * Getter constraints
-     * @return text
+     * @return array
      */
     public function getConstraints()
     {
@@ -111,6 +124,7 @@ class Eligibility
 
     /**
      * Setter isEligible
+     * @param bool $isEligible
      */
     public function setIsEligible($isEligible)
     {
@@ -119,6 +133,7 @@ class Eligibility
 
     /**
      * Setter reasons
+     * @param array $reasons
      */
     public function setReasons($reasons)
     {
@@ -127,6 +142,7 @@ class Eligibility
 
     /**
      * Setter constraints
+     * @param array $constraints
      */
     public function setConstraints($constraints)
     {
@@ -135,6 +151,7 @@ class Eligibility
 
     /**
      * Setter paymentPlan
+     * @param array $paymentPlan
      */
     public function setPaymentPlan($paymentPlan)
     {
@@ -143,6 +160,7 @@ class Eligibility
 
     /**
      * Setter paymentPlan
+     * @param int $installmentsCount
      */
     public function setInstallmentsCount($installmentsCount)
     {

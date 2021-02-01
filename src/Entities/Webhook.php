@@ -30,8 +30,9 @@ class Webhook extends Base
 {
     const TYPE_INTEGRATION_CAPABILITIES = "integration_capabilities";
 
-    public $id;
+    /** @var string */
     public $type;
+    /** @var string */
     public $url;
 
     /**

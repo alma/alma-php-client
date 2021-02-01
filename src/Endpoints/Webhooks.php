@@ -72,7 +72,8 @@ class Webhooks extends Base
      * Delete a webhook
      *
      * @param string $id The ID of the Webhook to delete
-     * @return bool True if the deletion call worked (throws otherwise)
+     *
+     * @return true True if the deletion call worked (throws otherwise)
      * @throws RequestError
      */
     public function delete($id)

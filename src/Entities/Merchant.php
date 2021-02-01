@@ -27,12 +27,20 @@ namespace Alma\API\Entities;
 
 class Merchant extends Base
 {
+    /** @var string */
     public $name;
+    /** @var string */
     public $website;
+    /** @var string */
     public $state;
+    /** @var bool */
     public $manually_reviewed;
+    /** @var bool */
     public $can_create_payments;
+    /** @var int */
     public $minimum_purchase_amount;
+    /** @var int */
     public $maximum_purchase_amount;
+    /** @var array */
     public $fee_plans;
 }

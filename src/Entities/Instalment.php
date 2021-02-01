@@ -33,6 +33,8 @@ class Instalment extends Base
     const STATE_CLAIMED = "claimed";
     const STATE_COVERED = "covered";
 
+    /** @var string */
     public $state;
+    /** @var int */
     public $purchase_amount;
 }

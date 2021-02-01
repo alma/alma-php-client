@@ -44,6 +44,10 @@ class Base
         $this->logger = $client_context->logger;
     }
 
+    /**
+     * @param string $path
+     * @return Request
+     */
     protected function request($path)
     {
         return Request::build($this->clientContext, $this->clientContext->urlFor($path));

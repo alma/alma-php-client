@@ -33,12 +33,19 @@ class Payment extends Base
     const FRAUD_AMOUNT_MISMATCH = 'amount_mismatch';
     const FRAUD_STATE_ERROR = 'state_error';
 
+    /** @var string */
     public $url;
+    /** @var string */
     public $state;
+    /** @var int */
     public $purchase_amount;
+    /** @var Instalment[] */
     public $payment_plan;
+    /** @var string */
     public $return_url;
+    /** @var array */
     public $custom_data;
+    /** @var Order[] */
     public $orders;
 
     public function __construct($attributes)

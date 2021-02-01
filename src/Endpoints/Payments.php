@@ -36,19 +36,20 @@ class Payments extends Base
     const PAYMENTS_PATH = '/v1/payments';
 
     /**
-     * @param array $orderData
+     * @param array $data
      *
-     * @return Eligibility
+     * @return Eligibility|Eligibility[]
      * @throws RequestError
      */
-    public function eligibility($orderData)
+    public function eligibility($data)
     {
-        $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($orderData)->post();
+        $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($data)->post();
 
         $serverError = $res->responseCode >= 500;
 
         if (!$serverError && is_assoc_array($res->json)) {
             $result = new Eligibility($res->json, $res->responseCode);
+
             if (!$result->isEligible()) {
                 $this->logger->info(
                     "Eligibility check failed for following reasons: " .
@@ -57,9 +58,11 @@ class Payments extends Base
             }
         } elseif (!$serverError && is_array($res->json)) {
             $result = [];
-            foreach ($res->json as $data) {
-                $eligibility = new Eligibility($data, $res->responseCode);
+
+            foreach ($res->json as $eligibilityData) {
+                $eligibility = new Eligibility($eligibilityData, $res->responseCode);
                 $result[$eligibility->getInstallmentsCount()] = $eligibility;
+
                 if (!$eligibility->isEligible()) {
                     $this->logger->info(
                         "Eligibility check failed for following reasons: " .
@@ -79,7 +82,7 @@ class Payments extends Base
     }
 
     /**
-     * @param $data
+     * @param array $data
      *
      * @return Payment
      * @throws RequestError
@@ -96,10 +99,11 @@ class Payments extends Base
     }
 
     /**
-     * @param $data
+     * @param array $data
      *
      * @return Payment
      * @throws RequestError
+     *
      * @deprecated Use Payments::create() instead
      */
     public function createPayment($data)
@@ -109,7 +113,7 @@ class Payments extends Base
 
 
     /**
-     * @param $id string The external ID for the payment to fetch
+     * @param string $id The external ID for the payment to fetch
      *
      * @return Payment
      * @throws RequestError
@@ -126,10 +130,10 @@ class Payments extends Base
     }
 
     /**
-     * @param $id       string  The ID of the payment to flag as potential fraud
-     * @param $reason   string  An optional message indicating why this payment is being flagged
+     * @param string $id      The ID of the payment to flag as potential fraud
+     * @param string $reason  An optional message indicating why this payment is being flagged
      *
-     * @return boolean
+     * @return bool
      * @throws RequestError
      */
     public function flagAsPotentialFraud($id, $reason=null)
@@ -208,7 +212,7 @@ class Payments extends Base
      *
      * @throws RequestError
      */
-    public function sendSms(string $id)
+    public function sendSms($id)
     {
         $res = $this->request(self::PAYMENTS_PATH . "/$id/send-sms")->post();
         if ($res->isError()) {

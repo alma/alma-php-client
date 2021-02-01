@@ -47,8 +47,9 @@ class Orders extends Base
     }
 
     /**
-     * @param string $orderId
-     * @param array $orderData
+     * @param int $limit
+     * @param string|null $startingAfter
+     * @param array $filters
      *
      * @return PaginatedResults
      * @throws RequestError

@@ -79,7 +79,6 @@ class Client implements LoggerAwareInterface
      *
      * @param string $api_key a valid API key for the service
      *
-     * @param $logger
      *
      * @param $options
      *              - api_root  string|array[$mode => string]   API root URL to use. If you need different URLs for the

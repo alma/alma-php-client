@@ -34,6 +34,7 @@ class Merchants extends Base
     const ME_PATH = '/v1/me';
 
     /**
+     * @return Merchant
      * @throws RequestError
      */
     public function me()

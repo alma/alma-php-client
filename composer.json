@@ -1,24 +1,26 @@
 {
-    "name": "alma/alma-php-client",
-    "description": "PHP API client for the Alma payments API",
-    "type": "library",
-    "require-dev": {
-        "phpcompatibility/php-compatibility": "^9.0",
-        "squizlabs/php_codesniffer": "^3.3",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-        "roave/security-advisories": "@dev",
-        "phpunit/phpunit": "^8"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Olivier Lance",
-            "email": "olivier.lance@getalma.eu"
-        }
-    ],
-    "require": {
-        "psr/log": "^1.1"
-    },
+  "name": "alma/alma-php-client",
+  "description": "PHP API client for the Alma payments API",
+  "type": "library",
+  "require-dev": {
+    "phpcompatibility/php-compatibility": "^9.0",
+    "squizlabs/php_codesniffer": "^3.3",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+    "roave/security-advisories": "@dev",
+    "phpunit/phpunit": "^8"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Olivier Lance",
+      "email": "olivier.lance@getalma.eu"
+    }
+  ],
+  "require": {
+    "psr/log": "^1.1",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
   "autoload": {
     "psr-4": {
       "Alma\\API\\": "src/"
