@@ -62,6 +62,11 @@ class Webhook extends Base
         }
 
         $computed_signature = rtrim(strtr(base64_encode(hash_hmac('sha256', implode("&", $data), $secret, true)), '+/', '-_'), '=');
-        return hash_equals($signature, $computed_signature);
+
+        if (is_callable('hash_equals')) {
+            return hash_equals($signature, $computed_signature);
+        } else {
+            return $signature === $computed_signature;
+        }
     }
 }
