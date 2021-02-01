@@ -25,19 +25,30 @@
 
 namespace Alma\API;
 
-use Entities\Base;
+use Alma\API\Entities\Base;
+use Iterator;
 
-class PaginatedResults implements \Iterator
+class PaginatedResults implements Iterator
 {
     protected $position = 0;
     protected $response;
-    protected $nextPage;
+    /**
+     * @var callable
+     */
+    protected $nextPageCb;
+    private $entities;
 
-    public function __construct($response, $object, $nextPage)
+    /**
+     * PaginatedResults constructor.
+     * @param Response $response
+     * @param $klass
+     * @param callable $nextPageCb
+     */
+    public function __construct($response, $klass, $nextPageCb)
     {
         $this->response = $response;
-        $this->entities = $response->json['data'];
-        $this->nextPage = $nextPage;
+        $this->entities = isset($response->json['data']) ? $response->json['data'] : [];
+        $this->nextPageCb = $nextPageCb;
     }
 
     public function rewind()
@@ -67,9 +78,12 @@ class PaginatedResults implements \Iterator
 
     public function nextPage()
     {
-        if (!array_key_exists('has_more', $this->response) ) {
-            return self([], Base::class);
+        if (!array_key_exists('has_more', $this->response->json)) {
+            return new self(new EmptyResponse(), Base::class, null);
         }
-        return $this->nextPage(['starting_after' => array_slice($this->entities, -1, 1)->id]);
+
+        $callback = $this->nextPageCb;
+
+        return $callback(array_slice($this->entities, -1, 1)[0]['id']);
     }
 }

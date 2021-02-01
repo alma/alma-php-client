@@ -43,7 +43,7 @@ class Orders extends Base
     public function update($orderId, $orderData)
     {
         $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->setRequestBody($orderData)->post();
-        return new Order($response);
+        return new Order($response->json);
     }
 
     /**
@@ -74,7 +74,7 @@ class Orders extends Base
             $response,
             self::class,
             function($startingAfter) use ($limit, $filters) {
-                $this->fetchAll($limit, $startingAfter, $filters);
+                return $this->fetchAll($limit, $startingAfter, $filters);
             }
         );
     }
@@ -88,6 +88,6 @@ class Orders extends Base
     public function fetch($orderId)
     {
         $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->get();
-        return new Order($response);
+        return new Order($response->json);
     }
 }

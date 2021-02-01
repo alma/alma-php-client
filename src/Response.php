@@ -50,3 +50,13 @@ class Response
         return $this->responseCode >= 400 && $this->responseCode < 600;
     }
 }
+
+class EmptyResponse extends Response
+{
+    public function __construct()
+    {
+        $this->errorMessage = null;
+        $this->json = [];
+        $this->responseCode = null;
+    }
+}
