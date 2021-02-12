@@ -42,7 +42,7 @@ class DependenciesError extends \Exception
 
 class Client implements LoggerAwareInterface
 {
-    const VERSION = '1.0.14';
+    const VERSION = '1.0.15';
 
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';

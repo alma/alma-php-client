@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.15
+-------
+
+* Add missing fields to Instalment entity
+
 v1.0.14
 -------
 
