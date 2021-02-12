@@ -35,6 +35,16 @@ class Instalment extends Base
 
     /** @var string */
     public $state;
+
     /** @var int */
     public $purchase_amount;
+
+    /** @var int */
+    public $original_purchase_amount;
+
+    /** @var int */
+    public $due_date;
+
+    /** @var int */
+    public $customer_fee;
 }
