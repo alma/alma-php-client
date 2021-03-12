@@ -36,14 +36,23 @@ class Payments extends Base
     const PAYMENTS_PATH = '/v1/payments';
 
     /**
-     * @param array $data
+     * @param array $data           Payment data to check the eligibility for – same data format as payment creation,
+     *                              except that only payment.purchase_amount is mandatory and payment.installments_count
+     *                              can be an array of integers, to test for multiple eligible plans at once.
+     * @param bool $raiseOnError    Whether to raise a RequestError on 4xx and 5xx errors, as it should.
+     *                              Defaults to false to preserve original behaviour. Will default to true in future
+     *                              versions (next major update).
      *
      * @return Eligibility|Eligibility[]
      * @throws RequestError
      */
-    public function eligibility($data)
+    public function eligibility(array $data, $raiseOnError = false)
     {
         $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($data)->post();
+
+        if ($raiseOnError && $res->isError()) {
+            throw new RequestError($res->errorMessage, null, $res);
+        }
 
         $serverError = $res->responseCode >= 500;
 
