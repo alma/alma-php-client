@@ -80,6 +80,9 @@ class Payment extends Base
     /** @var Order[] List of orders associated to that payment */
     public $orders;
 
+    /** @var Refund[] List of refunds for that payment */
+    public $refunds;
+
     public function __construct($attributes)
     {
         // Manually process `payment_plan` to create Instalment instances
@@ -101,6 +104,16 @@ class Payment extends Base
             }
 
             unset($attributes['orders']);
+        }
+
+        if (array_key_exists('refunds', $attributes)) {
+            $this->refunds = array();
+
+            foreach ($attributes['refunds'] as $refund) {
+                $this->refunds[] = new Refund($refund);
+            }
+
+            unset($attributes['refunds']);
         }
 
         parent::__construct($attributes);
