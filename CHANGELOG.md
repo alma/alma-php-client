@@ -1,6 +1,25 @@
 CHANGELOG
 =========
 
+v1.1.0
+-------
+
+* Add an option to depart from a legacy behaviour where the eligibility endpoint would not raise RequestErrors on 4xx
+  and 5xx errors. The default is to keep the original behaviour so as not to break existing implementations.
+  New implementations should call the endpoint with a second argument set to `true` and try/catch RequestError 
+  exceptions to better handle error cases with eligibility:
+  ```php
+    try {
+      $eligibility = $alma->payments->eligibility($data, true);
+    } catch (RequestError $e) {
+        // Handle errors
+    }
+  ```
+* Add fields and docs to the Payment entity
+* Add a Refund entity and extract refunds data within the Payment entity constructor
+* Add the `feePlans` endpoint to the `merchants` scope, so that one can fetch "fee plans" configured for their merchant
+  account: `$alma->merchants->feePlans();` — see function's docs for available options
+
 v1.0.15
 -------
 
