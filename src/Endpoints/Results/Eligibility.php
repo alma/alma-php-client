@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2018 Alma / Nabla SAS
+ * Copyright (c) 2018 Alma / Nabla SAS.
  *
  * THE MIT LICENSE
  *
@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Endpoints\Results;
@@ -44,11 +43,20 @@ class Eligibility
      * @var int
      */
     public $installmentsCount;
+    /**
+     *  @var int
+     */
+    public $deferredDays;
+    /**
+     * @var int
+     */
+    public $deferredMonths;
 
     /**
      * Eligibility constructor.
-     * @param array $data
-     * @param int|null $responseCode
+     *
+     * @param array    $data
+     * @param null|int $responseCode
      */
     public function __construct($data = [], $responseCode = null)
     {
@@ -57,7 +65,7 @@ class Eligibility
         if (array_key_exists('eligible', $data)) {
             $this->setIsEligible($data['eligible']);
         } else {
-            $this->setIsEligible($responseCode == 200);
+            $this->setIsEligible(200 == $responseCode);
         }
 
         if (array_key_exists('reasons', $data)) {
@@ -75,10 +83,19 @@ class Eligibility
         if (array_key_exists('installments_count', $data)) {
             $this->setInstallmentsCount($data['installments_count']);
         }
+
+        if (array_key_exists('deferred_days', $data)) {
+            $this->setDeferredDays($data['deferred_days']);
+        }
+
+        if (array_key_exists('deferred_months', $data)) {
+            $this->setDeferredMonths($data['deferred_months']);
+        }
     }
 
     /**
-     * Is Eligible
+     * Is Eligible.
+     *
      * @return bool
      */
     public function isEligible()
@@ -87,7 +104,8 @@ class Eligibility
     }
 
     /**
-     * Getter reasons
+     * Getter reasons.
+     *
      * @return string
      */
     public function getReasons()
@@ -96,7 +114,8 @@ class Eligibility
     }
 
     /**
-     * Getter constraints
+     * Getter constraints.
+     *
      * @return array
      */
     public function getConstraints()
@@ -105,7 +124,8 @@ class Eligibility
     }
 
     /**
-     * Getter paymentPlan
+     * Getter paymentPlan.
+     *
      * @return array
      */
     public function getPaymentPlan()
@@ -114,7 +134,8 @@ class Eligibility
     }
 
     /**
-     * Getter paymentPlan
+     * Getter paymentPlan.
+     *
      * @return array
      */
     public function getInstallmentsCount()
@@ -123,7 +144,8 @@ class Eligibility
     }
 
     /**
-     * Setter isEligible
+     * Setter isEligible.
+     *
      * @param bool $isEligible
      */
     public function setIsEligible($isEligible)
@@ -132,7 +154,8 @@ class Eligibility
     }
 
     /**
-     * Setter reasons
+     * Setter reasons.
+     *
      * @param array $reasons
      */
     public function setReasons($reasons)
@@ -141,7 +164,8 @@ class Eligibility
     }
 
     /**
-     * Setter constraints
+     * Setter constraints.
+     *
      * @param array $constraints
      */
     public function setConstraints($constraints)
@@ -150,7 +174,8 @@ class Eligibility
     }
 
     /**
-     * Setter paymentPlan
+     * Setter paymentPlan.
+     *
      * @param array $paymentPlan
      */
     public function setPaymentPlan($paymentPlan)
@@ -159,11 +184,56 @@ class Eligibility
     }
 
     /**
-     * Setter paymentPlan
+     * Setter paymentPlan.
+     *
      * @param int $installmentsCount
      */
     public function setInstallmentsCount($installmentsCount)
     {
         $this->installmentsCount = $installmentsCount;
+    }
+
+    /**
+     * Get the value of deferredMonths.
+     *
+     * @return int
+     */
+    public function getDeferredMonths()
+    {
+        return $this->deferredMonths;
+    }
+
+    /**
+     * Set the value of deferredMonths.
+     *
+     * @param mixed $deferredMonths
+     */
+    public function setDeferredMonths($deferredMonths)
+    {
+        $this->deferredMonths = $deferredMonths;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of deferredDays.
+     *
+     * @return int
+     */
+    public function getDeferredDays()
+    {
+        return $this->deferredDays;
+    }
+
+    /**
+     * Set the value of deferredDays.
+     *
+     * @param mixed $deferredDays
+     */
+    public function setDeferredDays($deferredDays)
+    {
+        $this->deferredDays = $deferredDays;
+
+        return $this;
     }
 }
