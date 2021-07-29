@@ -54,6 +54,9 @@ class Payment extends Base
     /** @var int Fees to be paid by the customer, in cents */
     public $customer_fee;
 
+    /** @var int Interests to be paid by the customer, in cents */
+    public $customer_interest;
+
     /** @var int Fees paid by the merchant, in cents */
     public $merchant_target_fee;
 
