@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.2.0
+-------
+* New eligibility v2 endpoint
+* Add customerTotalCostAmount, customerTotalCostBps in eligibility
+
 v1.1.0
 -------
 
