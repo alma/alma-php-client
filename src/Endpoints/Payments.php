@@ -34,6 +34,7 @@ use Alma\API\Response;
 class Payments extends Base
 {
     const PAYMENTS_PATH = '/v1/payments';
+    const ELIGIBILITY_PATH = '/v2/payments/eligibility';
 
     /**
      * @param array $data           Payment data to check the eligibility for – same data format as payment creation,
@@ -48,7 +49,13 @@ class Payments extends Base
      */
     public function eligibility(array $data, $raiseOnError = false)
     {
-        $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($data)->post();
+        // Old eligibiity endpoint (we keep both for now)
+        $oldEligibility = array_key_exists('payment', $data);
+        if ($oldEligibility) {
+            $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($data)->post();
+        } else {
+            $res = $this->request(self::ELIGIBILITY_PATH)->setRequestBody($data)->post();
+        }
 
         if ($raiseOnError && $res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
@@ -70,7 +77,17 @@ class Payments extends Base
 
             foreach ($res->json as $eligibilityData) {
                 $eligibility = new Eligibility($eligibilityData, $res->responseCode);
-                $result[$eligibility->getInstallmentsCount()] = $eligibility;
+                if ($oldEligibility) {
+                    $result[$eligibility->getInstallmentsCount()] = $eligibility;
+                } else {
+                    $key = 'general_'
+                    . $eligibility->getInstallmentsCount()
+                    . '_'
+                    . $eligibility->getDeferredDays()
+                    . '_'
+                    . $eligibility->getDeferredMonths();
+                    $result[$key] = $eligibility;
+                }
 
                 if (!$eligibility->isEligible()) {
                     $this->logger->info(
