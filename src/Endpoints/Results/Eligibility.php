@@ -51,6 +51,14 @@ class Eligibility
      * @var int
      */
     public $deferredMonths;
+    /**
+     * @var int
+     */
+    public $customerTotalCostAmount;
+    /**
+     * @var int
+     */
+    public $customerTotalCostBps;
 
     /**
      * Eligibility constructor.
@@ -90,6 +98,14 @@ class Eligibility
 
         if (array_key_exists('deferred_months', $data)) {
             $this->setDeferredMonths($data['deferred_months']);
+        }
+
+        if (array_key_exists('customer_total_cost_amount', $data)) {
+            $this->setCustomerTotalCostAmount($data['customer_total_cost_amount']);
+        }
+
+        if (array_key_exists('customer_total_cost_bps', $data)) {
+            $this->setCustomerTotalCostBps($data['customer_total_cost_bps']);
         }
     }
 
@@ -233,6 +249,54 @@ class Eligibility
     public function setDeferredDays($deferredDays)
     {
         $this->deferredDays = $deferredDays;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of customerTotalCostAmount.
+     *
+     * @return int
+     */
+    public function getCustomerTotalCostAmount()
+    {
+        return $this->customerTotalCostAmount;
+    }
+
+    /**
+     * Set the value of customerTotalCostAmount.
+     *
+     * @param int $customerTotalCostAmount
+     *
+     * @return self
+     */
+    public function setCustomerTotalCostAmount($customerTotalCostAmount)
+    {
+        $this->customerTotalCostAmount = $customerTotalCostAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of customerTotalCostBps.
+     *
+     * @return int
+     */
+    public function getCustomerTotalCostBps()
+    {
+        return $this->customerTotalCostBps;
+    }
+
+    /**
+     * Set the value of customerTotalCostBps.
+     *
+     * @param int $customerTotalCostBps
+     *
+     * @return self
+     */
+    public function setCustomerTotalCostBps($customerTotalCostBps)
+    {
+        $this->customerTotalCostBps = $customerTotalCostBps;
 
         return $this;
     }
