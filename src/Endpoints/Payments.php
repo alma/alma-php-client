@@ -29,19 +29,19 @@ use Alma\API\Endpoints\Results\Eligibility;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\RequestError;
-use Alma\API\Response;
 
 class Payments extends Base
 {
-    const PAYMENTS_PATH = '/v1/payments';
-    const ELIGIBILITY_PATH = '/v2/payments/eligibility';
+    const PAYMENTS_PATH       = '/v1/payments';
+    const ELIGIBILITY_PATH    = '/v1/payments/eligibility';
+    const ELIGIBILITY_PATH_V2 = '/v2/payments/eligibility';
 
     /**
      * @param array $data           Payment data to check the eligibility for – same data format as payment creation,
      *                              except that only payment.purchase_amount is mandatory and payment.installments_count
      *                              can be an array of integers, to test for multiple eligible plans at once.
      * @param bool $raiseOnError    Whether to raise a RequestError on 4xx and 5xx errors, as it should.
-     *                              Defaults to false to preserve original behaviour. Will default to true in future
+     *                              Defaults false to preserve original behaviour. Will default to true in future
      *                              versions (next major update).
      *
      * @return Eligibility|Eligibility[]
@@ -49,12 +49,11 @@ class Payments extends Base
      */
     public function eligibility(array $data, $raiseOnError = false)
     {
-        // Old eligibiity endpoint (we keep both for now)
-        $oldEligibility = array_key_exists('payment', $data);
-        if ($oldEligibility) {
-            $res = $this->request(self::PAYMENTS_PATH . '/eligibility')->setRequestBody($data)->post();
-        } else {
+        $iSV1Payload = array_key_exists('payment', $data);
+        if ($iSV1Payload) {
             $res = $this->request(self::ELIGIBILITY_PATH)->setRequestBody($data)->post();
+        } else {
+            $res = $this->request(self::ELIGIBILITY_PATH_V2)->setRequestBody($data)->post();
         }
 
         if ($raiseOnError && $res->isError()) {
@@ -77,7 +76,7 @@ class Payments extends Base
 
             foreach ($res->json as $eligibilityData) {
                 $eligibility = new Eligibility($eligibilityData, $res->responseCode);
-                if ($oldEligibility) {
+                if ($iSV1Payload) {
                     $result[$eligibility->getInstallmentsCount()] = $eligibility;
                 } else {
                     $key = 'general_'

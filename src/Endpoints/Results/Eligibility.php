@@ -34,6 +34,9 @@ class Eligibility
      * @var array
      */
     public $reasons;
+    /**
+     * @var array
+     */
     public $constraints;
     /**
      * @var array
@@ -122,7 +125,7 @@ class Eligibility
     /**
      * Getter reasons.
      *
-     * @return string
+     * @return array
      */
     public function getReasons()
     {
@@ -152,7 +155,7 @@ class Eligibility
     /**
      * Getter paymentPlan.
      *
-     * @return array
+     * @return int
      */
     public function getInstallmentsCount()
     {
