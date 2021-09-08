@@ -24,8 +24,13 @@
 
 namespace Alma\API\Endpoints\Results;
 
-class Eligibility
+use Alma\API\Entities\FeePlan;
+use Alma\API\Entities\PaymentPlanInterface;
+use Alma\API\Entities\PaymentPlanTrait;
+
+class Eligibility implements PaymentPlanInterface
 {
+    use PaymentPlanTrait;
     /**
      * @var bool
      */
@@ -110,6 +115,16 @@ class Eligibility
         if (array_key_exists('customer_total_cost_bps', $data)) {
             $this->setCustomerTotalCostBps($data['customer_total_cost_bps']);
         }
+    }
+
+    /**
+     * Kind is always 'general' for eligibility at this time
+     *
+     * @return string
+     */
+    public function getKind()
+    {
+        return FeePlan::KIND_GENERAL;
     }
 
     /**
@@ -303,4 +318,5 @@ class Eligibility
 
         return $this;
     }
+
 }

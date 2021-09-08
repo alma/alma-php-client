@@ -79,13 +79,7 @@ class Payments extends Base
                 if ($iSV1Payload) {
                     $result[$eligibility->getInstallmentsCount()] = $eligibility;
                 } else {
-                    $key = 'general_'
-                    . $eligibility->getInstallmentsCount()
-                    . '_'
-                    . $eligibility->getDeferredDays()
-                    . '_'
-                    . $eligibility->getDeferredMonths();
-                    $result[$key] = $eligibility;
+                    $result[$eligibility->getPlanKey()] = $eligibility;
                 }
 
                 if (!$eligibility->isEligible()) {

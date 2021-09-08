@@ -25,8 +25,10 @@
 
 namespace Alma\API\Entities;
 
-class FeePlan extends Base
+class FeePlan extends Base implements PaymentPlanInterface
 {
+    use PaymentPlanTrait;
+
     const KIND_GENERAL = 'general';
     const KIND_POS = 'pos';
 
@@ -62,4 +64,24 @@ class FeePlan extends Base
 
     /** @var int Fixed fees in cents paid for by the customer */
     public $customer_fee_fixed;
+
+    public function getDeferredDays()
+    {
+        return $this->deferred_days;
+    }
+
+    public function getDeferredMonths()
+    {
+        return $this->deferred_months;
+    }
+
+    public function getInstallmentsCount()
+    {
+        return $this->installments_count;
+    }
+
+    public function getKind()
+    {
+        return $this->kind;
+    }
 }
