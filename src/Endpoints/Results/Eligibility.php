@@ -50,7 +50,7 @@ class Eligibility implements PaymentPlanInterface
     /**
      * @var int
      */
-    public $installmentsCount;
+    public $installmentsCount = 0;
     /**
      *  @var int
      */
