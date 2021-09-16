@@ -31,6 +31,7 @@ use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\RequestError;
+use Alma\API\Response;
 
 class Payments extends Base
 {
@@ -46,13 +47,13 @@ class Payments extends Base
      *                              Defaults false to preserve original behaviour. Will default to true in future
      *                              versions (next major update).
      *
-     * @return Eligibility|Eligibility[]
+     * @return Eligibility[]
      * @throws RequestError
      */
     public function eligibility(array $data, $raiseOnError = false)
     {
-        $iSV1Payload = array_key_exists('payment', $data);
-        if ($iSV1Payload) {
+        $isV1Payload = array_key_exists('payment', $data);
+        if ($isV1Payload) {
             $res = $this->request(self::ELIGIBILITY_PATH)->setRequestBody($data)->post();
         } else {
             $res = $this->request(self::ELIGIBILITY_PATH_V2)->setRequestBody($data)->post();
@@ -62,41 +63,21 @@ class Payments extends Base
             throw new RequestError($res->errorMessage, null, $res);
         }
 
-        $serverError = $res->responseCode >= 500;
+        $result = [];
+        foreach ($this->getEligibilitiesFromResponse($res) as $eligibility) {
 
-        if (!$serverError && ArrayUtils::isAssocArray($res->json)) {
-            $result = new Eligibility($res->json, $res->responseCode);
+            if ($isV1Payload) {
+                $result[$eligibility->getInstallmentsCount()] = $eligibility;
+            } else {
+                $result[$eligibility->getPlanKey()] = $eligibility;
+            }
 
-            if (!$result->isEligible()) {
+            if (!$eligibility->isEligible()) {
                 $this->logger->info(
                     "Eligibility check failed for following reasons: " .
-                    var_export($result->reasons, true)
+                    var_export($eligibility->reasons, true)
                 );
             }
-        } elseif (!$serverError && is_array($res->json)) {
-            $result = [];
-
-            foreach ($res->json as $eligibilityData) {
-                $eligibility = new Eligibility($eligibilityData, $res->responseCode);
-                if ($iSV1Payload) {
-                    $result[$eligibility->getInstallmentsCount()] = $eligibility;
-                } else {
-                    $result[$eligibility->getPlanKey()] = $eligibility;
-                }
-
-                if (!$eligibility->isEligible()) {
-                    $this->logger->info(
-                        "Eligibility check failed for following reasons: " .
-                        var_export($eligibility->reasons, true)
-                    );
-                }
-            }
-        } else {
-            $this->logger->info(
-                "Unexpected value from eligibility: " . var_export($res->json, true)
-            );
-
-            $result = new Eligibility(array("eligible" => false), $res->responseCode);
         }
 
         return $result;
@@ -244,6 +225,39 @@ class Payments extends Base
         return new Payment($res->json);
     }
 
+    /*
+     * @param Response $res
+     *
+     * @return Eligibility[]
+     */
+    protected function getEligibilitiesFromResponse(Response $res)
+    {
+        $serverError = $res->responseCode >= 500;
+
+        if (!$serverError && is_assoc_array($res->json)) {
+            return [new Eligibility($res->json, $res->responseCode)];
+        }
+
+        if (!$serverError && is_array($res->json)) {
+            $eligibilities = [];
+            foreach ($res->json as $eligibilityData) {
+                $eligibilities[] = new Eligibility($eligibilityData, $res->responseCode);
+            }
+
+            return $eligibilities;
+        }
+
+        $eligibility = new Eligibility(
+            [
+                "eligible" => false,
+                'reasons'  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
+            ],
+            $res->responseCode
+        );
+
+        return [$eligibility];
+    }
+
     /**
      * @param string $id ID of the payment to be refunded
      * @param bool $totalRefund Should the payment be completely refunded? In this case, $amount is not required as the
@@ -297,7 +311,6 @@ class Payments extends Base
     {
         $req = $this->request(self::PAYMENTS_PATH . "/$id/orders")->setRequestBody(array("order" => $orderData));
 
-        $res = null;
         if ($overwrite) {
             $res = $req->post();
         } else {
