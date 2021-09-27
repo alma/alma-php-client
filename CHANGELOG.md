@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.3.0
+-------
+* Add P10x informations
+
 v1.2.0
 -------
 * New eligibility v2 endpoint
