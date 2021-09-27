@@ -50,4 +50,7 @@ class Instalment extends Base
 
 	/** @var int */
     public $customer_interest;
+
+	/** @var int */
+    public $total_amount;
 }
