@@ -67,6 +67,12 @@ class Eligibility implements PaymentPlanInterface
      * @var int
      */
     public $customerTotalCostBps;
+    /**
+     * @var int Percentage of fees + credit in bps paid for by the customer (100bps = 1%)
+     *
+     * if value is null, that's mean the API does not return this property
+     */
+    public $annualInterestRate = null;
 
     /**
      * Eligibility constructor.
@@ -114,6 +120,10 @@ class Eligibility implements PaymentPlanInterface
 
         if (array_key_exists('customer_total_cost_bps', $data)) {
             $this->setCustomerTotalCostBps($data['customer_total_cost_bps']);
+        }
+
+        if (array_key_exists('annual_interest_rate', $data)) {
+            $this->setAnnualInterestRate($data['annual_interest_rate']);
         }
     }
 
@@ -315,6 +325,31 @@ class Eligibility implements PaymentPlanInterface
     public function setCustomerTotalCostBps($customerTotalCostBps)
     {
         $this->customerTotalCostBps = $customerTotalCostBps;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of annualInterestRate.
+     * if value is null, that's mean the API does not return this property
+     *
+     * @return int|null
+     */
+    public function getAnnualInterestRate()
+    {
+        return $this->annualInterestRate;
+    }
+
+    /**
+     * Set the value of annualInterestRate.
+     *
+     * @param int $annualInterestRate
+     *
+     * @return self
+     */
+    private function setAnnualInterestRate($annualInterestRate)
+    {
+        $this->annualInterestRate = $annualInterestRate;
 
         return $this;
     }
