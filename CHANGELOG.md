@@ -1,12 +1,19 @@
 CHANGELOG
 =========
 
+v1.3.1
+-------
+
+* Add annual interest rate from eligibility
+
 v1.3.0
 -------
+
 * Add P10x informations
 
 v1.2.0
 -------
+
 * New eligibility v2 endpoint
 * Add customerTotalCostAmount, customerTotalCostBps in eligibility
 
