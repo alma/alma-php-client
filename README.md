@@ -50,33 +50,40 @@ $alma = new Alma\API\Client($apiKey, ['mode' => Alma\API\Client::TEST_MODE]);
 ```php
 // ...
 $amountInCents = 150000; // 1500 euros
+$customerBillingCountry = ""; // can be an empty string but NOT null
+$customerShippingCountry = "FR"; // billing_address has priority over shipping_address (if not empty)
 try {
     $eligibilities = $alma->payments->eligibility(
         [
-            [
-                'purchase_amount' => $amountInCents,
-                'queries'         =>
-                    [
-                        [
-                            'installments_count' => 1,
-                            'deferred_days'      => 30,
-                        ],
-                        [
-                            'installments_count' => 2,
-                        ],
-                        [
-                            'installments_count' => 3,
-                        ],
-                        [
-                            'installments_count' => 4,
-                        ],
-                        [
-                            'installments_count' => 10,
-                        ],
-                    ],
+            'purchase_amount' => $amountInCents,
+            'billing_address' => [ // (optional) useful to check eligibility for a specific billing country
+                'country' => $customerBillingCountry // can be an empty string but not null
             ],
+            'shipping_address' => [ // (optional) useful to check eligibility for a specific shipping country
+                'country' => $customerShippingCountry
+            ],
+            'queries'         =>
+                [
+                    [
+                        'installments_count' => 1,
+                        'deferred_days'      => 30,
+                    ],
+                    [
+                        'installments_count' => 2,
+                    ],
+                    [
+                        'installments_count' => 3,
+                    ],
+                    [
+                        'installments_count' => 4,
+                    ],
+                    [
+                        'installments_count' => 10,
+                    ],
+                ],
         ],
-        $raiseOnError = true
+        $raiseOnError = true // throws an exception on 4xx or 5xx http return code
+                             // instead of just returning an Eligibility Object with isEligible() === false
     );
 } catch (Alma\API\RequestError $error) {
     header("HTTP/1.1 500 Internal Server Error");
