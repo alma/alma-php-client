@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.4.0
+-------
+
+* Add edit payment in endpoint payment
+
 v1.3.1
 -------
 
