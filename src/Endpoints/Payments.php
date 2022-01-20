@@ -149,6 +149,7 @@ class Payments extends Base
     }
 
     /**
+     * @param string $id
      * @param array $data
      *
      * @return Payment
