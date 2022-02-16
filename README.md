@@ -261,8 +261,6 @@ $payment = $alma->payments->fetch($paymentId);
 switch($payment->state) {
     case Alma\API\Entities\Payment::STATE_IN_PROGRESS: break;
     case Alma\API\Entities\Payment::STATE_PAID: break;
-    case Alma\API\Entities\Payment::FRAUD_AMOUNT_MISMATCH: break;
-    case Alma\API\Entities\Payment::FRAUD_STATE_ERROR: break;
 }
 // ...
 ```
