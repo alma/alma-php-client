@@ -3,11 +3,11 @@
   "description": "PHP API client for the Alma payments API",
   "type": "library",
   "require-dev": {
-    "phpcompatibility/php-compatibility": "^9.0",
-    "squizlabs/php_codesniffer": "^3.3",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+    "phpcompatibility/php-compatibility": "^9.0",
+    "phpunit/phpunit": "*",
     "roave/security-advisories": "@dev",
-    "phpunit/phpunit": "^8"
+    "squizlabs/php_codesniffer": "^3.3"
   },
   "license": "MIT",
   "authors": [
@@ -17,13 +17,15 @@
     }
   ],
   "require": {
+    "php": "^5.6",
     "psr/log": "^1.1",
     "ext-curl": "*",
     "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
-      "Alma\\API\\": "src/"
+      "Alma\\API\\": "src/",
+      "Alma\\API\\Tests\\": "tests/"
     },
     "files": [
       "src/lib/array.php"
