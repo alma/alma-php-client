@@ -14,6 +14,9 @@ use const Alma\API\TEST_MODE;
  */
 class ArrayUtilsTest extends TestCase
 {
+    /** @var string  */
+    const FAKE_API_URI = 'https://fake-api.getalma.eu';
+
     /**
      * Return options to test ArrayUtils::almaArrayMergeRecursive
      * @return array
@@ -25,8 +28,8 @@ class ArrayUtilsTest extends TestCase
                 [],
                 [
                     'api_root' => [
-                        Client::TEST_MODE => 'https://api.sandbox.getalma.eu',
-                        Client::LIVE_MODE => 'https://api.getalma.eu'
+                        Client::TEST_MODE => Client::SANDBOX_API_URL,
+                        Client::LIVE_MODE => Client::LIVE_API_URL
                     ],
                     'force_tls' => 2,
                     'mode' => Client::LIVE_MODE,
@@ -36,8 +39,8 @@ class ArrayUtilsTest extends TestCase
             [
                 [
                     'api_root' => [
-                        Client::TEST_MODE => 'https://fake-api.getalma.eu',
-                        Client::LIVE_MODE => 'https://fake-api.getalma.eu'
+                        Client::TEST_MODE => self::FAKE_API_URI,
+                        Client::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
                     'mode' => Client::TEST_MODE,
@@ -45,8 +48,8 @@ class ArrayUtilsTest extends TestCase
                 ],
                 [
                     'api_root' => [
-                        Client::TEST_MODE => 'https://fake-api.getalma.eu',
-                        Client::LIVE_MODE => 'https://fake-api.getalma.eu'
+                        Client::TEST_MODE => self::FAKE_API_URI,
+                        Client::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
                     'mode' => Client::TEST_MODE,
