@@ -63,7 +63,7 @@ class Payments extends Base
 
         $serverError = $res->responseCode >= 500;
 
-        if (!$serverError && isAssoc($res->json)) {
+        if (!$serverError && ArrayUtils::isAssocArray($res->json)) {
             $result = new Eligibility($res->json, $res->responseCode);
 
             if (!$result->isEligible()) {
