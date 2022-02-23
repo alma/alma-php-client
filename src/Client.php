@@ -23,22 +23,12 @@
  *
  */
 
-// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-
 namespace Alma\API;
 
 use Alma\API\Endpoints;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-
-class ParamsError extends \Exception
-{
-}
-
-class DependenciesError extends \Exception
-{
-}
 
 class Client implements LoggerAwareInterface
 {
