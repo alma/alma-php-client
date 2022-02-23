@@ -95,7 +95,7 @@ class Client implements LoggerAwareInterface
             throw new ParamsError('An API key is required to instantiate new Alma\Client');
         }
 
-        $options = alma_array_merge_recursive(array(
+        $options = ArrayUtils::almaArrayMergeRecursive(array(
             'api_root' => array(TEST_MODE => self::SANDBOX_API_URL, LIVE_MODE => self::LIVE_API_URL),
             'force_tls' => 2,
             'mode' => LIVE_MODE,

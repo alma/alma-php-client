@@ -25,6 +25,7 @@
 
 namespace Alma\API\Endpoints;
 
+use Alma\API\ArrayUtils;
 use Alma\API\Endpoints\Results\Eligibility;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
@@ -62,7 +63,7 @@ class Payments extends Base
 
         $serverError = $res->responseCode >= 500;
 
-        if (!$serverError && is_assoc_array($res->json)) {
+        if (!$serverError && isAssoc($res->json)) {
             $result = new Eligibility($res->json, $res->responseCode);
 
             if (!$result->isEligible()) {

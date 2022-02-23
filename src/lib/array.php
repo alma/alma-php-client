@@ -2,6 +2,10 @@
 
 // https://secure.php.net/manual/en/function.array-merge-recursive.php#104145
 // Addition: will automatically discard null values
+/**
+ * @deprecated Use ArrayUtils::almaArrayMergeRecursive
+ * @return array|null
+ */
 function alma_array_merge_recursive() {
 
     if ( func_num_args() < 2 ) {
@@ -40,6 +44,11 @@ function alma_array_merge_recursive() {
     return $merged;
 }
 
+/**
+ * @deprecated Use ArrayUtils::isAssocArray
+ * @param $array
+ * @return bool
+ */
 function is_assoc_array($array) {
     if (!is_array($array)) {
         return false;
