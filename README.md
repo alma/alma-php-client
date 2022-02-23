@@ -11,7 +11,7 @@ If you find yourself needing to use some endpoints that are not yet implemented,
 Installation
 ------------
 
-The Alma PHP API Client library requires at least PHP 5.5.
+The Alma PHP API Client library requires at least PHP 5.6.
 A modern, [supported PHP version](https://www.php.net/supported-versions.php) is highly recommended.
 
 ### Composer
