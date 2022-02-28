@@ -6,8 +6,6 @@ use Alma\API\Lib\ClientOptionsValidator;
 use Alma\API\Client;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-use const Alma\API\LIVE_MODE;
-use const Alma\API\TEST_MODE;
 use Alma\API\ParamsError;
 
 /**

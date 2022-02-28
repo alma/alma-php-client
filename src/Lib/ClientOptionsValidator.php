@@ -88,9 +88,9 @@ class ClientOptionsValidator
     }
 
     /**
-     * @param $api_root
+     * @param string[] $api_root
      *
-     * @return array|string[]
+     * @return string|string[]
      * @throws ParamsError
      */
     public static function validateApiRootOption($api_root)
@@ -101,7 +101,7 @@ class ClientOptionsValidator
                 Client::LIVE_MODE => $api_root
             ];
         }
-        if (isset($api_root[Client::TEST_MODE]) && isset($api_root[Client::LIVE_MODE])) {
+        if (is_array($api_root) && isset($api_root[Client::TEST_MODE]) && isset($api_root[Client::LIVE_MODE])) {
             return [
                 Client::TEST_MODE => $api_root[Client::TEST_MODE],
                 Client::LIVE_MODE => $api_root[Client::LIVE_MODE]
@@ -130,19 +130,19 @@ class ClientOptionsValidator
     /**
      * @param $mode
      *
-     * @return mixed
+     * @return string
      * @throws ParamsError
      */
     public static function validateModeOption($mode)
     {
-        if (in_array($mode, [Client::TEST_MODE, $mode === Client::LIVE_MODE])) {
+        if (in_array($mode, [Client::TEST_MODE, Client::LIVE_MODE])) {
             return $mode;
         }
         throw new ParamsError('option \'mode\' is not configured properly');
     }
 
     /**
-     * @param $logger
+     * @param LoggerInterface $logger
      *
      * @return LoggerInterface
      * @throws ParamsError
@@ -161,10 +161,10 @@ class ClientOptionsValidator
      * @return array
      * @throws ParamsError
      */
-    public static function validateUserAgentComponentOption(array $user_agent_components)
+    public static function validateUserAgentComponentOption(array $userAgentComponents)
     {
-        if (count($user_agent_components) > 1) {
-            return $user_agent_components;
+        if (is_array($userAgentComponents) && count($userAgentComponents) > 1) {
+            return $userAgentComponents;
         }
         throw new ParamsError('option \'user_agent_component\' is not configured properly');
     }
