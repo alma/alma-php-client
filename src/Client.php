@@ -26,6 +26,8 @@
 namespace Alma\API;
 
 use Alma\API\Endpoints;
+use Alma\API\Lib\ClientOptionsValidator;
+use Alma\API\Lib\ArrayUtils;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -95,20 +97,7 @@ class Client implements LoggerAwareInterface
             throw new ParamsError('An API key is required to instantiate new Alma\Client');
         }
 
-        $options = ArrayUtils::almaArrayMergeRecursive(array(
-            'api_root' => array(TEST_MODE => self::SANDBOX_API_URL, LIVE_MODE => self::LIVE_API_URL),
-            'force_tls' => 2,
-            'mode' => LIVE_MODE,
-            'logger' => new NullLogger(),
-        ), $options);
-
-        if ($options['force_tls'] === true) {
-            $options['force_tls'] = 2;
-        }
-
-        if (is_string($options['api_root'])) {
-            $options['api_root'] = array(TEST_MODE => $options['api_root'], LIVE_MODE => $options['api_root']);
-        }
+        $options = ClientOptionsValidator::validateOptions($options);
 
         $this->context = new ClientContext($api_key, $options);
         $this->initUserAgent();

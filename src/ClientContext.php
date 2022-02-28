@@ -50,6 +50,12 @@ class ClientContext implements LoggerAwareInterface
         $this->setLogger($options['logger']);
 
         $this->userAgentComponents = array();
+
+        if (isset($options['user_agent_component'])) {
+            foreach ($options['user_agent_component'] => $component as $version) {
+                $this->addUserAgentComponent($component, $version);
+            }
+        }
     }
 
     /**
