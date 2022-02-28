@@ -27,10 +27,8 @@ namespace Alma\API;
 
 use Alma\API\Endpoints;
 use Alma\API\Lib\ClientOptionsValidator;
-use Alma\API\Lib\ArrayUtils;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 class Client implements LoggerAwareInterface
 {

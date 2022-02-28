@@ -11,7 +11,7 @@ use const Alma\API\TEST_MODE;
 use Alma\API\ParamsError;
 
 /**
- * Class ClientOptionsValidator
+ * Class ClientOptionsValidatorTest
  */
 class ClientOptionsValidatorTest extends TestCase
 {
@@ -100,6 +100,7 @@ class ClientOptionsValidatorTest extends TestCase
     /**
      * @dataProvider getClientOptions
      * @return void
+     * @throws ParamsError
      */
     public function testClientOptionsValidator($options, $expectedResult)
     {
@@ -146,6 +147,7 @@ class ClientOptionsValidatorTest extends TestCase
     /**
      * @dataProvider getInvalidClientOptions
      * @return void
+     * @throws ParamsError
      */
     public function testFaultyClientOptionsValidator($options)
     {

@@ -25,10 +25,8 @@
 
 namespace Alma\API\Lib;
 
-use Alma\API\Endpoints;
 use Alma\API\Client;
 use Alma\API\ParamsError;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -36,9 +34,6 @@ class ClientOptionsValidator
 {
     /**
      * Alma client config validation.
-     *
-     * @param string $api_key a valid API key for the service
-     *
      *
      * @param $options
      *              - api_root              string|array[$mode => string]
@@ -92,6 +87,12 @@ class ClientOptionsValidator
         return $config;
     }
 
+    /**
+     * @param $api_root
+     *
+     * @return array|string[]
+     * @throws ParamsError
+     */
     public static function validateApiRootOption($api_root)
     {
         if (is_string($api_root)) {
@@ -109,6 +110,12 @@ class ClientOptionsValidator
         throw new ParamsError('option \'api_root\' is not configured properly');
     }
 
+    /**
+     * @param bool|int $force_tls
+     *
+     * @return bool|int
+     * @throws ParamsError
+     */
     public static function validateForceTLSOption($force_tls)
     {
         if ($force_tls === true || $force_tls === 2) {
@@ -120,6 +127,12 @@ class ClientOptionsValidator
         throw new ParamsError('option \'force_tls\' is not configured properly');
     }
 
+    /**
+     * @param $mode
+     *
+     * @return mixed
+     * @throws ParamsError
+     */
     public static function validateModeOption($mode)
     {
         if (in_array($mode, [Client::TEST_MODE, $mode === Client::LIVE_MODE])) {
@@ -128,17 +141,29 @@ class ClientOptionsValidator
         throw new ParamsError('option \'mode\' is not configured properly');
     }
 
+    /**
+     * @param $logger
+     *
+     * @return LoggerInterface
+     * @throws ParamsError
+     */
     public static function validateLoggerOption($logger)
     {
-        if ($logger instanceof \Psr\Log\LoggerInterface) {
+        if ($logger instanceof LoggerInterface) {
             return $logger;
         }
         throw new ParamsError('option \'logger\' is not configured properly');
     }
 
+    /**
+     * @param array $user_agent_components
+     *
+     * @return array
+     * @throws ParamsError
+     */
     public static function validateUserAgentComponentOption(array $user_agent_components)
     {
-        if (is_array($user_agent_components) && count($user_agent_components) > 1) {
+        if (count($user_agent_components) > 1) {
             return $user_agent_components;
         }
         throw new ParamsError('option \'user_agent_component\' is not configured properly');

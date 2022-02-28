@@ -25,10 +25,10 @@
 
 namespace Alma\API\Endpoints;
 
-use Alma\API\ArrayUtils;
 use Alma\API\Endpoints\Results\Eligibility;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
+use Alma\API\Lib\ArrayUtils;
 use Alma\API\RequestError;
 
 class Payments extends Base
