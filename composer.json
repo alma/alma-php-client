@@ -26,9 +26,6 @@
     "psr-4": {
       "Alma\\API\\": "src/",
       "Alma\\API\\Tests\\": "tests/"
-    },
-    "files": [
-      "src/lib/array.php"
-    ]
+    }
   }
 }

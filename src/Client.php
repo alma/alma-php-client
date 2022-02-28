@@ -34,7 +34,7 @@ use Psr\Log\NullLogger;
 
 class Client implements LoggerAwareInterface
 {
-    const VERSION = '1.3.1';
+    const VERSION = '1.4.0';
 
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';

@@ -26,20 +26,14 @@
 namespace Alma\API\Lib;
 
 use Alma\API\Endpoints;
+use Alma\API\Client;
+use Alma\API\ParamsError;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class ClientOptionsValidator implements LoggerAwareInterface
+class ClientOptionsValidator
 {
-    const LIVE_MODE = 'live';
-    const TEST_MODE = 'test';
-
-    const LIVE_API_URL = 'https://api.getalma.eu';
-    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
-
-    public function __construct() {}
-
     /**
      * Alma client config validation.
      *
@@ -64,7 +58,7 @@ class ClientOptionsValidator implements LoggerAwareInterface
      *
      * @throws ParamsError
      */
-    public static function validateOptions(array $options = array()): array
+    public static function validateOptions(array $options = array())
     {
         $config = [
             'api_root' => [
@@ -98,51 +92,51 @@ class ClientOptionsValidator implements LoggerAwareInterface
         return $config;
     }
 
-    public static function validateApiRootOption(string|array $api_root): array
+    public static function validateApiRootOption($api_root)
     {
         if (is_string($api_root)) {
             return [
-                self::TEST_MODE => $api_root,
-                self::LIVE_MODE => $api_root
+                Client::TEST_MODE => $api_root,
+                Client::LIVE_MODE => $api_root
             ];
         }
-        if (isset($api_root[self::TEST_MODE]) && isset($api_root[self::LIVE_MODE])) {
+        if (isset($api_root[Client::TEST_MODE]) && isset($api_root[Client::LIVE_MODE])) {
             return [
-                self::TEST_MODE => $api_root[self::TEST_MODE],
-                self::LIVE_MODE => $api_root[self::LIVE_MODE]
+                Client::TEST_MODE => $api_root[Client::TEST_MODE],
+                Client::LIVE_MODE => $api_root[Client::LIVE_MODE]
             ];
         }
         throw new ParamsError('option \'api_root\' is not configured properly');
     }
 
-    public static function validateForceTLSOption(bool|int $force_tls)
+    public static function validateForceTLSOption($force_tls)
     {
         if ($force_tls === true || $force_tls === 2) {
             return 2;
         }
-        if (in_array($force_tls, [0, 1, false]) {
+        if (in_array($force_tls, [0, 1, false])) {
             return $force_tls;
         }
         throw new ParamsError('option \'force_tls\' is not configured properly');
     }
 
-    public static function validateModeOption(string $mode): string
+    public static function validateModeOption($mode)
     {
-        if (in_array($mode, [self::TEST_MODE, $mode === self::LIVE_MODE])) {
+        if (in_array($mode, [Client::TEST_MODE, $mode === Client::LIVE_MODE])) {
             return $mode;
         }
         throw new ParamsError('option \'mode\' is not configured properly');
     }
 
-    public static function validateLoggerOption($logger): Psr\Log\LoggerInterface
+    public static function validateLoggerOption($logger)
     {
-        if ($logger instanceof Psr\Log\LoggerInterface) {
+        if ($logger instanceof \Psr\Log\LoggerInterface) {
             return $logger;
         }
         throw new ParamsError('option \'logger\' is not configured properly');
     }
 
-    public static function validateUserAgentComponentOption(array $user_agent_components): array
+    public static function validateUserAgentComponentOption(array $user_agent_components)
     {
         if (is_array($user_agent_components) && count($user_agent_components) > 1) {
             return $user_agent_components;

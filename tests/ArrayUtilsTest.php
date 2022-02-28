@@ -2,7 +2,8 @@
 
 namespace Alma\API\Tests;
 
-use Alma\API\ArrayUtils;
+use Alma\API\Lib\ArrayUtils;
+use Alma\API\Lib\ClientOptionsValidator;
 use Alma\API\Client;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -21,7 +22,7 @@ class ArrayUtilsTest extends TestCase
      * Return options to test ArrayUtils::almaArrayMergeRecursive
      * @return array
      */
-    public function getTestOptions()
+    public function getClientOptions()
     {
         return [
             [
@@ -58,13 +59,16 @@ class ArrayUtilsTest extends TestCase
             ],
             [
                 [
-                    'api_root' => Client::TEST_MODE,
+                    'api_root' => self::FAKE_API_URI,
                     'force_tls' => true,
                     'logger' => new NullLogger()
                 ],
                 [
-                    'api_root' => Client::TEST_MODE,
-                    'force_tls' => true,
+                    'api_root' => [
+                        Client::TEST_MODE => self::FAKE_API_URI,
+                        Client::LIVE_MODE => self::FAKE_API_URI
+                    ],
+                    'force_tls' => 2,
                     'mode' => Client::LIVE_MODE,
                     'logger' => new NullLogger()
                 ]
@@ -73,19 +77,14 @@ class ArrayUtilsTest extends TestCase
     }
 
     /**
-     * @dataProvider getTestOptions
+     * @dataProvider getClientOptions
      * @return void
      */
-    public function testAlmaArrayMergeRecursive($options, $expectedResult)
+    public function testClientOptionsValidator($options, $expectedResult)
     {
-        $defaultOptions = array(
-            'api_root' => array(TEST_MODE => Client::SANDBOX_API_URL, LIVE_MODE => Client::LIVE_API_URL),
-            'force_tls' => 2,
-            'mode' => LIVE_MODE,
-            'logger' => new NullLogger(),
-        );
-        $mergedOptions = ArrayUtils::almaArrayMergeRecursive($defaultOptions, $options);
-        $this->assertEquals($expectedResult, $mergedOptions);
+        $validatedConfig = ClientOptionsValidator::validateOptions($options);
+
+        $this->assertEquals($expectedResult, $validatedConfig);
     }
 
     /**
