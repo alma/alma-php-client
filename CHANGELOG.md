@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.5.0
+-------
+
+* Add trigger payment in endpoint payment
+
 v1.4.0
 -------
 
