@@ -215,6 +215,24 @@ class Payments extends Base
     }
 
     /**
+     * @param string $id ID of the payment to be triggered
+     * 
+     * @return Payment
+     * @throws RequestError
+     */
+    public function trigger($id)
+    {
+        $req = $this->request(self::PAYMENTS_PATH . "/$id/trigger");
+
+        $res = $req->post();
+        if ($res->isError()) {
+            throw new RequestError($res->errorMessage, $req, $res);
+        }
+
+        return new Payment($res->json);
+    }
+
+    /**
      * Adds an Order to the given Payment, possibly overwriting existing orders
      *
      * @param string $id ID of the payment to which the order must be added
