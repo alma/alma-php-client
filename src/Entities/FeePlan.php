@@ -44,6 +44,9 @@ class FeePlan extends Base implements PaymentPlanInterface
     /** @var int Number of deferred days this fee plan applies to */
     public $deferred_days;
 
+    /** @var int Number of deferred trigger limit days this fee plan applies to */
+    public $deferred_trigger_limit_days;
+
     /** @var int Maximum purchase amount allowed for this fee plan */
     public $max_purchase_amount;
 
@@ -76,6 +79,11 @@ class FeePlan extends Base implements PaymentPlanInterface
     public function getDeferredMonths()
     {
         return $this->deferred_months;
+    }
+
+    public function getDeferredTriggerLimitDays()
+    {
+        return $this->deferred_trigger_limit_days;
     }
 
     public function getInstallmentsCount()
