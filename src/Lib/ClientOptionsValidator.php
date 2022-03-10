@@ -88,9 +88,9 @@ class ClientOptionsValidator
     }
 
     /**
-     * @param string[] $api_root
+     * @param string|string[] $api_root
      *
-     * @return string|string[]
+     * @return string[]
      * @throws ParamsError
      */
     public static function validateApiRootOption($api_root)
@@ -128,7 +128,7 @@ class ClientOptionsValidator
     }
 
     /**
-     * @param $mode
+     * @param string $mode
      *
      * @return string
      * @throws ParamsError
