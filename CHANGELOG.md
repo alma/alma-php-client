@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.6.0
+-------
+
+* Added configuration validation
+* Utils functions now moved into classes to respect php good practices
+* Added docker-compose to ease dev and local testing
+
 v1.5.0
 -------
 
@@ -32,7 +39,7 @@ v1.1.0
 
 * Add an option to depart from a legacy behaviour where the eligibility endpoint would not raise RequestErrors on 4xx
   and 5xx errors. The default is to keep the original behaviour so as not to break existing implementations.
-  New implementations should call the endpoint with a second argument set to `true` and try/catch RequestError 
+  New implementations should call the endpoint with a second argument set to `true` and try/catch RequestError
   exceptions to better handle error cases with eligibility:
   ```php
     try {
@@ -62,7 +69,7 @@ v1.0.13
 -------
 
 * Move `LIVE_MODE` & `TEST_MODE` constants into the `Client` class so that they're more easily addressable using
-  `Alma\API\Client::LIVE_MODE` & `Alma\API\Client::TEST_MODE` 
+  `Alma\API\Client::LIVE_MODE` & `Alma\API\Client::TEST_MODE`
 
 
 v1.0.12

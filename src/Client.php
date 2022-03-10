@@ -23,26 +23,16 @@
  *
  */
 
-// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-
 namespace Alma\API;
 
 use Alma\API\Endpoints;
+use Alma\API\Lib\ClientOptionsValidator;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-
-class ParamsError extends \Exception
-{
-}
-
-class DependenciesError extends \Exception
-{
-}
 
 class Client implements LoggerAwareInterface
 {
-    const VERSION = '1.3.1';
+    const VERSION = '1.6.0';
 
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';
@@ -105,20 +95,7 @@ class Client implements LoggerAwareInterface
             throw new ParamsError('An API key is required to instantiate new Alma\Client');
         }
 
-        $options = alma_array_merge_recursive(array(
-            'api_root' => array(TEST_MODE => self::SANDBOX_API_URL, LIVE_MODE => self::LIVE_API_URL),
-            'force_tls' => 2,
-            'mode' => LIVE_MODE,
-            'logger' => new NullLogger(),
-        ), $options);
-
-        if ($options['force_tls'] === true) {
-            $options['force_tls'] = 2;
-        }
-
-        if (is_string($options['api_root'])) {
-            $options['api_root'] = array(TEST_MODE => $options['api_root'], LIVE_MODE => $options['api_root']);
-        }
+        $options = ClientOptionsValidator::validateOptions($options);
 
         $this->context = new ClientContext($api_key, $options);
         $this->initUserAgent();

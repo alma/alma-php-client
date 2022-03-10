@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  test-php:
+    container_name: test-php
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
