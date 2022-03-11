@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.6.0
+v1.5.1
 -------
 
 * Added configuration validation
