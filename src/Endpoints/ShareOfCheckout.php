@@ -16,14 +16,10 @@ class ShareOfCheckout extends Base
      */
     public function share($data)
     {
-        $this->logger->info('----- In Share -----');
-
         $res = $this->request(self::SHARE_OF_CHECKOUT_PATH)->setRequestBody($data)->post();
-
         if ($res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
         }
-
         return $res->json;
     }
 
