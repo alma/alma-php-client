@@ -86,6 +86,15 @@ class Payment extends Base
     /** @var Refund[] List of refunds for that payment */
     public $refunds;
 
+    /** @var bool If is a payment with trigger or not */
+    public $deferred_trigger;
+
+    /** @var string Description given at payment creation */
+    public $deferred_trigger_description;
+
+    /** @var int|null Timestamp or NULL if not already applied */
+    public $deferred_trigger_applied;
+
     public function __construct($attributes)
     {
         // Manually process `payment_plan` to create Instalment instances
