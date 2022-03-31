@@ -7,7 +7,6 @@ use Alma\API\RequestError;
 class ShareOfCheckout extends Base
 {
     const SHARE_OF_CHECKOUT_PATH = '/v1/share-of-checkout';
-    const LAST_DATE_PATH = 'last-date';
 
 
     /**
@@ -17,7 +16,7 @@ class ShareOfCheckout extends Base
      */
     public function share($data)
     {
-        $res = $this->request(self::SHARE_OF_CHECKOUT_PATH)->setRequestBody($data)->post();
+        $res = $this->request(self::SHARE_OF_CHECKOUT_PATH)->setRequestBody($data)->put();
         if ($res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
         }
@@ -30,7 +29,7 @@ class ShareOfCheckout extends Base
      */
     public function getLastUpdateDate()
     {
-        $res = $this->request(self::SHARE_OF_CHECKOUT_PATH.'/'.self::LAST_DATE_PATH)->get();
+        $res = $this->request(self::SHARE_OF_CHECKOUT_PATH)->get();
         if ($res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
         }
