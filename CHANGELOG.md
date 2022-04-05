@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.6.0
+-------
+* Add payment upon trigger fields
+* Add payment customer field
+* Add payment billing address field
+
 v1.5.1
 -------
 
