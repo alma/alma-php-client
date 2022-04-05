@@ -87,6 +87,12 @@ class Payment extends Base
     /** @var Refund[] List of refunds for that payment */
     public $refunds;
 
+    /** @var array Customer representation */
+    public $customer;
+
+    /** @var array Billing address representation */
+    public $billing_address;
+
     /** @var bool If is a payment with trigger or not */
     public $deferred_trigger;
 
