@@ -69,8 +69,9 @@ class Payment extends Base
     /** @var int Number of months the payment was deferred for */
     public $deferred_months;
 
-    /** @var Instalment[] Array of installments, representing the payment plan for this payment. Might include more than
-     *                    $installments_count installments in some cases
+    /**
+     * @var Instalment[] Array of installments, representing the payment plan for this payment.
+     * Might include more than $installments_count installments in some cases.
      */
     public $payment_plan;
 
@@ -89,12 +90,15 @@ class Payment extends Base
     /** @var bool If is a payment with trigger or not */
     public $deferred_trigger;
 
-    /** @var string Description given at payment creation */
+    /** @var string|null Description given at payment creation */
     public $deferred_trigger_description;
 
     /** @var int|null Timestamp or NULL if not already applied */
     public $deferred_trigger_applied;
 
+    /**
+     * @param array $attributes
+     */
     public function __construct($attributes)
     {
         // Manually process `payment_plan` to create Instalment instances
