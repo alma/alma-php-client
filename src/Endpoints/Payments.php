@@ -196,15 +196,17 @@ class Payments extends Base
      *                          API will automatically compute the amount to refund, including possible customer fees
      * @param int $amount Amount that should be refunded, for a partial refund. Must be expressed as a cents
      *                          integer
+     * @param string $merchantReference Merchant reference for the refund to be executed
+     *
      * @return Payment
      * @throws RequestError
      */
-    public function refund($id, $totalRefund = true, $amount = null)
+    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "")
     {
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 
         if (!$totalRefund) {
-            $req->setRequestBody(array("amount" => $amount));
+            $req->setRequestBody(array("amount" => $amount, "merchant_reference" => $merchantReference));
         }
 
         $res = $req->post();
