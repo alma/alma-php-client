@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.7.0
+-------
+* Allow merchant reference on refund endpoint
+
 v1.6.0
 -------
 * Add payment upon trigger fields
