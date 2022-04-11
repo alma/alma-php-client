@@ -207,7 +207,7 @@ class Payments extends Base
         $requestBody = ["merchant_reference" => $merchantReference];
 
         if (!$totalRefund) {
-            $requestBody['amount'] = $amount;
+            $requestBody["amount"] = $amount;
         }
         $req->setRequestBody($requestBody);
 
