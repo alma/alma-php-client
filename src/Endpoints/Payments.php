@@ -204,10 +204,12 @@ class Payments extends Base
     public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "")
     {
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
+        $requestBody = ["merchant_reference" => $merchantReference];
 
         if (!$totalRefund) {
-            $req->setRequestBody(array("amount" => $amount, "merchant_reference" => $merchantReference));
+            $requestBody['amount'] = $amount;
         }
+        $req->setRequestBody($requestBody);
 
         $res = $req->post();
         if ($res->isError()) {
