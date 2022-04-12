@@ -23,42 +23,80 @@
  *
  */
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Payloads;
 
-use Alma\API\ClientContext;
-use Alma\API\Request;
-
-class Base
+class Refund
 {
-    /** @var ClientContext */
-    protected $clientContext;
-    protected $logger;
+    /* @param string */
+    private $id;
 
-    /**
-     * Base constructor.
-     * @param $client_context ClientContext
-     */
-    public function __construct($client_context)
-    {
-        $this->setClientContext($client_context);
-        $this->logger = $client_context->logger;
+    /* @param int */
+    private $amount = 0;
+
+    /* @param string */
+    private $merchantReference = '';
+
+    /* @param string */
+    private $comment = '';
+
+    public function __construct($id) {
+        $this->setId($id);
     }
 
     /**
-     * @param string $path
-     * @return Request
+     * @return string
      */
-    protected function request($path)
-    {
-        return Request::build($this->clientContext, $this->clientContext->urlFor($path));
+    public function getId() {
+        return $this->id;
     }
 
     /**
-     * @param ClientContext $clientContext
-     * @return Request
+     * @param string $id
      */
-    protected function setClientContext($clientContext)
-    {
-        $this->clientContext = $clientContext;
+    public function setId($id) {
+        $this->id = $id;
     }
+
+    /**
+     * @return int
+     */
+    public function getAmount() {
+        return $this->amount;
+    }
+
+    /**
+     * @param int $amount
+     */
+    public function setAmount($amount) {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantReference() {
+        return $this->merchantReference;
+    }
+
+    /**
+     * @param string $merchantReference
+     */
+    public function setMerchantReference($merchantReference) {
+        $this->merchantReference = $merchantReference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment() {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment) {
+        $this->comment = $comment;
+    }
+
 }
