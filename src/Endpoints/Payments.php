@@ -239,11 +239,7 @@ class Payments extends Base
         $id = $refundPayload->getId();
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 
-        $req->setRequestBody(array(
-            "amount" => $refundPayload->getAmount(),
-            "merchant_reference" => $refundPayload->getMerchantReference(),
-            "comment" => $refundPayload->getComment(),
-        ));
+        $req->setRequestBody($refundPayload->getRequestBody());
 
         $req->setRequestBody($body);
 
