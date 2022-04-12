@@ -99,4 +99,15 @@ class Refund
         $this->comment = $comment;
     }
 
+    public function getRequestBody() {
+        $requestBody = [
+            "merchant_reference" => $this->getMerchantReference(),
+            "comment" => $this->getComment(),
+        ];
+        if ($this->getAmount() > 0) {
+            $requestBody["amount"] = $this->getAmount();
+        }
+        return $requestBody;
+    }
+
 }
