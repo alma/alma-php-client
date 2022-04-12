@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v2.0.0
+-------
+* Splited `refund` endpoint into `partialRefund` and `fullRefund`
+
 v1.7.0
 -------
 * Allow merchant reference on refund endpoint
