@@ -205,9 +205,12 @@ class Payments extends Base
     {
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 
+        $body = array("merchant_reference" => $merchantReference);
         if (!$totalRefund) {
-            $req->setRequestBody(array("amount" => $amount, "merchant_reference" => $merchantReference));
+            $body["amount"] = $amount;
         }
+
+        $req->setRequestBody($body);
 
         $res = $req->post();
         if ($res->isError()) {
