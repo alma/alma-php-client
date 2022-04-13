@@ -20,7 +20,7 @@ composer:
 	docker exec -it -u www-data:www-data test-php /usr/bin/composer install
 
 test: composer ## Execute PHPUnit tests
-	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit'
+	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"'
 
 connect: ## Connect to test container
 	docker exec -it -u www-data:www-data test-php /bin/bash

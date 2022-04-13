@@ -113,4 +113,15 @@ class Refund
         return $requestBody;
     }
 
+    public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
+    {
+        $refundPayload = new self($id);
+        if ($amount !== 0) {
+            $refundPayload->setAmount($amount);
+        }
+        $refundPayload->setMerchantReference($merchantReference);
+        $refundPayload->setComment($comment);
+        return $refundPayload;
+    }
+
 }
