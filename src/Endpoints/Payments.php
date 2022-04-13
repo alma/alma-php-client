@@ -203,12 +203,9 @@ class Payments extends Base
      * @throws RequestError
      */
     public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
-        $refundPayload = new Refund($id);
-        $refundPayload->setAmount($amount);
-        $refundPayload->setMerchantReference($merchantReference);
-        $refundPayload->setComment($comment);
-
-        $this->refund($refundPayload);
+        $this->refund(
+            Refund::create($id, $amount, $merchantReference, $comment)
+        );
     }
 
     /**
@@ -221,11 +218,9 @@ class Payments extends Base
      * @throws RequestError
      */
     public function fullRefund($id, $merchantReference = "", $comment = "") {
-        $refundPayload = new Refund($id);
-        $refundPayload->setMerchantReference($merchantReference);
-        $refundPayload->setComment($comment);
-
-        $this->refund($refundPayload);
+        $this->refund(
+            Refund::create($id, 0, $merchantReference, $comment)
+        );
     }
 
     /**
