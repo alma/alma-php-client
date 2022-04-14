@@ -4,3 +4,5 @@
 .phpunit.result.cache
 dist/
 composer.lock
+
+phpunit.xml

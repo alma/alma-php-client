@@ -21,8 +21,8 @@
         </testsuite>
     </testsuites>
     <php>
-        <env name="ALMA_API_KEY" value="sk_test_1DNDPaxcvjDhR0A3063Xl75d"/>
-        <env name="ALMA_API_ROOT" value="https://api.sandbox.getalma.eu/"/>
+        <env name="ALMA_API_KEY" value="sk_test_xxxxxxxxxxxxxxxxxxxxxxxx"/>
+        <env name="ALMA_API_ROOT" value="alma.api.url.eu"/>
     </php>
 
 </phpunit>
