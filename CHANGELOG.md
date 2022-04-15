@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.7.1
+-------
+* Fix merchant reference only on partial refunds (#23)
+
 v1.7.0
 -------
 * Allow merchant reference on refund endpoint
