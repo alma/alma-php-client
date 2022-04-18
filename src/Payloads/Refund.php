@@ -49,6 +49,8 @@ class Refund
      * @param string $merchantReference a reference for the merchant
      * @param string $comment
      * @return Alma\API\Refund
+     *
+     * @throws ParamsError
      */
     public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
     {
