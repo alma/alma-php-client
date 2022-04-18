@@ -25,6 +25,8 @@
 
 namespace Alma\API\Payloads;
 
+use Alma\API\ParamsError;
+
 class Refund
 {
     /* @param string */
@@ -39,6 +41,37 @@ class Refund
     /* @param string */
     private $comment = '';
 
+    /**
+     * The Refund object create a payload to give to the refund endpoint
+     *
+     * @param string $id payment_id
+     * @param int $amount the amount to refund, 0 means all
+     * @param string $merchantReference a reference for the merchant
+     * @param string $comment
+     * @return Alma\API\Refund
+     */
+    public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
+    {
+        if ($id === '') {
+            throw new ParamsError('Payment Id can\'t be empty.');
+        }
+
+        if ($amount < 0) {
+            throw new ParamsError('You can\'t refund a negative amount.');
+        }
+
+        $refundPayload = new self($id);
+        if ($amount !== 0) {
+            $refundPayload->setAmount($amount);
+        }
+        $refundPayload->setMerchantReference($merchantReference);
+        $refundPayload->setComment($comment);
+        return $refundPayload;
+    }
+
+    /**
+     * @param string
+     */
     public function __construct($id) {
         $this->setId($id);
     }
@@ -112,16 +145,4 @@ class Refund
         }
         return $requestBody;
     }
-
-    public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
-    {
-        $refundPayload = new self($id);
-        if ($amount !== 0) {
-            $refundPayload->setAmount($amount);
-        }
-        $refundPayload->setMerchantReference($merchantReference);
-        $refundPayload->setComment($comment);
-        return $refundPayload;
-    }
-
 }

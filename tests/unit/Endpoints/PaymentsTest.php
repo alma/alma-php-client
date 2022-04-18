@@ -9,12 +9,16 @@ use Alma\API\Endpoints\Payments;
 use Alma\API\Lib\ClientOptionsValidator;
 use Alma\API\ClientContext;
 use Alma\API\Request;
+use Alma\API\ParamsError;
 
 /**
  * Class Payments
  */
 class PaymentsTest extends TestCase
 {
+    /**
+     * Ensure that the methods exists
+     */
     public function testRefundMethodExist()
     {
         $clientContext = [];
@@ -24,6 +28,10 @@ class PaymentsTest extends TestCase
         $this->assertEquals(true, method_exists($payments, 'fullRefund'));
     }
 
+    /**
+     * Mock ClientContext, Response and Request to allow us to test
+     * Payment without sending any requests
+     */
     private function mockServerRequest() {
         // ClientContext
         $clientContext = Mockery::mock(ClientContext::class);
@@ -39,42 +47,48 @@ class PaymentsTest extends TestCase
 
         // Request
         $requestMock = Mockery::mock(Request::class);
-        $requestMock->shouldReceive('setRequestBody')->once();
+        $requestMock->shouldReceive('setRequestBody');
         $requestMock->shouldReceive('post')->andReturn($responseMock);
         return $requestMock;
     }
 
-    public function testPartialRefund()
-    {
-        /* Input */
-        $id = 1;
-
-        // Payment
-        $payments = Mockery::mock(Payments::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial()
-        ;
-        $payments->shouldReceive('request')
-            ->with("/v1/payments/$id/refund")
-            ->once()
-            ->andReturn($this->mockServerRequest())
-        ;
-        $payments->setClientContext($clientContext);
-
-        /* Test */
-        $payments->partialRefund($id, 15000, 'merchant ref', 'some comment');
+    /**
+     * Return input to test testPartialRefund
+     * @return array[]
+     */
+    public function getPartialRefundData() {
+        return [
+            [[
+                'id' => "some_id",
+                'amount' => 15000,
+                'merchant_ref' => "merchant ref",
+                'comment' => "some comment"
+            ]],
+            [[
+                'id' => "some_id",
+                'amount' => 15000,
+                'merchant_ref' => "merchant ref"
+            ]],
+            [[
+                'id' => "some_id",
+                'amount' => 15000
+            ]]
+        ];
     }
 
-    public function testFullRefund()
+    /**
+     * Test the partialRefund method with valid datas
+     * @dataProvider getPartialRefundData
+     * @return void
+     */
+    public function testPartialRefund($data)
     {
-        /* Input */
-        $id = 2;
-
         // Payment
         $payments = Mockery::mock(Payments::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial()
         ;
+        $id = $data['id'];
         $payments->shouldReceive('request')
             ->with("/v1/payments/$id/refund")
             ->once()
@@ -83,7 +97,166 @@ class PaymentsTest extends TestCase
         $payments->setClientContext($clientContext);
 
         /* Test */
-        $payments->fullRefund($id, 'merchant ref', 'some comment');
+        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref'], $data['comment']);
+        } else if (isset($data['merchant_ref'])) {
+            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref']);
+        } else if (isset($data['comment'])) {
+            $payments->partialRefund($data['id'], $data['amount'], '', $data['comment']);
+        } else {
+            $payments->partialRefund($data['id'], $data['amount']);
+        }
+    }
+
+    /**
+     * Return invalid input to test testPartialRefund
+     * @return array[]
+     */
+    public function getPartialRefundInvalidData() {
+        return [
+            [[
+                'id' => "negative_amount",
+                'amount' => -1
+            ], ParamsError::class],
+            [[
+                'id' => "",
+                'amount' => 1500,
+                'merchant_ref' => "no id",
+            ], ParamsError::class],
+        ];
+    }
+
+    /**
+     * Test the partialRefund method with valid datas
+     * @dataProvider getPartialRefundInvalidData
+     * @return void
+     */
+    public function testInvalidPartialRefund($data, $expectedException)
+    {
+        // Payment
+        $payments = Mockery::mock(Payments::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial()
+        ;
+        $id = $data['id'];
+        $payments->shouldReceive('request')
+            ->with("/v1/payments/$id/refund")
+            ->andReturn($this->mockServerRequest())
+        ;
+        $payments->setClientContext($clientContext);
+
+        $this->expectException($expectedException);
+
+        /* Test */
+        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref'], $data['comment']);
+        } else if (isset($data['merchant_ref'])) {
+            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref']);
+        } else if (isset($data['comment'])) {
+            $payments->partialRefund($data['id'], $data['amount'], '', $data['comment']);
+        } else {
+            $payments->partialRefund($data['id'], $data['amount']);
+        }
+    }
+
+
+    /**
+     * Return input to test testFullRefund
+     * @return array[]
+     */
+    public function getFullRefundData() {
+        return [
+            [[
+                'id' => "some_id",
+                'merchant_ref' => "merchant ref",
+                'comment' => "some comment"
+            ]],
+            [[
+                'id' => "some_id",
+                'merchant_ref' => "merchant ref"
+            ]],
+            [[
+                'id' => "some_id",
+            ]]
+        ];
+    }
+
+    /**
+     * Test the fullRefund method with valid datas
+     * @dataProvider getPartialRefundData
+     * @return void
+     */
+    public function testFullRefund($data)
+    {
+        // Payment
+        $payments = Mockery::mock(Payments::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial()
+        ;
+        $id = $data['id'];
+        $payments->shouldReceive('request')
+            ->with("/v1/payments/$id/refund")
+            ->once()
+            ->andReturn($this->mockServerRequest())
+        ;
+        $payments->setClientContext($clientContext);
+
+        /* Test */
+        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+            $payments->fullRefund($data['id'], $data['merchant_ref'], $data['comment']);
+        } else if (isset($data['merchant_ref'])) {
+            $payments->fullRefund($data['id'], $data['merchant_ref']);
+        } else if (isset($data['comment'])) {
+            $payments->fullRefund($data['id'], '', $data['comment']);
+        } else {
+            $payments->fullRefund($data['id']);
+        }
+    }
+
+    /**
+     * Return invalid input to test testFullRefund
+     * @return array[]
+     */
+    public function getFullRefundInvalidData() {
+        return [
+            [[
+                'id' => "",
+                'merchant_ref' => "no id",
+            ], ParamsError::class],
+        ];
+    }
+
+    /**
+     * Test the fullRefund method with valid datas
+     * @dataProvider getFullRefundInvalidData
+     * @return void
+     */
+    public function testInvalidFullRefund($data, $expectedException)
+    {
+        // Payment
+        $payments = Mockery::mock(Payments::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial()
+        ;
+        $id = $data['id'];
+        $payments->shouldReceive('request')
+            ->with("/v1/payments/$id/refund")
+            ->andReturn($this->mockServerRequest())
+        ;
+        $payments->setClientContext($clientContext);
+
+        $this->expectException($expectedException);
+
+        /* Test */
+        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+            $payments->fullRefund($data['id'], $data['merchant_ref'], $data['comment']);
+        } else if (isset($data['merchant_ref'])) {
+            $payments->fullRefund($data['id'], $data['merchant_ref']);
+        } else if (isset($data['comment'])) {
+            $payments->fullRefund($data['id'], '', $data['comment']);
+        } else {
+            $payments->fullRefund($data['id']);
+        }
     }
 
     public function tearDown()
