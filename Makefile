@@ -30,3 +30,6 @@ test-all: composer ## Execute All PHPUnit tests
 
 connect: ## Connect to test container
 	docker exec -it -u www-data:www-data test-php /bin/bash
+
+lint: ## lint the php code
+	docker exec -it -u www-data test-php sh -c './vendor/bin/phpcbf src'

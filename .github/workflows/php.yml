@@ -1,0 +1,32 @@
+name: PHP Lint
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master, feat/v2-0-0]
+  workflow_dispatch: ~
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./src
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Lint source code
+        run: composer phpcs
