@@ -77,6 +77,18 @@ class PaymentsTest extends TestCase
         ];
     }
 
+    private function callPartialRefund($payments, $data) {
+        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref'], $data['comment']);
+        } else if (isset($data['merchant_ref'])) {
+            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref']);
+        } else if (isset($data['comment'])) {
+            $payments->partialRefund($data['id'], $data['amount'], '', $data['comment']);
+        } else {
+            $payments->partialRefund($data['id'], $data['amount']);
+        }
+    }
+
     /**
      * Test the partialRefund method with valid datas
      * @dataProvider getPartialRefundData
@@ -98,15 +110,7 @@ class PaymentsTest extends TestCase
         $payments->setClientContext($clientContext);
 
         /* Test */
-        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
-            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref'], $data['comment']);
-        } else if (isset($data['merchant_ref'])) {
-            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref']);
-        } else if (isset($data['comment'])) {
-            $payments->partialRefund($data['id'], $data['amount'], '', $data['comment']);
-        } else {
-            $payments->partialRefund($data['id'], $data['amount']);
-        }
+        $this->callPartialRefund($payments, $data);
     }
 
     /**
@@ -149,17 +153,21 @@ class PaymentsTest extends TestCase
         $this->expectException($expectedException);
 
         /* Test */
-        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
-            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref'], $data['comment']);
-        } else if (isset($data['merchant_ref'])) {
-            $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref']);
-        } else if (isset($data['comment'])) {
-            $payments->partialRefund($data['id'], $data['amount'], '', $data['comment']);
-        } else {
-            $payments->partialRefund($data['id'], $data['amount']);
-        }
+        $this->callPartialRefund($payments, $data);
     }
 
+
+    private function callFullRefund($payments, $data) {
+        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+            $payments->fullRefund($data['id'], $data['merchant_ref'], $data['comment']);
+        } else if (isset($data['merchant_ref'])) {
+            $payments->fullRefund($data['id'], $data['merchant_ref']);
+        } else if (isset($data['comment'])) {
+            $payments->fullRefund($data['id'], '', $data['comment']);
+        } else {
+            $payments->fullRefund($data['id']);
+        }
+    }
 
     /**
      * Return input to test testFullRefund
@@ -203,15 +211,7 @@ class PaymentsTest extends TestCase
         $payments->setClientContext($clientContext);
 
         /* Test */
-        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
-            $payments->fullRefund($data['id'], $data['merchant_ref'], $data['comment']);
-        } else if (isset($data['merchant_ref'])) {
-            $payments->fullRefund($data['id'], $data['merchant_ref']);
-        } else if (isset($data['comment'])) {
-            $payments->fullRefund($data['id'], '', $data['comment']);
-        } else {
-            $payments->fullRefund($data['id']);
-        }
+        $this->callFullRefund($payments, $data);
     }
 
     /**
@@ -249,15 +249,7 @@ class PaymentsTest extends TestCase
         $this->expectException($expectedException);
 
         /* Test */
-        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
-            $payments->fullRefund($data['id'], $data['merchant_ref'], $data['comment']);
-        } else if (isset($data['merchant_ref'])) {
-            $payments->fullRefund($data['id'], $data['merchant_ref']);
-        } else if (isset($data['comment'])) {
-            $payments->fullRefund($data['id'], '', $data['comment']);
-        } else {
-            $payments->fullRefund($data['id']);
-        }
+        $this->callFullRefund($payments, $data);
     }
 
     /**
