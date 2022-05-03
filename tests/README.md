@@ -6,20 +6,22 @@ and to fill in `ALMA_API_KEY` and `ALMA_API_ROOT`
 
 ---------------------
 
+before launching the test, up the container :
+```
+make up
+```
+
 to launch unit test :
 ```
-make up # only to launch once
 make test
 ```
 
 to launch integration test :
 ```
-make up # only to launch once
 make integration-test
 ```
 
 to launch integration and unit test :
 ```
-make up # only to launch once
 make test-all
 ```
