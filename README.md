@@ -1,11 +1,11 @@
 Alma PHP API client
 =====================
 
-This is the official PHP API client for [Alma](https://getalma.eu).  
+This is the official PHP API client for [Alma](https://getalma.eu).
 
-This PHP API Client is being used in production on thousands of e-commerce websites and provides the necessary 
-endpoints to build a full-fledge integration.  
-It does not, however, implement the full Alma API as [documented here](https://api.getalma.eu/docs) yet.  
+This PHP API Client is being used in production on thousands of e-commerce websites and provides the necessary
+endpoints to build a full-fledge integration.
+It does not, however, implement the full Alma API as [documented here](https://api.getalma.eu/docs) yet.
 If you find yourself needing to use some endpoints that are not yet implemented, feel free to reach out! (or even better, submit a PR :))
 
 Installation
@@ -25,7 +25,7 @@ composer require alma/alma-php-client
 
 * Head over to the [releases](https://github.com/alma/alma-php-client/releases) and grab the `alma-php-client.zip` file of
 the latest published library version.
-* Unzip the library into your vendors directory. 
+* Unzip the library into your vendors directory.
 * Require the included Composer's autoload file:
 
 ```php
@@ -133,7 +133,7 @@ function formatPercent(int $amount) {
 foreach($eligibilities as $eligibility) {
     // display following payment plan (or not eligible message) on feePlan selection using javascript.
     printf('<div id="table-%s">', $eligibility->getPlanKey());
-    if ($eligibility->isEligible()) {
+    if (!$eligibility->isEligible()) {
         echo "This fee plan is not eligible!";
         echo "</div>";
         continue;
@@ -174,7 +174,7 @@ $payment = $alma->payments->createPayment(
         'payment'  =>
             [
                 'return_url'         => '<where_the_customer_will_be_redirect_after_alma_checkout>',
-                'ipn_callback_url'   => '<your_ipn_callback_url>'
+                'ipn_callback_url'   => '<your_ipn_callback_url>',
                 'purchase_amount'    => 150000,
                 'installments_count' => 4,
                 'custom_data'        =>
@@ -268,4 +268,4 @@ switch($payment->state) {
 License
 -------
 
-Alma PHP Client is distributed under [the MIT license](LICENSE). 
+Alma PHP Client is distributed under [the MIT license](LICENSE).
