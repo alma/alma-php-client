@@ -203,7 +203,7 @@ class Payments extends Base
      * @throws RequestError
      */
     public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
-        $this->refund(
+        return $this->_refund(
             Refund::create($id, $amount, $merchantReference, $comment)
         );
     }
@@ -218,7 +218,7 @@ class Payments extends Base
      * @throws RequestError
      */
     public function fullRefund($id, $merchantReference = "", $comment = "") {
-        $this->refund(
+        return $this->_refund(
             Refund::create($id, 0, $merchantReference, $comment)
         );
     }
@@ -230,7 +230,7 @@ class Payments extends Base
      * @return Payment
      * @throws RequestError
      */
-    private function refund(Refund $refundPayload) {
+    private function _refund(Refund $refundPayload) {
         $id = $refundPayload->getId();
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 
@@ -244,6 +244,25 @@ class Payments extends Base
         }
 
         return new Payment($res->json);
+    }
+
+    /**
+     * @deprecated please use `partialRefund` or `fullRefund`
+     * @param string $id ID of the payment to be refunded
+     * @param bool $totalRefund Should the payment be completely refunded? In this case, $amount is not required as the
+     *                          API will automatically compute the amount to refund, including possible customer fees
+     * @param int $amount Amount that should be refunded, for a partial refund. Must be expressed as a cents
+     *                          integer
+     * @param string $merchantReference Merchant reference for the refund to be executed
+     *
+     * @return Payment
+     * @throws RequestError
+     */
+    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "") {
+        if ($totalRefund !== true) {
+            return $this->partialRefund($id, $amount, $merchantReference);
+        }
+        return $this->fullRefund($id, $merchantReference);
     }
 
     /**

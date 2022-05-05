@@ -1,10 +1,11 @@
 CHANGELOG
 =========
 
-
-v2.0.0
+v1.8.0
 -------
 * Splited `refund` endpoint into `partialRefund` and `fullRefund`
+* Added github CI for lint and unit tests purposes
+* Added unit-tests
 
 v1.7.1
 -------

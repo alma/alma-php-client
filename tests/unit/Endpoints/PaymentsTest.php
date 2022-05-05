@@ -192,7 +192,7 @@ class PaymentsTest extends TestCase
 
     /**
      * Test the fullRefund method with valid datas
-     * @dataProvider getPartialRefundData
+     * @dataProvider getFullRefundData
      * @return void
      */
     public function testFullRefund($data)
@@ -212,6 +212,62 @@ class PaymentsTest extends TestCase
 
         /* Test */
         $this->callFullRefund($payments, $data);
+    }
+
+    /**
+     * Return input to test testRefund
+     * @return array[]
+     */
+    public function getRefundData() {
+        return [
+            [[
+                'id' => "some_id",
+                'amount' => 15000,
+                'merchant_ref' => "merchant ref",
+            ]],
+            [[
+                'id' => "some_id",
+            ]],
+            [[
+                'id' => "some_id",
+                'amount' => 15000
+            ]]
+        ];
+    }
+
+    private function callRefund($payments, $data) {
+        if (isset($data['merchant_ref']) && isset($data['amount'])) {
+            $payments->refund($data['id'], $data['amount'], $data['merchant_ref']);
+        } else if (isset($data['amount'])){
+            $payments->refund($data['id'], $data['amount']);
+        } else {
+            $payments->refund($data['id']);
+        }
+    }
+
+    /**
+     * Test the fullRefund method with valid datas
+     * Important to ensure we didn't break compatibility with 1.x.x versions
+     * @dataProvider getRefundData
+     * @return void
+     */
+    public function testRefund($data)
+    {
+        // Payment
+        $payments = Mockery::mock(Payments::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial()
+        ;
+        $id = $data['id'];
+        $payments->shouldReceive('request')
+            ->with("/v1/payments/$id/refund")
+            ->once()
+            ->andReturn($this->mockServerRequest())
+        ;
+        $payments->setClientContext($clientContext);
+
+        /* Test */
+        $this->callRefund($payments, $data);
     }
 
     /**
