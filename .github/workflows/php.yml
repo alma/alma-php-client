@@ -22,11 +22,11 @@ jobs:
         with:
           php-version: 5.6
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        uses: php-actions/composer@master
+        with:
+          php-version: 5.6
+          version: 1
 
       - name: Lint source code
         run: composer phpcs
