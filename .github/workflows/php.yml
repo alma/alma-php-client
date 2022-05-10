@@ -29,5 +29,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Lint source code
-        run: composer phpcs
+      # - name: Ensure source code is linted
+      #   run: ./vendor/bin/phpcs src
+
+      - name: Ensure unit test are green
+        run: ./vendor/bin/phpunit ./tests/unit/
