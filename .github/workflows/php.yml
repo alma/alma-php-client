@@ -21,12 +21,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 5.6
+          tools: composer:v1
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
       - name: Install dependencies
-        uses: php-actions/composer@master
-        with:
-          php-version: 5.6
-          version: 1
+        run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Lint source code
         run: composer phpcs
