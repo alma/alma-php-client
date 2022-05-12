@@ -20,22 +20,29 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Entities;
 
 class Order extends Base
 {
-    /** @var string ID of the Payment owning this Order */
+    /**
+     * @var string ID of the Payment owning this Order 
+     */
     public $payment;
 
-    /** @var string Order reference from the merchant's platform */
+    /**
+     * @var string Order reference from the merchant's platform 
+     */
     public $merchant_reference;
 
-    /** @var string URL to the merchant's backoffice for that Order */
+    /**
+     * @var string URL to the merchant's backoffice for that Order 
+     */
     public $merchant_url;
 
-    /** @var array Free-form custom data */
+    /**
+     * @var array Free-form custom data 
+     */
     public $data;
 }

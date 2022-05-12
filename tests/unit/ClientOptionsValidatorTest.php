@@ -13,11 +13,14 @@ use Alma\API\ParamsError;
  */
 class ClientOptionsValidatorTest extends TestCase
 {
-    /** @var string  */
+    /**
+ * @var string  
+*/
     const FAKE_API_URI = 'https://fake-api.getalma.eu';
 
     /**
      * Return options to test ClientOptionsValidator::validateOptions
+     *
      * @return array
      */
     public function getClientOptions()
@@ -97,8 +100,8 @@ class ClientOptionsValidatorTest extends TestCase
 
     /**
      * @dataProvider getClientOptions
-     * @return void
-     * @throws ParamsError
+     * @return       void
+     * @throws       ParamsError
      */
     public function testClientOptionsValidator($options, $expectedResult)
     {
@@ -109,6 +112,7 @@ class ClientOptionsValidatorTest extends TestCase
 
     /**
      * Return faulty options to test ClientOptionsValidator::validateOptions
+     *
      * @return array
      */
     public function getInvalidClientOptions()
@@ -144,8 +148,8 @@ class ClientOptionsValidatorTest extends TestCase
 
     /**
      * @dataProvider getInvalidClientOptions
-     * @return void
-     * @throws ParamsError
+     * @return       void
+     * @throws       ParamsError
      */
     public function testFaultyClientOptionsValidator($options)
     {

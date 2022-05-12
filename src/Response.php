@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API;

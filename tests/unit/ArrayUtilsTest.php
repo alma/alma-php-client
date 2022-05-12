@@ -12,6 +12,7 @@ class ArrayUtilsTest extends TestCase
 {
     /**
      * Return options to test ArrayUtils::isAssocArray
+     *
      * @return array[]
      */
     public function getTestArrays()
@@ -26,7 +27,7 @@ class ArrayUtilsTest extends TestCase
 
     /**
      * @dataProvider getTestArrays
-     * @return void
+     * @return       void
      */
     public function testIsAssocArray($testArray, $expectedResult)
     {

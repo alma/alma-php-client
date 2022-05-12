@@ -20,19 +20,24 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Entities;
 
 class Refund extends Base
 {
-  /** @var int UNIX timestamp for the creation of the refund */
-  public $created;
+    /**
+     * @var int UNIX timestamp for the creation of the refund 
+     */
+    public $created;
 
-  /** @var int Refunded amount, in cents */
-  public $amount;
+    /**
+     * @var int Refunded amount, in cents 
+     */
+    public $amount;
 
-  /** @var string Reference for that refund, provided by the merchant */
-  public $merchant_reference;
+    /**
+     * @var string Reference for that refund, provided by the merchant 
+     */
+    public $merchant_reference;
 }

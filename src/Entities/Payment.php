@@ -20,17 +20,19 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Entities;
 
 class Payment extends Base
 {
-    /** @var string Payment is ongoing */
+    /**
+ * @var string Payment is ongoing 
+*/
     const STATE_IN_PROGRESS = 'in_progress';
 
-    /** @var string Payment has been fully paid, either at once after being scored negatively, or after all installments
+    /**
+ * @var string Payment has been fully paid, either at once after being scored negatively, or after all installments
      *              have been paid for. Note that by extension, a payment that has no amount due left after partial or
      *              total refunds will be considered PAID as well.
      */
@@ -39,34 +41,54 @@ class Payment extends Base
     const FRAUD_AMOUNT_MISMATCH = 'amount_mismatch';
     const FRAUD_STATE_ERROR = 'state_error';
 
-    /** @var int Creation UNIX timestamp */
+    /**
+     * @var int Creation UNIX timestamp 
+     */
     public $created;
 
-    /** @var string URL of that payment's page to which the customer should be redirected */
+    /**
+     * @var string URL of that payment's page to which the customer should be redirected 
+     */
     public $url;
 
-    /** @var string State of the payment (see above STATE_PAID / STATE_IN_PROGRESS / ...) */
+    /**
+     * @var string State of the payment (see above STATE_PAID / STATE_IN_PROGRESS / ...) 
+     */
     public $state;
 
-    /** @var int Purchase amount, in cents */
+    /**
+     * @var int Purchase amount, in cents 
+     */
     public $purchase_amount;
 
-    /** @var int Fees to be paid by the customer, in cents */
+    /**
+     * @var int Fees to be paid by the customer, in cents 
+     */
     public $customer_fee;
 
-    /** @var int Interests to be paid by the customer, in cents */
+    /**
+     * @var int Interests to be paid by the customer, in cents 
+     */
     public $customer_interest;
 
-    /** @var int Fees paid by the merchant, in cents */
+    /**
+     * @var int Fees paid by the merchant, in cents 
+     */
     public $merchant_target_fee;
 
-    /** @var int Number of installments for this payment */
+    /**
+     * @var int Number of installments for this payment 
+     */
     public $installments_count;
 
-    /** @var int Number of days the payment was deferred for */
+    /**
+     * @var int Number of days the payment was deferred for 
+     */
     public $deferred_days;
 
-    /** @var int Number of months the payment was deferred for */
+    /**
+     * @var int Number of months the payment was deferred for 
+     */
     public $deferred_months;
 
     /**
@@ -75,31 +97,49 @@ class Payment extends Base
      */
     public $payment_plan;
 
-    /** @var string URL the customer is sent back to once the payment is complete */
+    /**
+     * @var string URL the customer is sent back to once the payment is complete 
+     */
     public $return_url;
 
-    /** @var array Custom data provided at creation time */
+    /**
+     * @var array Custom data provided at creation time 
+     */
     public $custom_data;
 
-    /** @var Order[] List of orders associated to that payment */
+    /**
+     * @var Order[] List of orders associated to that payment 
+     */
     public $orders;
 
-    /** @var Refund[] List of refunds for that payment */
+    /**
+     * @var Refund[] List of refunds for that payment 
+     */
     public $refunds;
 
-    /** @var array Customer representation */
+    /**
+     * @var array Customer representation 
+     */
     public $customer;
 
-    /** @var array Billing address representation */
+    /**
+     * @var array Billing address representation 
+     */
     public $billing_address;
 
-    /** @var bool If is a payment with trigger or not */
+    /**
+     * @var bool If is a payment with trigger or not 
+     */
     public $deferred_trigger;
 
-    /** @var string|null Description given at payment creation */
+    /**
+     * @var string|null Description given at payment creation 
+     */
     public $deferred_trigger_description;
 
-    /** @var int|null Timestamp or NULL if not already applied */
+    /**
+     * @var int|null Timestamp or NULL if not already applied 
+     */
     public $deferred_trigger_applied;
 
     /**

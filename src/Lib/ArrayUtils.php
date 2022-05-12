@@ -21,22 +21,23 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Lib;
 
 /**
  * Class ArrayUtils
+ *
  * @package Alma\API
  */
 class ArrayUtils
 {
     /**
-     * @param $array
+     * @param  $array
      * @return bool
      */
-    public static function isAssocArray($array) {
+    public static function isAssocArray($array)
+    {
         if (!is_array($array)) {
             return false;
         }

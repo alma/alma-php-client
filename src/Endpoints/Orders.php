@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Endpoints;
@@ -35,7 +34,7 @@ class Orders extends Base
 
     /**
      * @param string $orderId
-     * @param array $orderData
+     * @param array  $orderData
      *
      * @return Order
      * @throws RequestError
@@ -47,9 +46,9 @@ class Orders extends Base
     }
 
     /**
-     * @param int $limit
+     * @param int         $limit
      * @param string|null $startingAfter
-     * @param array $filters
+     * @param array       $filters
      *
      * @return PaginatedResults
      * @throws RequestError
@@ -74,7 +73,7 @@ class Orders extends Base
         return new PaginatedResults(
             $response,
             self::class,
-            function($startingAfter) use ($limit, $filters) {
+            function ($startingAfter) use ($limit, $filters) {
                 return $this->fetchAll($limit, $startingAfter, $filters);
             }
         );

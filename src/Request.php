@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API;
@@ -70,8 +69,8 @@ class Request
     private $hasData;
 
     /**
-     * @param $context ClientContext    The current client context
-     * @param $url     string           The URL to build a request for
+     * @param  $context ClientContext    The current client context
+     * @param  $url     string           The URL to build a request for
      * @return Request
      */
     public static function build($context, $url)
@@ -83,7 +82,7 @@ class Request
      * HTTP request constructor.
      *
      * @param $context ClientContext    The current client context
-     * @param $url  string  The URL to build a request for
+     * @param $url     string  The URL to build a request for
      */
     public function __construct($context, $url)
     {
@@ -110,11 +109,11 @@ class Request
         if ($forced_tls = $this->context->forcedTLSVersion()) {
             $tls_version = CURL_SSLVERSION_TLSv1_2;
             switch ($forced_tls) {
-                case 0:
-                    $tls_version = CURL_SSLVERSION_TLSv1_0;
-                    break;
-                case 1:
-                    $tls_version = CURL_SSLVERSION_TLSv1_1;
+            case 0:
+                $tls_version = CURL_SSLVERSION_TLSv1_0;
+                break;
+            case 1:
+                $tls_version = CURL_SSLVERSION_TLSv1_1;
             }
 
             curl_setopt($this->curlHandle, CURLOPT_SSLVERSION, $tls_version);
@@ -214,11 +213,13 @@ class Request
      */
     public function get()
     {
-        curl_setopt_array($this->curlHandle, array(
+        curl_setopt_array(
+            $this->curlHandle, array(
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_POST => false,
             CURLOPT_HTTPGET => true,
-        ));
+            )
+        );
 
         return $this->exec();
     }
@@ -234,11 +235,13 @@ class Request
             $this->setRequestBody(null);
         }
 
-        curl_setopt_array($this->curlHandle, array(
+        curl_setopt_array(
+            $this->curlHandle, array(
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_HTTPGET => false,
             CURLOPT_POST => true,
-        ));
+            )
+        );
 
         return $this->exec();
     }
@@ -254,11 +257,13 @@ class Request
             $this->setRequestBody(null);
         }
 
-        curl_setopt_array($this->curlHandle, array(
+        curl_setopt_array(
+            $this->curlHandle, array(
             CURLOPT_CUSTOMREQUEST => 'PUT',
             CURLOPT_HTTPGET => false,
             CURLOPT_POST => true,
-        ));
+            )
+        );
 
         return $this->exec();
     }
@@ -271,11 +276,13 @@ class Request
     {
         $this->setRequestBody(null);
 
-        curl_setopt_array($this->curlHandle, array(
+        curl_setopt_array(
+            $this->curlHandle, array(
             CURLOPT_CUSTOMREQUEST => 'DELETE',
             CURLOPT_HTTPGET => false,
             CURLOPT_POST => false,
-        ));
+            )
+        );
 
         return $this->exec();
     }

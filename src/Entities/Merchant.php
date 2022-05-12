@@ -20,27 +20,42 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Entities;
 
 class Merchant extends Base
 {
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $name;
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $website;
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $state;
-    /** @var bool */
+    /**
+     * @var bool 
+     */
     public $manually_reviewed;
-    /** @var bool */
+    /**
+     * @var bool 
+     */
     public $can_create_payments;
-    /** @var int */
+    /**
+     * @var int 
+     */
     public $minimum_purchase_amount;
-    /** @var int */
+    /**
+     * @var int 
+     */
     public $maximum_purchase_amount;
-    /** @var array */
+    /**
+     * @var array 
+     */
     public $fee_plans;
 }

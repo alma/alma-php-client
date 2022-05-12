@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Endpoints;
@@ -30,12 +29,15 @@ use Alma\API\Request;
 
 class Base
 {
-    /** @var ClientContext */
+    /**
+     * @var ClientContext 
+     */
     protected $clientContext;
     protected $logger;
 
     /**
      * Base constructor.
+     *
      * @param $client_context ClientContext
      */
     public function __construct($client_context)
@@ -45,7 +47,7 @@ class Base
     }
 
     /**
-     * @param string $path
+     * @param  string $path
      * @return Request
      */
     protected function request($path)
@@ -54,7 +56,7 @@ class Base
     }
 
     /**
-     * @param ClientContext $clientContext
+     * @param  ClientContext $clientContext
      * @return Request
      */
     protected function setClientContext($clientContext)

@@ -33,8 +33,8 @@ class Webhooks extends Base
     const WEBHOOKS_PATH = '/v1/webhooks';
 
     /**
-     * @param string $type  The webhook type, see available constants in Alma\API\Entities\Webhook
-     * @param string $url   The URL to be called for that webhook
+     * @param string $type The webhook type, see available constants in Alma\API\Entities\Webhook
+     * @param string $url  The URL to be called for that webhook
      *
      * @return Webhook
      * @throws RequestError

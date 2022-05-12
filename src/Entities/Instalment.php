@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Entities;
@@ -33,24 +32,38 @@ class Instalment extends Base
     const STATE_CLAIMED = "claimed";
     const STATE_COVERED = "covered";
 
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $state;
 
-    /** @var int */
+    /**
+     * @var int 
+     */
     public $purchase_amount;
 
-    /** @var int */
+    /**
+     * @var int 
+     */
     public $original_purchase_amount;
 
-    /** @var int */
+    /**
+     * @var int 
+     */
     public $due_date;
 
-    /** @var int */
+    /**
+     * @var int 
+     */
     public $customer_fee;
 
-	/** @var int */
+    /**
+     * @var int 
+     */
     public $customer_interest;
 
-	/** @var int */
+    /**
+     * @var int 
+     */
     public $total_amount;
 }

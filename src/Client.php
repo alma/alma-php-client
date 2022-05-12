@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API;
@@ -42,7 +41,9 @@ class Client implements LoggerAwareInterface
 
     protected $context;
 
-    /***** API ENDPOINTS *****/
+    /*****
+     * API ENDPOINTS 
+     *****/
     /**
      * @var Endpoints\Payments
      */
@@ -68,7 +69,6 @@ class Client implements LoggerAwareInterface
      * Alma client initialization.
      *
      * @param string $api_key a valid API key for the service
-     *
      *
      * @param $options
      *              - api_root  string|array[$mode => string]   API root URL to use. If you need different URLs for the
@@ -102,7 +102,8 @@ class Client implements LoggerAwareInterface
         $this->initEndpoints();
     }
 
-    public function addUserAgentComponent($component, $version) {
+    public function addUserAgentComponent($component, $version)
+    {
         $this->context->addUserAgentComponent($component, $version);
     }
 

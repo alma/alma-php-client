@@ -30,19 +30,23 @@ class Webhook extends Base
 {
     const TYPE_INTEGRATION_CAPABILITIES = "integration_capabilities";
 
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $type;
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $url;
 
     /**
      * Verifies that the provided signature is valid for the given params and secret.
      *
      * @param string $signature The signature to validate
-     * @param array $params An associative array of the webhook parameters provided in the HTTP call (all except `signature`)
-     * @param string $secret The secret to use for signing
-     * @param bool $urlEncode Whether params values should be url-encoded. Defaults to true, set to false if your values
-     *             are already url-encoded
+     * @param array  $params    An associative array of the webhook parameters provided in the HTTP call (all except `signature`)
+     * @param string $secret    The secret to use for signing
+     * @param bool   $urlEncode Whether params values should be url-encoded. Defaults to true, set to false if your values
+     *                          are already url-encoded
      *
      * @return bool Whether the signature is valid or not
      */

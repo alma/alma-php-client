@@ -12,11 +12,14 @@ use Psr\Log\NullLogger;
  */
 class ClientContextTest extends TestCase
 {
-    /** @var string  */
+    /**
+ * @var string  
+*/
     const FAKE_API_URI = 'https://fake-api.getalma.eu';
 
     /**
      * Return faulty options to test ClientOptionsValidator::validateOptions
+     *
      * @return array
      */
     public function getClientconfigOptions()
@@ -46,8 +49,8 @@ class ClientContextTest extends TestCase
 
     /**
      * @dataProvider getClientconfigOptions
-     * @return void
-     * @throws ParamsError
+     * @return       void
+     * @throws       ParamsError
      */
     public function testClientContext($options)
     {

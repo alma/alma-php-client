@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API;
@@ -31,16 +30,24 @@ use Psr\Log\NullLogger;
 
 class ClientContext implements LoggerAwareInterface
 {
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $apiKey;
 
-    /** @var LoggerInterface  */
+    /**
+     * @var LoggerInterface  
+     */
     public $logger;
 
-    /** @var array */
+    /**
+     * @var array 
+     */
     private $options;
 
-    /** @var array */
+    /**
+     * @var array 
+     */
     private $userAgentComponents;
 
     public function __construct($apiKey, $options)
@@ -61,7 +68,7 @@ class ClientContext implements LoggerAwareInterface
     /**
      * Returns the full API endpoint URL for the given path, depending on the current mode (live or test)
      *
-     * @param $path
+     * @param  $path
      * @return string
      */
     public function urlFor($path)

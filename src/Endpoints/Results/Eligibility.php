@@ -52,7 +52,7 @@ class Eligibility implements PaymentPlanInterface
      */
     public $installmentsCount;
     /**
-     *  @var int
+     * @var int
      */
     public $deferredDays;
     /**

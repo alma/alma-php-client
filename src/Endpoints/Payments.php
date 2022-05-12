@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API\Endpoints;
@@ -39,12 +38,13 @@ class Payments extends Base
     const ELIGIBILITY_PATH_V2 = '/v2/payments/eligibility';
 
     /**
-     * @param array $data           Payment data to check the eligibility for – same data format as payment creation,
-     *                              except that only payment.purchase_amount is mandatory and payment.installments_count
-     *                              can be an array of integers, to test for multiple eligible plans at once.
-     * @param bool $raiseOnError    Whether to raise a RequestError on 4xx and 5xx errors, as it should.
-     *                              Defaults false to preserve original behaviour. Will default to true in future
-     *                              versions (next major update).
+     * @param array $data         Payment data to check the eligibility for – same data format as payment
+     *                            creation, except that only payment.purchase_amount is mandatory and
+     *                            payment.installments_count can be an array of integers, to test for multiple
+     *                            eligible plans at once.
+     * @param bool  $raiseOnError Whether to raise a RequestError on 4xx and 5xx errors, as it should.
+     *                            Defaults false to preserve original behaviour. Will default to true
+     *                            in future versions (next major update).
      *
      * @return Eligibility|Eligibility[]
      * @throws RequestError
@@ -152,7 +152,7 @@ class Payments extends Base
 
     /**
      * @param string $id
-     * @param array $data
+     * @param array  $data
      *
      * @return Payment
      * @throws RequestError
@@ -169,8 +169,8 @@ class Payments extends Base
     }
 
     /**
-     * @param string $id      The ID of the payment to flag as potential fraud
-     * @param string $reason  An optional message indicating why this payment is being flagged
+     * @param string $id     The ID of the payment to flag as potential fraud
+     * @param string $reason An optional message indicating why this payment is being flagged
      *
      * @return bool
      * @throws RequestError
@@ -193,16 +193,18 @@ class Payments extends Base
 
     /**
      * Refund a payment partially
-     * @param string $id ID of the payment to be refunded
-     * @param int $amount Amount that should be refunded. Must be expressed as a cents
-     *                          integer
+     *
+     * @param string $id                ID of the payment to be refunded
+     * @param int    $amount            Amount that should be refunded. Must be expressed as a cents
+     *                                  integer
      * @param string $merchantReference Merchant reference for the refund to be executed
      * @param string $comment
      *
      * @return Payment
      * @throws RequestError
      */
-    public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
+    public function partialRefund($id, $amount, $merchantReference = "", $comment = "")
+    {
         return $this->_refund(
             Refund::create($id, $amount, $merchantReference, $comment)
         );
@@ -210,14 +212,16 @@ class Payments extends Base
 
     /**
      * Totally refund a payment
-     * @param string $id ID of the payment to be refunded
+     *
+     * @param string $id                ID of the payment to be refunded
      * @param string $merchantReference Merchant reference for the refund to be executed
      * @param string $comment
      *
      * @return Payment
      * @throws RequestError
      */
-    public function fullRefund($id, $merchantReference = "", $comment = "") {
+    public function fullRefund($id, $merchantReference = "", $comment = "")
+    {
         return $this->_refund(
             Refund::create($id, 0, $merchantReference, $comment)
         );
@@ -225,12 +229,14 @@ class Payments extends Base
 
     /**
      * Totally refund a payment
+     *
      * @param Refund $refundPayload contains all the refund info
      *
      * @return Payment
      * @throws RequestError
      */
-    private function _refund(Refund $refundPayload) {
+    private function _refund(Refund $refundPayload)
+    {
         $id = $refundPayload->getId();
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 
@@ -248,17 +254,18 @@ class Payments extends Base
 
     /**
      * @deprecated please use `partialRefund` or `fullRefund`
-     * @param string $id ID of the payment to be refunded
-     * @param bool $totalRefund Should the payment be completely refunded? In this case, $amount is not required as the
-     *                          API will automatically compute the amount to refund, including possible customer fees
-     * @param int $amount Amount that should be refunded, for a partial refund. Must be expressed as a cents
-     *                          integer
-     * @param string $merchantReference Merchant reference for the refund to be executed
+     * @param      string $id                ID of the payment to be refunded
+     * @param      bool   $totalRefund       Should the payment be completely refunded? In this case, $amount is not required as the
+     *                                       API will automatically compute the amount to refund, including possible customer fees
+     * @param      int    $amount            Amount that should be refunded, for a partial refund. Must be expressed as a cents
+     *                                       integer
+     * @param      string $merchantReference Merchant reference for the refund to be executed
      *
      * @return Payment
      * @throws RequestError
      */
-    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "") {
+    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "")
+    {
         if ($totalRefund !== true) {
             return $this->partialRefund($id, $amount, $merchantReference);
         }
@@ -286,9 +293,9 @@ class Payments extends Base
     /**
      * Adds an Order to the given Payment, possibly overwriting existing orders
      *
-     * @param string $id ID of the payment to which the order must be added
-     * @param array $orderData Data of the Order
-     * @param bool $overwrite Should the order replace any other order set on the payment, or be appended to the payment's orders (default: false)
+     * @param string $id        ID of the payment to which the order must be added
+     * @param array  $orderData Data of the Order
+     * @param bool   $overwrite Should the order replace any other order set on the payment, or be appended to the payment's orders (default: false)
      *
      * @return Order
      *
