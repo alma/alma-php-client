@@ -236,8 +236,6 @@ class Payments extends Base
 
         $req->setRequestBody($refundPayload->getRequestBody());
 
-        $req->setRequestBody($body);
-
         $res = $req->post();
         if ($res->isError()) {
             throw new RequestError($res->errorMessage, $req, $res);
