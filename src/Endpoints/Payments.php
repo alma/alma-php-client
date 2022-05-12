@@ -245,7 +245,6 @@ class Payments extends Base
     }
 
     /**
-     * @deprecated please use `partialRefund` or `fullRefund`
      * @param string $id ID of the payment to be refunded
      * @param bool $totalRefund Should the payment be completely refunded? In this case, $amount is not required as the
      *                          API will automatically compute the amount to refund, including possible customer fees
@@ -255,6 +254,8 @@ class Payments extends Base
      *
      * @return Payment
      * @throws RequestError
+     *
+     * @deprecated please use `partialRefund` or `fullRefund`
      */
     public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "") {
         if ($totalRefund !== true) {
