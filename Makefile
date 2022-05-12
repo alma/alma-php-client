@@ -23,7 +23,7 @@ test: composer ## Execute PHPUnit tests
 	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"'
 
 integration-test: composer ## Execute intregration tests
-	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"'
+	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"'
 
 test-all: composer ## Execute All PHPUnit tests
 	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"'

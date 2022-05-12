@@ -1,4 +1,4 @@
-name: PHP Lint
+name: PHP Lint and unit tests
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch: ~
 
 jobs:
-  lint:
+  ci:
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -33,4 +33,4 @@ jobs:
       #   run: ./vendor/bin/phpcs src
 
       - name: Ensure unit test are green
-        run: cp phpunit.dist.xml phpunit.xml && ./vendor/bin/phpunit ./tests/unit/
+        run: ./vendor/bin/phpunit -c phpunit.ci.xml

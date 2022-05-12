@@ -22,11 +22,14 @@ class PaymentsTest extends TestCase
      */
     public function testRefundMethodExist()
     {
-        $clientContext = [];
+        $clientContext = Mockery::mock(ClientContext::class);
+
         $payments = new Payments($clientContext);
 
         $this->assertEquals(true, method_exists($payments, 'partialRefund'));
         $this->assertEquals(true, method_exists($payments, 'fullRefund'));
+        # ensure backward compatibility
+        $this->assertEquals(true, method_exists($payments, 'refund'));
     }
 
     /**
