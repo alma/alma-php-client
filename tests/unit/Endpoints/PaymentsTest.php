@@ -99,6 +99,8 @@ class PaymentsTest extends TestCase
      */
     public function testPartialRefund($data)
     {
+        $clientContext = Mockery::mock(ClientContext::class);
+
         // Payment
         $payments = Mockery::mock(Payments::class)
             ->shouldAllowMockingProtectedMethods()
@@ -141,6 +143,8 @@ class PaymentsTest extends TestCase
      */
     public function testInvalidPartialRefund($data, $expectedException)
     {
+        $clientContext = Mockery::mock(ClientContext::class);
+
         // Payment
         $payments = Mockery::mock(Payments::class)
             ->shouldAllowMockingProtectedMethods()
@@ -200,6 +204,8 @@ class PaymentsTest extends TestCase
      */
     public function testFullRefund($data)
     {
+        $clientContext = Mockery::mock(ClientContext::class);
+
         // Payment
         $payments = Mockery::mock(Payments::class)
             ->shouldAllowMockingProtectedMethods()
@@ -256,6 +262,8 @@ class PaymentsTest extends TestCase
      */
     public function testRefund($data)
     {
+        $clientContext = Mockery::mock(ClientContext::class);
+
         // Payment
         $payments = Mockery::mock(Payments::class)
             ->shouldAllowMockingProtectedMethods()
@@ -293,6 +301,8 @@ class PaymentsTest extends TestCase
      */
     public function testInvalidFullRefund($data, $expectedException)
     {
+        $clientContext = Mockery::mock(ClientContext::class);
+
         // Payment
         $payments = Mockery::mock(Payments::class)
             ->shouldAllowMockingProtectedMethods()
@@ -327,6 +337,7 @@ class PaymentsTest extends TestCase
         $responseMock = Mockery::mock(Response::class);
         $responseMock->shouldReceive('isError')->andReturn(true);
         $responseMock->json = json_decode($json, true);
+        $responseMock->errorMessage = "a very important error message";
 
         // Request
         $requestMock = Mockery::mock(Request::class);
@@ -338,6 +349,7 @@ class PaymentsTest extends TestCase
     public function testFullRefundRequestError()
     {
         // Input
+        $clientContext = Mockery::mock(ClientContext::class);
         $id = "some_id";
 
         // Payment
