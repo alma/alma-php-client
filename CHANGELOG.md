@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.8.0
+-------
+* Splited `refund` endpoint into `partialRefund` and `fullRefund`
+* Added github CI for lint and unit tests purposes
+* Added unit-tests
+
 v1.7.1
 -------
 * Fix merchant reference only on partial refunds (#23)

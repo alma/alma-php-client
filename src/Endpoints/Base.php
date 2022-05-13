@@ -40,7 +40,7 @@ class Base
      */
     public function __construct($client_context)
     {
-        $this->clientContext = $client_context;
+        $this->setClientContext($client_context);
         $this->logger = $client_context->logger;
     }
 
@@ -51,5 +51,14 @@ class Base
     protected function request($path)
     {
         return Request::build($this->clientContext, $this->clientContext->urlFor($path));
+    }
+
+    /**
+     * @param ClientContext $clientContext
+     * @return Request
+     */
+    protected function setClientContext($clientContext)
+    {
+        $this->clientContext = $clientContext;
     }
 }

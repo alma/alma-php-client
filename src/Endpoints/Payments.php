@@ -26,6 +26,7 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Endpoints\Results\Eligibility;
+use Alma\API\Payloads\Refund;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Lib\ArrayUtils;
@@ -191,26 +192,49 @@ class Payments extends Base
     }
 
     /**
+     * Refund a payment partially
      * @param string $id ID of the payment to be refunded
-     * @param bool $totalRefund Should the payment be completely refunded? In this case, $amount is not required as the
-     *                          API will automatically compute the amount to refund, including possible customer fees
-     * @param int $amount Amount that should be refunded, for a partial refund. Must be expressed as a cents
+     * @param int $amount Amount that should be refunded. Must be expressed as a cents
      *                          integer
      * @param string $merchantReference Merchant reference for the refund to be executed
+     * @param string $comment
      *
      * @return Payment
      * @throws RequestError
      */
-    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "")
-    {
+    public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
+        return $this->_refund(
+            Refund::create($id, $amount, $merchantReference, $comment)
+        );
+    }
+
+    /**
+     * Totally refund a payment
+     * @param string $id ID of the payment to be refunded
+     * @param string $merchantReference Merchant reference for the refund to be executed
+     * @param string $comment
+     *
+     * @return Payment
+     * @throws RequestError
+     */
+    public function fullRefund($id, $merchantReference = "", $comment = "") {
+        return $this->_refund(
+            Refund::create($id, 0, $merchantReference, $comment)
+        );
+    }
+
+    /**
+     * Totally refund a payment
+     * @param Refund $refundPayload contains all the refund info
+     *
+     * @return Payment
+     * @throws RequestError
+     */
+    private function _refund(Refund $refundPayload) {
+        $id = $refundPayload->getId();
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 
-        $body = array("merchant_reference" => $merchantReference);
-        if (!$totalRefund) {
-            $body["amount"] = $amount;
-        }
-
-        $req->setRequestBody($body);
+        $req->setRequestBody($refundPayload->getRequestBody());
 
         $res = $req->post();
         if ($res->isError()) {
@@ -221,8 +245,28 @@ class Payments extends Base
     }
 
     /**
+     * @param string $id ID of the payment to be refunded
+     * @param bool $totalRefund Should the payment be completely refunded? In this case, $amount is not required as the
+     *                          API will automatically compute the amount to refund, including possible customer fees
+     * @param int $amount Amount that should be refunded, for a partial refund. Must be expressed as a cents
+     *                          integer
+     * @param string $merchantReference Merchant reference for the refund to be executed
+     *
+     * @return Payment
+     * @throws RequestError
+     *
+     * @deprecated please use `partialRefund` or `fullRefund`
+     */
+    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "") {
+        if ($totalRefund !== true) {
+            return $this->partialRefund($id, $amount, $merchantReference);
+        }
+        return $this->fullRefund($id, $merchantReference);
+    }
+
+    /**
      * @param string $id ID of the payment to be triggered
-     * 
+     *
      * @return Payment
      * @throws RequestError
      */

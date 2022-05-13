@@ -10,6 +10,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         unzip \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
+COPY php.ini /usr/local/etc/php/php.ini
+
 RUN usermod -u 1000 www-data
 RUN groupmod -g 1000 www-data
 
