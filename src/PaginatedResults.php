@@ -20,7 +20,6 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API;
@@ -31,6 +30,7 @@ use Iterator;
 class PaginatedResults implements Iterator
 {
     protected $position = 0;
+    protected $klass;
     protected $response;
     /**
      * @var callable
@@ -40,6 +40,7 @@ class PaginatedResults implements Iterator
 
     /**
      * PaginatedResults constructor.
+     *
      * @param Response $response
      * @param $klass
      * @param callable $nextPageCb
@@ -47,6 +48,7 @@ class PaginatedResults implements Iterator
     public function __construct($response, $klass, $nextPageCb)
     {
         $this->response = $response;
+        $this->klass = $klass;
         $this->entities = isset($response->json['data']) ? $response->json['data'] : [];
         $this->nextPageCb = $nextPageCb;
     }
@@ -64,6 +66,11 @@ class PaginatedResults implements Iterator
     public function key()
     {
         return $this->position;
+    }
+
+    public function getClass()
+    {
+        return $this->klass;
     }
 
     public function next()

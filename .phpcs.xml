@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
+
+ <description>Check if lines max length are > 160 chars (because php-cs-fixer doesn't implement this fix) </description>
+
+ <file>./src</file>
+
+ <exclude-pattern>*/vendor/*</exclude-pattern>
+ <exclude-pattern>*/tests/*</exclude-pattern>
+
+
+ <rule ref="Generic.Files.LineLength">
+  <properties>
+   <property name="lineLimit" value="160"/>
+   <property name="absoluteLineLimit" value="160"/>
+  </properties>
+ </rule>
+
+  <!-- Add in some extra rules from other standards. -->
+	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+	<rule ref="Generic.Commenting.Todo"/>
+
+	<!-- Check for PHP cross-version compatibility. -->
+	<config name="testVersion" value="5.6-"/>
+
+	<config name="ignore_warnings_on_exit" value="1"/>
+</ruleset>
