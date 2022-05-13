@@ -52,35 +52,13 @@ class Payments extends Base
      */
     public function eligibility(array $data, $raiseOnError = false)
     {
-        $isV1Payload = array_key_exists('payment', $data);
-        if ($isV1Payload) {
-            $res = $this->request(self::ELIGIBILITY_PATH)->setRequestBody($data)->post();
-        } else {
-            $res = $this->request(self::ELIGIBILITY_PATH_V2)->setRequestBody($data)->post();
-        }
+        $res = $this->requestEligibility($data);
 
         if ($raiseOnError && $res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
         }
 
-        $result = [];
-        foreach ($this->getEligibilitiesFromResponse($res) as $eligibility) {
-
-            if ($isV1Payload) {
-                $result[$eligibility->getInstallmentsCount()] = $eligibility;
-            } else {
-                $result[$eligibility->getPlanKey()] = $eligibility;
-            }
-
-            if (!$eligibility->isEligible()) {
-                $this->logger->info(
-                    "Eligibility check failed for following reasons: " .
-                    var_export($eligibility->reasons, true)
-                );
-            }
-        }
-
-        return $result;
+        return $this->formatResult($res);
     }
 
     /**
@@ -259,6 +237,33 @@ class Payments extends Base
     }
 
     /**
+     * @param Response $res
+     *
+     * @return array
+     */
+    protected function formatResult(Response $res)
+    {
+        $result = [];
+        foreach ($this->getEligibilitiesFromResponse($res) as $eligibility) {
+
+            if (is_null($eligibility->deferredDays)) {
+                $result[$eligibility->getInstallmentsCount()] = $eligibility;
+            } else {
+                $result[$eligibility->getPlanKey()] = $eligibility;
+            }
+
+            if (!$eligibility->isEligible()) {
+                $this->logger->info(
+                    "Eligibility check failed for following reasons: " .
+                    var_export($eligibility->reasons, true)
+                );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param string $id ID of the payment to be refunded
      * @param bool $totalRefund Should the payment be completely refunded? In this case, $amount is not required as the
      *                          API will automatically compute the amount to refund, including possible customer fees
@@ -318,6 +323,20 @@ class Payments extends Base
         }
 
         return new Order(end($res->json));
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Response
+     * @throws RequestError
+     */
+    protected function requestEligibility(array $data)
+    {
+        if (array_key_exists('payment', $data)) {
+            return $this->request(self::ELIGIBILITY_PATH)->setRequestBody($data)->post();
+        }
+        return $this->request(self::ELIGIBILITY_PATH_V2)->setRequestBody($data)->post();
     }
 
     /**
