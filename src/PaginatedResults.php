@@ -30,7 +30,6 @@ use Iterator;
 class PaginatedResults implements Iterator
 {
     protected $position = 0;
-    protected $klass;
     protected $response;
     /**
      * @var callable
@@ -42,13 +41,11 @@ class PaginatedResults implements Iterator
      * PaginatedResults constructor.
      *
      * @param Response $response
-     * @param $klass
      * @param callable $nextPageCb
      */
-    public function __construct($response, $klass, $nextPageCb)
+    public function __construct($response, $nextPageCb)
     {
         $this->response = $response;
-        $this->klass = $klass;
         $this->entities = isset($response->json['data']) ? $response->json['data'] : [];
         $this->nextPageCb = $nextPageCb;
     }
@@ -68,11 +65,6 @@ class PaginatedResults implements Iterator
         return $this->position;
     }
 
-    public function getClass()
-    {
-        return $this->klass;
-    }
-
     public function next()
     {
         ++$this->position;
@@ -86,7 +78,7 @@ class PaginatedResults implements Iterator
     public function nextPage()
     {
         if (!array_key_exists('has_more', $this->response->json)) {
-            return new self(new EmptyResponse(), Base::class, null);
+            return new self(new EmptyResponse(), null);
         }
 
         $callback = $this->nextPageCb;

@@ -73,7 +73,6 @@ class Orders extends Base
         $response = $this->request(self::ORDERS_PATH)->setQueryParams($args)->get();
         return new PaginatedResults(
             $response,
-            self::class,
             function($startingAfter) use ($limit, $filters) {
                 return $this->fetchAll($limit, $startingAfter, $filters);
             }
