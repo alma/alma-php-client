@@ -19,15 +19,14 @@ final class PaymentsTest extends TestCase
         );
     }
 
-
     private static function paymentData($amount)
     {
         return [
             'payment' => [
                 'purchase_amount' => $amount,
                 'shipping_address' => [
-                    'first_name' => 'Jane',
-                    'last_name' => 'Doe',
+                    'first_name' => 'Alma-php-client',
+                    'last_name' => 'integration tests',
                     'line1' => '2 rue de la rue',
                     'city' => 'Paris',
                     'postal_code' => '75002',
@@ -42,27 +41,51 @@ final class PaymentsTest extends TestCase
         return self::$almaClient->payments->create(self::paymentData($amount));
     }
 
-
-    private static function _testEligibility($amount, $eligible)
-    {
-        $eligibility = self::$almaClient->payments->eligibility(self::paymentData($amount));
-        self::assertEquals($eligible, $eligibility->isEligible);
-
-        if (!$eligible) {
-            self::assertArrayHasKey('purchase_amount', $eligibility->reasons);
-            self::assertEquals('invalid_value', $eligibility->reasons['purchase_amount']);
-
-            self::assertArrayHasKey('purchase_amount', $eligibility->constraints);
-            self::assertArrayHasKey('minimum', $eligibility->constraints['purchase_amount']);
-            self::assertArrayHasKey('maximum', $eligibility->constraints['purchase_amount']);
-        }
+    public function createEligibilityV1Payload($amount, $installments) {
+        return [
+            'payment' => [
+                'purchase_amount' => $amount,
+                'installments_count' => $installments,
+                'shipping_address' => [
+                    'first_name' => 'Alma-php-client',
+                    'last_name' => 'integration tests',
+                    'line1' => '2 rue de la rue',
+                    'city' => 'Paris',
+                    'postal_code' => '75002',
+                    'country' => 'FR',
+                ]
+            ]
+        ];
     }
 
-    public static function testCanCheckEligibility()
+    public function eligibilityV1Data() {
+        return [
+            [ $this->createEligibilityV1Payload(1, [2,3]), false ],
+            [ $this->createEligibilityV1Payload(20000, [3]), true ],
+            [ $this->createEligibilityV1Payload(500000, [3]), false ],
+        ];
+    }
+
+    /**
+     * Test the fullRefund method with valid datas
+     * @dataProvider eligibilityV1Data
+     * @return void
+     */
+    public function testEligibilityV1($data, $eligible)
     {
-        self::_testEligibility(1, false);
-        self::_testEligibility(20000, true);
-        self::_testEligibility(500000, false);
+        $eligibilities = self::$almaClient->payments->eligibility($data);
+
+        foreach($eligibilities as $eligibility) {
+            self::assertEquals($eligible, $eligibility->isEligible);
+            if (!$eligible) {
+                self::assertArrayHasKey('purchase_amount', $eligibility->reasons);
+                self::assertEquals('invalid_value', $eligibility->reasons['purchase_amount']);
+
+                self::assertArrayHasKey('purchase_amount', $eligibility->constraints);
+                self::assertArrayHasKey('minimum', $eligibility->constraints['purchase_amount']);
+                self::assertArrayHasKey('maximum', $eligibility->constraints['purchase_amount']);
+            }
+        }
     }
 
     public function testCanCreateAPayment()

@@ -32,12 +32,12 @@ use Alma\API\Entities\Payment;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\RequestError;
 use Alma\API\Response;
+use Alma\API\Endpoints\Payments\Refund\RefundService;
+use Alma\API\Endpoints\Payments\Eligibility\EligibilityService;
 
 class Payments extends Base
 {
     const PAYMENTS_PATH       = '/v1/payments';
-    const ELIGIBILITY_PATH    = '/v1/payments/eligibility';
-    const ELIGIBILITY_PATH_V2 = '/v2/payments/eligibility';
 
     /**
      * @param array $data           Payment data to check the eligibility for – same data format as payment creation,
@@ -52,13 +52,12 @@ class Payments extends Base
      */
     public function eligibility(array $data, $raiseOnError = false)
     {
-        $res = $this->requestEligibility($data);
+        $eligibilityService = EligibilityService::getInstance($this->clientContext);
 
-        if ($raiseOnError && $res->isError()) {
-            throw new RequestError($res->errorMessage, null, $res);
+        if ($eligibilityService->isV1Payload($data)) {
+            return $eligibilityService->eligibilityV1($data, $raiseOnError);
         }
-
-        return $this->formatResult($res);
+        return $eligibilityService->eligibility($data, $raiseOnError);
     }
 
     /**
@@ -162,9 +161,9 @@ class Payments extends Base
      * @throws RequestError
      */
     public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
-        return $this->_refund(
-            Refund::create($id, $amount, $merchantReference, $comment)
-        );
+        $refundService = RefundService::getInstance($this->clientContext);
+
+        return $refundService->partialRefund($id, $amount, $merchantReference, $comment);
     }
 
     /**
@@ -177,90 +176,9 @@ class Payments extends Base
      * @throws RequestError
      */
     public function fullRefund($id, $merchantReference = "", $comment = "") {
-        return $this->_refund(
-            Refund::create($id, 0, $merchantReference, $comment)
-        );
-    }
+        $refundService = RefundService::getInstance($this->clientContext);
 
-    /**
-     * Totally refund a payment
-     * @param Refund $refundPayload contains all the refund info
-     *
-     * @return Payment
-     * @throws RequestError
-     */
-    private function _refund(Refund $refundPayload) {
-        $id = $refundPayload->getId();
-        $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
-
-        $req->setRequestBody($refundPayload->getRequestBody());
-
-        $res = $req->post();
-        if ($res->isError()) {
-            throw new RequestError($res->errorMessage, $req, $res);
-        }
-
-        return new Payment($res->json);
-    }
-
-    /*
-     * @param Response $res
-     *
-     * @return Eligibility[]
-     */
-    protected function getEligibilitiesFromResponse(Response $res)
-    {
-        $serverError = $res->responseCode >= 500;
-
-        if (!$serverError && is_assoc_array($res->json)) {
-            return [new Eligibility($res->json, $res->responseCode)];
-        }
-
-        if (!$serverError && is_array($res->json)) {
-            $eligibilities = [];
-            foreach ($res->json as $eligibilityData) {
-                $eligibilities[] = new Eligibility($eligibilityData, $res->responseCode);
-            }
-
-            return $eligibilities;
-        }
-
-        $eligibility = new Eligibility(
-            [
-                "eligible" => false,
-                'reasons'  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
-            ],
-            $res->responseCode
-        );
-
-        return [$eligibility];
-    }
-
-    /**
-     * @param Response $res
-     *
-     * @return array
-     */
-    protected function formatResult(Response $res)
-    {
-        $result = [];
-        foreach ($this->getEligibilitiesFromResponse($res) as $eligibility) {
-
-            if (is_null($eligibility->deferredDays)) {
-                $result[$eligibility->getInstallmentsCount()] = $eligibility;
-            } else {
-                $result[$eligibility->getPlanKey()] = $eligibility;
-            }
-
-            if (!$eligibility->isEligible()) {
-                $this->logger->info(
-                    "Eligibility check failed for following reasons: " .
-                    var_export($eligibility->reasons, true)
-                );
-            }
-        }
-
-        return $result;
+        return $refundService->fullRefund($id, $merchantReference, $comment);
     }
 
     /**
@@ -323,20 +241,6 @@ class Payments extends Base
         }
 
         return new Order(end($res->json));
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return Response
-     * @throws RequestError
-     */
-    protected function requestEligibility(array $data)
-    {
-        if (array_key_exists('payment', $data)) {
-            return $this->request(self::ELIGIBILITY_PATH)->setRequestBody($data)->post();
-        }
-        return $this->request(self::ELIGIBILITY_PATH_V2)->setRequestBody($data)->post();
     }
 
     /**
