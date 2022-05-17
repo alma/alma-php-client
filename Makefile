@@ -19,17 +19,20 @@ remove: ## remove PHP test container
 composer:
 	docker exec -it -u www-data:www-data test-php /usr/bin/composer install
 
-test: composer ## Execute PHPUnit tests
+test: up composer ## Execute PHPUnit tests
 	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"'
 
-integration-test: composer ## Execute intregration tests
+integration-test: up composer ## Execute intregration tests
 	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"'
 
-test-all: composer ## Execute All PHPUnit tests
+test-all: up composer ## Execute All PHPUnit tests
 	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit'
 
-connect: ## Connect to test container
+connect: up ## Connect to test container
 	docker exec -it -u www-data:www-data test-php /bin/bash
 
-lint: ## lint the php code
-	docker exec -it -u www-data test-php sh -c './vendor/bin/phpcbf src'
+lint: up ## lint the php code
+	docker exec -it -u www-data test-php sh -c './vendor/bin/phpcs src/'
+
+fix: up ## lint fix the php code
+	docker exec -it -u www-data test-php sh -c './vendor/bin/phpcbf src/ tests/'
