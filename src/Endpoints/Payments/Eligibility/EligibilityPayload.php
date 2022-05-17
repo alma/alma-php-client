@@ -22,13 +22,13 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Endpoints\Results;
+namespace Alma\API\Endpoints\Payments\Eligibility;
 
 use Alma\API\Entities\FeePlan;
 use Alma\API\Entities\PaymentPlanInterface;
 use Alma\API\Entities\PaymentPlanTrait;
 
-class Eligibility implements PaymentPlanInterface
+class EligibilityPayload implements PaymentPlanInterface
 {
     use PaymentPlanTrait;
     /**
@@ -80,7 +80,7 @@ class Eligibility implements PaymentPlanInterface
      * @param array    $data
      * @param null|int $responseCode
      */
-    public function __construct($data = [], $responseCode = null)
+    public function create($data = [], $responseCode = null)
     {
         // Supporting some legacy behaviour where the eligibility check would return a 406 error if not eligible,
         // instead of 200 OK + {"eligible": false}

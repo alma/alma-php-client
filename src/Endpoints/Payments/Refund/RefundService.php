@@ -26,7 +26,7 @@ namespace Alma\API\Endpoints\Payments\Refund;
 
 use Alma\API\Entities\Payment;
 use Alma\API\Lib\ServiceBase;
-use Alma\API\Payloads\Refund;
+use Alma\API\Endpoints\Payments\Refund\RefundPayload as Refund;
 use Alma\API\RequestError;
 
 class RefundService extends ServiceBase

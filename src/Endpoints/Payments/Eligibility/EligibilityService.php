@@ -71,8 +71,8 @@ class EligibilityService extends ServiceBase
         return [
             new Eligibility(
                 [
-                "eligible" => false,
-                "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
+                    "eligible" => false,
+                    "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
                 ], $res->responseCode
             )
         ];
@@ -102,8 +102,8 @@ class EligibilityService extends ServiceBase
             return [
                 new Eligibility(
                     [
-                    "eligible" => false,
-                    "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
+                        "eligible" => false,
+                        "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
                     ], $res->responseCode
                 )
             ];
