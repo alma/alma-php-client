@@ -26,7 +26,7 @@ class ShareOfCheckout extends Base
      *
      * @throws RequestError
      */
-    public function getLastUpdateDate()
+    public function getLastUpdateDates()
     {
         $res = $this->request(self::SHARE_OF_CHECKOUT_PATH)->get();
         if ($res->isError()) {
