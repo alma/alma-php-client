@@ -62,6 +62,11 @@ class Client implements LoggerAwareInterface
      * @var Endpoints\Webhooks
      */
     public $webhooks;
+
+    /**
+     * @var Endpoints\ShareOfCheckout
+     */
+    public $shareOfCheckout;
     /*************************/
 
     /**
@@ -139,6 +144,7 @@ class Client implements LoggerAwareInterface
         $this->payments = new Endpoints\Payments($this->context);
         $this->merchants = new Endpoints\Merchants($this->context);
         $this->orders = new Endpoints\Orders($this->context);
+        $this->shareOfCheckout = new Endpoints\ShareOfCheckout($this->context);
         $this->webhooks = new Endpoints\Webhooks($this->context);
     }
 
