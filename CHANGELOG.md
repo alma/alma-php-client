@@ -6,6 +6,8 @@ v1.8.0
 * Splited `refund` endpoint into `partialRefund` and `fullRefund`
 * Added github CI for lint and unit tests purposes
 * Added unit-tests
+* Extract RequestError from Request.php file
+* Added share of checkout endpoint
 
 v1.7.1
 -------
