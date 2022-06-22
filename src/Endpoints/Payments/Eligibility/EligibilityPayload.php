@@ -24,334 +24,80 @@
 
 namespace Alma\API\Endpoints\Payments\Eligibility;
 
-use Alma\API\Entities\FeePlan;
-use Alma\API\Entities\PaymentPlanInterface;
-use Alma\API\Entities\PaymentPlanTrait;
+use Alma\API\ParamsError;
 
-class EligibilityPayload implements PaymentPlanInterface
+class EligibilityPayload
 {
-    use PaymentPlanTrait;
     /**
-     * @var bool
-     */
-    public $isEligible;
-    /**
-     * @var array
-     */
-    public $reasons;
-    /**
-     * @var array
-     */
-    public $constraints;
-    /**
-     * @var array
-     */
-    public $paymentPlan;
-    /**
-     * @var int
-     */
-    public $installmentsCount = 0;
-    /**
-     * @var int
-     */
-    public $deferredDays;
-    /**
-     * @var int
-     */
-    public $deferredMonths;
-    /**
-     * @var int
-     */
-    public $customerTotalCostAmount;
-    /**
-     * @var int
-     */
-    public $customerTotalCostBps;
-    /**
-     * @var int Percentage of fees + credit in bps paid for by the customer (100bps = 1%)
+     * Eligibility Payload constructor.
      *
-     * if value is null, that's mean the API does not return this property
+     * @param array $data
      */
-    public $annualInterestRate = null;
-
-    /**
-     * Eligibility constructor.
-     *
-     * @param array    $data
-     * @param null|int $responseCode
-     */
-    public function create($data = [], $responseCode = null)
+    public function __construct($data)
     {
-        // Supporting some legacy behaviour where the eligibility check would return a 406 error if not eligible,
-        // instead of 200 OK + {"eligible": false}
-        if (array_key_exists('eligible', $data)) {
-            $this->setIsEligible($data['eligible']);
-        } else {
-            $this->setIsEligible(200 == $responseCode);
-        }
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case 'purchase_amount':
+                    $this->setPurchaseAmount($value);
+                    break;
+                case 'queries':
+                    $this->setQueries($value);
+                    break;
+                case 'billing_address':
+                    $this->setBillingAddress($value);
+                    break;
+                case 'shipping_address':
+                    $this->setShippingAddress($value);
+                    break;
+                case 'locale':
+                    $this->setLocale($value);
+                    break;
 
-        if (array_key_exists('reasons', $data)) {
-            $this->setReasons($data['reasons']);
-        }
-
-        if (array_key_exists('constraints', $data)) {
-            $this->setConstraints($data['constraints']);
-        }
-
-        if (array_key_exists('payment_plan', $data)) {
-            $this->setPaymentPlan($data['payment_plan']);
-        }
-
-        if (array_key_exists('installments_count', $data)) {
-            $this->setInstallmentsCount($data['installments_count']);
-        }
-
-        if (array_key_exists('deferred_days', $data)) {
-            $this->setDeferredDays($data['deferred_days']);
-        }
-
-        if (array_key_exists('deferred_months', $data)) {
-            $this->setDeferredMonths($data['deferred_months']);
-        }
-
-        if (array_key_exists('customer_total_cost_amount', $data)) {
-            $this->setCustomerTotalCostAmount($data['customer_total_cost_amount']);
-        }
-
-        if (array_key_exists('customer_total_cost_bps', $data)) {
-            $this->setCustomerTotalCostBps($data['customer_total_cost_bps']);
-        }
-
-        if (array_key_exists('annual_interest_rate', $data)) {
-            $this->setAnnualInterestRate($data['annual_interest_rate']);
+                default:
+                    throw new ParamsError("Invalid Eligibility Request: unknown field <$key>");
+                    break;
+            }
         }
     }
 
-    /**
-     * Kind is always 'general' for eligibility at this time
-     *
-     * @return string
-     */
-    public function getKind()
-    {
-        return FeePlan::KIND_GENERAL;
+    public function setPurchaseAmount($amount) {
+        $this->purchaseAmount = $amount;
     }
 
-    /**
-     * Is Eligible.
-     *
-     * @return bool
-     */
-    public function isEligible()
-    {
-        return $this->isEligible;
+    public function setQueries(array $queries) {
+        $this->queries = [];
+        foreach ($queries as $query) {
+            $queryPayload = new QueryPayload($query);
+            $this->queries[] = $queryPayload->toPayload();
+        }
     }
 
-    /**
-     * Getter reasons.
-     *
-     * @return array
-     */
-    public function getReasons()
-    {
-        return $this->reasons;
+    public function setBillingAddress(array $address) {
+        $this->billingAddress = new AddressPayload($address);
     }
 
-    /**
-     * Getter constraints.
-     *
-     * @return array
-     */
-    public function getConstraints()
-    {
-        return $this->constraints;
+    public function setShippingAddress(array $address) {
+        $this->shippingAddress = new AddressPayload($address);
     }
 
-    /**
-     * Getter paymentPlan.
-     *
-     * @return array
-     */
-    public function getPaymentPlan()
-    {
-        return $this->paymentPlan;
+    public function setLocale(string $locale) {
+        $this->locale = $locale;
     }
 
-    /**
-     * Getter paymentPlan.
-     *
-     * @return int
-     */
-    public function getInstallmentsCount()
-    {
-        return $this->installmentsCount;
+    public function toPayload() {
+        $payload = [
+            'purchase_amount' => $this->purchaseAmount,
+            'queries' => $this->queries
+        ];
+        if (isset($this->billingAddress)) {
+            $payload['billing_address'] = $this->billingAddress->toPayload();
+        }
+        if (isset($this->shippingAddress)) {
+            $payload['shipping_address'] = $this->shippingAddress->toPayload();
+        }
+        if (isset($this->locale)) {
+            $payload['locale'] = $this->locale;
+        }
+        return $payload;
     }
-
-    /**
-     * Setter isEligible.
-     *
-     * @param bool $isEligible
-     */
-    public function setIsEligible($isEligible)
-    {
-        $this->isEligible = $isEligible;
-    }
-
-    /**
-     * Setter reasons.
-     *
-     * @param array $reasons
-     */
-    public function setReasons($reasons)
-    {
-        $this->reasons = $reasons;
-    }
-
-    /**
-     * Setter constraints.
-     *
-     * @param array $constraints
-     */
-    public function setConstraints($constraints)
-    {
-        $this->constraints = $constraints;
-    }
-
-    /**
-     * Setter paymentPlan.
-     *
-     * @param array $paymentPlan
-     */
-    public function setPaymentPlan($paymentPlan)
-    {
-        $this->paymentPlan = $paymentPlan;
-    }
-
-    /**
-     * Setter paymentPlan.
-     *
-     * @param int $installmentsCount
-     */
-    public function setInstallmentsCount($installmentsCount)
-    {
-        $this->installmentsCount = $installmentsCount;
-    }
-
-    /**
-     * Get the value of deferredMonths.
-     *
-     * @return int
-     */
-    public function getDeferredMonths()
-    {
-        return $this->deferredMonths;
-    }
-
-    /**
-     * Set the value of deferredMonths.
-     *
-     * @param mixed $deferredMonths
-     */
-    public function setDeferredMonths($deferredMonths)
-    {
-        $this->deferredMonths = $deferredMonths;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of deferredDays.
-     *
-     * @return int
-     */
-    public function getDeferredDays()
-    {
-        return $this->deferredDays;
-    }
-
-    /**
-     * Set the value of deferredDays.
-     *
-     * @param mixed $deferredDays
-     */
-    public function setDeferredDays($deferredDays)
-    {
-        $this->deferredDays = $deferredDays;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of customerTotalCostAmount.
-     *
-     * @return int
-     */
-    public function getCustomerTotalCostAmount()
-    {
-        return $this->customerTotalCostAmount;
-    }
-
-    /**
-     * Set the value of customerTotalCostAmount.
-     *
-     * @param int $customerTotalCostAmount
-     *
-     * @return self
-     */
-    public function setCustomerTotalCostAmount($customerTotalCostAmount)
-    {
-        $this->customerTotalCostAmount = $customerTotalCostAmount;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of customerTotalCostBps.
-     *
-     * @return int
-     */
-    public function getCustomerTotalCostBps()
-    {
-        return $this->customerTotalCostBps;
-    }
-
-    /**
-     * Set the value of customerTotalCostBps.
-     *
-     * @param int $customerTotalCostBps
-     *
-     * @return self
-     */
-    public function setCustomerTotalCostBps($customerTotalCostBps)
-    {
-        $this->customerTotalCostBps = $customerTotalCostBps;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of annualInterestRate.
-     * if value is null, that's mean the API does not return this property
-     *
-     * @return int|null
-     */
-    public function getAnnualInterestRate()
-    {
-        return $this->annualInterestRate;
-    }
-
-    /**
-     * Set the value of annualInterestRate.
-     *
-     * @param int $annualInterestRate
-     *
-     * @return self
-     */
-    private function setAnnualInterestRate($annualInterestRate)
-    {
-        $this->annualInterestRate = $annualInterestRate;
-
-        return $this;
-    }
-
 }
