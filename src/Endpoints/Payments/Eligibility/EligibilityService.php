@@ -86,7 +86,10 @@ class EligibilityService extends ServiceBase
      */
     public function eligibility(array $data, $raiseOnError = false)
     {
-        $res = $this->request(self::ELIGIBILITY_PATH)->setRequestBody($data)->post();
+        $eligibilityPayload = new EligibilityPayload($data);
+        $res = $this->request(self::ELIGIBILITY_PATH)
+                    ->setRequestBody($eligibilityPayload->toPayload())
+                    ->post();
 
         if ($res->isError()) {
             if ($raiseOnError) {
