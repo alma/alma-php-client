@@ -26,7 +26,7 @@ namespace Alma\API\Endpoints\Payments\Eligibility;
 
 use Alma\API\ParamsError;
 
-class AddressPayload
+class AddressPayload extends Payload
 {
     /**
      * Address Payload constructor.
@@ -35,8 +35,8 @@ class AddressPayload
      */
     public function __construct($data)
     {
-        $missingAttr = $this->checkMissingMandatoryAttributes($data);
-        if ($missingAttr !== false) {
+        $missingAttr = $this->checkMissingMandatoryAttributes($data, ['country']);
+        if ($missingAttr !== null) {
             throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <$missingAttr>");
         }
 
@@ -80,19 +80,6 @@ class AddressPayload
                     break;
             }
         }
-    }
-
-    private function checkMissingMandatoryAttributes($data): bool|string {
-        $mandatoryAttributes = [
-            "country",
-        ];
-
-        foreach ($mandatoryAttributes as $attr) {
-            if (!isset($data[$attr])) {
-                return $attr;
-            }
-        }
-        return false;
     }
 
     public function setTitle($title) {

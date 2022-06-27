@@ -26,7 +26,7 @@ namespace Alma\API\Endpoints\Payments\Eligibility;
 
 use Alma\API\ParamsError;
 
-class EligibilityPayload
+class EligibilityPayload extends Payload
 {
     /**
      * Eligibility Payload constructor.
@@ -35,6 +35,11 @@ class EligibilityPayload
      */
     public function __construct($data)
     {
+        $missingAttr = $this->checkMissingMandatoryAttributes($data, ['purchase_amount', 'queries']);
+        if ($missingAttr !== null) {
+            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <$missingAttr>");
+        }
+
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'purchase_amount':
@@ -65,6 +70,10 @@ class EligibilityPayload
     }
 
     public function setQueries(array $queries) {
+        if (empty($queries)) {
+            throw new ParamsError("Invalid Eligibility Request: queries is empty");
+        }
+
         $this->queries = [];
         foreach ($queries as $query) {
             $queryPayload = new QueryPayload($query);

@@ -25,6 +25,7 @@
 namespace Alma\API\Endpoints\Payments\Eligibility;
 
 use Alma\API\Lib\ServiceBase;
+use Alma\API\RequestError;
 use Alma\API\Endpoints\Results\Eligibility;
 
 class EligibilityService extends ServiceBase
@@ -68,14 +69,7 @@ class EligibilityService extends ServiceBase
             return $result;
         }
 
-        return [
-            new Eligibility(
-                [
-                    "eligible" => false,
-                    "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
-                ], $res->responseCode
-            )
-        ];
+        return $this->getEligibilityError($res);
     }
 
     /**
@@ -99,14 +93,7 @@ class EligibilityService extends ServiceBase
                 throw new RequestError($res->errorMessage, null, $res);
             }
 
-            return [
-                new Eligibility(
-                    [
-                        "eligible" => false,
-                        "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
-                    ], $res->responseCode
-                )
-            ];
+            return $this->getEligibilityError($res);
         }
 
         if (is_array($res->json)) {
@@ -118,14 +105,7 @@ class EligibilityService extends ServiceBase
             return $result;
         }
 
-        return [
-            new Eligibility(
-                [
-                "eligible" => false,
-                "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
-                ], $res->responseCode
-            )
-        ];
+        return $this->getEligibilityError($res);
     }
 
     protected function buildEligibilityObject($eligibilityData, $responseCode)
@@ -145,6 +125,18 @@ class EligibilityService extends ServiceBase
     public function isV1Payload($data)
     {
         return array_key_exists('payment', $data);
+    }
+
+    private function getEligibilityError($res)
+    {
+        return [
+            new Eligibility(
+                [
+                "eligible" => false,
+                "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
+                ], $res->responseCode
+            )
+        ];
     }
 
 }

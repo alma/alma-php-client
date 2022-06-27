@@ -26,7 +26,7 @@ namespace Alma\API\Endpoints\Payments\Eligibility;
 
 use Alma\API\ParamsError;
 
-class QueryPayload
+class QueryPayload extends Payload
 {
     /**
      * Query Payload constructor.
@@ -35,9 +35,9 @@ class QueryPayload
      */
     public function __construct($data)
     {
-        $missingAttr = $this->checkMissingMandatoryAttributes($data);
+        $missingAttr = $this->checkMissingMandatoryAttributes($data, ['installments_count']);
         if ($missingAttr !== null) {
-            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <$missingAttr>");
+            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <queries:$missingAttr>");
         }
 
         foreach ($data as $key => $value) {
@@ -65,19 +65,6 @@ class QueryPayload
                     break;
             }
         }
-    }
-
-    private function checkMissingMandatoryAttributes($data) {
-        $mandatoryAttributes = [
-            "installments_count",
-        ];
-
-        foreach ($mandatoryAttributes as $attr) {
-            if (!isset($data[$attr])) {
-                return $attr;
-            }
-        }
-        return null;
     }
 
     public function setAllowed($allowed) {
@@ -111,7 +98,7 @@ class QueryPayload
         if (isset($this->allowed)) {
             $payload['allowed'] = $this->allowed;
         }
-        if (isset($this->installmentsCount)) {
+        if (isset($this->deferredDays)) {
             $payload['deferred_days'] = $this->deferredDays;
         }
         if (isset($this->deferredTriggerLimitDays)) {
