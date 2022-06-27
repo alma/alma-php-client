@@ -102,6 +102,9 @@ class Payment extends Base
     /** @var int|null Timestamp or NULL if not already applied */
     public $deferred_trigger_applied;
 
+    /** @var int|null Timestamp or NULL if not expired */
+    public $expired_at;
+
     /**
      * @param array $attributes
      */
