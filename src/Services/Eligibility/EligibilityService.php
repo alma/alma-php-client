@@ -22,9 +22,9 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Endpoints\Payments\Eligibility;
+namespace Alma\API\Services\Eligibility;
 
-use Alma\API\Lib\ServiceBase;
+use Alma\API\Services\ServiceBase;
 use Alma\API\RequestError;
 use Alma\API\Endpoints\Results\Eligibility;
 

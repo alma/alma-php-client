@@ -5,7 +5,7 @@ namespace Alma\API\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 
 use Alma\API\ParamsError;
-use Alma\API\Endpoints\Payments\Eligibility\EligibilityPayload;
+use Alma\API\Services\Eligibility\EligibilityPayload;
 
 /**
  * Class EligibilityPayloadTest

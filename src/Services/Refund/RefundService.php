@@ -22,11 +22,11 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Endpoints\Payments\Refund;
+namespace Alma\API\Services\Refund;
 
 use Alma\API\Entities\Payment;
-use Alma\API\Lib\ServiceBase;
-use Alma\API\Endpoints\Payments\Refund\RefundPayload as Refund;
+use Alma\API\Services\ServiceBase;
+use Alma\API\Services\Refund\RefundPayload as Refund;
 use Alma\API\RequestError;
 
 class RefundService extends ServiceBase

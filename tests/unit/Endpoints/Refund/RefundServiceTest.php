@@ -11,7 +11,7 @@ use Alma\API\ClientContext;
 use Alma\API\Request;
 use Alma\API\ParamsError;
 use Alma\API\RequestError;
-use Alma\API\Endpoints\Payments\Refund\RefundService;
+use Alma\API\Services\Refund\RefundService;
 
 /**
  * Class RefundServiceTest

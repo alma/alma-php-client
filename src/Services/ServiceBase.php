@@ -22,7 +22,7 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Lib;
+namespace Alma\API\Services;
 
 use Alma\API\ClientContext;
 use Alma\API\Request;

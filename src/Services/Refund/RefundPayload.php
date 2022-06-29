@@ -22,7 +22,7 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Endpoints\Payments\Refund;
+namespace Alma\API\Services\Refund;
 
 
 use Alma\API\ParamsError;

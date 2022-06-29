@@ -30,8 +30,8 @@ use Alma\API\Entities\Payment;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\RequestError;
 use Alma\API\Response;
-use Alma\API\Endpoints\Payments\Refund\RefundService;
-use Alma\API\Endpoints\Payments\Eligibility\EligibilityService;
+use Alma\API\Services\Refund\RefundService;
+use Alma\API\Services\Eligibility\EligibilityService;
 
 class Payments extends Base
 {

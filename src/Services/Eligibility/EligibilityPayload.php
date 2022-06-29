@@ -22,7 +22,7 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Endpoints\Payments\Eligibility;
+namespace Alma\API\Services\Eligibility;
 
 use Alma\API\ParamsError;
 
