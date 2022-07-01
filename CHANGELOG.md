@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.9.0
+-------
+* Added `expired_at` property to `Payment` entity
+* Added `getErrorMessage` method to `RequestError` to fetch error message from the response when not accessible from `getMessage`
+
 v1.8.0
 -------
 * Splited `refund` endpoint into `partialRefund` and `fullRefund`
