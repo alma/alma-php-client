@@ -103,7 +103,7 @@ class PaymentsTest extends TestCase
         $clientContext = Mockery::mock(ClientContext::class);
 
         $refundServiceMock = Mockery::mock(RefundService::class);
-        $refundServiceMock->shouldReceive('partialRefund')->once();
+        $refundServiceMock->shouldReceive('create')->once();
         RefundService::setInstance($refundServiceMock);
 
         // Payment
@@ -139,6 +139,13 @@ class PaymentsTest extends TestCase
     public function testInvalidPartialRefund($data, $expectedException)
     {
         $clientContext = Mockery::mock(ClientContext::class);
+        $clientContext->shouldReceive('urlFor');
+        $clientContext->shouldReceive('getUserAgentString');
+        $clientContext->shouldReceive('forcedTLSVersion');
+
+        $refundServiceMock = Mockery::mock(RefundService::class);
+        $refundServiceMock->shouldReceive('create');
+        RefundService::setInstance($refundServiceMock);
 
         // Payment
         $payments = Mockery::mock(Payments::class)
@@ -202,7 +209,7 @@ class PaymentsTest extends TestCase
         $clientContext = Mockery::mock(ClientContext::class);
 
         $refundServiceMock = Mockery::mock(RefundService::class);
-        $refundServiceMock->shouldReceive('fullRefund')->once();
+        $refundServiceMock->shouldReceive('create')->once();
         RefundService::setInstance($refundServiceMock);
 
         // Payment
@@ -254,7 +261,7 @@ class PaymentsTest extends TestCase
         $clientContext = Mockery::mock(ClientContext::class);
 
         $refundServiceMock = Mockery::mock(RefundService::class);
-        $refundServiceMock->shouldReceive('fullRefund')->once();
+        $refundServiceMock->shouldReceive('create')->once();
         RefundService::setInstance($refundServiceMock);
 
         // Payment

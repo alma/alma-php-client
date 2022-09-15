@@ -106,7 +106,7 @@ class EligibilityPayloadTest extends TestCase
             'unknown param' => [[
                 "purchase_amount" => 15000,
                 "queries" => [
-                    "installments_count"=> 3,
+                    ["installments_count"=> 3,],
                 ],
                 "the_spanish_inquisition" => 15000,
             ], ParamsError::class],
@@ -141,5 +141,6 @@ class EligibilityPayloadTest extends TestCase
         $this->expectException($expectedException);
 
         $eligibilityPayload = new EligibilityPayload($data);
+        $eligibilityPayload->validate();
     }
 }

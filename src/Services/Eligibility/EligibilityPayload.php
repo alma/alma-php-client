@@ -25,21 +25,17 @@
 namespace Alma\API\Services\Eligibility;
 
 use Alma\API\ParamsError;
+use Alma\API\Services\ParamPayloadInterface;
 
-class EligibilityPayload extends Payload
+class EligibilityPayload extends ParamPayloadInterface
 {
     /**
-     * Eligibility Payload constructor.
+     * EligibilityPayload constructor.
      *
      * @param array $data
      */
     public function __construct($data)
     {
-        $missingAttr = $this->checkMissingMandatoryAttributes($data, ['purchase_amount', 'queries']);
-        if ($missingAttr !== null) {
-            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <$missingAttr>");
-        }
-
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'purchase_amount':
@@ -77,7 +73,7 @@ class EligibilityPayload extends Payload
         $this->queries = [];
         foreach ($queries as $query) {
             $queryPayload = new QueryPayload($query);
-            $this->queries[] = $queryPayload->toPayload();
+            $this->queries[] = $queryPayload;
         }
     }
 
@@ -93,10 +89,33 @@ class EligibilityPayload extends Payload
         $this->locale = $locale;
     }
 
+    public function validate() {
+        if (!isset($this->purchaseAmount)) {
+            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <purchaseAmount>");
+        }
+        if (empty($this->queries)) {
+            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <queries>");
+        }
+        foreach ($this->queries as $query) {
+            $query->validate();
+        }
+        if (isset($this->billingAddress)) {
+            $this->billingAddress->validate();
+        }
+        if (isset($this->shippingAddress)) {
+            $this->shippingAddress->validate();
+        }
+        return true;
+    }
+
     public function toPayload() {
+        $queries = [];
+        foreach ($this->queries as $query) {
+            $queries[] = $query->toPayload();
+        }
         $payload = [
             'purchase_amount' => $this->purchaseAmount,
-            'queries' => $this->queries
+            'queries' => $queries
         ];
         if (isset($this->billingAddress)) {
             $payload['billing_address'] = $this->billingAddress->toPayload();

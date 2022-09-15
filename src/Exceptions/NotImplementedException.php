@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2018 Alma / Nabla SAS.
+ * Copyright (c) 2018 Alma / Nabla SAS
  *
  * THE MIT LICENSE
  *
@@ -20,21 +20,16 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
+ *
  */
 
-namespace Alma\API\Services\Eligibility;
+namespace Alma\API;
 
-abstract class Payload
+/**
+ * Class NotImplementedException
+ * @package Alma\API
+ */
+class NotImplementedException extends \Exception
 {
-    protected function checkMissingMandatoryAttributes($payload, $mandatoryAttributes) {
-        foreach ($mandatoryAttributes as $attr) {
-            if (!isset($payload[$attr])) {
-                return $attr;
-            }
-        }
-        return null;
-    }
 
-    abstract public function toPayload();
 }
-

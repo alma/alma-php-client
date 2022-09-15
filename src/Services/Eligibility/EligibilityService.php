@@ -25,78 +25,29 @@
 namespace Alma\API\Services\Eligibility;
 
 use Alma\API\Services\ServiceBase;
-use Alma\API\RequestError;
+use Alma\API\Services\PayloadInterface;
+use Alma\API\RequestException;
 use Alma\API\Endpoints\Results\Eligibility;
 
 class EligibilityService extends ServiceBase
 {
-    const ELIGIBILITY_PATH_V1 = '/v1/payments/eligibility';
     const ELIGIBILITY_PATH    = '/v2/payments/eligibility';
 
     /**
-     * @param array $data         Payment data to check the eligibility for – same data format as payment
-     *                            creation, except that only payment.purchase_amount is mandatory and
-     *                            payment.installments_count can be an array of integers, to test for multiple
-     *                            eligible plans at once.
-     * @param bool  $raiseOnError Whether to raise a RequestError on 4xx and 5xx errors, as it should.
-     *                            Defaults false to preserve original behaviour. Will default to true
-     *                            in future versions (next major update).
+     * @param PayloadInterface $eligibilityPayload
      *
      * @return Eligibility[]
-     * @throws RequestError
-     *
-     * @deprecated
+     * @throws RequestException
      */
-    public function eligibilityV1(array $data, $raiseOnError = false)
+    public function getList(PayloadInterface $eligibilityPayload = null)
     {
-        $res = $this->request(self::ELIGIBILITY_PATH_V1)->setRequestBody($data)->post();
-
-        if ($res->isError()) {
-            if ($raiseOnError) {
-                throw new RequestError($res->errorMessage, null, $res);
-            }
-
-            return [new Eligibility($res->json, $res->responseCode)];
-        }
-
-
-        if (is_array($res->json)) {
-            $result = [];
-            foreach ($res->json as $eligibilityData) {
-                $eligibility = $this->buildEligibilityObject($eligibilityData, $res->responseCode);
-                $result[$eligibility->getInstallmentsCount()] = $eligibility;
-            }
-            return $result;
-        }
-
-        return $this->getEligibilityError($res);
-    }
-
-    /**
-     * @param array $data         Payment data to check the eligibility for – same data format as payment
-     *                            creation, except that only payment.purchase_amount is mandatory and
-     *                            payment.installments_count can be an array of integers, to test for multiple
-     *                            eligible plans at once.
-     * @param bool  $raiseOnError Whether to raise a RequestError on 4xx and 5xx errors, as it should.
-     *                            Defaults false to preserve original behaviour. Will default to true
-     *                            in future versions (next major update).
-     *
-     * @return Eligibility[]
-     * @throws RequestError
-     */
-    public function eligibility(array $data, $raiseOnError = false)
-    {
-        $eligibilityPayload = new EligibilityPayload($data);
+        $eligibilityPayload->validate();
         $res = $this->request(self::ELIGIBILITY_PATH)
                     ->setRequestBody($eligibilityPayload->toPayload())
                     ->post();
 
         if ($res->isError()) {
-            if ($raiseOnError) {
-                throw new RequestError($res->errorMessage, null, $res);
-            }
-
-            return $this->getEligibilityError($res);
+            throw new RequestException($res->errorMessage, null, $res);
         }
 
         if (is_array($res->json)) {
@@ -125,12 +76,7 @@ class EligibilityService extends ServiceBase
         return $eligibility;
     }
 
-    public function isV1Payload($data)
-    {
-        return array_key_exists('payment', $data);
-    }
-
-    private function getEligibilityError($res)
+    public function getEligibilityError($res)
     {
         return [
             new Eligibility(

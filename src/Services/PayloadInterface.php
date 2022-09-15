@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2018 Alma / Nabla SAS
+ * Copyright (c) 2018 Alma / Nabla SAS.
  *
  * THE MIT LICENSE
  *
@@ -22,31 +22,26 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Services\Refund;
+namespace Alma\API\Services;
 
-use Alma\API\Entities\Payment;
-use Alma\API\Services\ServiceBase;
-use Alma\API\Services\PayloadInterface;
-use Alma\API\Services\Refund\RefundPayload;
-use Alma\API\RequestError;
-
-class RefundService extends ServiceBase
+interface PayloadInterface
 {
-    const REFUND_PATH = '/v1/payments/%s/refund';
+    /**
+     * @return bool
+     * @throws ParamsException
+     */
+    public function validate();
 
-    public function create(PayloadInterface $refundPayload)
-    {
-        $id = $refundPayload->get('id');
-        $req = $this->request(sprintf(self::REFUND_PATH, $id));
+    /**
+     * @return array
+     * @throws ParamsException
+     */
+    public function toPayload();
 
-        $req->setRequestBody($refundPayload->toPayload());
-
-        $res = $req->post();
-        if ($res->isError()) {
-            throw new RequestError($res->errorMessage, $req, $res);
-        }
-
-        return new Payment($res->json);
-    }
-
+    /**
+     * @param string $path
+     * @return string
+     * @throws ParamsException
+     */
+    public function get($path);
 }

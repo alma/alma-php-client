@@ -25,21 +25,17 @@
 namespace Alma\API\Services\Eligibility;
 
 use Alma\API\ParamsError;
+use Alma\API\Services\ParamPayloadInterface;
 
-class AddressPayload extends Payload
+class AddressPayload extends ParamPayloadInterface
 {
     /**
-     * Address Payload constructor.
+     * Address PayloadInterface constructor.
      *
      * @param array    $data
      */
     public function __construct($data)
     {
-        $missingAttr = $this->checkMissingMandatoryAttributes($data, ['country']);
-        if ($missingAttr !== null) {
-            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <$missingAttr>");
-        }
-
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'title':
@@ -114,6 +110,13 @@ class AddressPayload extends Payload
     }
     public function setPhone($phone) {
         $this->phone = $phone;
+    }
+
+    public function validate() {
+        if (!isset($this->country)) {
+            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <country>");
+        }
+        return true;
     }
 
     public function toPayload() {

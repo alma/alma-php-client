@@ -25,21 +25,20 @@
 namespace Alma\API\Services\Eligibility;
 
 use Alma\API\ParamsError;
+use Alma\API\Services\ParamPayloadInterface;
 
-class QueryPayload extends Payload
+class QueryPayload extends ParamPayloadInterface
 {
     /**
-     * Query Payload constructor.
+     * Query PayloadInterface constructor.
      *
      * @param array $data
      */
     public function __construct($data)
     {
-        $missingAttr = $this->checkMissingMandatoryAttributes($data, ['installments_count']);
-        if ($missingAttr !== null) {
-            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <queries:$missingAttr>");
+        if (empty($data)) {
+            return;
         }
-
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'allowed':
@@ -89,6 +88,13 @@ class QueryPayload extends Payload
 
     public function setMinPurchaseAmount($minPurchaseAmount) {
         $this->minPurchaseAmount = $minPurchaseAmount;
+    }
+
+    public function validate() {
+        if (!isset($this->installments_count)) {
+            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <installments_count>");
+        }
+        return true;
     }
 
     public function toPayload() {

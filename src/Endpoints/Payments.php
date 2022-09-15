@@ -29,9 +29,12 @@ use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\RequestError;
+use Alma\API\ParamsError;
 use Alma\API\Response;
 use Alma\API\Services\Refund\RefundService;
+use Alma\API\Services\Refund\RefundPayload;
 use Alma\API\Services\Eligibility\EligibilityService;
+use Alma\API\Services\Eligibility\EligibilityPayload;
 
 class Payments extends Base
 {
@@ -51,12 +54,85 @@ class Payments extends Base
      */
     public function eligibility(array $data, $raiseOnError = false)
     {
-        $eligibilityService = EligibilityService::getInstance($this->clientContext);
-
-        if ($eligibilityService->isV1Payload($data)) {
-            return $eligibilityService->eligibilityV1($data, $raiseOnError);
+        if ($this->isV1Payload($data)) {
+            return $this->eligibilityV1($data, $raiseOnError);
         }
-        return $eligibilityService->eligibility($data, $raiseOnError);
+
+        try {
+            $eligibilityPayload = new EligibilityPayload($data);
+            $eligibilityService = EligibilityService::getInstance($this->clientContext);
+            return $eligibilityService->getList($eligibilityPayload);
+        } catch (ParamsError $e) {
+            return $this->eligibilityError($eligibilityService, $e, $raiseOnError);
+        } catch (RequestError $e) {
+            return $this->eligibilityError($eligibilityService, $e, $raiseOnError);
+        }
+    }
+
+    private function eligibilityError(EligibilityService $eligibilityService, \Exception $e, bool $raiseOnError) {
+        if ($raiseOnError) {
+            throw $e;
+        }
+        return $eligibilityService->getEligibilityError($e->response);
+    }
+
+    private function isV1Payload($data)
+    {
+        return array_key_exists('payment', $data);
+    }
+
+    /**
+     * @param array $data         Payment data to check the eligibility for – same data format as payment
+     *                            creation, except that only payment.purchase_amount is mandatory and
+     *                            payment.installments_count can be an array of integers, to test for multiple
+     *                            eligible plans at once.
+     * @param bool  $raiseOnError Whether to raise a RequestError on 4xx and 5xx errors, as it should.
+     *                            Defaults false to preserve original behaviour. Will default to true
+     *                            in future versions (next major update).
+     *
+     * @return Eligibility[]
+     * @throws RequestError
+     *
+     * @deprecated
+     */
+    private function eligibilityV1(array $data, $raiseOnError)
+    {
+        $res = $this->request('/v1/payments/eligibility')->setRequestBody($data)->post();
+
+        if ($res->isError()) {
+            if ($raiseOnError) {
+                throw new RequestError($res->errorMessage, null, $res);
+            }
+
+            return [new Eligibility($res->json, $res->responseCode)];
+        }
+
+
+        if (is_array($res->json)) {
+            $result = [];
+            foreach ($res->json as $eligibilityData) {
+                $eligibility = new Eligibility($eligibilityData, $res->responseCode);
+
+                if (!$eligibility->isEligible()) {
+                    $this->logger->info(
+                        "Eligibility check failed for following reasons: " .
+                        var_export($eligibility->reasons, true)
+                    );
+                }
+
+                $result[$eligibility->getInstallmentsCount()] = $eligibility;
+            }
+            return $result;
+        }
+
+        return [
+            new Eligibility(
+                [
+                "eligible" => false,
+                "reasons"  => ["Unexpected value from eligibility: " . var_export($res->json, true)],
+                ], $res->responseCode
+            )
+        ];
     }
 
     /**
@@ -162,9 +238,11 @@ class Payments extends Base
      */
     public function partialRefund($id, $amount, $merchantReference = "", $comment = "")
     {
-        $refundService = RefundService::getInstance($this->clientContext);
+        $payload = RefundPayload::create($id, $amount, $merchantReference, $comment);
+        $payload->validate();
 
-        return $refundService->partialRefund($id, $amount, $merchantReference, $comment);
+        $refundService = RefundService::getInstance($this->clientContext);
+        return $refundService->create($payload);
     }
 
     /**
@@ -179,9 +257,11 @@ class Payments extends Base
      */
     public function fullRefund($id, $merchantReference = "", $comment = "")
     {
-        $refundService = RefundService::getInstance($this->clientContext);
+        $payload = RefundPayload::create($id, 0, $merchantReference, $comment);
+        $payload->validate();
 
-        return $refundService->fullRefund($id, $merchantReference, $comment);
+        $refundService = RefundService::getInstance($this->clientContext);
+        return $refundService->create($payload);
     }
 
     /**
@@ -200,9 +280,14 @@ class Payments extends Base
     public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "")
     {
         if ($totalRefund !== true) {
-            return $this->partialRefund($id, $amount, $merchantReference);
+            $payload = RefundPayload::create($id, $amount, $merchantReference);
+        } else {
+            $payload = RefundPayload::create($id, 0, $merchantReference);
         }
-        return $this->fullRefund($id, $merchantReference);
+        $payload->validate();
+
+        $refundService = RefundService::getInstance($this->clientContext);
+        return $refundService->create($payload);
     }
 
     /**

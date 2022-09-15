@@ -12,6 +12,7 @@ use Alma\API\Request;
 use Alma\API\ParamsError;
 use Alma\API\RequestError;
 use Alma\API\Services\Refund\RefundService;
+use Alma\API\Services\Refund\RefundPayload;
 
 /**
  * Class RefundServiceTest
@@ -115,7 +116,9 @@ class RefundServiceTest extends TestCase
             ->with("/v1/payments/$id/refund")
             ->andReturn($this->mockRequest());
 
-        $refundServiceMock->partialRefund(...$data);
+        $p = RefundPayload::create(...$data);
+        $p->validate();
+        $refundServiceMock->create($p);
     }
 
 
@@ -135,7 +138,9 @@ class RefundServiceTest extends TestCase
             ->with("/v1/payments/$id/refund")
             ->andReturn($this->mockRequest());
 
-        $refundServiceMock->fullRefund(...$data);
+        $p = RefundPayload::create(...$data);
+        $p->validate();
+        $refundServiceMock->create($p);
     }
 
 
@@ -146,18 +151,10 @@ class RefundServiceTest extends TestCase
      */
     public function testRefundInputError($data, $expectedException)
     {
-        $refundServiceMock = Mockery::mock(RefundService::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $id = $data[0];
-
-        $refundServiceMock->shouldReceive('request')
-            ->with("/v1/payments/$id/refund")
-            ->andReturn($this->mockRequest());
-
         $this->expectException($expectedException);
 
-        $refundServiceMock->partialRefund(...$data);
+        $p = RefundPayload::create(...$data);
+        $p->validate();
     }
 
     public function testFullRefundRequestError()
@@ -176,7 +173,7 @@ class RefundServiceTest extends TestCase
 
         $this->expectException(RequestError::class);
 
-        $refundServiceMock->fullRefund($id);
+        $refundServiceMock->create(RefundPayload::create($id));
     }
 
 

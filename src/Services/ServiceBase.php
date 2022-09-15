@@ -26,8 +26,10 @@ namespace Alma\API\Services;
 
 use Alma\API\ClientContext;
 use Alma\API\Request;
+use Alma\API\NotImplementedException;
+use Alma\API\Services\PayloadInterface;
 
-class ServiceBase
+abstract class ServiceBase
 {
     private static $instance = null;
 
@@ -81,5 +83,30 @@ class ServiceBase
         }
 
         return self::$instance;
+    }
+
+    public function getList(PayloadInterface $payload = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public function get($id, PayloadInterface $payload = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public function update($id, PayloadInterface $payload = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public function create(PayloadInterface $payload)
+    {
+        throw new NotImplementedException();
+    }
+
+    public function delete($id, PayloadInterface $payload = null)
+    {
+        throw new NotImplementedException();
     }
 }

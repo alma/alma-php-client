@@ -24,13 +24,13 @@
 
 namespace Alma\API\Services\Refund;
 
-
 use Alma\API\ParamsError;
+use Alma\API\Services\ParamPayloadInterface;
 
-class RefundPayload
+class RefundPayload extends ParamPayloadInterface
 {
     /* @param string */
-    private $id;
+    protected $id;
 
     /* @param int */
     private $amount = 0;
@@ -40,6 +40,10 @@ class RefundPayload
 
     /* @param string */
     private $comment = '';
+
+    public function getId() {
+        return $this->id;
+    }
 
     /**
      * The Refund object create a payload to give to the refund endpoint
@@ -54,14 +58,6 @@ class RefundPayload
      */
     public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
     {
-        if ($id === '') {
-            throw new ParamsError('Payment Id can\'t be empty.');
-        }
-
-        if ($amount < 0) {
-            throw new ParamsError('You can\'t refund a negative amount.');
-        }
-
         $refundPayload = new self($id);
         if ($amount !== 0) {
             $refundPayload->setAmount($amount);
@@ -80,27 +76,11 @@ class RefundPayload
     }
 
     /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * @param string $id
      */
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAmount()
-    {
-        return $this->amount;
     }
 
     /**
@@ -112,27 +92,11 @@ class RefundPayload
     }
 
     /**
-     * @return string
-     */
-    public function getMerchantReference()
-    {
-        return $this->merchantReference;
-    }
-
-    /**
      * @param string $merchantReference
      */
     public function setMerchantReference($merchantReference)
     {
         $this->merchantReference = $merchantReference;
-    }
-
-    /**
-     * @return string
-     */
-    public function getComment()
-    {
-        return $this->comment;
     }
 
     /**
@@ -143,18 +107,33 @@ class RefundPayload
         $this->comment = $comment;
     }
 
+    public function validate() {
+        if (!isset($this->id) || $this->id == "") {
+            throw new ParamsError("Invalid Refund Request: some mandatory field is missing: <id>");
+        }
+
+        if (isset($this->amount) && $this->amount < 0) {
+            throw new ParamsError("Invalid Refund Request: <amount> should be > 0");
+        }
+        return true;
+    }
+
     /**
      * @return array
      */
-    public function getRequestBody()
+    public function toPayload()
     {
         $requestBody = [
-            "merchant_reference" => $this->getMerchantReference(),
-            "comment" => $this->getComment(),
+            "merchant_reference" => $this->merchantReference,
+            "comment" => $this->comment,
         ];
-        if ($this->getAmount() > 0) {
-            $requestBody["amount"] = $this->getAmount();
+        if ($this->amount > 0) {
+            $requestBody["amount"] = $this->amount;
         }
         return $requestBody;
+    }
+
+    public function getUrl($path) {
+        return sprintf($path, $this->getId());
     }
 }
