@@ -29,10 +29,16 @@ use Alma\API\Services\ParamPayloadInterface;
 
 class EligibilityPayload extends ParamPayloadInterface
 {
+    private $purchaseAmount;
+    /** @var array */
+    private $queries;
+
     /**
      * EligibilityPayload constructor.
      *
      * @param array $data
+     *
+     * @throws ParamsError
      */
     public function __construct($data)
     {
@@ -56,15 +62,25 @@ class EligibilityPayload extends ParamPayloadInterface
 
                 default:
                     throw new ParamsError("Invalid Eligibility Request: unknown field <$key>");
-                    break;
             }
         }
     }
 
+    /**
+     * @param int $amount
+     *
+     * @return void
+     */
     public function setPurchaseAmount($amount) {
         $this->purchaseAmount = $amount;
     }
 
+    /**
+     * @param array $queries
+     *
+     * @return void
+     * @throws ParamsError
+     */
     public function setQueries(array $queries) {
         if (empty($queries)) {
             throw new ParamsError("Invalid Eligibility Request: queries is empty");

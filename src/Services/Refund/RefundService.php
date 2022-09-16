@@ -25,25 +25,30 @@
 namespace Alma\API\Services\Refund;
 
 use Alma\API\Entities\Payment;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\Services\ServiceBase;
 use Alma\API\Services\PayloadInterface;
-use Alma\API\Services\Refund\RefundPayload;
-use Alma\API\RequestError;
 
 class RefundService extends ServiceBase
 {
     const REFUND_PATH = '/v1/payments/%s/refund';
 
-    public function create(PayloadInterface $refundPayload)
+    /**
+     * @param PayloadInterface $payload
+     *
+     * @return Payment
+     * @throws RequestException
+     */
+    public function create(PayloadInterface $payload)
     {
-        $id = $refundPayload->get('id');
+        $id = $payload->get('id');
         $req = $this->request(sprintf(self::REFUND_PATH, $id));
 
-        $req->setRequestBody($refundPayload->toPayload());
+        $req->setRequestBody($payload->toPayload());
 
         $res = $req->post();
         if ($res->isError()) {
-            throw new RequestError($res->errorMessage, $req, $res);
+            throw new RequestException($res->errorMessage, $req, $res);
         }
 
         return new Payment($res->json);

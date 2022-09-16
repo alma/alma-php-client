@@ -23,10 +23,14 @@
  *
  */
 
-namespace Alma\API;
+namespace Alma\API\Exceptions;
+
+use Alma\API\Request;
+use Alma\API\Response;
 
 /**
  * Class RequestException
+ *
  * @package Alma\API
  */
 class RequestException extends \Exception
@@ -34,11 +38,12 @@ class RequestException extends \Exception
     /**
      * @var Request|null
      */
-    public $request;
+    protected $request;
+
     /**
      * @var Response|null
      */
-    public $response;
+    protected $response;
 
     public function __construct($message = "", $request = null, $response = null)
     {
@@ -46,5 +51,21 @@ class RequestException extends \Exception
 
         $this->request = $request;
         $this->response = $response;
+    }
+
+    /**
+     * @return null|Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return null|Response
+     */
+    public function getResponse()
+    {
+        return $this->response;
     }
 }
