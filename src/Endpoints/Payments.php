@@ -28,6 +28,7 @@ use Alma\API\Endpoints\Results\Eligibility;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\RequestException;
+use Alma\API\ParamsException;
 use Alma\API\RequestError;
 use Alma\API\ParamsError;
 use Alma\API\Services\Refund\RefundService;
@@ -268,17 +269,19 @@ class Payments extends Base
      */
     public function fullRefund($id, $merchantReference = "", $comment = "")
     {
+        $payload = RefundPayload::create($id, 0, $merchantReference, $comment);
         try {
-            $payload = RefundPayload::create($id, 0, $merchantReference, $comment);
+            $payload->validate();
         } catch (ParamsError $e) {
             throw $this->requestErrorFromException($e);
         }
-        $payload->validate();
 
         $refundService = RefundService::getInstance($this->clientContext);
         try {
             return $refundService->create($payload);
         } catch (RequestException $e) {
+            throw $this->requestErrorFromException($e);
+        } catch (ParamsException $e) {
             throw $this->requestErrorFromException($e);
         }
     }
@@ -330,12 +333,12 @@ class Payments extends Base
      */
     public function partialRefund($id, $amount, $merchantReference = "", $comment = "")
     {
+        $payload = RefundPayload::create($id, $amount, $merchantReference, $comment);
         try {
-            $payload = RefundPayload::create($id, $amount, $merchantReference, $comment);
+            $payload->validate();
         } catch (ParamsError $e) {
             throw $this->requestErrorFromException($e);
         }
-        $payload->validate();
 
         $refundService = RefundService::getInstance($this->clientContext);
         try {
@@ -361,16 +364,16 @@ class Payments extends Base
      */
     public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "")
     {
+        if ($totalRefund !== true) {
+            $payload = RefundPayload::create($id, $amount, $merchantReference);
+        } else {
+            $payload = RefundPayload::create($id, 0, $merchantReference);
+        }
         try {
-            if ($totalRefund !== true) {
-                $payload = RefundPayload::create($id, $amount, $merchantReference);
-            } else {
-                $payload = RefundPayload::create($id, 0, $merchantReference);
-            }
+            $payload->validate();
         } catch (ParamsError $e) {
             throw $this->requestErrorFromException($e);
         }
-        $payload->validate();
 
         $refundService = RefundService::getInstance($this->clientContext);
 

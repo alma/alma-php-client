@@ -27,16 +27,18 @@ namespace Alma\API\Services;
 use Alma\API\Services\PayloadInterface;
 use Alma\API\ParamsException;
 
-abstract class ParamPayloadInterface implements PayloadInterface
+abstract class AbstractPayload implements PayloadInterface
 {
     /**
+     * @param $fieldName
+     *
      * @return string
      * @throws ParamsException
      */
-    public function get($field) {
-        if (property_exists($this, $field)) {
-            return $this->$field;
+    public function getField($fieldName) {
+        if (property_exists($this, $fieldName)) {
+            return $this->$fieldName;
         }
-        throw new ParamsException("$field not found");
+        throw new ParamsException("$fieldName not found");
     }
 }

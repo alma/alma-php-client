@@ -25,14 +25,23 @@
 namespace Alma\API\Services\Eligibility;
 
 use Alma\API\ParamsError;
-use Alma\API\Services\ParamPayloadInterface;
+use Alma\API\Services\AbstractPayload;
 
-class QueryPayload extends ParamPayloadInterface
+class QueryPayload extends AbstractPayload
 {
+    private $minPurchaseAmount;
+    private $maxPurchaseAmount;
+    private $installmentsCount;
+    private $deferredTriggerLimitDays;
+    private $deferredDays;
+    private $allowed;
+
     /**
      * Query PayloadInterface constructor.
      *
      * @param array $data
+     *
+     * @throws ParamsError
      */
     public function __construct($data)
     {
@@ -61,7 +70,6 @@ class QueryPayload extends ParamPayloadInterface
                     break;
                 default:
                     throw new ParamsError("Invalid Eligibility Request: unknown field <$key>");
-                    break;
             }
         }
     }
@@ -90,7 +98,15 @@ class QueryPayload extends ParamPayloadInterface
         $this->minPurchaseAmount = $minPurchaseAmount;
     }
 
+    /**
+     * @return bool
+     * @throws ParamsError
+     */
     public function validate() {
+        if (empty($this->queries)) {
+            throw new ParamsError("Invalid Eligibility Request: queries is empty");
+        }
+
         if (!isset($this->installments_count)) {
             throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <installments_count>");
         }

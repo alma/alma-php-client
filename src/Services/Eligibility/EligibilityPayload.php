@@ -25,13 +25,20 @@
 namespace Alma\API\Services\Eligibility;
 
 use Alma\API\ParamsError;
-use Alma\API\Services\ParamPayloadInterface;
+use Alma\API\ParamsException;
+use Alma\API\Services\AbstractPayload;
 
-class EligibilityPayload extends ParamPayloadInterface
+class EligibilityPayload extends AbstractPayload
 {
     private $purchaseAmount;
-    /** @var array */
+    /** @var QueryPayload[] */
     private $queries;
+    /** @var AddressPayload */
+    private $billingAddress;
+    /** @var AddressPayload */
+    private $shippingAddress;
+    /** @var string */
+    private $locale;
 
     /**
      * EligibilityPayload constructor.
@@ -82,10 +89,6 @@ class EligibilityPayload extends ParamPayloadInterface
      * @throws ParamsError
      */
     public function setQueries(array $queries) {
-        if (empty($queries)) {
-            throw new ParamsError("Invalid Eligibility Request: queries is empty");
-        }
-
         $this->queries = [];
         foreach ($queries as $query) {
             $queryPayload = new QueryPayload($query);
@@ -93,24 +96,37 @@ class EligibilityPayload extends ParamPayloadInterface
         }
     }
 
+    /**
+     * @param array $address
+     *
+     * @return void
+     * @throws ParamsException
+     */
     public function setBillingAddress(array $address) {
         $this->billingAddress = new AddressPayload($address);
     }
 
+    /**
+     * @throws ParamsException
+     */
     public function setShippingAddress(array $address) {
         $this->shippingAddress = new AddressPayload($address);
     }
 
-    public function setLocale(string $locale) {
+    public function setLocale($locale) {
         $this->locale = $locale;
     }
 
+    /**
+     * @return bool
+     * @throws ParamsException
+     */
     public function validate() {
         if (!isset($this->purchaseAmount)) {
-            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <purchaseAmount>");
+            throw new ParamsException("Invalid Eligibility Request: some mandatory field is missing: <purchaseAmount>");
         }
         if (empty($this->queries)) {
-            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <queries>");
+            throw new ParamsException("Invalid Eligibility Request: some mandatory field is missing: <queries>");
         }
         foreach ($this->queries as $query) {
             $query->validate();
@@ -124,6 +140,10 @@ class EligibilityPayload extends ParamPayloadInterface
         return true;
     }
 
+    /**
+     * @return array
+     * @throws ParamsException
+     */
     public function toPayload() {
         $queries = [];
         foreach ($this->queries as $query) {

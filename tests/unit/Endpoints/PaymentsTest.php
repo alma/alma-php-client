@@ -1,15 +1,14 @@
-<?php
+<?php /** @noinspection ReplaceLegacyMockeryInspection */
 
-namespace Alma\API\Tests\Unit;
+namespace Alma\API\Tests\unit\Endpoints;
 
+use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
 use Alma\API\Endpoints\Payments;
-use Alma\API\Lib\ClientOptionsValidator;
 use Alma\API\ClientContext;
 use Alma\API\Request;
-use Alma\API\ParamsError;
 use Alma\API\RequestError;
 use Alma\API\Services\Refund\RefundService;
 
@@ -122,12 +121,12 @@ class PaymentsTest extends TestCase
             [[
                 'id' => "negative_amount",
                 'amount' => -1
-            ], ParamsError::class],
+            ], RequestError::class],
             [[
                 'id' => "",
                 'amount' => 1500,
                 'merchant_ref' => "no id",
-            ], ParamsError::class],
+            ], RequestError::class],
         ];
     }
 
@@ -280,7 +279,7 @@ class PaymentsTest extends TestCase
             [[
                 'id' => "",
                 'merchant_ref' => "no id",
-            ], ParamsError::class],
+            ], RequestError::class],
         ];
     }
 
@@ -293,7 +292,7 @@ class PaymentsTest extends TestCase
     {
         $clientContext = Mockery::mock(ClientContext::class);
 
-        // Payment
+        // Payments
         $payments = Mockery::mock(Payments::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial()

@@ -24,6 +24,8 @@
 
 namespace Alma\API\Services;
 
+use Alma\API\ParamsException;
+
 interface PayloadInterface
 {
     /**
@@ -39,9 +41,10 @@ interface PayloadInterface
     public function toPayload();
 
     /**
-     * @param string $path
+     * @param string $fieldName
+     *
      * @return string
      * @throws ParamsException
      */
-    public function get($path);
+    public function getField($fieldName);
 }

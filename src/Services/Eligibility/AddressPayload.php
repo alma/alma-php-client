@@ -24,15 +24,29 @@
 
 namespace Alma\API\Services\Eligibility;
 
-use Alma\API\ParamsError;
-use Alma\API\Services\ParamPayloadInterface;
+use Alma\API\ParamsException;
+use Alma\API\Services\AbstractPayload;
 
-class AddressPayload extends ParamPayloadInterface
+class AddressPayload extends AbstractPayload
 {
+    private $title;
+    private $firstName;
+    private $lastName;
+    private $line1;
+    private $company;
+    private $line2;
+    private $postalCode;
+    private $city;
+    private $country;
+    private $stateProvince;
+    private $phone;
+
     /**
      * Address PayloadInterface constructor.
      *
-     * @param array    $data
+     * @param array $data
+     *
+     * @throws ParamsException
      */
     public function __construct($data)
     {
@@ -72,8 +86,7 @@ class AddressPayload extends ParamPayloadInterface
                     $this->setPhone($value);
                     break;
                 default:
-                    throw new ParamsError("Invalid Eligibility Request: unknown field <$key>");
-                    break;
+                    throw new ParamsException("Invalid Eligibility Request: unknown field <$key>");
             }
         }
     }
@@ -112,9 +125,13 @@ class AddressPayload extends ParamPayloadInterface
         $this->phone = $phone;
     }
 
+    /**
+     * @return bool
+     * @throws ParamsException
+     */
     public function validate() {
         if (!isset($this->country)) {
-            throw new ParamsError("Invalid Eligibility Request: some mandatory field is missing: <country>");
+            throw new ParamsException("Invalid Eligibility Request: some mandatory field is missing: <country>");
         }
         return true;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit;
+namespace Alma\API\Tests\unit\Endpoints\Services\Eligibility;
 
 use PHPUnit\Framework\TestCase;
 

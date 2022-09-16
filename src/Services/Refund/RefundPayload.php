@@ -25,9 +25,9 @@
 namespace Alma\API\Services\Refund;
 
 use Alma\API\ParamsError;
-use Alma\API\Services\ParamPayloadInterface;
+use Alma\API\Services\AbstractPayload;
 
-class RefundPayload extends ParamPayloadInterface
+class RefundPayload extends AbstractPayload
 {
     /* @param string */
     protected $id;
@@ -48,13 +48,13 @@ class RefundPayload extends ParamPayloadInterface
     /**
      * The Refund object create a payload to give to the refund endpoint
      *
-     * @param  string $id                payment_id
-     * @param  int    $amount            the amount to refund, 0 means all
-     * @param  string $merchantReference a reference for the merchant
-     * @param  string $comment
-     * @return Alma\API\Refund
+     * @param string $id                payment_id
+     * @param int    $amount            the amount to refund, 0 means all
+     * @param string $merchantReference a reference for the merchant
+     * @param string $comment
      *
-     * @throws ParamsError
+     * @return RefundPayload
+     *
      */
     public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
     {
@@ -64,6 +64,7 @@ class RefundPayload extends ParamPayloadInterface
         }
         $refundPayload->setMerchantReference($merchantReference);
         $refundPayload->setComment($comment);
+
         return $refundPayload;
     }
 
@@ -107,6 +108,10 @@ class RefundPayload extends ParamPayloadInterface
         $this->comment = $comment;
     }
 
+    /**
+     * @return bool
+     * @throws ParamsError
+     */
     public function validate() {
         if (!isset($this->id) || $this->id == "") {
             throw new ParamsError("Invalid Refund Request: some mandatory field is missing: <id>");

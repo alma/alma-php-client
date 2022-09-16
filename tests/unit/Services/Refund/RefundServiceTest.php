@@ -1,16 +1,14 @@
-<?php
+<?php /** @noinspection ReplaceLegacyMockeryInspection */
 
-namespace Alma\API\Tests\Unit;
+namespace Alma\API\Tests\unit\Services\Refund;
 
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-use Alma\API\Endpoints\Payments;
-use Alma\API\Lib\ClientOptionsValidator;
-use Alma\API\ClientContext;
 use Alma\API\Request;
 use Alma\API\ParamsError;
-use Alma\API\RequestError;
 use Alma\API\Services\Refund\RefundService;
 use Alma\API\Services\Refund\RefundPayload;
 
@@ -102,8 +100,10 @@ class RefundServiceTest extends TestCase
 
     /**
      * Test the partialRefund method with valid datas
+     *
      * @dataProvider getPartialRefundData
      * @return void
+     * @throws ParamsError
      */
     public function testPartialRefundExist($data)
     {
@@ -124,8 +124,10 @@ class RefundServiceTest extends TestCase
 
     /**
      * Test the fullRefund method with valid datas
+     *
      * @dataProvider getFullRefundData
      * @return void
+     * @throws ParamsError
      */
     public function testFullRefundExist($data)
     {
@@ -171,7 +173,7 @@ class RefundServiceTest extends TestCase
             ->with("/v1/payments/$id/refund")
             ->andReturn($this->mockRequest($this->mockErrorResponse()));
 
-        $this->expectException(RequestError::class);
+        $this->expectException(RequestException::class);
 
         $refundServiceMock->create(RefundPayload::create($id));
     }
