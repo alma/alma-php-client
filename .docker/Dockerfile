@@ -1,4 +1,4 @@
-FROM composer:2
+FROM composer:1 as composer
 FROM php:5.6-fpm
 
 # Packages install
