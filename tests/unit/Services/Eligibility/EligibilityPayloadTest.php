@@ -2,9 +2,9 @@
 
 namespace Alma\API\Tests\unit\Endpoints\Services\Eligibility;
 
+use Alma\API\Exceptions\ParamsException;
 use PHPUnit\Framework\TestCase;
 
-use Alma\API\ParamsError;
 use Alma\API\Services\Eligibility\EligibilityPayload;
 
 /**
@@ -95,21 +95,21 @@ class EligibilityPayloadTest extends TestCase
                         "min_purchase_amount"=>5000
                     ],
                 ]
-                ], ParamsError::class],
+                ], ParamsException::class],
             'empty queries' => [[
                 "purchase_amount" => 15000,
                 "queries" => []
-            ], ParamsError::class],
+            ], ParamsException::class],
             'no queries' => [[
                 "purchase_amount" => 15000,
-            ], ParamsError::class],
+            ], ParamsException::class],
             'unknown param' => [[
                 "purchase_amount" => 15000,
                 "queries" => [
                     ["installments_count"=> 3,],
                 ],
                 "the_spanish_inquisition" => 15000,
-            ], ParamsError::class],
+            ], ParamsException::class],
         ];
     }
 

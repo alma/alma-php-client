@@ -24,7 +24,7 @@
 
 namespace Alma\API\Services;
 
-use Alma\API\ParamsException;
+use Alma\API\Exceptions\ParamsException;
 
 interface PayloadInterface
 {

@@ -23,13 +23,16 @@
  *
  */
 
-namespace Alma\API;
+namespace Alma\API\Exceptions;
+
+use Exception;
 
 /**
  * Class ParamsException
+ *
  * @package Alma\API
  */
-class ParamsException extends \Exception
+class ParamsException extends Exception
 {
 
 }

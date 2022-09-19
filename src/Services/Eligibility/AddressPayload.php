@@ -24,7 +24,7 @@
 
 namespace Alma\API\Services\Eligibility;
 
-use Alma\API\ParamsException;
+use Alma\API\Exceptions\ParamsException;
 use Alma\API\Services\AbstractPayload;
 
 class AddressPayload extends AbstractPayload

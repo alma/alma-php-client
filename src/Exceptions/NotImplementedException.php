@@ -23,13 +23,16 @@
  *
  */
 
-namespace Alma\API;
+namespace Alma\API\Exceptions;
+
+use Exception;
 
 /**
  * Class NotImplementedException
+ *
  * @package Alma\API
  */
-class NotImplementedException extends \Exception
+class NotImplementedException extends Exception
 {
 
 }

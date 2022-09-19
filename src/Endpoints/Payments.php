@@ -28,7 +28,7 @@ use Alma\API\Endpoints\Results\Eligibility;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\ParamsException;
+use Alma\API\Exceptions\ParamsException;
 use Alma\API\RequestError;
 use Alma\API\ParamsError;
 use Alma\API\Services\Refund\RefundService;

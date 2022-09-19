@@ -24,8 +24,7 @@
 
 namespace Alma\API\Services\Eligibility;
 
-use Alma\API\ParamsError;
-use Alma\API\ParamsException;
+use Alma\API\Exceptions\ParamsException;
 use Alma\API\Services\AbstractPayload;
 
 class EligibilityPayload extends AbstractPayload
@@ -45,7 +44,7 @@ class EligibilityPayload extends AbstractPayload
      *
      * @param array $data
      *
-     * @throws ParamsError
+     * @throws ParamsException
      */
     public function __construct($data)
     {
@@ -68,7 +67,7 @@ class EligibilityPayload extends AbstractPayload
                     break;
 
                 default:
-                    throw new ParamsError("Invalid Eligibility Request: unknown field <$key>");
+                    throw new ParamsException("Invalid Eligibility Request: unknown field <$key>");
             }
         }
     }
@@ -86,7 +85,7 @@ class EligibilityPayload extends AbstractPayload
      * @param array $queries
      *
      * @return void
-     * @throws ParamsError
+     * @throws ParamsException
      */
     public function setQueries(array $queries) {
         $this->queries = [];

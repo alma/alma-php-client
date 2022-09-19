@@ -26,7 +26,7 @@ namespace Alma\API\Services\Refund;
 
 use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\ParamsException;
+use Alma\API\Exceptions\ParamsException;
 use Alma\API\Services\ServiceBase;
 use Alma\API\Services\PayloadInterface;
 

@@ -26,7 +26,7 @@ namespace Alma\API\Services;
 
 use Alma\API\ClientContext;
 use Alma\API\Request;
-use Alma\API\NotImplementedException;
+use Alma\API\Exceptions\NotImplementedException;
 use Alma\API\Services\PayloadInterface;
 
 abstract class ServiceBase
