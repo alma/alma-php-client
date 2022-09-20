@@ -11,6 +11,7 @@ class ShareOfCheckout extends Base
     /**
      * @param array $data
      *
+     * @return array
      * @throws RequestError
      */
     public function share($data)
@@ -24,6 +25,7 @@ class ShareOfCheckout extends Base
 
     /**
      *
+     * @return array
      * @throws RequestError
      */
     public function getLastUpdateDates()
@@ -45,7 +47,6 @@ class ShareOfCheckout extends Base
         if ($res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
         }
-        return $res->json;
     }
 
     /**
@@ -58,6 +59,5 @@ class ShareOfCheckout extends Base
         if ($res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
         }
-        return true;
     }
 }
