@@ -81,4 +81,18 @@ class Merchants extends Base
             return new FeePlan($val);
         }, $res->json);
     }
+
+    /**
+     * @param array $data
+     * @return void
+     * @throws RequestError
+     */
+    public function cmsSettings(array $data)
+    {
+        $res = $this->request(self::ME_PATH . '/cms-settings')->setRequestBody($data)->post();
+
+        if ($res->isError()) {
+            throw new RequestError($res->errorMessage, null, $res);
+        }
+    }
 }
