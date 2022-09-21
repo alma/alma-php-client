@@ -11,6 +11,7 @@ class ShareOfCheckout extends Base
     /**
      * @param array $data
      *
+     * @return array
      * @throws RequestError
      */
     public function share($data)
@@ -24,6 +25,7 @@ class ShareOfCheckout extends Base
 
     /**
      *
+     * @return array
      * @throws RequestError
      */
     public function getLastUpdateDates()
@@ -35,4 +37,27 @@ class ShareOfCheckout extends Base
         return $res->json;
     }
 
+    /**
+     * Consent share of checkout
+     * @throws RequestError
+     */
+    public function addConsent()
+    {
+        $res = $this->request(self::SHARE_OF_CHECKOUT_PATH . 'consent')->setRequestBody()->post();
+        if ($res->isError()) {
+            throw new RequestError($res->errorMessage, null, $res);
+        }
+    }
+
+    /**
+     * Consent share of checkout
+     * @throws RequestError
+     */
+    public function removeConsent()
+    {
+        $res = $this->request(self::SHARE_OF_CHECKOUT_PATH . 'consent')->delete();
+        if ($res->isError()) {
+            throw new RequestError($res->errorMessage, null, $res);
+        }
+    }
 }
