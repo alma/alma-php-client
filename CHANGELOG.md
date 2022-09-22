@@ -1,5 +1,8 @@
 CHANGELOG
 =========
+v1.9.1
+-------
+* Added `addConsent` and `removeConsent` method to `ShareOfCheckout` endpoint
 
 v1.9.0
 -------
