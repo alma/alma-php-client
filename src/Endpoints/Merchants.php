@@ -89,7 +89,7 @@ class Merchants extends Base
      */
     public function cmsSettings(array $data)
     {
-        $res = $this->request(self::ME_PATH . '/cms-settings')->setRequestBody($data)->post();
+        $res = $this->request(self::MERCHANTS_PATH . '/cms-settings')->setRequestBody($data)->post();
 
         if ($res->isError()) {
             throw new RequestError($res->errorMessage, null, $res);
