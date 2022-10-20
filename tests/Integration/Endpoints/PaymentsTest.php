@@ -8,7 +8,8 @@ use Alma\API\Entities\Payment;
 use PHPUnit\Framework\TestCase;
 
 final class PaymentsTest extends TestCase
-{    protected static $almaClient;
+{
+    protected static $almaClient;
 
     public static function setUpBeforeClass()
     {
