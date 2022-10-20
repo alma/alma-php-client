@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests;
+namespace Alma\API\Tests\Unit;
 
 use Alma\API\Lib\ArrayUtils;
 use PHPUnit\Framework\TestCase;

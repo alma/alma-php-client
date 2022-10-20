@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests;
+namespace Alma\API\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Alma\API\Response;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit;
+namespace Alma\API\Tests\Unit\Endpoints;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
