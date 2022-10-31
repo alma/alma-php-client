@@ -43,7 +43,7 @@ final class PaymentsTest extends TestCase
     }
 
 
-    private static function _testEligibility($amount, $eligible)
+    private static function testEligibility($amount, $eligible)
     {
         $eligibility = self::$almaClient->payments->eligibility(self::paymentData($amount));
         self::assertEquals($eligible, $eligibility->isEligible);
@@ -60,9 +60,9 @@ final class PaymentsTest extends TestCase
 
     public static function testCanCheckEligibility()
     {
-        self::_testEligibility(1, false);
-        self::_testEligibility(20000, true);
-        self::_testEligibility(500000, false);
+        self::testEligibility(1, false);
+        self::testEligibility(20000, true);
+        self::testEligibility(500000, false);
     }
 
     public function testCanCreateAPayment()

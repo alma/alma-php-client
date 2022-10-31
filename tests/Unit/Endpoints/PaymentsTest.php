@@ -17,6 +17,8 @@ use Alma\API\RequestError;
  */
 class PaymentsTest extends TestCase
 {
+    const MERCHANT_REF = "merchant_ref";
+
     /**
      * Ensure that the methods exists
      */
@@ -36,7 +38,8 @@ class PaymentsTest extends TestCase
      * Mock ClientContext, Response and Request to allow us to test
      * Payment without sending any requests
      */
-    private function mockServerRequest() {
+    private function mockServerRequest()
+    {
         // ClientContext
         $clientContext = Mockery::mock(ClientContext::class);
         $clientContext->shouldReceive('urlFor');
@@ -44,7 +47,70 @@ class PaymentsTest extends TestCase
         $clientContext->shouldReceive('forcedTLSVersion');
 
         // Response
-        $json = '{"payment_plan":[{"customer_can_postpone":false,"customer_fee":100,"customer_interest":0,"date_paid":1649672472,"due_date":1649672451,"id":"installment_11uPRjPgPJ5jxmEEXxIPPOvVA3Fh7cg13m","original_purchase_amount":11733,"purchase_amount":11733,"state":"paid"},{"customer_can_postpone":false,"customer_fee":0,"customer_interest":0,"date_paid":null,"due_date":1652264451,"id":"installment_11uPRjP4a3cFQvoM1lehDnpxa2tYm2Hy0I","original_purchase_amount":11733,"purchase_amount":0,"state":"paid"},{"customer_can_postpone":false,"customer_fee":0,"customer_interest":0,"date_paid":null,"due_date":1654942851,"id":"installment_11uPRjP79fG5QtHO54lSYsnDvyHb56oeCn","original_purchase_amount":11733,"purchase_amount":0,"state":"paid"}],"orders":[{"comment":null,"created":1649672451,"customer_url":null,"data":{},"id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V","merchant_reference":"00000206","merchant_url":null,"payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx"}],"refunds":[{"amount":35299,"created":1649770695,"from_payment_cancellation":false,"id":"refund_11uPrHz4TfHmQrD1OkYyWb4hPuq3673Vqm","merchant_reference":null,"payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx","payment_refund_amount":11833,"rebate_amount":23466}]}';
+        $json = '{
+           "payment_plan":[
+              {
+                 "customer_can_postpone":false,
+                 "customer_fee":100,
+                 "customer_interest":0,
+                 "date_paid":1649672472,
+                 "due_date":1649672451,
+                 "id":"installment_11uPRjPgPJ5jxmEEXxIPPOvVA3Fh7cg13m",
+                 "original_purchase_amount":11733,
+                 "purchase_amount":11733,
+                 "state":"paid"
+              },
+              {
+                 "customer_can_postpone":false,
+                 "customer_fee":0,
+                 "customer_interest":0,
+                 "date_paid":null,
+                 "due_date":1652264451,
+                 "id":"installment_11uPRjP4a3cFQvoM1lehDnpxa2tYm2Hy0I",
+                 "original_purchase_amount":11733,
+                 "purchase_amount":0,
+                 "state":"paid"
+              },
+              {
+                 "customer_can_postpone":false,
+                 "customer_fee":0,
+                 "customer_interest":0,
+                 "date_paid":null,
+                 "due_date":1654942851,
+                 "id":"installment_11uPRjP79fG5QtHO54lSYsnDvyHb56oeCn",
+                 "original_purchase_amount":11733,
+                 "purchase_amount":0,
+                 "state":"paid"
+              }
+           ],
+           "orders":[
+              {
+                 "comment":null,
+                 "created":1649672451,
+                 "customer_url":null,
+                 "data":{
+                    
+                 },
+                 "id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V",
+                 "merchant_reference":"00000206",
+                 "merchant_url":null,
+                 "payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx"
+              }
+           ],
+           "refunds":[
+              {
+                 "amount":35299,
+                 "created":1649770695,
+                 "from_payment_cancellation":false,
+                 "id":"refund_11uPrHz4TfHmQrD1OkYyWb4hPuq3673Vqm",
+                 "merchant_reference":null,
+                 "payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx",
+                 "payment_refund_amount":11833,
+                 "rebate_amount":23466
+              }
+           ]
+        }';
+
         $responseMock = Mockery::mock(Response::class);
         $responseMock->shouldReceive('isError')->andReturn(false);
         $responseMock->json = json_decode($json, true);
@@ -60,18 +126,19 @@ class PaymentsTest extends TestCase
      * Return input to test testPartialRefund
      * @return array[]
      */
-    public function getPartialRefundData() {
+    public function getPartialRefundData()
+    {
         return [
             [[
                 'id' => "some_id",
                 'amount' => 15000,
-                'merchant_ref' => "merchant ref",
+                'merchant_ref' => self::MERCHANT_REF,
                 'comment' => "some comment"
             ]],
             [[
                 'id' => "some_id",
                 'amount' => 15000,
-                'merchant_ref' => "merchant ref"
+                'merchant_ref' => self::MERCHANT_REF
             ]],
             [[
                 'id' => "some_id",
@@ -80,12 +147,13 @@ class PaymentsTest extends TestCase
         ];
     }
 
-    private function callPartialRefund($payments, $data) {
-        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+    private function callPartialRefund($payments, $data)
+    {
+        if (isset($data['merchant_ref']) && isset($data['comment'])) {
             $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref'], $data['comment']);
-        } else if (isset($data['merchant_ref'])) {
+        } elseif (isset($data['merchant_ref'])) {
             $payments->partialRefund($data['id'], $data['amount'], $data['merchant_ref']);
-        } else if (isset($data['comment'])) {
+        } elseif (isset($data['comment'])) {
             $payments->partialRefund($data['id'], $data['amount'], '', $data['comment']);
         } else {
             $payments->partialRefund($data['id'], $data['amount']);
@@ -122,7 +190,8 @@ class PaymentsTest extends TestCase
      * Return invalid input to test testPartialRefund
      * @return array[]
      */
-    public function getPartialRefundInvalidData() {
+    public function getPartialRefundInvalidData()
+    {
         return [
             [[
                 'id' => "negative_amount",
@@ -164,12 +233,13 @@ class PaymentsTest extends TestCase
     }
 
 
-    private function callFullRefund($payments, $data) {
-        if ( isset($data['merchant_ref']) && isset($data['comment']) ) {
+    private function callFullRefund($payments, $data)
+    {
+        if (isset($data['merchant_ref']) && isset($data['comment'])) {
             $payments->fullRefund($data['id'], $data['merchant_ref'], $data['comment']);
-        } else if (isset($data['merchant_ref'])) {
+        } elseif (isset($data['merchant_ref'])) {
             $payments->fullRefund($data['id'], $data['merchant_ref']);
-        } else if (isset($data['comment'])) {
+        } elseif (isset($data['comment'])) {
             $payments->fullRefund($data['id'], '', $data['comment']);
         } else {
             $payments->fullRefund($data['id']);
@@ -180,16 +250,17 @@ class PaymentsTest extends TestCase
      * Return input to test testFullRefund
      * @return array[]
      */
-    public function getFullRefundData() {
+    public function getFullRefundData()
+    {
         return [
             [[
                 'id' => "some_id",
-                'merchant_ref' => "merchant ref",
+                'merchant_ref' => self::MERCHANT_REF,
                 'comment' => "some comment"
             ]],
             [[
                 'id' => "some_id",
-                'merchant_ref' => "merchant ref"
+                'merchant_ref' => self::MERCHANT_REF
             ]],
             [[
                 'id' => "some_id",
@@ -227,12 +298,13 @@ class PaymentsTest extends TestCase
      * Return input to test testRefund
      * @return array[]
      */
-    public function getRefundData() {
+    public function getRefundData()
+    {
         return [
             [[
                 'id' => "some_id",
                 'amount' => 15000,
-                'merchant_ref' => "merchant ref",
+                'merchant_ref' => self::MERCHANT_REF,
             ]],
             [[
                 'id' => "some_id",
@@ -244,10 +316,11 @@ class PaymentsTest extends TestCase
         ];
     }
 
-    private function callRefund($payments, $data) {
+    private function callRefund($payments, $data)
+    {
         if (isset($data['merchant_ref']) && isset($data['amount'])) {
             $payments->refund($data['id'], $data['amount'], $data['merchant_ref']);
-        } else if (isset($data['amount'])){
+        } elseif (isset($data['amount'])) {
             $payments->refund($data['id'], $data['amount']);
         } else {
             $payments->refund($data['id']);
@@ -285,7 +358,8 @@ class PaymentsTest extends TestCase
      * Return invalid input to test testFullRefund
      * @return array[]
      */
-    public function getFullRefundInvalidData() {
+    public function getFullRefundInvalidData()
+    {
         return [
             [[
                 'id' => "",
@@ -325,7 +399,8 @@ class PaymentsTest extends TestCase
      * Mock ClientContext, Response and Request to allow us to test
      * Payment without sending any requests but returns an error
      */
-    private function mockServerRequestError() {
+    private function mockServerRequestError()
+    {
         // ClientContext
         $clientContext = Mockery::mock(ClientContext::class);
         $clientContext->shouldReceive('urlFor');
@@ -333,7 +408,70 @@ class PaymentsTest extends TestCase
         $clientContext->shouldReceive('forcedTLSVersion');
 
         // Response
-        $json = '{"payment_plan":[{"customer_can_postpone":false,"customer_fee":100,"customer_interest":0,"date_paid":1649672472,"due_date":1649672451,"id":"installment_11uPRjPgPJ5jxmEEXxIPPOvVA3Fh7cg13m","original_purchase_amount":11733,"purchase_amount":11733,"state":"paid"},{"customer_can_postpone":false,"customer_fee":0,"customer_interest":0,"date_paid":null,"due_date":1652264451,"id":"installment_11uPRjP4a3cFQvoM1lehDnpxa2tYm2Hy0I","original_purchase_amount":11733,"purchase_amount":0,"state":"paid"},{"customer_can_postpone":false,"customer_fee":0,"customer_interest":0,"date_paid":null,"due_date":1654942851,"id":"installment_11uPRjP79fG5QtHO54lSYsnDvyHb56oeCn","original_purchase_amount":11733,"purchase_amount":0,"state":"paid"}],"orders":[{"comment":null,"created":1649672451,"customer_url":null,"data":{},"id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V","merchant_reference":"00000206","merchant_url":null,"payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx"}],"refunds":[{"amount":35299,"created":1649770695,"from_payment_cancellation":false,"id":"refund_11uPrHz4TfHmQrD1OkYyWb4hPuq3673Vqm","merchant_reference":null,"payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx","payment_refund_amount":11833,"rebate_amount":23466}]}';
+        $json = '{
+           "payment_plan":[
+              {
+                 "customer_can_postpone":false,
+                 "customer_fee":100,
+                 "customer_interest":0,
+                 "date_paid":1649672472,
+                 "due_date":1649672451,
+                 "id":"installment_11uPRjPgPJ5jxmEEXxIPPOvVA3Fh7cg13m",
+                 "original_purchase_amount":11733,
+                 "purchase_amount":11733,
+                 "state":"paid"
+              },
+              {
+                 "customer_can_postpone":false,
+                 "customer_fee":0,
+                 "customer_interest":0,
+                 "date_paid":null,
+                 "due_date":1652264451,
+                 "id":"installment_11uPRjP4a3cFQvoM1lehDnpxa2tYm2Hy0I",
+                 "original_purchase_amount":11733,
+                 "purchase_amount":0,
+                 "state":"paid"
+              },
+              {
+                 "customer_can_postpone":false,
+                 "customer_fee":0,
+                 "customer_interest":0,
+                 "date_paid":null,
+                 "due_date":1654942851,
+                 "id":"installment_11uPRjP79fG5QtHO54lSYsnDvyHb56oeCn",
+                 "original_purchase_amount":11733,
+                 "purchase_amount":0,
+                 "state":"paid"
+              }
+           ],
+           "orders":[
+              {
+                 "comment":null,
+                 "created":1649672451,
+                 "customer_url":null,
+                 "data":{
+                    
+                 },
+                 "id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V",
+                 "merchant_reference":"00000206",
+                 "merchant_url":null,
+                 "payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx"
+              }
+           ],
+           "refunds":[
+              {
+                 "amount":35299,
+                 "created":1649770695,
+                 "from_payment_cancellation":false,
+                 "id":"refund_11uPrHz4TfHmQrD1OkYyWb4hPuq3673Vqm",
+                 "merchant_reference":null,
+                 "payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx",
+                 "payment_refund_amount":11833,
+                 "rebate_amount":23466
+              }
+           ]
+        }';
+        
         $responseMock = Mockery::mock(Response::class);
         $responseMock->shouldReceive('isError')->andReturn(true);
         $responseMock->json = json_decode($json, true);
