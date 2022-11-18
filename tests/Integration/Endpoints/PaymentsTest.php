@@ -3,14 +3,19 @@
 namespace Alma\API\Tests\Integration\Endpoints;
 
 use Alma\API\Client;
-use Alma\API\Entities\Instalment;
-use Alma\API\Entities\Payment;
+use Alma\API\DependenciesError;
+use Alma\API\ParamsError;
+use Alma\API\RequestError;
 use PHPUnit\Framework\TestCase;
 
 final class PaymentsTest extends TestCase
 {
     protected static $almaClient;
 
+    /**
+     * @throws DependenciesError
+     * @throws ParamsError
+     */
     public static function setUpBeforeClass()
     {
         self::$almaClient = new Client(
@@ -20,7 +25,7 @@ final class PaymentsTest extends TestCase
     }
 
 
-    private static function paymentData($amount)
+    private function paymentData($amount)
     {
         return [
             'payment' => [
@@ -37,13 +42,20 @@ final class PaymentsTest extends TestCase
         ];
     }
 
-    private static function createPayment($amount)
+    /**
+     * @param int $amount
+     * @throws RequestError
+     */
+    private function createPayment($amount)
     {
         return self::$almaClient->payments->create(self::paymentData($amount));
     }
 
 
-    private static function testEligibility($amount, $eligible)
+    /**
+     * @throws RequestError
+     */
+    private function checkEligibility($amount, $eligible)
     {
         $eligibility = self::$almaClient->payments->eligibility(self::paymentData($amount));
         self::assertEquals($eligible, $eligibility->isEligible);
@@ -58,22 +70,31 @@ final class PaymentsTest extends TestCase
         }
     }
 
-    public static function testCanCheckEligibility()
+    /**
+     * @throws RequestError
+     */
+    public function testCanCheckEligibility()
     {
-        self::testEligibility(1, false);
-        self::testEligibility(20000, true);
-        self::testEligibility(500000, false);
+        self::checkEligibility(1, false);
+        self::checkEligibility(20000, true);
+        self::checkEligibility(500000, false);
     }
 
+    /**
+     * @throws RequestError
+     */
     public function testCanCreateAPayment()
     {
         $payment = self::createPayment(26300);
         self::assertEquals(26300, $payment->purchase_amount);
     }
 
-    public static function testCanFetchAPayment()
+    /**
+     * @throws RequestError
+     */
+    public function testCanFetchAPayment()
     {
-        $p1 = self::createPayment(26300);
+        $p1 = self::createPayment(26500);
         $p2 = self::$almaClient->payments->fetch($p1->id);
 
         self::assertEquals($p1->id, $p2->id);
