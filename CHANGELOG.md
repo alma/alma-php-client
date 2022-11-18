@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+
+v1.9.2
+-------
+* Fixed tests PSR4 namespaces
+
 v1.9.1
 -------
 * Added `addConsent` and `removeConsent` method to `ShareOfCheckout` endpoint
