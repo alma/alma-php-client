@@ -88,9 +88,7 @@ class PaymentsTest extends TestCase
                  "comment":null,
                  "created":1649672451,
                  "customer_url":null,
-                 "data":{
-                    
-                 },
+                 "data":{},
                  "id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V",
                  "merchant_reference":"00000206",
                  "merchant_url":null,
@@ -449,9 +447,7 @@ class PaymentsTest extends TestCase
                  "comment":null,
                  "created":1649672451,
                  "customer_url":null,
-                 "data":{
-                    
-                 },
+                 "data":{},
                  "id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V",
                  "merchant_reference":"00000206",
                  "merchant_url":null,
@@ -471,7 +467,7 @@ class PaymentsTest extends TestCase
               }
            ]
         }';
-        
+
         $responseMock = Mockery::mock(Response::class);
         $responseMock->shouldReceive('isError')->andReturn(true);
         $responseMock->json = json_decode($json, true);
