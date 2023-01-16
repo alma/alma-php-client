@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.9.3
+-------
+* Added payment cancel endpoint
+
 v1.9.2
 -------
 * Fixed tests PSR4 namespaces
