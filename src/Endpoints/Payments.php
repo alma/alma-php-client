@@ -129,7 +129,7 @@ class Payments extends Base
     {
         $res = $this->request(self::PAYMENTS_PATH . "/$id/cancel")->put();
         if ($res->isError()) {
-            $this->logger->error('Error during payment cancellation', [$res]);
+            $this->logger->error(sprintf('An error occurred while canceling the payment %s', $id), [$res->errorMessage]);
             throw new RequestError($res->errorMessage, null, $res);
         }
     }
