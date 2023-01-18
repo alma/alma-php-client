@@ -120,6 +120,21 @@ class Payments extends Base
     }
 
     /**
+     * @param string $id  The ID of the payment to cancel
+     *
+     * @return void
+     * @throws RequestError
+     */
+    public function cancel($id)
+    {
+        $res = $this->request(self::PAYMENTS_PATH . "/$id/cancel")->put();
+        if ($res->isError()) {
+            $this->logger->error(sprintf('An error occurred while canceling the payment %s', $id), [$res->errorMessage]);
+            throw new RequestError($res->errorMessage, null, $res);
+        }
+    }
+
+    /**
      * @param array $data
      *
      * @return Payment
