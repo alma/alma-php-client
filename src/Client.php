@@ -32,7 +32,7 @@ use Psr\Log\LoggerInterface;
 
 class Client implements LoggerAwareInterface
 {
-    const VERSION = '1.9.3';
+    const VERSION = '1.9.4';
 
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';

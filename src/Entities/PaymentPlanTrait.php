@@ -55,4 +55,14 @@ trait PaymentPlanTrait
     {
         return $this->getInstallmentsCount() > 1 && ($this->getDeferredDays() || $this->getDeferredMonths());
     }
+
+    /**
+     * Check if a payment plan is "Pay now" compliant
+     *
+     * @return bool
+     */
+    public function isPayNow()
+    {
+        return $this->getInstallmentsCount() === 1 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
+    }
 }
