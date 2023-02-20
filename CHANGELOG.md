@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.9.4
+v1.10.0
 -------
 * Added pay now payment plan behavior
 
