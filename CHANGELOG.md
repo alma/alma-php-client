@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.10.0
+-------
+* Added pay now payment plan behavior
+
 v1.9.3
 -------
 * Added payment cancel endpoint

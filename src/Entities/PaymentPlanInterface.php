@@ -66,4 +66,11 @@ interface PaymentPlanInterface
      * @return bool
      */
     public function isBothPnxAndPayLater();
+
+    /**
+     * Check if a payment plan is "Pay Now" compliant.
+     *
+     * @return bool
+     */
+    public function isPayNow();
 }

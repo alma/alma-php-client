@@ -1,6 +1,7 @@
 {
   "name": "alma/alma-php-client",
   "description": "PHP API client for the Alma payments API",
+  "version": "1.10.0",
   "type": "library",
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
