@@ -16,11 +16,12 @@ trait PaymentPlanTrait
     public function getPlanKey()
     {
         return sprintf(
-            '%s_%s_%s_%s',
+            '%s_%s_%s_%s_%s',
             is_null($this->getKind()) ? '-' : $this->getKind(),
             is_null($this->getInstallmentsCount()) ? '-' : $this->getInstallmentsCount(),
             is_null($this->getDeferredDays()) ? '-' : $this->getDeferredDays(),
-            is_null($this->getDeferredMonths()) ? '-' : $this->getDeferredMonths()
+            is_null($this->getDeferredMonths()) ? '-' : $this->getDeferredMonths(),
+            !!$this->getAnnualInterestRate() ? 1 : 0
         );
     }
 
