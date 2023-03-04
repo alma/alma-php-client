@@ -163,7 +163,7 @@ class Client implements LoggerAwareInterface
      *
      * @return void
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         // Simply pass the logger forward to the client context
         $this->context->setLogger($logger);
