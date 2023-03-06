@@ -57,8 +57,8 @@ class ClientOptionsValidator
     {
         $config = [
             'api_root' => [
-                Client::TEST_MODE => Client::SANDBOX_API_URL,
-                Client::LIVE_MODE => Client::LIVE_API_URL
+                Client::TEST_MODE => isset($_ENV['ALMA_TEST_API_ROOT']) ? $_ENV['ALMA_TEST_API_ROOT'] : Client::SANDBOX_API_URL,
+                Client::LIVE_MODE => isset($_ENV['ALMA_LIVE_API_ROOT']) ? $_ENV['ALMA_LIVE_API_ROOT'] : Client::LIVE_API_URL
             ],
             'force_tls' => 2,
             'mode' => Client::LIVE_MODE,
