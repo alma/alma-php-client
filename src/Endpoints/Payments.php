@@ -78,11 +78,21 @@ class Payments extends Base
 
             foreach ($res->json as $eligibilityData) {
                 $eligibility = new Eligibility($eligibilityData, $res->responseCode);
-                if ($iSV1Payload) {
-                    $result[$eligibility->getInstallmentsCount()] = $eligibility;
-                } else {
-                    $result[$eligibility->getPlanKey()] = $eligibility;
+                $key = $eligibility->getInstallmentsCount();
+                if (!$iSV1Payload) {
+                    $key = $eligibility->getPlanKey();
                 }
+                
+                 if(isset($result[$key])){
+                     if(!is_array($result[$key])){
+                         $buffer = $result[$key];
+                         $result[$key] = array();
+                         $result[$key][] = $buffer;
+                     }
+                     $result[$key][] = $eligibility;
+                 }else{
+                     $result[$key] = $eligibility;
+                 }
 
                 if (!$eligibility->isEligible()) {
                     $this->logger->info(
