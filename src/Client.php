@@ -37,8 +37,9 @@ class Client implements LoggerAwareInterface
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';
 
-    const LIVE_API_URL = 'https://api.getalma.eu';
+    const LIVE_API_URL    = 'https://api.getalma.eu';
     const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
+    const API_AUTH_HEADER = 'Alma-Auth';
 
     protected $context;
 

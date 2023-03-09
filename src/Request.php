@@ -76,8 +76,8 @@ class Request
         $this->curlHandle = curl_init();
 
         $this->headers = array(
-            'User-Agent: ' . $this->context->getUserAgentString(),
-            'Authorization: Alma-Auth ' . $this->context->apiKey,
+            sprintf('User-Agent: %s', $this->context->getUserAgentString()),
+            sprintf('Authorization: %s %s', $this->context->getApiAuthHeader(), $this->context->getApiKey()),
             'Accept: application/json',
         );
 

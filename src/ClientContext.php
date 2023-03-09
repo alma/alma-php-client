@@ -58,6 +58,16 @@ class ClientContext implements LoggerAwareInterface
         }
     }
 
+    public function getApiAuthHeader()
+    {
+        return $this->options['api_auth_header'];
+    }
+
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
     /**
      * Returns the full API endpoint URL for the given path, depending on the current mode (live or test)
      *

@@ -60,6 +60,7 @@ class ClientOptionsValidator
                 Client::TEST_MODE => isset($_ENV['ALMA_TEST_API_ROOT']) ? $_ENV['ALMA_TEST_API_ROOT'] : Client::SANDBOX_API_URL,
                 Client::LIVE_MODE => isset($_ENV['ALMA_LIVE_API_ROOT']) ? $_ENV['ALMA_LIVE_API_ROOT'] : Client::LIVE_API_URL
             ],
+            'api_auth_header' => Client::API_AUTH_HEADER,
             'force_tls' => 2,
             'mode' => Client::LIVE_MODE,
             'logger' => new NullLogger(),
@@ -67,6 +68,10 @@ class ClientOptionsValidator
 
         if (isset($options['api_root'])) {
             $config['api_root'] = self::validateApiRootOption($options['api_root']);
+        }
+
+        if (isset($options['api_auth_header'])) {
+            $config['api_auth_header'] = self::validateApiAuthHeader($options['api_auth_header']);
         }
 
         if (isset($options['force_tls'])) {
@@ -156,7 +161,7 @@ class ClientOptionsValidator
     }
 
     /**
-     * @param array $user_agent_components
+     * @param array $userAgentComponents
      *
      * @return array
      * @throws ParamsError
@@ -167,5 +172,19 @@ class ClientOptionsValidator
             return $userAgentComponents;
         }
         throw new ParamsError('option \'user_agent_component\' is not configured properly');
+    }
+
+    /**
+     * @param string $apiAuthHeader
+     *
+     * @return string
+     * @throws ParamsError
+     */
+    private static function validateApiAuthHeader($apiAuthHeader)
+    {
+        if (is_string($apiAuthHeader) && !empty($apiAuthHeader)) {
+            return $apiAuthHeader;
+        }
+        throw new ParamsError('option \'api_auth_header\' is not configured properly');
     }
 }
