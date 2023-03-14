@@ -26,6 +26,8 @@
 namespace Alma\API;
 
 // In older versions of PHP (<= 5.5.19), those constants aren't defined – we do need them though
+use mysql_xdevapi\Exception;
+
 if (!defined('CURL_SSLVERSION_TLSv1_0')) {
     define('CURL_SSLVERSION_TLSv1_0', 4);
 }
@@ -143,7 +145,7 @@ class Request
     private function exec()
     {
         $url = $this->buildURL();
-
+        $this->context->logger->info('Url :' . $url);
         if (($port = parse_url($url, PHP_URL_PORT))) {
             curl_setopt($this->curlHandle, CURLOPT_PORT, $port);
         }
