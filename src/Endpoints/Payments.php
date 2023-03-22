@@ -233,6 +233,7 @@ class Payments extends Base
      * @throws RequestError
      */
     public function fullRefund($id, $merchantReference = "", $comment = "") {
+        throw new ParamsError('plop');
         return $this->_refund(
             Refund::create($id, 0, $merchantReference, $comment)
         );
