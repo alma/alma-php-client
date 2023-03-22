@@ -43,7 +43,7 @@ trait PaymentPlanTrait
      */
     public function isPnXOnly()
     {
-        return $this->getInstallmentsCount() > 1 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
+        return $this->getInstallmentsCount() >= 1 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
     }
 
     /**
