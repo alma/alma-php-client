@@ -26,7 +26,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "Alma\\API\\": "src/",
+      "Alma\\API\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Alma\\API\\Tests\\": "tests/"
     }
   },
