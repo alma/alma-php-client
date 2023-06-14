@@ -25,7 +25,7 @@
 
 namespace Alma\API\Entities;
 
-class Base
+class Base extends \stdClass
 {
     /** @var string */
     public $id;

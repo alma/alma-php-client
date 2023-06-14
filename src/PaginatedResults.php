@@ -24,7 +24,6 @@
 
 namespace Alma\API;
 
-use Alma\API\Entities\Base;
 use Iterator;
 
 class PaginatedResults implements Iterator
