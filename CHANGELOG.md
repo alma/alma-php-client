@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.11.0
+-------
+* Fix : Compatibility with PHP 8.2
+
 v1.10.0
 -------
 * Added pay now payment plan behavior

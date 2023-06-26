@@ -3,6 +3,7 @@
 .vscode
 .php_cs.cache
 .phpunit.result.cache
+.idea
 dist/
 composer.lock
 
