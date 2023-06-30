@@ -26,6 +26,7 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Endpoints\Results\Eligibility;
+use Alma\API\ParamsError;
 use Alma\API\Payloads\Refund;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
