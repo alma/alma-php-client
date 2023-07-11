@@ -26,6 +26,8 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Endpoints\Results\Eligibility;
+use Alma\API\Lib\PaymentValidator;
+use Alma\API\ParamsError;
 use Alma\API\Payloads\Refund;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
@@ -103,13 +105,15 @@ class Payments extends Base
     }
 
     /**
-     * @param array $data
-     *
+     * @param $data
      * @return Payment
+     * @throws ParamsError
      * @throws RequestError
      */
     public function create($data)
     {
+        PaymentValidator::checkPurchaseAmount($data);
+
         $res = $this->request(self::PAYMENTS_PATH)->setRequestBody($data)->post();
 
         if ($res->isError()) {
@@ -218,7 +222,7 @@ class Payments extends Base
      * @throws RequestError
      */
     public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
-        return $this->_refund(
+        return $this->doRefund(
             Refund::create($id, $amount, $merchantReference, $comment)
         );
     }
@@ -233,7 +237,7 @@ class Payments extends Base
      * @throws RequestError
      */
     public function fullRefund($id, $merchantReference = "", $comment = "") {
-        return $this->_refund(
+        return $this->doRefund(
             Refund::create($id, 0, $merchantReference, $comment)
         );
     }
@@ -245,7 +249,7 @@ class Payments extends Base
      * @return Payment
      * @throws RequestError
      */
-    private function _refund(Refund $refundPayload) {
+    private function doRefund(Refund $refundPayload) {
         $id = $refundPayload->getId();
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 

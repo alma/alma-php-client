@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.11.1
+-------
+* Fix : Check the amount purchase type
+* Fix: composer
+
 v1.11.0
 -------
 * Fix : Compatibility with PHP 8.2

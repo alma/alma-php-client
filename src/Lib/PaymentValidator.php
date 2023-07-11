@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2018 Alma / Nabla SAS
  *
@@ -23,42 +24,33 @@
  *
  */
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Lib;
 
-use Alma\API\ClientContext;
-use Alma\API\Request;
+use Alma\API\ParamsError;
 
-class Base
+/**
+ * Class PaymentValidator
+ * @package Alma\API
+ */
+class PaymentValidator
 {
-    /** @var ClientContext */
-    protected $clientContext;
-    protected $logger;
-
     /**
-     * Base constructor.
-     * @param $client_context ClientContext
+     * Ensure that the purchase amount is an integer
+     *
+     * @param $data
+     * @return void
+     * @throws ParamsError
      */
-    public function __construct($client_context)
+    public static function checkPurchaseAmount($data)
     {
-        $this->setClientContext($client_context);
-        $this->logger = $client_context->logger;
-    }
-
-    /**
-     * @param string $path
-     * @return Request
-     */
-    public function request($path)
-    {
-        return Request::build($this->clientContext, $this->clientContext->urlFor($path));
-    }
-
-    /**
-     * @param ClientContext $clientContext
-     * @return Request
-     */
-    public function setClientContext($clientContext)
-    {
-        $this->clientContext = $clientContext;
+        if (
+            !empty($data['payment']['purchase_amount'])
+            && !is_int($data['payment']['purchase_amount'])
+        ) {
+            throw new ParamsError(sprintf(
+                'The "purchase_amount" field needs to be an integer. "%s" found ',
+                gettype($data['payment']['purchase_amount'])
+            ));
+        }
     }
 }
