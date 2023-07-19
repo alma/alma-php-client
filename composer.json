@@ -1,10 +1,16 @@
 {
   "name": "alma/alma-php-client",
   "description": "PHP API client for the Alma payments API",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "type": "library",
+  "require": {
+    "php": "^5.6 || ~7.0 || ~7.1 || ~7.2 || ~7.3 || ~7.4 || ~8.0 || ~8.1 || ~8.2",
+    "psr/log": "^1.1",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
   "require-dev": {
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
     "phpcompatibility/php-compatibility": "^9.0",
     "phpunit/phpunit": "*",
     "roave/security-advisories": "@dev",
@@ -14,20 +20,19 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Olivier Lance",
-      "email": "olivier.lance@getalma.eu"
+      "name": "Alma",
+      "email": "contact@almapay.com"
     }
   ],
-  "require": {
-    "php": ">=5.6",
-    "psr/log": "^1.1",
-    "ext-curl": "*",
-    "ext-json": "*"
-  },
   "autoload": {
     "psr-4": {
       "Alma\\API\\": "src/",
       "Alma\\API\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   }
 }
