@@ -12,17 +12,18 @@
 
     <testsuites>
         <testsuite name="Alma PHP Client Unit Test Suite">
-            <directory>tests/unit</directory>
+            <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
     <testsuites>
         <testsuite name="Alma PHP Client Integration Test Suite">
-            <directory>tests/integration</directory>
+            <directory>tests/Integration</directory>
         </testsuite>
     </testsuites>
     <php>
         <env name="ALMA_API_KEY" value="sk_test_xxxxxxxxxxxxxxxxxxxxxxxx"/>
         <env name="ALMA_API_ROOT" value="https://alma.api.url.eu"/>
+        <env name="SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT" value="1" />
     </php>
 
 </phpunit>

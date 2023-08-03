@@ -12,8 +12,12 @@
 
     <testsuites>
         <testsuite name="Alma PHP Client Unit Test Suite">
-            <directory>tests/unit</directory>
+            <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
+
+    <php>
+        <env name="SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT" value="1" />
+    </php>
 
 </phpunit>

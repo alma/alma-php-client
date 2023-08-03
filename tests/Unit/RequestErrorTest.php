@@ -52,7 +52,7 @@ class RequestErrorTest extends TestCase
      */
     public function testGetErrorMessage($req, $res, $expected)
     {
-        $requestError = new RequestError($res->errorMessage, $req, $res);
+        $requestError = new RequestError((string) $res->errorMessage, $req, $res);
 
         $this->assertEquals($expected, $requestError->getErrorMessage());
     }
