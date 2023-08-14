@@ -27,10 +27,9 @@ namespace Alma\API;
 
 use Alma\API\Endpoints;
 use Alma\API\Lib\ClientOptionsValidator;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
-class Client implements LoggerAwareInterface
+class Client
 {
     const VERSION = '1.11.0';
 

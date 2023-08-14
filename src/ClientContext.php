@@ -25,11 +25,10 @@
 
 namespace Alma\API;
 
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class ClientContext implements LoggerAwareInterface
+class ClientContext
 {
     /** @var string */
     public $apiKey;
