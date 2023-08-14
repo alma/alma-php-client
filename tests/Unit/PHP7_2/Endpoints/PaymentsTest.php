@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Endpoints;
+namespace Alma\API\Tests\Unit\PHP7_2\Endpoints;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -248,7 +248,7 @@ class PaymentsTest extends TestCase
      * Return input to test testFullRefund
      * @return array[]
      */
-    public function getFullRefundData()
+    public static function getFullRefundData()
     {
         return [
             [[
@@ -504,7 +504,7 @@ class PaymentsTest extends TestCase
         $payments->fullRefund($id);
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         Mockery::close();
     }
