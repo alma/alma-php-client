@@ -4,6 +4,7 @@ CHANGELOG
 v1.11.2
 -------
 * Fix : Compatibility psr/log 1/2/3
+* Fix : Unit tests and Integration tests for PHP5.6 to PHP8.2
 
 v1.11.1
 -------
