@@ -154,19 +154,6 @@ class Client
 
         $this->addUserAgentComponent('Alma for PHP', self::VERSION);
     }
-
-    /**
-     * Sets a logger instance on the object.
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        // Simply pass the logger forward to the client context
-        $this->context->setLogger($logger);
-    }
 }
 
 // Keep those here for backward compatibility
