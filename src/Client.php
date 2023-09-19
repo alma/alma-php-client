@@ -27,7 +27,6 @@ namespace Alma\API;
 
 use Alma\API\Endpoints;
 use Alma\API\Lib\ClientOptionsValidator;
-use Psr\Log\LoggerInterface;
 
 class Client
 {
