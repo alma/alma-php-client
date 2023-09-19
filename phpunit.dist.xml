@@ -1,28 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit bootstrap = "vendor/autoload.php"
-         backupGlobals               = "false"
-         backupStaticAttributes      = "false"
-         colors                      = "true"
-         convertErrorsToExceptions   = "true"
-         convertNoticesToExceptions  = "true"
-         convertWarningsToExceptions = "true"
-         processIsolation            = "false"
-         stopOnFailure               = "false">
-
-    <testsuites>
-        <testsuite name="Alma PHP Client Unit Test Suite">
-            <directory>tests/unit</directory>
-        </testsuite>
-    </testsuites>
-    <testsuites>
-        <testsuite name="Alma PHP Client Integration Test Suite">
-            <directory>tests/integration</directory>
-        </testsuite>
-    </testsuites>
-    <php>
-        <env name="ALMA_API_KEY" value="sk_test_xxxxxxxxxxxxxxxxxxxxxxxx"/>
-        <env name="ALMA_API_ROOT" value="https://alma.api.url.eu"/>
-    </php>
-
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" backupGlobals="false" colors="true" processIsolation="false" stopOnFailure="false" beStrictAboutTestsThatDoNotTestAnything="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+  <testsuites>
+    <testsuite name="Alma PHP Client Unit Test Suite">
+      <directory>tests/Unit/PHP8_1</directory>
+    </testsuite>
+    <testsuite name="Alma PHP Client Integration Test Suite">
+      <directory>tests/Integration/PHP8_1</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="ALMA_API_KEY" value="sk_test_*******"/>
+    <env name="ALMA_API_ROOT" value="alma-api-url"/>
+  </php>
 </phpunit>

@@ -27,12 +27,10 @@ namespace Alma\API;
 
 use Alma\API\Endpoints;
 use Alma\API\Lib\ClientOptionsValidator;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 
-class Client implements LoggerAwareInterface
+class Client
 {
-    const VERSION = '1.11.0';
+    const VERSION = '1.11.2';
 
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';
@@ -154,19 +152,6 @@ class Client implements LoggerAwareInterface
         $this->addUserAgentComponent('PHP', $phpVersion);
 
         $this->addUserAgentComponent('Alma for PHP', self::VERSION);
-    }
-
-    /**
-     * Sets a logger instance on the object.
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        // Simply pass the logger forward to the client context
-        $this->context->setLogger($logger);
     }
 }
 

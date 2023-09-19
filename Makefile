@@ -8,7 +8,7 @@ help:
 ## Docker tests
 ##---------------------------------------------------------------------------
 up: ## Up PHP test container
-	CURRENT_UID=$(id -u):www-data docker-compose -f .docker/docker-compose.yml up -d --build;
+	CURRENT_UID=$(id -u):www-data docker-compose -f .docker/docker-compose.yml up -d --build ;
 
 stop: ## Stop PHP test container
 	CURRENT_UID=$(id -u):www-data docker-compose -f .docker/docker-compose.yml stop;
@@ -19,14 +19,11 @@ remove: ## remove PHP test container
 composer:
 	docker exec -it -u www-data:www-data test-php /usr/bin/composer install
 
-test: up composer ## Execute PHPUnit tests
+unit-test: up composer ## Execute PHPUnit tests
 	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"'
 
 integration-test: up composer ## Execute intregration tests
 	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"'
-
-test-all: up composer ## Execute All PHPUnit tests
-	docker exec -it -u www-data test-php sh -c './vendor/bin/phpunit'
 
 connect: up ## Connect to test container
 	docker exec -it -u www-data:www-data test-php /bin/bash

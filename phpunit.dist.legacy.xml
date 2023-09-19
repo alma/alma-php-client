@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap = "vendor/autoload.php"
+         backupGlobals               = "false"
+         backupStaticAttributes      = "false"
+         colors                      = "true"
+         convertErrorsToExceptions   = "true"
+         convertNoticesToExceptions  = "true"
+         convertWarningsToExceptions = "true"
+         processIsolation            = "false"
+         stopOnFailure               = "false"
+         beStrictAboutTestsThatDoNotTestAnything="false">
+
+    <testsuites>
+        <testsuite name="Alma PHP Client Unit Test Suite">
+            <directory>tests/Unit/{MYVERSION}</directory>
+        </testsuite>
+        <testsuite name="Alma PHP Client Integration Test Suite">
+            <directory>tests/Integration/{MYVERSION}</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="ALMA_API_KEY" value="sk_test_*******"/>
+        <env name="ALMA_API_ROOT" value="alma-api-url"/>
+    </php>
+
+</phpunit>

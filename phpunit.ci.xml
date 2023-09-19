@@ -11,8 +11,8 @@
          stopOnFailure               = "true">
 
     <testsuites>
-        <testsuite name="Alma PHP Client Unit Test Suite">
-            <directory>tests/unit</directory>
+        <testsuite name="Alma PHP Client Unit Test Suite Legacy">
+            <directory>tests/Unit/Legacy</directory>
         </testsuite>
     </testsuites>
 

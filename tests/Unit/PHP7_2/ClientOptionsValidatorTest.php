@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit;
+namespace Alma\API\Tests\Unit\PHP7_2;
 
 use Alma\API\Lib\ClientOptionsValidator;
 use Alma\API\Client;

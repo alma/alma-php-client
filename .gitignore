@@ -6,5 +6,5 @@
 .idea
 dist/
 composer.lock
-
 phpunit.xml
+.phpunit.cache/

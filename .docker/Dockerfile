@@ -1,5 +1,13 @@
 FROM composer:1 as composer
-FROM php:5.6-fpm
+#FROM php:5.6-fpm
+#FROM php:7.0-fpm
+#FROM php:7.1-fpm
+#FROM php:7.2-fpm
+#FROM php:7.3-fpm
+#FROM php:7.4-fpm
+#FROM php:8.0-fpm
+#FROM php:8.1-fpm
+FROM php:8.2-fpm
 
 # Packages install
 RUN export DEBIAN_FRONTEND=noninteractive \
