@@ -12,15 +12,15 @@ class Insurance extends Base
 	/**
 	 * @throws ParamsException
 	 */
-	public function getInsuranceContracts($productReference)
+	public function getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
 		$validationProductReferenceIdRegex =  '/^[a-zA-Z0-9- ]+$/';
 
-		if (gettype($productReference) === 'integer') {
-			$productReference = (string)$productReference;
+		if (gettype($cmsReference) === 'integer') {
+			$cmsReference = (string)$cmsReference;
 		}
-		if (gettype($productReference) === 'string' && preg_match($validationProductReferenceIdRegex, $productReference)){
-			$response = $this->request(self::INSURANCE_PATH.'insurance-contracts?cms_product_id='.$productReference)->get();
+		if (gettype($cmsReference) === 'string' && preg_match($validationProductReferenceIdRegex, $cmsReference)){
+			$response = $this->request(self::INSURANCE_PATH.'insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)->get();
 			if ($response->isError()) {
 				throw new RequestError($response->errorMessage, null, $response);
 			}

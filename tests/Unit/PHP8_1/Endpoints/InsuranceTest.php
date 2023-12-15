@@ -27,7 +27,7 @@ class InsuranceTest extends TestCase
 	public function testInsuranceEligibilityMethodExist(): void
 	{
 		$insurance = new Insurance($this->clientContext);
-		$this->assertTrue(method_exists($insurance, 'getInsuranceContracts' ));
+		$this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
 	}
 
 	/**
@@ -52,7 +52,7 @@ class InsuranceTest extends TestCase
 			;
 		$insurance->setClientContext($this->clientContext);
 
-		$insurance->getInsuranceContracts($productId);
+		$insurance->getInsuranceContract($productId);
 		Mockery::close();
 	}
 
@@ -71,7 +71,7 @@ class InsuranceTest extends TestCase
 		$insurance->shouldNotReceive('request');
 		$insurance->setClientContext($this->clientContext);
 		$this->expectException(ParamsException::class);
-		$insurance->getInsuranceContracts($productId);
+		$insurance->getInsuranceContract($productId);
 		Mockery::close();
 	}
 
@@ -93,7 +93,7 @@ class InsuranceTest extends TestCase
 
 		$insurance->setClientContext($this->clientContext);
 		$this->expectException(RequestError::class);
-		$insurance->getInsuranceContracts($productId);
+		$insurance->getInsuranceContract($productId);
 		Mockery::close();
 	}
 
