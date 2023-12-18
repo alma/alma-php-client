@@ -22,7 +22,8 @@ class InsuranceTest extends TestCase
 	protected function setUp()
 	{
 		$this->clientContext = $this->createMock(ClientContext::class);
-
+        $this->responseMock = Mockery::mock(Response::class);
+        $this->requestObject = Mockery::mock(Request::class);
 	}
 
 	public function testInsuranceEligibilityMethodExist()
@@ -31,25 +32,25 @@ class InsuranceTest extends TestCase
 		$this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
 	}
 
-	/**
-	 * @dataProvider requestDataProviderRightParams
-	 * @return void
-	 * @throws ParamsException
-	 */
+    /**
+     * @dataProvider requestDataProviderRightParams
+     * @param $insuranceContractExternalId
+     * @param $cmsReference
+     * @param $productPrice
+     * @return void
+     * @throws ParamsException
+     * @throws RequestError
+     */
 	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
-		$responseMock = Mockery::mock(Response::class);
-		$responseMock->shouldReceive('isError')->once()->andReturn(false);
-
-		$requestObject = Mockery::mock(Request::class);
-		$requestObject->shouldReceive('get')->once()->andReturn($responseMock);
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
 
 		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
 		$insurance->shouldReceive('request')
 			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
 			->once()
-			->andReturn($requestObject)
-			;
+			->andReturn($this->requestObject);
 		$insurance->setClientContext($this->clientContext);
 
 		$insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
@@ -64,11 +65,11 @@ class InsuranceTest extends TestCase
      * @param $productPrice
      * @return void
      * @throws ParamsException
+     * @throws RequestError
      */
-	public function  testGetRequestWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
+	public function testGetRequestWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
-		$requestObject = Mockery::mock(Request::class);
-		$requestObject->shouldNotReceive('get');
+        $this->requestObject->shouldNotReceive('get');
 
 		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
 		$insurance->shouldNotReceive('request');
@@ -87,11 +88,10 @@ class InsuranceTest extends TestCase
         $insuranceContractExternalId = 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx';
 		$cmsReference = '18-24';
         $productPrice = 10000;
-		$responseMock = Mockery::mock(Response::class);
-		$responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
 
 		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
-		$requestObject->shouldReceive('get')->once()->andReturn($responseMock);
+		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
 
 		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
 		$insurance->shouldReceive('request')
@@ -107,28 +107,53 @@ class InsuranceTest extends TestCase
 	}
 
     /**
+     * @dataProvider requestDataProviderRightParams
      * @throws ParamsException
+     * @throws RequestError
      */
-    public function testApiResponse()
+    public function testApiResponse($insuranceContractExternalId, $cmsReference, $productPrice)
     {
-        $insuranceContractExternalId = 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx';
-        $cmsReference = '1-2';
-        $productPrice = 10000;
         $contractExpected = new Contract(
             "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
-         "Alma outillage thermique 3 ans (Vol + casse)",
-         1095,
-         null,
-         null,
-         null,
-         null,
-         null,
-         500,
+            "Alma outillage thermique 3 ans (Vol + casse)",
+            1095,
+            null,
+            null,
+            null,
+            null,
+            null,
+            500,
             'files'
         );
+        $json = '{
+            "id": "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
+            "name": "Alma outillage thermique 3 ans (Vol + casse)",
+            "protection_days": 1095,
+            "description": null,
+            "cover_area": null,
+            "compensation_area": null,
+            "exclusion_area": null,
+            "uncovered_area": null,
+            "price": 500,
+            "files": "files"
+        }';
+
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->responseMock->json = json_decode($json, true);
+
+        $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
+        $requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
+            ->once()
+            ->andReturn($requestObject)
+        ;
+        $insurance->setClientContext($this->clientContext);
         $contract = $insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
         $this->assertEquals($contractExpected, $contract);
+        Mockery::close();
     }
 
 	public static function requestDataProvider()
@@ -137,37 +162,42 @@ class InsuranceTest extends TestCase
 			'Throw exception with cms reference null' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => null,
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
+            'Throw exception with insurance_contract_external_id null and cms reference null' => [
+                'insurance_contract_external_id' => null,
+                'cms_reference' => null,
+                'product_price' => 10000
+            ],
 			'Throw exception with cms reference array' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => ['10','13'],
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
 			'Throw exception with cms reference class' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => new \stdClass(),
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
 			'Throw exception with cms reference bool' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => true,
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
 			'Throw exception with cms reference string and special characters' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => 'Une Str|ng [Avec] des *',
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
 			'Throw exception with cms reference string and spacial characters 2' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => 'alma-%product',
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
 			'Throw exception with cms reference empty string' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => '',
-                'product_price' => '10000'
+                'product_price' => 10000
 			]
 		];
 	}
@@ -177,22 +207,22 @@ class InsuranceTest extends TestCase
 			'call get with cms reference a string' => [
 				'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => '1-2',
-				'product_price' => '10000'
+				'product_price' => 10000
 			],
 			'call get with cms reference an integer' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => 18,
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
 			'Call get with cms reference a string and space' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => 'Alma insurance2 product',
-                'product_price' => '10000'
+                'product_price' => 10000
 			],
 			'Call get with cms reference a string and - ' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
 				'cms_reference' => 'Alma01-insurance-product',
-                'product_price' => '10000'
+                'product_price' => 10000
 			]
 		];
 	}

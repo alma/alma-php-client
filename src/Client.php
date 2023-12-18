@@ -36,7 +36,9 @@ class Client
     const TEST_MODE = 'test';
 
     const LIVE_API_URL = 'https://api.getalma.eu';
-    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
+    //TODO : Test on staging, will be removed
+    //const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
+    const SANDBOX_API_URL = 'https://api.staging.getalma.eu';
 
     protected $context;
 
@@ -65,6 +67,11 @@ class Client
      * @var Endpoints\ShareOfCheckout
      */
     public $shareOfCheckout;
+
+    /**
+     * @var Endpoints\Insurance
+     */
+    public $insurance;
     /*************************/
 
     /**
@@ -144,6 +151,7 @@ class Client
         $this->orders = new Endpoints\Orders($this->context);
         $this->shareOfCheckout = new Endpoints\ShareOfCheckout($this->context);
         $this->webhooks = new Endpoints\Webhooks($this->context);
+        $this->insurance = new Endpoints\Insurance($this->context);
     }
 
     private function initUserAgent()
