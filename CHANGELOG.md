@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.12.0
+-------
+* Added Insurance endpoints
+
 v1.11.2
 -------
 * Fix : Compatibility psr/log 1/2/3
