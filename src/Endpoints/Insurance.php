@@ -41,9 +41,8 @@ class Insurance extends Base
                 $response->json['compensation_area'],
                 $response->json['exclusion_area'],
                 $response->json['uncovered_area'],
-                $response->json['price']
-                // TODO ADD  - Mandatory field
-                //$response->json['files']
+                $response->json['price'],
+                $response->json['files']
             );
 		}
 

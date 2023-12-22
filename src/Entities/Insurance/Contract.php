@@ -55,7 +55,7 @@ class Contract
         $exclusionArea,
         $uncoveredArea,
         $price,
-        $files = [] // TODO REMOVE  - Mandatory field
+        $files
     )
     {
         $this->id = $id;
