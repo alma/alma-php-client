@@ -36,9 +36,7 @@ class Client
     const TEST_MODE = 'test';
 
     const LIVE_API_URL = 'https://api.getalma.eu';
-    //TODO : Test on staging, will be removed
-    //const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
-    const SANDBOX_API_URL = 'https://api.staging.getalma.eu';
+    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
 
     protected $context;
 
