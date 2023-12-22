@@ -3,6 +3,7 @@
 namespace Alma\API\Tests\Unit\Legacy\Entities\Insurance;
 
 use Alma\API\Entities\Insurance\Contract;
+use Alma\API\Entities\Insurance\File;
 use PHPUnit\Framework\TestCase;
 
 
@@ -133,14 +134,14 @@ class ContractTest extends TestCase
     /**
      * @dataProvider fileDataProvider
      * @param string $type
-     * @param array $fileData
+     * @param File $file
      * @return void
      */
-    public function testGetFileByTypeReturnType($type, $fileData)
+    public function testGetFileByTypeReturnType($type, $file)
     {
         $contractData = $this->getContractData();
         $contract = $this->createNewContract($contractData);
-        $this->assertEquals($fileData, $contract->getFileByType($type));
+        $this->assertEquals($file, $contract->getFileByType($type));
     }
 
     /**
@@ -181,26 +182,37 @@ class ContractTest extends TestCase
      */
     public function fileDataProvider()
     {
+        $ipidFileData = $this->getFileData('ipid-document');
+        $ipidFile = new File($ipidFileData['name'], $ipidFileData['type'], $ipidFileData['public_url']);
+        $ficFileData = $this->getFileData('fic-document');
+        $ficFile = new File($ficFileData['name'], $ficFileData['type'], $ficFileData['public_url']);
+        $noticeFileData = $this->getFileData('notice-document');
+        $noticeFile = new File($noticeFileData['name'], $noticeFileData['type'], $noticeFileData['public_url']);
+
         return [
             'type is ipid-document' => [
                 'type' => 'ipid-document',
-                'data' => $this->getFileData('ipid-document')
+                'data' => $ipidFile
+            ],
+            'type is fic-document' => [
+                'type' => 'fic-document',
+                'data' => $ficFile
             ],
             'type is notice-document' => [
                 'type' => 'notice-document',
-                'data' => $this->getFileData('notice-document')
+                'data' => $noticeFile
             ],
             'type is wrong string' => [
-                'type' => 'toto',
-                'data' => []
+                'type' => 'unknown-document',
+                'data' => null
             ],
             'type is object' => [
                 'type' => new \stdClass(),
-                'data' => []
+                'data' => null
             ],
             'type is empty' => [
                 'type' => '',
-                'data' => []
+                'data' => null
             ],
         ];
     }
@@ -250,7 +262,7 @@ class ContractTest extends TestCase
 
     /**
      * @param string $type
-     * @return string[]
+     * @return array
      */
     private function getFileData($type)
     {

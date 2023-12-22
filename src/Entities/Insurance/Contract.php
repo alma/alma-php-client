@@ -172,17 +172,22 @@ class Contract
     }
 
     /**
+     * document type exist: ipid-document | fic-document | notice-document
      * @param string $type
-     * @return array
+     * @return File|null
      */
     public function getFileByType($type)
     {
         foreach ($this->files as $file) {
             if ($file['type'] === $type) {
-                return $file;
+                return new File(
+                    $file['name'],
+                    $file['type'],
+                    $file['public_url']
+                );
             }
         }
 
-        return [];
+        return null;
     }
 }
