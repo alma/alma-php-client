@@ -158,4 +158,19 @@ class Contract
     {
         return (int)($this->protectionDays/365);
     }
+
+    /**
+     * @param $type
+     * @return array
+     */
+    public function getFileByType($type)
+    {
+        foreach ($this->files as $file) {
+            if ($file['type'] === $type) {
+                return $file;
+            }
+        }
+
+        return [];
+    }
 }

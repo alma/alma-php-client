@@ -125,7 +125,20 @@ class ContractTest extends TestCase
         $contractData = $this->getContractData();
         $contractData['protection_days'] = $days;
         $contract = $this->createNewContract($contractData);
-        $this->assertEquals($contract->getProtectionDurationInYear(), $years);
+        $this->assertEquals($years, $contract->getProtectionDurationInYear());
+    }
+
+    /**
+     * @dataProvider fileDataProvider
+     * @param $type
+     * @param $fileData
+     * @return void
+     */
+    public function testGetFileByTypeReturnType($type, $fileData)
+    {
+        $contractData = $this->getContractData();
+        $contract = $this->createNewContract($contractData);
+        $this->assertEquals($fileData, $contract->getFileByType($type));
     }
 
     /**
@@ -158,6 +171,35 @@ class ContractTest extends TestCase
                 'days' => 1097,
                 'years' => 3
             ]
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function fileDataProvider()
+    {
+        return [
+            'type is ipid-document' => [
+                'type' => 'ipid-document',
+                'data' => $this->getFileData('ipid-document')
+            ],
+            'type is notice-document' => [
+                'type' => 'notice-document',
+                'data' => $this->getFileData('notice-document')
+            ],
+            'type is wrong string' => [
+                'type' => 'toto',
+                'data' => []
+            ],
+            'type is object' => [
+                'type' => new \stdClass(),
+                'data' => []
+            ],
+            'type is empty' => [
+                'type' => '',
+                'data' => []
+            ],
         ];
     }
 
@@ -196,7 +238,34 @@ class ContractTest extends TestCase
             'exclusion_area' => 'exclusion_area_value',
             'uncovered_area' => 'uncovered_area_value',
             'price' => 6000, //price in cent
-            'files' => ['https://almapay.com', 'https://getalma.eu']
+            'files' => [
+                $this->getFileData('ipid-document'),
+                $this->getFileData('fic-document'),
+                $this->getFileData('notice-document')
+            ]
         ];
+    }
+
+    private function getFileData($type)
+    {
+        $files = [
+            'ipid-document' => [
+                'name'=> 'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+                'type'=> 'ipid-document',
+                'public_url'=> 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'
+            ],
+            'fic-document' => [
+                'name'=> 'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+                'type'=> 'fic-document',
+                'public_url'=> 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'
+            ],
+            'notice-document' => [
+                'name'=> 'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+                'type'=> 'notice-document',
+                'public_url'=> 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf'
+            ]
+        ];
+
+        return $files[$type];
     }
 }
