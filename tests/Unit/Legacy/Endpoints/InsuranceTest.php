@@ -5,6 +5,7 @@ namespace Alma\API\Tests\Unit\Legacy\Endpoints;
 use Alma\API\ClientContext;
 use Alma\API\Endpoints\Insurance;
 use Alma\API\Entities\Insurance\Contract;
+use Alma\API\Entities\Insurance\Subscription;
 use Alma\API\Exceptions\ParamsException;
 use Alma\API\Request;
 use Alma\API\RequestError;
@@ -165,6 +166,31 @@ class InsuranceTest extends TestCase
         $contract = $insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
         $this->assertEquals($contractExpected, $contract);
         Mockery::close();
+    }
+
+    /**
+     * @dataProvider nonArrayParamDataProvider
+     * @throws ParamsException
+     */
+    public function testSubscriptionThrowExceptionIfNotArrayInParam($nonArrayParam)
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->expectException(ParamsException::class);
+        $insurance->subscription($nonArrayParam);
+    }
+    public function nonArrayParamDataProvider()
+    {
+        return [
+            'Test with Null' => [
+                null
+            ],
+            'Test with String' => [
+                'my string'
+            ],
+            'Test with Object' => [
+                $this->createMock(Subscription::class)
+            ]
+        ];
     }
 
     /**

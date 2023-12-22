@@ -3,6 +3,7 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Entities\Insurance\Contract;
+use Alma\API\Entities\Insurance\Subscription;
 use Alma\API\Exceptions\ParamsException;
 use Alma\API\RequestError;
 
@@ -48,6 +49,21 @@ class Insurance extends Base
 
 		throw new ParamsException('Invalid parameters');
 	}
+
+    /**
+     * @throws ParamsException
+     */
+    public function subscription($subscriptionArray)
+    {
+        if (gettype($subscriptionArray) !== 'array') {
+            throw new ParamsException('Invalid Parameters');
+        }
+        foreach ($subscriptionArray as $subscription){
+            if (gettype($subscription) !== Subscription::class) {
+                throw new ParamsException('Invalid Parameters');
+            }
+        }
+    }
 
     /**
      * @param int $productPrice
