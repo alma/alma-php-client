@@ -18,6 +18,9 @@ class ContractTest extends TestCase
      */
     protected $contractData;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->contractData = $this->getContractData();
@@ -25,56 +28,89 @@ class ContractTest extends TestCase
 
     }
 
+    /**
+     * @return void
+     */
     public function testConstructObject()
     {
         $this->assertTrue(get_class($this->contract) === Contract::class);
     }
 
+    /**
+     * @return void
+     */
     public function testGetIdReturnId()
     {
         $this->assertEquals($this->contract->getId(), $this->contractData['id']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnName()
     {
         $this->assertEquals($this->contract->getName(), $this->contractData['name']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnProtectionDays()
     {
         $this->assertEquals($this->contract->getProtectionDays(), $this->contractData['protection_days']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnDescription()
     {
         $this->assertEquals($this->contract->getDescription(), $this->contractData['description']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnCoverArea()
     {
         $this->assertEquals($this->contract->getCoverArea(), $this->contractData['cover_area']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnCompensationArea()
     {
         $this->assertEquals($this->contract->getCompensationArea(), $this->contractData['compensation_area']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnExclusionArea()
     {
         $this->assertEquals($this->contract->getExclusionArea(), $this->contractData['exclusion_area']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnUncoveredArea()
     {
         $this->assertEquals($this->contract->getUncoveredArea(), $this->contractData['uncovered_area']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnPrice()
     {
         $this->assertEquals($this->contract->getPrice(), $this->contractData['price']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetReturnFiles()
     {
         $this->assertEquals($this->contract->getFiles(), $this->contractData['files']);
@@ -92,6 +128,9 @@ class ContractTest extends TestCase
         $this->assertEquals($contract->getProtectionDurationInYear(), $years);
     }
 
+    /**
+     * @return array[]
+     */
     public function contractDataProvider()
     {
         return [
@@ -122,6 +161,10 @@ class ContractTest extends TestCase
         ];
     }
 
+    /**
+     * @param $contractData
+     * @return Contract
+     */
     private function createNewContract($contractData)
     {
        return new Contract(
@@ -156,5 +199,4 @@ class ContractTest extends TestCase
             'files' => ['https://almapay.com', 'https://getalma.eu']
         ];
     }
-
 }
