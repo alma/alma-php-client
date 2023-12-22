@@ -11,9 +11,9 @@ class Insurance extends Base
 	const INSURANCE_PATH = '/v1/insurance/';
 
     /**
-     * @param $insuranceContractExternalId
-     * @param $cmsReference
-     * @param $productPrice
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
      * @return Contract
      * @throws ParamsException
      * @throws RequestError
@@ -48,12 +48,21 @@ class Insurance extends Base
 
 		throw new ParamsException('Invalid parameters');
 	}
+
+    /**
+     * @param int $productPrice
+     * @return false|int
+     */
     private function checkPriceFormat($productPrice)
     {
         $validationProductReferenceIdRegex =  '/^[0-9]+$/';
         return preg_match($validationProductReferenceIdRegex, $productPrice);
     }
 
+    /**
+     * @param string $param
+     * @return bool
+     */
     private function checkParamValidated($param)
     {
         $validationProductReferenceIdRegex =  '/^[a-zA-Z0-9-_ ]+$/';

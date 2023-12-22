@@ -33,7 +33,7 @@ class ContractTest extends TestCase
      */
     public function testConstructObject()
     {
-        $this->assertTrue(get_class($this->contract) === Contract::class);
+        $this->assertSame(Contract::class, get_class($this->contract));
     }
 
     /**
@@ -118,6 +118,8 @@ class ContractTest extends TestCase
 
     /**
      * @dataProvider contractDataProvider
+     * @param int $days
+     * @param int $years
      * @return void
      */
     public function testGetProtectionDurationInYear($days, $years)
@@ -130,8 +132,8 @@ class ContractTest extends TestCase
 
     /**
      * @dataProvider fileDataProvider
-     * @param $type
-     * @param $fileData
+     * @param string $type
+     * @param array $fileData
      * @return void
      */
     public function testGetFileByTypeReturnType($type, $fileData)
@@ -204,7 +206,7 @@ class ContractTest extends TestCase
     }
 
     /**
-     * @param $contractData
+     * @param array $contractData
      * @return Contract
      */
     private function createNewContract($contractData)
@@ -246,6 +248,10 @@ class ContractTest extends TestCase
         ];
     }
 
+    /**
+     * @param string $type
+     * @return string[]
+     */
     private function getFileData($type)
     {
         $files = [

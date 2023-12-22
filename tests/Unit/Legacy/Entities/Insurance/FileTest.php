@@ -26,7 +26,7 @@ class FileTest extends TestCase
      */
     public function testConstructObject()
     {
-        $this->assertTrue(get_class($this->file) === File::class);
+        $this->assertSame(File::class, get_class($this->file));
     }
 
     /**
@@ -54,7 +54,7 @@ class FileTest extends TestCase
     }
 
     /**
-     * @param $fileData
+     * @param array $fileData
      * @return File
      */
     public function createNewFile($fileData)

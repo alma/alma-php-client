@@ -17,6 +17,11 @@ class File
      */
     protected $publicUrl;
 
+    /**
+     * @param string $name
+     * @param string $type
+     * @param string $publicUrl
+     */
     public function __construct($name, $type, $publicUrl)
     {
         $this->name = $name;

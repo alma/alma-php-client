@@ -19,6 +19,9 @@ class InsuranceTest extends TestCase
 	 */
 	private $clientContext;
 
+    /**
+     * @return void
+     */
 	protected function setUp()
 	{
 		$this->clientContext = $this->createMock(ClientContext::class);
@@ -26,6 +29,9 @@ class InsuranceTest extends TestCase
         $this->requestObject = Mockery::mock(Request::class);
 	}
 
+    /**
+     * @return void
+     */
 	public function testInsuranceEligibilityMethodExist()
 	{
 		$insurance = new Insurance($this->clientContext);
@@ -34,9 +40,9 @@ class InsuranceTest extends TestCase
 
     /**
      * @dataProvider requestDataProviderRightParams
-     * @param $insuranceContractExternalId
-     * @param $cmsReference
-     * @param $productPrice
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
      * @return void
      * @throws ParamsException
      * @throws RequestError
@@ -60,9 +66,9 @@ class InsuranceTest extends TestCase
 
     /**
      * @dataProvider requestDataProvider
-     * @param $insuranceContractExternalId
-     * @param $cmsReference
-     * @param $productPrice
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
      * @return void
      * @throws ParamsException
      * @throws RequestError
@@ -82,6 +88,7 @@ class InsuranceTest extends TestCase
     /**
      * @return void
      * @throws ParamsException
+     * @throws RequestError
      */
 	public function testApiResponseErrorThrowRequestException()
 	{
@@ -108,6 +115,10 @@ class InsuranceTest extends TestCase
 
     /**
      * @dataProvider requestDataProviderRightParams
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
+     * @return void
      * @throws ParamsException
      * @throws RequestError
      */
@@ -156,6 +167,9 @@ class InsuranceTest extends TestCase
         Mockery::close();
     }
 
+    /**
+     * @return array[]
+     */
 	public static function requestDataProvider()
 	{
 		return [
@@ -201,6 +215,10 @@ class InsuranceTest extends TestCase
 			]
 		];
 	}
+
+    /**
+     * @return array[]
+     */
 	public static function requestDataProviderRightParams()
 	{
 		return [

@@ -45,6 +45,18 @@ class Contract
      */
     private $files;
 
+    /**
+     * @param string $id
+     * @param string $name
+     * @param int $protectionDays
+     * @param string $description
+     * @param string $coverArea
+     * @param string $compensationArea
+     * @param string $exclusionArea
+     * @param string $uncoveredArea
+     * @param int $price
+     * @param array $files
+     */
     public function __construct(
         $id,
         $name,
@@ -160,7 +172,7 @@ class Contract
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return array
      */
     public function getFileByType($type)
