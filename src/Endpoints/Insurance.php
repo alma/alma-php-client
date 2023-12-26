@@ -3,6 +3,7 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Entities\Insurance\Contract;
+use Alma\API\Entities\Insurance\File;
 use Alma\API\Entities\Insurance\Subscription;
 use Alma\API\Exceptions\ParamsException;
 use Alma\API\RequestError;
@@ -29,10 +30,21 @@ class Insurance extends Base
             $this->checkParamValidated($insuranceContractExternalId) &&
             $this->checkPriceFormat($productPrice)
         ){
+            $files = [];
 			$response = $this->request(self::INSURANCE_PATH.'insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)->get();
 			if ($response->isError()) {
 				throw new RequestError($response->errorMessage, null, $response);
 			}
+            if (!$response->json) {
+                return null;
+            }
+            foreach ($response->json['files'] as $file) {
+                $files[] = new File(
+                    $file['name'],
+                    $file['type'],
+                    $file['public_url']
+                );
+            }
             return new Contract(
                 $response->json['id'],
                 $response->json['name'],
@@ -43,7 +55,7 @@ class Insurance extends Base
                 $response->json['exclusion_area'],
                 $response->json['uncovered_area'],
                 $response->json['price'],
-                $response->json['files']
+                $files
             );
 		}
 
