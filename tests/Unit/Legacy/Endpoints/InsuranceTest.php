@@ -6,6 +6,7 @@ use Alma\API\ClientContext;
 use Alma\API\Endpoints\Insurance;
 use Alma\API\Entities\Insurance\Contract;
 use Alma\API\Entities\Insurance\File;
+use Alma\API\Entities\Insurance\Subscriber;
 use Alma\API\Entities\Insurance\Subscription;
 use Alma\API\Exceptions\ParamsException;
 use Alma\API\Request;
@@ -124,7 +125,7 @@ class InsuranceTest extends TestCase
      * @throws ParamsException
      * @throws RequestError
      */
-    public function testApiResponse($insuranceContractExternalId, $cmsReference, $productPrice)
+    public function testApiResponseInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
     {
         $contractExpected = new Contract(
             "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
@@ -190,8 +191,18 @@ class InsuranceTest extends TestCase
     }
 
     /**
+     * @return void
+     */
+    public function testInsuranceSubscriptionMethodExist()
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'subscription'));
+    }
+
+    /**
      * @dataProvider nonArrayParamDataProvider
      * @throws ParamsException
+     * @throws RequestError
      */
     public function testSubscriptionThrowExceptionIfNotArrayInParam($nonArrayParam)
     {
@@ -199,6 +210,94 @@ class InsuranceTest extends TestCase
         $this->expectException(ParamsException::class);
         $insurance->subscription($nonArrayParam);
     }
+
+    /**
+     * @dataProvider subscriptionDataProvider
+     * @param $subscriptionArray
+     * @return void
+     * @throws ParamsException
+     * @throws RequestError
+     */
+    public function testSubscriptionThrowExceptionRequestError($subscriptionArray)
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->responseMock->json = $subscriptionArray;
+
+        $requestObject = Mockery::mock(Request::class);
+        $requestObject->shouldReceive('setRequestBody');
+        $requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with('/v1/insurance/insurance-contracts/subscriptions')
+            ->once()
+            ->andReturn($requestObject);
+        $insurance->setClientContext($this->clientContext);
+        $this->expectException(RequestError::class);
+        $insurance->subscription($subscriptionArray);
+        Mockery::close();
+    }
+
+    /**
+     * @dataProvider subscriptionDataProvider
+     * @throws ParamsException
+     * @throws RequestError
+     */
+    public function testSubscriptionGetRequestCall($subscriptionArray)
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('setRequestBody');
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with('/v1/insurance/insurance-contracts/subscriptions')
+            ->once()
+            ->andReturn($this->requestObject);
+        $insurance->setClientContext($this->clientContext);
+        $insurance->subscription($subscriptionArray);
+        Mockery::close();
+    }
+
+    /**
+     * @dataProvider subscriptionDataProvider
+     * @param $subscriptionArray
+     * @return void
+     * @throws ParamsException
+     * @throws RequestError
+     */
+    /*
+     * TODO : I don't think I can unit test the response
+    public function testResponseApiInsuranceSubscription($subscriptionArray)
+    {
+        $expectedData = "{
+            'subscriptions': [
+                {
+                    'contract_id': 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                    'subscription_id': 'subscription_70Sett341OsBkCYRouPjih',
+                    'cms_reference': '1-2'
+                },
+                {
+                    'contract_id': 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                    'subscription_id': 'subscription_5JOcJjsAx9oH4uXfCLeLHW',
+                    'cms_reference': '1-1'
+                }
+            ]
+        }";
+
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('setRequestBody');
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with('/v1/insurance/insurance-contracts/subscriptions')
+            ->once()
+            ->andReturn($this->requestObject);
+        $insurance->setClientContext($this->clientContext);
+        $this->assertEquals($expectedData, $insurance->subscription($subscriptionArray));
+    }
+    */
 
     /**
      * @return array
@@ -214,6 +313,53 @@ class InsuranceTest extends TestCase
             ],
             'Test with Object' => [
                 $this->createMock(Subscription::class)
+            ]
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function subscriptionDataProvider()
+    {
+        return [
+            'Test with right data' => [
+                [
+                    new Subscription(
+                        'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                        '19',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub1',
+                            'sub1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            null
+                        )
+                    ),
+                    new Subscription(
+                        'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                        '17-35',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub2',
+                            'sub2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            '1988-08-22'
+                        )
+                    )
+                ],
             ]
         ];
     }
