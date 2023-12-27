@@ -204,11 +204,11 @@ class InsuranceTest extends TestCase
      * @throws ParamsException
      * @throws RequestError
      */
-    public function testSubscriptionThrowExceptionIfNotArrayInParam($nonArrayParam)
+    public function testSubscriptionThrowExceptionIfNotArrayInParam($nonArrayParam, $nonStringPaymentId)
     {
         $insurance = new Insurance($this->clientContext);
         $this->expectException(ParamsException::class);
-        $insurance->subscription($nonArrayParam);
+        $insurance->subscription($nonArrayParam, $nonStringPaymentId);
     }
 
     /**
@@ -243,7 +243,7 @@ class InsuranceTest extends TestCase
      * @throws ParamsException
      * @throws RequestError
      */
-    public function testSubscriptionGetRequestCall($subscriptionArray)
+    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
     {
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('setRequestBody');
@@ -255,7 +255,7 @@ class InsuranceTest extends TestCase
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
-        $insurance->subscription($subscriptionArray);
+        $insurance->subscription($subscriptionArray, $paymentId);
         Mockery::close();
     }
 
@@ -305,14 +305,17 @@ class InsuranceTest extends TestCase
     public function nonArrayParamDataProvider()
     {
         return [
-            'Test with Null' => [
-                null
+            'Test with Null and payment id valid' => [
+                null,
+                'payment_xxx'
             ],
-            'Test with String' => [
-                'my string'
+            'Test with String and payment id valid' => [
+                'my string',
+                'payment_xxx'
             ],
-            'Test with Object' => [
-                $this->createMock(Subscription::class)
+            'Test with Object and payment id valid' => [
+                $this->createMock(Subscription::class),
+                'payment_xxx'
             ]
         ];
     }
@@ -323,7 +326,7 @@ class InsuranceTest extends TestCase
     public function subscriptionDataProvider()
     {
         return [
-            'Test with right data' => [
+            'Test with right data and without payment id' => [
                 [
                     new Subscription(
                         'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
@@ -360,6 +363,46 @@ class InsuranceTest extends TestCase
                         )
                     )
                 ],
+                null
+            ],
+            'Test with right data and payment id' => [
+                [
+                    new Subscription(
+                        'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                        '19',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub1',
+                            'sub1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            null
+                        )
+                    ),
+                    new Subscription(
+                        'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                        '17-35',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub2',
+                            'sub2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            '1988-08-22'
+                        )
+                    )
+                ],
+                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X'
             ]
         ];
     }

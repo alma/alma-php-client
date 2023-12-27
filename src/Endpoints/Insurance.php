@@ -66,13 +66,13 @@ class Insurance extends Base
      * @throws ParamsException
      * @throws RequestError
      */
-    public function subscription($subscriptionArray)
+    public function subscription($subscriptionArray, $paymentId = null)
     {
         $subscriptionData = ['subscriptions' => []];
         if (gettype($subscriptionArray) !== 'array') {
             throw new ParamsException('Invalid Parameters');
         }
-        foreach ($subscriptionArray as $subscription){
+        foreach ($subscriptionArray as $subscription) {
             if (get_class($subscription) !== Subscription::class) {
                 throw new ParamsException('Invalid Parameters');
             }
@@ -95,6 +95,9 @@ class Insurance extends Base
                     ]
                 ],
             ];
+        }
+        if ($paymentId && gettype($paymentId) === 'string') {
+            $subscriptionData['payment_id'] = $paymentId;
         }
         /**
          * TODO : Why this code does work ?!!!
