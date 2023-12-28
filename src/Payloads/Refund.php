@@ -55,11 +55,11 @@ class Refund
     public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
     {
         if ($id === '') {
-            throw new ParamsError('Payment Id can\'t be empty.');
+            throw new ParamsError('Refund Error. Payment Id can\'t be empty.');
         }
 
         if ($amount < 0) {
-            throw new ParamsError('You can\'t refund a negative amount.');
+            throw new ParamsError('Refund Error. You can\'t refund a negative amount.');
         }
 
         $refundPayload = new self($id);
