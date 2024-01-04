@@ -7,7 +7,6 @@ use Alma\API\Entities\Insurance\File;
 use Alma\API\Entities\Insurance\Subscription;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\ParamsException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\Lib\InsuranceValidator;
@@ -53,31 +52,30 @@ class Insurance extends Base
 
         $this->checkParameters($cmsReference, $insuranceContractExternalId, $productPrice);
         
-			$response = $this->request(
-                sprintf(
-                    "%sinsurance-contracts/%s?cms_reference=%s&product_price=%d",
-                    self::INSURANCE_PATH,
-                    $insuranceContractExternalId,
-                    $cmsReference,
-                    $productPrice
-                )
-            )->get();
+        $response = $this->request(
+            sprintf(
+                "%sinsurance-contracts/%s?cms_reference=%s&product_price=%d",
+                self::INSURANCE_PATH,
+                $insuranceContractExternalId,
+                $cmsReference,
+                $productPrice
+            )
+        )->get();
 
-			if ($response->isError()) {
-				throw new RequestException($response->errorMessage, null, $response);
-			}
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
 
-            // @todo is it a possible case, or do we need to throw an exception
-            if (!$response->json) {
-                return null;
-            }
+        // @todo is it a possible case, or do we need to throw an exception
+        if (!$response->json) {
+            return null;
+        }
 
-            $this->arrayUtils->checkMandatoryKeys(Contract::$mandatoryFields, $response->json);
+        $this->arrayUtils->checkMandatoryKeys(Contract::$mandatoryFields, $response->json);
 
-            $files = $this->getFiles($response->json);
+        $files = $this->getFiles($response->json);
 
-            return $this->buildContract($response->json, $files);
-
+        return $this->buildContract($response->json, $files);
 	}
 
     /**
@@ -104,7 +102,6 @@ class Insurance extends Base
      */
     public function subscription($subscriptionArray, $paymentId = null)
     {
-        $subscriptionData = ['subscriptions' => []];
 
         if (!is_array($subscriptionArray)) {
             throw new ParametersException(
@@ -124,9 +121,10 @@ class Insurance extends Base
             ->post();
          */
 
-        $request = $this->request(self::INSURANCE_PATH . 'insurance-contracts/subscriptions');
+        $request = $this->request(self::INSURANCE_PATH . 'subscriptions');
         $request->setRequestBody($subscriptionData);
         $response = $request->post();
+
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
         }
@@ -135,13 +133,15 @@ class Insurance extends Base
     }
 
     /**
-     * @param $subscriptionArray
-     * @param $paymentId
+     * @param array $subscriptionArray
+     * @param string|null $paymentId
      * @return array
      * @throws ParametersException
      */
     protected function buildSubscriptionData($subscriptionArray, $paymentId = null)
     {
+        $subscriptionData = ['subscriptions' => []];
+
         /**
          * @var Subscription $subscription
          */
@@ -174,6 +174,7 @@ class Insurance extends Base
                 ],
             ];
         }
+
         if (
             null !== $paymentId
             && is_string($paymentId)
