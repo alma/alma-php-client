@@ -2,9 +2,9 @@
 
 namespace Alma\API;
 
-use Exception;
+use Alma\API\Exceptions\AlmaException;
 
-class RequestError extends Exception
+class RequestError extends AlmaException
 {
     /**
      * @var Request|null
