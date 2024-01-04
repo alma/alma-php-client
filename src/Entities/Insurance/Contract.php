@@ -178,12 +178,15 @@ class Contract
      */
     public function getFileByType($type)
     {
+        /**
+         * @var File $file
+         */
         foreach ($this->files as $file) {
-            if ($file['type'] === $type) {
+            if ($file->getType() === $type) {
                 return new File(
-                    $file['name'],
-                    $file['type'],
-                    $file['public_url']
+                    $file->getName(),
+                    $file->getType(),
+                    $file->getPublicUrl()
                 );
             }
         }

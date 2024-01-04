@@ -145,6 +145,12 @@ class PaymentsTest extends TestCase
         ];
     }
 
+    /**
+     * @param Payments $payments
+     * @param $data
+     * @return void
+     * @throws RequestError
+     */
     private function callPartialRefund($payments, $data)
     {
         if (isset($data['merchant_ref']) && isset($data['comment'])) {
@@ -161,7 +167,9 @@ class PaymentsTest extends TestCase
     /**
      * Test the partialRefund method with valid datas
      * @dataProvider getPartialRefundData
+     * @param $data
      * @return void
+     * @throws RequestError
      */
     public function testPartialRefund($data)
     {
@@ -206,7 +214,10 @@ class PaymentsTest extends TestCase
     /**
      * Test the partialRefund method with valid datas
      * @dataProvider getPartialRefundInvalidData
+     * @param $data
+     * @param $expectedException
      * @return void
+     * @throws RequestError
      */
     public function testInvalidPartialRefund($data, $expectedException)
     {
