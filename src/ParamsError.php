@@ -28,6 +28,7 @@ namespace Alma\API;
 /**
  * Class ParamsError
  * @package Alma\API
+ * @deprecated use ParametersException
  */
 class ParamsError extends \Exception
 {

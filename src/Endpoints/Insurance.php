@@ -5,7 +5,12 @@ namespace Alma\API\Endpoints;
 use Alma\API\Entities\Insurance\Contract;
 use Alma\API\Entities\Insurance\File;
 use Alma\API\Entities\Insurance\Subscription;
+use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\ParamsException;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\ArrayUtils;
+use Alma\API\Lib\InsuranceValidator;
 use Alma\API\RequestError;
 
 class Insurance extends Base
@@ -13,69 +18,142 @@ class Insurance extends Base
 	const INSURANCE_PATH = '/v1/insurance/';
 
     /**
-     * @param string $insuranceContractExternalId
+     * @var InsuranceValidator
+     */
+    protected $insuranceValidator;
+
+    /**
+     * @var ArrayUtils
+     */
+    protected $arrayUtils;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->insuranceValidator = new InsuranceValidator();
+        $this->arrayUtils = new ArrayUtils();
+    }
+
+    /**
+     * @param int $insuranceContractExternalId
      * @param string $cmsReference
-     * @param int $productPrice
-     * @return Contract
-     * @throws ParamsException
+     * @param int|string $productPrice
+     * @return Contract|null
+     * @throws MissingKeyException
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
 	public function getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
-		if (gettype($cmsReference) === 'integer') {
+		if (is_int($cmsReference)) {
 			$cmsReference = (string)$cmsReference;
 		}
-		if (
-            $this->checkParamValidated($cmsReference) &&
-            $this->checkParamValidated($insuranceContractExternalId) &&
-            $this->checkPriceFormat($productPrice)
-        ){
-            $files = [];
-			$response = $this->request(self::INSURANCE_PATH.'insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)->get();
+
+        $this->checkParameters($cmsReference, $insuranceContractExternalId, $productPrice);
+        
+			$response = $this->request(
+                sprintf(
+                    "%sinsurance-contracts/%s?cms_reference=%s&product_price=%d",
+                    self::INSURANCE_PATH,
+                    $insuranceContractExternalId,
+                    $cmsReference,
+                    $productPrice
+                )
+            )->get();
+
 			if ($response->isError()) {
-				throw new RequestError($response->errorMessage, null, $response);
+				throw new RequestException($response->errorMessage, null, $response);
 			}
+
+            // @todo is it a possible case, or do we need to throw an exception
             if (!$response->json) {
                 return null;
             }
-            foreach ($response->json['files'] as $file) {
-                $files[] = new File(
-                    $file['name'],
-                    $file['type'],
-                    $file['public_url']
-                );
-            }
-            return new Contract(
-                $response->json['id'],
-                $response->json['name'],
-                $response->json['protection_days'],
-                $response->json['description'],
-                $response->json['cover_area'],
-                $response->json['compensation_area'],
-                $response->json['exclusion_area'],
-                $response->json['uncovered_area'],
-                $response->json['price'],
-                $files
-            );
-		}
 
-		throw new ParamsException('Invalid parameters');
+            $this->arrayUtils->checkMandatoryKeys(Contract::$mandatoryFields, $response->json);
+
+            $files = $this->getFiles($response->json);
+
+            return $this->buildContract($response->json, $files);
+
 	}
 
     /**
-     * @throws ParamsException
+     * @param string $cmsReference
+     * @param int $insuranceContractExternalId
+     * @param string $productPrice
+     * @return void
+     * @throws ParametersException
+     */
+    public function checkParameters($cmsReference, $insuranceContractExternalId, $productPrice)
+    {
+        $this->insuranceValidator->checkParamFormat($cmsReference, 'CMS reference');
+        $this->insuranceValidator->checkParamFormat($insuranceContractExternalId, 'Insurance contract external id');
+        $this->insuranceValidator->checkPriceFormat($productPrice);
+    }
+
+    /**
+     * @param $subscriptionArray
+     * @param null $paymentId
+     * @return mixed
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function subscription($subscriptionArray, $paymentId = null)
     {
         $subscriptionData = ['subscriptions' => []];
-        if (gettype($subscriptionArray) !== 'array') {
-            throw new ParamsException('Invalid Parameters');
+
+        if (!is_array($subscriptionArray)) {
+            throw new ParametersException(
+                sprintf(
+                    'The subscription array must to be an array, "%s" found',
+                    gettype($subscriptionArray)
+                )
+            );
         }
+
+        $subscriptionData = $this->buildSubscriptionData($subscriptionArray, $paymentId);
+
+        /**
+         * TODO : Why this code does work ?!!!
+        $response = $this->request(self::INSURANCE_PATH . 'insurance-contracts/subscriptions')
+            ->setRequestBody($subscriptionData)
+            ->post();
+         */
+
+        $request = $this->request(self::INSURANCE_PATH . 'insurance-contracts/subscriptions');
+        $request->setRequestBody($subscriptionData);
+        $response = $request->post();
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
+
+        return $response->json;
+    }
+
+    /**
+     * @param $subscriptionArray
+     * @param $paymentId
+     * @return array
+     * @throws ParametersException
+     */
+    protected function buildSubscriptionData($subscriptionArray, $paymentId = null)
+    {
+        /**
+         * @var Subscription $subscription
+         */
         foreach ($subscriptionArray as $subscription) {
-            if (get_class($subscription) !== Subscription::class) {
-                throw new ParamsException('Invalid Parameters');
+
+            if (
+                !is_object($subscription)
+                || $subscription instanceof Subscription
+            ) {
+                throw new ParametersException('The subscription array does not contains Subscription object');
             }
+
             $subscriptionData['subscriptions'][] = [
                 'insurance_contract_id' => $subscription->getContractId(),
                 'cms_reference' => $subscription->getCmsReference(),
@@ -96,44 +174,57 @@ class Insurance extends Base
                 ],
             ];
         }
-        if ($paymentId && gettype($paymentId) === 'string') {
+        if (
+            null !== $paymentId
+            && is_string($paymentId)
+        ) {
             $subscriptionData['payment_id'] = $paymentId;
         }
-        /**
-         * TODO : Why this code does work ?!!!
-        $response = $this->request(self::INSURANCE_PATH . 'insurance-contracts/subscriptions')
-            ->setRequestBody($subscriptionData)
-            ->post();
-         */
 
-        $request = $this->request(self::INSURANCE_PATH . 'insurance-contracts/subscriptions');
-        $request->setRequestBody($subscriptionData);
-        $response = $request->post();
-        if ($response->isError()) {
-            throw new RequestError($response->errorMessage, null, $response);
+        return $subscriptionData;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws MissingKeyException
+     */
+    protected function getFiles($data)
+    {
+        $files = [];
+
+        foreach ($data['files'] as $file) {
+
+            $this->arrayUtils->checkMandatoryKeys(File::$mandatoryFields, $file);
+
+            $files[] = new File(
+                $file['name'],
+                $file['type'],
+                $file['public_url']
+            );
         }
 
-        return $response->json;
+        return $files;
     }
 
     /**
-     * @param int $productPrice
-     * @return false|int
+     * @param array $data
+     * @param array $files
+     * @return Contract
      */
-    private function checkPriceFormat($productPrice)
+    protected function buildContract($data, $files)
     {
-        $validationProductReferenceIdRegex =  '/^[0-9]+$/';
-        return preg_match($validationProductReferenceIdRegex, $productPrice);
-    }
-
-    /**
-     * @param string $param
-     * @return bool
-     */
-    private function checkParamValidated($param)
-    {
-        $validationProductReferenceIdRegex =  '/^[a-zA-Z0-9-_ ]+$/';
-
-        return gettype($param) === 'string' && preg_match($validationProductReferenceIdRegex, $param);
+        return new Contract(
+            $data['id'],
+            $data['name'],
+            $data['protection_days'],
+            $data['description'],
+            $data['cover_area'],
+            $data['compensation_area'],
+            $data['exclusion_area'],
+            $data['uncovered_area'],
+            $data['price'],
+            $files
+        );
     }
 }

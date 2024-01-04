@@ -4,6 +4,9 @@ namespace Alma\API;
 
 use Alma\API\Exceptions\AlmaException;
 
+/**
+ * @deprecated use RequestException
+ */
 class RequestError extends AlmaException
 {
     /**
@@ -15,6 +18,11 @@ class RequestError extends AlmaException
      */
     public $response;
 
+    /**
+     * @param $message
+     * @param $request
+     * @param $response
+     */
     public function __construct($message = "", $request = null, $response = null)
     {
         parent::__construct($message);
@@ -23,6 +31,9 @@ class RequestError extends AlmaException
         $this->response = $response;
     }
 
+    /**
+     * @return mixed|string
+     */
     public function getErrorMessage()
     {
         $message = $this->getMessage();

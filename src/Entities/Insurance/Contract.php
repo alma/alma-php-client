@@ -45,6 +45,19 @@ class Contract
      */
     private $files;
 
+    public static $mandatoryFields = [
+        'id',
+        'name',
+        'protection_days',
+        'description',
+        'cover_area',
+        'compensation_area',
+        'exclusion_area',
+        'uncovered_area',
+        'price',
+        'files'
+    ];
+
     /**
      * @param string $id
      * @param string $name
