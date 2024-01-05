@@ -26,9 +26,9 @@ class Insurance extends Base
      */
     protected $arrayUtils;
 
-    public function __construct()
+    public function __construct($client_context)
     {
-        parent::__construct();
+        parent::__construct($client_context);
 
         $this->insuranceValidator = new InsuranceValidator();
         $this->arrayUtils = new ArrayUtils();
