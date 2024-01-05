@@ -8,7 +8,11 @@ use Alma\API\Entities\Insurance\Contract;
 use Alma\API\Entities\Insurance\File;
 use Alma\API\Entities\Insurance\Subscriber;
 use Alma\API\Entities\Insurance\Subscription;
+use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\ParamsException;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\InsuranceValidator;
 use Alma\API\Request;
 use Alma\API\RequestError;
 use Alma\API\Response;
@@ -30,6 +34,7 @@ class InsuranceTest extends TestCase
 		$this->clientContext = $this->createMock(ClientContext::class);
         $this->responseMock = Mockery::mock(Response::class);
         $this->requestObject = Mockery::mock(Request::class);
+        $this->insuranceValidator = Mockery::mock(InsuranceValidator::class);
 	}
 
     /**
@@ -47,8 +52,10 @@ class InsuranceTest extends TestCase
      * @param string $cmsReference
      * @param int $productPrice
      * @return void
-     * @throws ParamsException
      * @throws RequestError
+     * @throws MissingKeyException
+     * @throws ParametersException
+     * @throws RequestException
      */
 	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
@@ -62,10 +69,13 @@ class InsuranceTest extends TestCase
 			->andReturn($this->requestObject);
 		$insurance->setClientContext($this->clientContext);
 
+        $this->insuranceValidator->shouldReceive('checkParamFormat');
+
+        $insurance->shouldReceive('checkParameters')->with($cmsReference, $insuranceContractExternalId, $productPrice)->once();
+
 		$insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
 		Mockery::close();
 	}
-
 
     /**
      * @dataProvider requestDataProvider
@@ -73,18 +83,50 @@ class InsuranceTest extends TestCase
      * @param string $cmsReference
      * @param int $productPrice
      * @return void
-     * @throws ParamsException
+     * @throws MissingKeyException
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
+     */
+    public function testThrowParametersExceptionWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
+    {
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+
+        $this->expectException(ParametersException::class);
+
+        $test = $this->insuranceValidator->shouldReceive('checkParamFormat')->once()->andReturn('toto');
+
+        $insurance->shouldReceive('checkParameters');
+        $insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+        Mockery::close();
+    }
+
+    /**
+     * @dataProvider requestDataProvider
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
+     * @return void
+     * @throws MissingKeyException
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
      */
 	public function testGetRequestWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
         $this->requestObject->shouldNotReceive('get');
 
 		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-		$insurance->shouldNotReceive('request');
-		$insurance->setClientContext($this->clientContext);
-		$this->expectException(ParamsException::class);
-		$insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+
+        $insurance->shouldNotReceive('request');
+        $insurance->setClientContext($this->clientContext);
+
+        $this->expectException(RequestException::class);
+
+        $this->insuranceValidator->shouldReceive('checkParamFormat')->once()->andThrow(ParametersException::class);
+
+        $insurance->shouldReceive('checkParameters')->with($cmsReference, $insuranceContractExternalId, $productPrice);
+        $insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
 		Mockery::close();
 	}
 

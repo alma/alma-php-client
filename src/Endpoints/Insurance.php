@@ -51,7 +51,7 @@ class Insurance extends Base
 		}
 
         $this->checkParameters($cmsReference, $insuranceContractExternalId, $productPrice);
-        
+
         $response = $this->request(
             sprintf(
                 "%sinsurance-contracts/%s?cms_reference=%s&product_price=%d",
