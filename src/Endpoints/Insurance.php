@@ -149,7 +149,7 @@ class Insurance extends Base
 
             if (
                 !is_object($subscription)
-                || $subscription instanceof Subscription
+                || !$subscription instanceof Subscription
             ) {
                 throw new ParametersException('The subscription array does not contains Subscription object');
             }
