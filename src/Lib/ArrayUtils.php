@@ -26,6 +26,8 @@
 
 namespace Alma\API\Lib;
 
+use Alma\API\Exceptions\MissingKeyException;
+
 /**
  * Class ArrayUtils
  * @package Alma\API
@@ -41,5 +43,20 @@ class ArrayUtils
             return false;
         }
         return count(array_filter(array_keys($array), 'is_string')) > 0;
+    }
+
+    /**
+     * @param array $keys
+     * @param array $array
+     * @return void
+     * @throws MissingKeyException
+     */
+    public function checkMandatoryKeys($keys, $array)
+    {
+        foreach ($keys as $key) {
+            if(!array_key_exists($key, $array)){
+                throw new MissingKeyException('The key "%s" is missing from the array "%s"', $key, json_encode($array));
+            }
+        }
     }
 }

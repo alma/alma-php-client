@@ -23,14 +23,46 @@
  *
  */
 
-namespace Alma\API;
+namespace Alma\API\Lib;
 
-/**
- * Class ParamsError
- * @package Alma\API
- * @deprecated use ParametersException
- */
-class ParamsError extends \Exception
+use Alma\API\Exceptions\ParametersException;
+
+class InsuranceValidator
 {
+    /**
+     * @param int $productPrice
+     * @throws ParametersException
+     */
+    public function checkPriceFormat($productPrice)
+    {
+        $validationProductReferenceIdRegex =  '/^[0-9]+$/';
 
+        if(!preg_match($validationProductReferenceIdRegex, $productPrice)) {
+            throw new ParametersException(sprintf(
+                'The product price has a wrong format : "%s"',
+                    $productPrice
+            ));
+        }
+    }
+
+    /**
+     * @param string $param
+     * @param string $name
+     * @throws ParametersException
+     */
+    public function checkParamFormat($param, $name)
+    {
+        $validationProductReferenceIdRegex =  '/^[a-zA-Z0-9-_ ]+$/';
+
+        if(
+            !is_string($param)
+            || !preg_match($validationProductReferenceIdRegex, $param)
+        ) {
+            throw new ParametersException(sprintf(
+                'The "%s" field needs to be an integer has a wrong format : "%s"',
+                $name,
+                $param
+            ));
+        }
+    }
 }

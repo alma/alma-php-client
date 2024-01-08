@@ -8,7 +8,11 @@ use Alma\API\Entities\Insurance\Contract;
 use Alma\API\Entities\Insurance\File;
 use Alma\API\Entities\Insurance\Subscriber;
 use Alma\API\Entities\Insurance\Subscription;
-use Alma\API\Exceptions\ParamsException;
+use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\ParametersException;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\ArrayUtils;
+use Alma\API\Lib\InsuranceValidator;
 use Alma\API\Request;
 use Alma\API\RequestError;
 use Alma\API\Response;
@@ -30,6 +34,9 @@ class InsuranceTest extends TestCase
 		$this->clientContext = $this->createMock(ClientContext::class);
         $this->responseMock = Mockery::mock(Response::class);
         $this->requestObject = Mockery::mock(Request::class);
+        $this->insuranceMock = Mockery::mock(Insurance::class)->makePartial();
+        $this->insuranceValidatorMock = Mockery::mock(InsuranceValidator::class);
+        $this->arrayUtilsMock = Mockery::mock(ArrayUtils::class);
 	}
 
     /**
@@ -47,7 +54,9 @@ class InsuranceTest extends TestCase
      * @param string $cmsReference
      * @param int $productPrice
      * @return void
-     * @throws ParamsException
+     * @throws MissingKeyException
+     * @throws ParametersException
+     * @throws RequestException
      * @throws RequestError
      */
 	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
@@ -55,17 +64,19 @@ class InsuranceTest extends TestCase
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
 
-		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-		$insurance->shouldReceive('request')
+		$this->insuranceMock->shouldReceive('request')
 			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
 			->once()
 			->andReturn($this->requestObject);
-		$insurance->setClientContext($this->clientContext);
+        $this->insuranceMock->setClientContext($this->clientContext);
 
-		$insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+        //$this->insuranceValidatorMock->shouldReceive('checkParamFormat');
+
+        $this->insuranceMock->shouldReceive('checkParameters')->with($cmsReference, $insuranceContractExternalId, $productPrice)->once();
+
+		$this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
 		Mockery::close();
 	}
-
 
     /**
      * @dataProvider requestDataProvider
@@ -73,25 +84,28 @@ class InsuranceTest extends TestCase
      * @param string $cmsReference
      * @param int $productPrice
      * @return void
-     * @throws ParamsException
+     * @throws MissingKeyException
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
-	public function testGetRequestWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
-	{
+    public function testThrowParametersExceptionWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
+    {
         $this->requestObject->shouldNotReceive('get');
+        $this->insuranceMock->shouldNotReceive('request');
 
-		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-		$insurance->shouldNotReceive('request');
-		$insurance->setClientContext($this->clientContext);
-		$this->expectException(ParamsException::class);
-		$insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-		Mockery::close();
-	}
+        $this->insuranceMock->shouldReceive('checkParameters')->once()->andThrow(ParametersException::class);
+        $this->expectException(ParametersException::class);
+        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+        Mockery::close();
+    }
 
     /**
      * @return void
-     * @throws ParamsException
+     * @throws MissingKeyException
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
 	public function testApiResponseErrorThrowRequestException()
 	{
@@ -103,16 +117,16 @@ class InsuranceTest extends TestCase
 		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
 		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
 
-		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-		$insurance->shouldReceive('request')
+        $this->insuranceMock->shouldReceive('request')
 			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
 			->once()
 			->andReturn($requestObject)
 		;
 
-		$insurance->setClientContext($this->clientContext);
-		$this->expectException(RequestError::class);
-		$insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+        $this->insuranceMock->setClientContext($this->clientContext);
+        $this->insuranceMock->shouldReceive('checkParameters')->once();
+		$this->expectException(RequestException::class);
+        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
 		Mockery::close();
 	}
 
@@ -122,11 +136,18 @@ class InsuranceTest extends TestCase
      * @param string $cmsReference
      * @param int $productPrice
      * @return void
-     * @throws ParamsException
+     * @throws MissingKeyException
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function testApiResponseInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
     {
+        $files = [
+            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'ipid-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'),
+            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'fic-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'),
+            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'notice-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf')
+        ];
         $contractExpected = new Contract(
             "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
             "Alma outillage thermique 3 ans (Vol + casse)",
@@ -137,11 +158,7 @@ class InsuranceTest extends TestCase
             null,
             null,
             500,
-            [
-                new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'ipid-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'),
-                new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'fic-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'),
-                new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'notice-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf')
-            ]
+            $files
         );
         $json = '{
             "id": "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
@@ -178,14 +195,14 @@ class InsuranceTest extends TestCase
         $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
         $requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
 
-        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-        $insurance->shouldReceive('request')
+        $this->insuranceMock->shouldReceive('request')
             ->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
             ->once()
             ->andReturn($requestObject)
         ;
-        $insurance->setClientContext($this->clientContext);
-        $contract = $insurance->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+        $this->insuranceMock->setClientContext($this->clientContext);
+        $this->insuranceMock->shouldReceive('checkParameters')->once();
+        $contract = $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
         $this->assertEquals($contractExpected, $contract);
         Mockery::close();
     }
@@ -201,13 +218,16 @@ class InsuranceTest extends TestCase
 
     /**
      * @dataProvider nonArrayParamDataProvider
-     * @throws ParamsException
+     * @param $nonArrayParam
+     * @param $nonStringPaymentId
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function testSubscriptionThrowExceptionIfNotArrayInParam($nonArrayParam, $nonStringPaymentId)
     {
         $insurance = new Insurance($this->clientContext);
-        $this->expectException(ParamsException::class);
+        $this->expectException(ParametersException::class);
         $insurance->subscription($nonArrayParam, $nonStringPaymentId);
     }
 
@@ -215,8 +235,9 @@ class InsuranceTest extends TestCase
      * @dataProvider subscriptionDataProvider
      * @param $subscriptionArray
      * @return void
-     * @throws ParamsException
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function testSubscriptionThrowExceptionRequestError($subscriptionArray)
     {
@@ -224,80 +245,43 @@ class InsuranceTest extends TestCase
         $this->responseMock->json = $subscriptionArray;
 
         $requestObject = Mockery::mock(Request::class);
-        $requestObject->shouldReceive('setRequestBody');
+        $requestObject->shouldReceive('setRequestBody')->andReturn($requestObject);
         $requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
         $insurance->shouldReceive('request')
-            ->with('/v1/insurance/insurance-contracts/subscriptions')
+            ->with('/v1/insurance/subscriptions')
             ->once()
             ->andReturn($requestObject);
         $insurance->setClientContext($this->clientContext);
-        $this->expectException(RequestError::class);
+        $this->expectException(RequestException::class);
         $insurance->subscription($subscriptionArray);
         Mockery::close();
     }
 
     /**
      * @dataProvider subscriptionDataProvider
-     * @throws ParamsException
+     * @param $subscriptionArray
+     * @param $paymentId
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
     {
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody');
+        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
         $insurance->shouldReceive('request')
-            ->with('/v1/insurance/insurance-contracts/subscriptions')
+            ->with('/v1/insurance/subscriptions')
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
         $insurance->subscription($subscriptionArray, $paymentId);
         Mockery::close();
     }
-
-    /**
-     * @dataProvider subscriptionDataProvider
-     * @param $subscriptionArray
-     * @return void
-     * @throws ParamsException
-     * @throws RequestError
-     */
-    /*
-     * TODO : I don't think I can unit test the response
-    public function testResponseApiInsuranceSubscription($subscriptionArray)
-    {
-        $expectedData = "{
-            'subscriptions': [
-                {
-                    'contract_id': 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-                    'subscription_id': 'subscription_70Sett341OsBkCYRouPjih',
-                    'cms_reference': '1-2'
-                },
-                {
-                    'contract_id': 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-                    'subscription_id': 'subscription_5JOcJjsAx9oH4uXfCLeLHW',
-                    'cms_reference': '1-1'
-                }
-            ]
-        }";
-
-        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody');
-        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
-
-        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-        $insurance->shouldReceive('request')
-            ->with('/v1/insurance/insurance-contracts/subscriptions')
-            ->once()
-            ->andReturn($this->requestObject);
-        $insurance->setClientContext($this->clientContext);
-        $this->assertEquals($expectedData, $insurance->subscription($subscriptionArray));
-    }
-    */
 
     /**
      * @return array
