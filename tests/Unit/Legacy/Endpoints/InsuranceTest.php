@@ -70,7 +70,7 @@ class InsuranceTest extends TestCase
 			->andReturn($this->requestObject);
         $this->insuranceMock->setClientContext($this->clientContext);
 
-        $this->insuranceValidatorMock->shouldReceive('checkParamFormat');
+        //$this->insuranceValidatorMock->shouldReceive('checkParamFormat');
 
         $this->insuranceMock->shouldReceive('checkParameters')->with($cmsReference, $insuranceContractExternalId, $productPrice)->once();
 
@@ -189,24 +189,20 @@ class InsuranceTest extends TestCase
             ]
         }';
 
-        $insuranceMock = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-        //$insuranceMock->shouldReceive('getFiles')->once()->andReturn($files);
-        // @TODO : why it doesn't pass here
-        //$this->arrayUtilsMock->shouldReceive('checkMandatoryKeys');
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->responseMock->json = json_decode($json, true);
 
         $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
         $requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
 
-        $insuranceMock->shouldReceive('request')
+        $this->insuranceMock->shouldReceive('request')
             ->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
             ->once()
             ->andReturn($requestObject)
         ;
-        $insuranceMock->setClientContext($this->clientContext);
-        $insuranceMock->shouldReceive('checkParameters')->once();
-        $contract = $insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+        $this->insuranceMock->setClientContext($this->clientContext);
+        $this->insuranceMock->shouldReceive('checkParameters')->once();
+        $contract = $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
         $this->assertEquals($contractExpected, $contract);
         Mockery::close();
     }
@@ -249,7 +245,7 @@ class InsuranceTest extends TestCase
         $this->responseMock->json = $subscriptionArray;
 
         $requestObject = Mockery::mock(Request::class);
-        $requestObject->shouldReceive('setRequestBody');
+        $requestObject->shouldReceive('setRequestBody')->andReturn($requestObject);
         $requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
@@ -274,7 +270,7 @@ class InsuranceTest extends TestCase
     public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
     {
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody');
+        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();

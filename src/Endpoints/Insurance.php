@@ -21,17 +21,11 @@ class Insurance extends Base
      */
     protected $insuranceValidator;
 
-    /**
-     * @var ArrayUtils
-     */
-    protected $arrayUtils;
-
     public function __construct($client_context)
     {
         parent::__construct($client_context);
 
         $this->insuranceValidator = new InsuranceValidator();
-        $this->arrayUtils = new ArrayUtils();
     }
 
     /**
@@ -70,8 +64,8 @@ class Insurance extends Base
         if (!$response->json) {
             return null;
         }
-
-        $this->arrayUtils->checkMandatoryKeys(Contract::$mandatoryFields, $response->json);
+        $arrayUtils = new ArrayUtils();
+        $arrayUtils->checkMandatoryKeys(Contract::$mandatoryFields, $response->json);
 
         $files = $this->getFiles($response->json);
 
@@ -114,16 +108,9 @@ class Insurance extends Base
 
         $subscriptionData = $this->buildSubscriptionData($subscriptionArray, $paymentId);
 
-        /**
-         * TODO : Why this code does work ?!!!
-        $response = $this->request(self::INSURANCE_PATH . 'insurance-contracts/subscriptions')
+        $response = $this->request(self::INSURANCE_PATH . 'subscriptions')
             ->setRequestBody($subscriptionData)
             ->post();
-         */
-
-        $request = $this->request(self::INSURANCE_PATH . 'subscriptions');
-        $request->setRequestBody($subscriptionData);
-        $response = $request->post();
 
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
@@ -193,10 +180,10 @@ class Insurance extends Base
     protected function getFiles($data)
     {
         $files = [];
+        $arrayUtils = new ArrayUtils();
 
         foreach ($data['files'] as $file) {
-
-            $this->arrayUtils->checkMandatoryKeys(File::$mandatoryFields, $file);
+            $arrayUtils->checkMandatoryKeys(File::$mandatoryFields, $file);
 
             $files[] = new File(
                 $file['name'],
