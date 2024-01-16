@@ -77,7 +77,7 @@ class Request
 	}
 	public function addCustomerSessionExpirationTimeToHeader($customerSessionExpirationTime)
 	{
-		$this->headers[] = 'X-Customer-Session-Expiration-Time: ' . $customerSessionExpirationTime;
+		$this->headers[] = 'X-Customer-Session-Duration-Time: ' . $customerSessionExpirationTime;
 	}
 
     private function initCurl()
