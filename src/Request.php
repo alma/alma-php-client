@@ -71,6 +71,15 @@ class Request
         $this->initCurl();
     }
 
+	public function addCustomerSessionIdToHeader($customerSession)
+	{
+		$this->headers[] = 'X-Customer-Session-Id: ' . $customerSession;
+	}
+	public function addCustomerSessionExpirationTimeToHeader($customerSessionExpirationTime)
+	{
+		$this->headers[] = 'X-Customer-Session-Expiration-Time: ' . $customerSessionExpirationTime;
+	}
+
     private function initCurl()
     {
         $this->curlHandle = curl_init();

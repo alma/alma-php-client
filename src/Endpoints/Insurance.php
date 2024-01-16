@@ -14,7 +14,7 @@ use Alma\API\RequestError;
 
 class Insurance extends Base
 {
-	const INSURANCE_PATH = '/v1/insurance/';
+    const INSURANCE_PATH = '/v1/insurance/';
 
     /**
      * @var InsuranceValidator
@@ -32,29 +32,35 @@ class Insurance extends Base
      * @param int $insuranceContractExternalId
      * @param string $cmsReference
      * @param int|string $productPrice
+     * @param string | null $customerSessionId
+     * @param string | null $customerSessionExpirationTime
      * @return Contract|null
      * @throws MissingKeyException
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
      */
-	public function getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
-	{
-		if (is_int($cmsReference)) {
-			$cmsReference = (string)$cmsReference;
-		}
+    public function getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice, $customerSessionId = null, $customerSessionExpirationTime = null)
+    {
+        if (is_int($cmsReference)) {
+            $cmsReference = (string)$cmsReference;
+        }
 
         $this->checkParameters($cmsReference, $insuranceContractExternalId, $productPrice);
 
-        $response = $this->request(
-            sprintf(
-                "%sinsurance-contracts/%s?cms_reference=%s&product_price=%d",
+        $request = $this->request(sprintf(
+                "%sinsurance-contracts/%s",
                 self::INSURANCE_PATH,
-                $insuranceContractExternalId,
-                $cmsReference,
-                $productPrice
-            )
-        )->get();
+                $insuranceContractExternalId)
+        )->setQueryParams([
+            'cms_reference' => $cmsReference,
+            'product_price' => $productPrice
+        ]);
+
+
+        $this->addCustomerSessionToRequest($request, $customerSessionId, $customerSessionExpirationTime);
+
+        $response = $request->get();
 
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
@@ -70,7 +76,7 @@ class Insurance extends Base
         $files = $this->getFiles($response->json);
 
         return $this->buildContract($response->json, $files);
-	}
+    }
 
     /**
      * @param string $cmsReference
@@ -89,12 +95,14 @@ class Insurance extends Base
     /**
      * @param $subscriptionArray
      * @param null $paymentId
+     * @param string | null $customerSessionId
+     * @param string | null $customerSessionExpirationTime
      * @return mixed
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
      */
-    public function subscription($subscriptionArray, $paymentId = null)
+    public function subscription($subscriptionArray, $paymentId = null, $customerSessionId = null, $customerSessionExpirationTime = null)
     {
 
         if (!is_array($subscriptionArray)) {
@@ -107,10 +115,12 @@ class Insurance extends Base
         }
 
         $subscriptionData = $this->buildSubscriptionData($subscriptionArray, $paymentId);
+        $request = $this->request(self::INSURANCE_PATH . 'subscriptions')
+            ->setRequestBody($subscriptionData);
 
-        $response = $this->request(self::INSURANCE_PATH . 'subscriptions')
-            ->setRequestBody($subscriptionData)
-            ->post();
+        $this->addCustomerSessionToRequest($request, $customerSessionId, $customerSessionExpirationTime);
+
+        $response = $request->post();
 
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
@@ -214,5 +224,22 @@ class Insurance extends Base
             $data['price'],
             $files
         );
+    }
+
+    /**
+     * @param \Alma\API\Request $request
+     * @param string | null $customerSessionId
+     * @param string | null $customerSessionExpirationTime
+     * @return void
+     */
+    public function addCustomerSessionToRequest($request, $customerSessionId, $customerSessionExpirationTime)
+    {
+        if ($customerSessionId) {
+            $request->addCustomerSessionIdToHeader($customerSessionId);
+        }
+
+        if ($customerSessionExpirationTime) {
+            $request->addCustomerSessionExpirationTimeToHeader($customerSessionExpirationTime);
+        }
     }
 }
