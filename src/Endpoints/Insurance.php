@@ -40,7 +40,13 @@ class Insurance extends Base
      * @throws RequestError
      * @throws RequestException
      */
-    public function getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice, $customerSessionId = null, $cartId = null)
+    public function getInsuranceContract(
+        $insuranceContractExternalId,
+        $cmsReference,
+        $productPrice,
+        $customerSessionId = null,
+        $cartId = null
+    )
     {
         if (is_int($cmsReference)) {
             $cmsReference = (string)$cmsReference;
@@ -48,10 +54,12 @@ class Insurance extends Base
 
         $this->checkParameters($cmsReference, $insuranceContractExternalId, $productPrice);
 
-        $request = $this->request(sprintf(
+        $request = $this->request(
+            sprintf(
                 "%sinsurance-contracts/%s",
                 self::INSURANCE_PATH,
-                $insuranceContractExternalId)
+                $insuranceContractExternalId
+            )
         )->setQueryParams([
             'cms_reference' => $cmsReference,
             'product_price' => $productPrice
