@@ -71,13 +71,22 @@ class Request
         $this->initCurl();
     }
 
-	public function addCustomerSessionIdToHeader($customerSession)
+    /**
+     * @param string $customerSessionId
+     * @return void
+     */
+    public function addCustomerSessionIdToHeader($customerSessionId)
 	{
-		$this->headers[] = 'X-Customer-Session-Id: ' . $customerSession;
+		$this->headers[] = 'X-Customer-Session-Id: ' . $customerSessionId;
 	}
-	public function addCustomerSessionExpirationTimeToHeader($customerSessionExpirationTime)
+
+    /**
+     * @param string $cartId
+     * @return void
+     */
+    public function addCartIdToHeader($cartId)
 	{
-		$this->headers[] = 'X-Customer-Session-Duration-Time: ' . $customerSessionExpirationTime;
+		$this->headers[] = 'X-Customer-Cart-Id: ' . $cartId;
 	}
 
     private function initCurl()

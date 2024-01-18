@@ -33,14 +33,14 @@ class Insurance extends Base
      * @param string $cmsReference
      * @param int|string $productPrice
      * @param string | null $customerSessionId
-     * @param string | null $customerSessionExpirationTime
+     * @param string | null $cartId
      * @return Contract|null
      * @throws MissingKeyException
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
      */
-    public function getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice, $customerSessionId = null, $customerSessionExpirationTime = null)
+    public function getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice, $customerSessionId = null, $cartId = null)
     {
         if (is_int($cmsReference)) {
             $cmsReference = (string)$cmsReference;
@@ -58,7 +58,7 @@ class Insurance extends Base
         ]);
 
 
-        $this->addCustomerSessionToRequest($request, $customerSessionId, $customerSessionExpirationTime);
+        $this->addCustomerSessionToRequest($request, $customerSessionId, $cartId);
 
         $response = $request->get();
 
@@ -96,13 +96,13 @@ class Insurance extends Base
      * @param $subscriptionArray
      * @param null $paymentId
      * @param string | null $customerSessionId
-     * @param string | null $customerSessionExpirationTime
+     * @param string | null $cartId
      * @return mixed
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
      */
-    public function subscription($subscriptionArray, $paymentId = null, $customerSessionId = null, $customerSessionExpirationTime = null)
+    public function subscription($subscriptionArray, $paymentId = null, $customerSessionId = null, $cartId = null)
     {
 
         if (!is_array($subscriptionArray)) {
@@ -118,7 +118,7 @@ class Insurance extends Base
         $request = $this->request(self::INSURANCE_PATH . 'subscriptions')
             ->setRequestBody($subscriptionData);
 
-        $this->addCustomerSessionToRequest($request, $customerSessionId, $customerSessionExpirationTime);
+        $this->addCustomerSessionToRequest($request, $customerSessionId, $cartId);
 
         $response = $request->post();
 
@@ -229,17 +229,17 @@ class Insurance extends Base
     /**
      * @param \Alma\API\Request $request
      * @param string | null $customerSessionId
-     * @param string | null $customerSessionExpirationTime
+     * @param string | null $cartId
      * @return void
      */
-    public function addCustomerSessionToRequest($request, $customerSessionId, $customerSessionExpirationTime)
+    public function addCustomerSessionToRequest($request, $customerSessionId = null, $cartId = null)
     {
         if ($customerSessionId) {
             $request->addCustomerSessionIdToHeader($customerSessionId);
         }
 
-        if ($customerSessionExpirationTime) {
-            $request->addCustomerSessionExpirationTimeToHeader($customerSessionExpirationTime);
+        if ($cartId) {
+            $request->addCartIdToHeader($cartId);
         }
     }
 }
