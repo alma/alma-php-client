@@ -1,9 +1,9 @@
 CHANGELOG
 =========
 
-v1.12.0
+v2.0.0
 -------
-* Added Insurance endpoints
+* Added Alma insurance endpoints
 
 v1.11.2
 -------
