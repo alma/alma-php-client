@@ -45,6 +45,19 @@ class Contract
      */
     private $files;
 
+    public static $mandatoryFields = [
+        'id',
+        'name',
+        'protection_days',
+        'description',
+        'cover_area',
+        'compensation_area',
+        'exclusion_area',
+        'uncovered_area',
+        'price',
+        'files'
+    ];
+
     /**
      * @param string $id
      * @param string $name
@@ -178,12 +191,15 @@ class Contract
      */
     public function getFileByType($type)
     {
+        /**
+         * @var File $file
+         */
         foreach ($this->files as $file) {
-            if ($file['type'] === $type) {
+            if ($file->getType() === $type) {
                 return new File(
-                    $file['name'],
-                    $file['type'],
-                    $file['public_url']
+                    $file->getName(),
+                    $file->getType(),
+                    $file->getPublicUrl()
                 );
             }
         }

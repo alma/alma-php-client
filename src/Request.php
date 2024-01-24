@@ -71,6 +71,24 @@ class Request
         $this->initCurl();
     }
 
+    /**
+     * @param string $customerSessionId
+     * @return void
+     */
+    public function addCustomerSessionIdToHeader($customerSessionId)
+	{
+		$this->headers[] = 'X-Customer-Session-Id: ' . $customerSessionId;
+	}
+
+    /**
+     * @param string $cartId
+     * @return void
+     */
+    public function addCartIdToHeader($cartId)
+	{
+		$this->headers[] = 'X-Customer-Cart-Id: ' . $cartId;
+	}
+
     private function initCurl()
     {
         $this->curlHandle = curl_init();

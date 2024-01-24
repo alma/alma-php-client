@@ -183,11 +183,11 @@ class ContractTest extends TestCase
     public function fileDataProvider()
     {
         $ipidFileData = $this->getFileData('ipid-document');
-        $ipidFile = new File($ipidFileData['name'], $ipidFileData['type'], $ipidFileData['public_url']);
+        $ipidFile = new File($ipidFileData->getName(), $ipidFileData->getType(), $ipidFileData->getPublicUrl());
         $ficFileData = $this->getFileData('fic-document');
-        $ficFile = new File($ficFileData['name'], $ficFileData['type'], $ficFileData['public_url']);
+        $ficFile = new File($ficFileData->getName(), $ficFileData->getType(), $ficFileData->getPublicUrl());
         $noticeFileData = $this->getFileData('notice-document');
-        $noticeFile = new File($noticeFileData['name'], $noticeFileData['type'], $noticeFileData['public_url']);
+        $noticeFile = new File($noticeFileData->getName(), $noticeFileData->getType(), $noticeFileData->getPublicUrl());
 
         return [
             'type is ipid-document' => [
@@ -262,26 +262,26 @@ class ContractTest extends TestCase
 
     /**
      * @param string $type
-     * @return array
+     * @return File
      */
     private function getFileData($type)
     {
         $files = [
-            'ipid-document' => [
-                'name'=> 'Alma mobility 1 an (vol+casse+assistance) - Alma}',
-                'type'=> 'ipid-document',
-                'public_url'=> 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'
-            ],
-            'fic-document' => [
-                'name'=> 'Alma mobility 1 an (vol+casse+assistance) - Alma}',
-                'type'=> 'fic-document',
-                'public_url'=> 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'
-            ],
-            'notice-document' => [
-                'name'=> 'Alma mobility 1 an (vol+casse+assistance) - Alma}',
-                'type'=> 'notice-document',
-                'public_url'=> 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf'
-            ]
+            'ipid-document' => new File(
+                'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+                'ipid-document',
+                'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'
+            ),
+            'fic-document' => new File(
+                'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+                'fic-document',
+                'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'
+            ),
+            'notice-document' => new File(
+                'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+                'notice-document',
+                'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf'
+            )
         ];
 
         return $files[$type];

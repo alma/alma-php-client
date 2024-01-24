@@ -1,13 +1,11 @@
 <?php
 
-namespace Alma\API;
+namespace Alma\API\Exceptions;
 
-use Alma\API\Exceptions\AlmaException;
+use Alma\API\Request;
+use Alma\API\Response;
 
-/**
- * @deprecated use RequestException
- */
-class RequestError extends AlmaException
+class RequestException extends AlmaException
 {
     /**
      * @var Request|null
@@ -46,7 +44,7 @@ class RequestError extends AlmaException
             && isset($this->response->json['errors'])
             && isset($this->response->json['errors'][0])
             && isset($this->response->json['errors'][0]['message'])
-            ) {
+        ) {
             return $this->response->json['errors'][0]['message'];
         }
 

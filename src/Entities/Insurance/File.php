@@ -17,6 +17,12 @@ class File
      */
     protected $publicUrl;
 
+    public static $mandatoryFields = [
+        'name',
+        'type',
+        'public_url'
+    ];
+
     /**
      * @param string $name
      * @param string $type
