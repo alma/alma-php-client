@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v2.0.0
+-------
+* Added Alma insurance endpoints
+
 v1.11.2
 -------
 * Fix : Compatibility psr/log 1/2/3
