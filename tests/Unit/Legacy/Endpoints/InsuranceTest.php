@@ -327,7 +327,8 @@ class InsuranceTest extends TestCase
                             'adr1',
                             'adr1',
                             null
-                        )
+                        ),
+                        'cancelUrl'
                     ),
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
@@ -344,7 +345,8 @@ class InsuranceTest extends TestCase
                             'adr2',
                             'adr2',
                             '1988-08-22'
-                        )
+                        ),
+                        'cancelUrl'
                     )
                 ],
                 null
@@ -366,7 +368,8 @@ class InsuranceTest extends TestCase
                             'adr1',
                             'adr1',
                             null
-                        )
+                        ),
+                        'cancelUrl'
                     ),
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
@@ -383,7 +386,8 @@ class InsuranceTest extends TestCase
                             'adr2',
                             'adr2',
                             '1988-08-22'
-                        )
+                        ),
+                        'cancelUrl'
                     )
                 ],
                 'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X'

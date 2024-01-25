@@ -38,7 +38,8 @@ class SubscriptionTest extends TestCase
             $data['insurance_contract_id'],
             $data['cms_reference'],
             $data['product_price'],
-            $this->getSubscriber()
+            $this->getSubscriber(),
+            'cancelUrl'
         );
     }
 

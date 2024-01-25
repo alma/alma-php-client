@@ -22,6 +22,11 @@ class Subscription
     private $subscriber;
 
     /**
+     * @var $cancelUrl;
+     */
+    private $cancelUrl;
+
+    /**
      * @param string $contractId
      * @param string $cmsReference
      * @param int $productPrice
@@ -31,13 +36,34 @@ class Subscription
         $contractId,
         $cmsReference,
         $productPrice,
-        $subscriber
+        $subscriber,
+        $cancelUrl
     )
     {
         $this->contractId = $contractId;
         $this->cmsReference = $cmsReference;
         $this->productPrice = $productPrice;
         $this->subscriber = $subscriber;
+        $this->cancelUrl = $cancelUrl;
+    }
+
+    public function getAll()
+    {
+        return [
+            $this->contractId,
+            $this->cmsReference,
+            $this->productPrice,
+            $this->subscriber,
+            $this->cancelUrl
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getCancelUrl()
+    {
+        return $this->cancelUrl;
     }
 
     /**
