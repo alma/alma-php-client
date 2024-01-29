@@ -25,7 +25,7 @@
 
 namespace Alma\API\Payloads;
 
-use Alma\API\ParamsError;
+use Alma\API\Exceptions\ParametersException;
 
 class Refund
 {
@@ -48,18 +48,18 @@ class Refund
      * @param int $amount the amount to refund, 0 means all
      * @param string $merchantReference a reference for the merchant
      * @param string $comment
-     * @return Alma\API\Refund
+     * @return Refund
      *
-     * @throws ParamsError
+     * @throws ParametersException
      */
     public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
     {
         if ($id === '') {
-            throw new ParamsError('Refund Error. Payment Id can\'t be empty.');
+            throw new ParametersException('Refund Error. Payment Id can\'t be empty.');
         }
 
         if ($amount < 0) {
-            throw new ParamsError('Refund Error. You can\'t refund a negative amount.');
+            throw new ParametersException('Refund Error. You can\'t refund a negative amount.');
         }
 
         $refundPayload = new self($id);
@@ -68,6 +68,7 @@ class Refund
         }
         $refundPayload->setMerchantReference($merchantReference);
         $refundPayload->setComment($comment);
+
         return $refundPayload;
     }
 
@@ -136,15 +137,17 @@ class Refund
 
     /**
      * @return array
+     * @throws ParametersException
      */
     public function getRequestBody() {
-        $requestBody = [
+        if ($this->getAmount() === 0) {
+            throw new ParametersException('Refund warning, the refund is zero');
+        }
+
+        return [
+            "amount" => $this->getAmount(),
             "merchant_reference" => $this->getMerchantReference(),
             "comment" => $this->getComment(),
         ];
-        if ($this->getAmount() > 0) {
-            $requestBody["amount"] = $this->getAmount();
-        }
-        return $requestBody;
     }
 }

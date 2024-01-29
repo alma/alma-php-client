@@ -26,6 +26,8 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Endpoints\Results\Eligibility;
+use Alma\API\Exceptions\ParametersException;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\PaymentValidator;
 use Alma\API\ParamsError;
 use Alma\API\Payloads\Refund;
@@ -219,7 +221,9 @@ class Payments extends Base
      * @param string $comment
      *
      * @return Payment
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
         return $this->doRefund(
@@ -234,7 +238,9 @@ class Payments extends Base
      * @param string $comment
      *
      * @return Payment
+     * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function fullRefund($id, $merchantReference = "", $comment = "") {
         return $this->doRefund(
@@ -248,6 +254,8 @@ class Payments extends Base
      *
      * @return Payment
      * @throws RequestError
+     * @throws RequestException
+     * @throws ParametersException
      */
     private function doRefund(Refund $refundPayload) {
         $id = $refundPayload->getId();
@@ -257,7 +265,7 @@ class Payments extends Base
 
         $res = $req->post();
         if ($res->isError()) {
-            throw new RequestError($res->errorMessage, $req, $res);
+            throw new RequestException($res->errorMessage, $req, $res);
         }
 
         return new Payment($res->json);
@@ -272,8 +280,9 @@ class Payments extends Base
      * @param string $merchantReference Merchant reference for the refund to be executed
      *
      * @return Payment
+     * @throws ParametersException
      * @throws RequestError
-     *
+     * @throws RequestException
      * @deprecated please use `partialRefund` or `fullRefund`
      */
     public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "") {
