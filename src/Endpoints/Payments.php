@@ -244,7 +244,7 @@ class Payments extends Base
      */
     public function fullRefund($id, $merchantReference = "", $comment = "") {
         return $this->doRefund(
-            Refund::create($id, 0, $merchantReference, $comment)
+            Refund::create($id, null, $merchantReference, $comment)
         );
     }
 

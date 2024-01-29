@@ -32,7 +32,7 @@ class Refund
     /* @param string */
     private $id;
 
-    /* @param int */
+    /* @param int|null */
     private $amount = 0;
 
     /* @param string */
@@ -144,10 +144,18 @@ class Refund
             throw new ParametersException('Refund warning, the refund is zero');
         }
 
-        return [
-            "amount" => $this->getAmount(),
+        $requestBody = [
             "merchant_reference" => $this->getMerchantReference(),
             "comment" => $this->getComment(),
         ];
+
+        if (
+            $this->getAmount() !== null &&
+            $this->getAmount() > 0
+        ){
+            $requestBody["amount"] = $this->getAmount();
+        }
+
+        return $requestBody;
     }
 }
