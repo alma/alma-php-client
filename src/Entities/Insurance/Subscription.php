@@ -22,29 +22,35 @@ class Subscription
     private $subscriber;
 
     /**
-     * @var $cancelUrl;
+     * @var $callbackUrl;
      */
-    private $cancelUrl;
+    private $callbackUrl;
+    /**
+     * @var string
+     */
+    private $callbackToken;
 
     /**
      * @param string $contractId
      * @param string $cmsReference
      * @param int $productPrice
      * @param Subscriber $subscriber
+     * @param string $callbackUrl
      */
     public function __construct(
         $contractId,
         $cmsReference,
         $productPrice,
         $subscriber,
-        $cancelUrl
+        $callbackUrl
     )
     {
         $this->contractId = $contractId;
         $this->cmsReference = $cmsReference;
         $this->productPrice = $productPrice;
         $this->subscriber = $subscriber;
-        $this->cancelUrl = $cancelUrl;
+        $this->callbackUrl = $callbackUrl;
+        $this->callbackToken = bin2hex(openssl_random_pseudo_bytes(32));
     }
 
     public function getAll()
@@ -54,16 +60,17 @@ class Subscription
             $this->cmsReference,
             $this->productPrice,
             $this->subscriber,
-            $this->cancelUrl
+            $this->callbackUrl,
+            $this->callbackToken
         ];
     }
 
     /**
      * @return string
      */
-    public function getCancelUrl()
+    public function getCallbackUrl()
     {
-        return $this->cancelUrl;
+        return $this->callbackUrl;
     }
 
     /**
@@ -96,5 +103,13 @@ class Subscription
     public function getSubscriber()
     {
         return $this->subscriber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallbackToken()
+    {
+        return $this->callbackToken;
     }
 }

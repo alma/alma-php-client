@@ -6,7 +6,7 @@ use Alma\API\Entities\Insurance\Subscriber;
 use Alma\API\Entities\Insurance\Subscription;
 use PHPUnit\Framework\TestCase;
 
-class SubscriptionTest extends TestCase
+class  SubscriptionTest extends TestCase
 {
     /**
      * @var Subscription

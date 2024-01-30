@@ -127,10 +127,11 @@ class Insurance extends Base
             ->setRequestBody($subscriptionData);
 
         $this->addCustomerSessionToRequest($request, $customerSessionId, $cartId);
-
         $response = $request->post();
+        $this->clientContext->logger->info('Alma Response ', [$response]);
 
         if ($response->isError()) {
+
             throw new RequestException($response->errorMessage, null, $response);
         }
 
@@ -163,6 +164,8 @@ class Insurance extends Base
                 'insurance_contract_id' => $subscription->getContractId(),
                 'cms_reference' => $subscription->getCmsReference(),
                 'product_price' => $subscription->getProductPrice(),
+                'callback_url' => $subscription->getCallbackUrl(),
+                'callback_token' => $subscription->getCallbackToken(),
                 'subscriber' => [
                     'email' => $subscription->getSubscriber()->getEmail(),
                     'phone_number' => $subscription->getSubscriber()->getPhoneNumber(),
