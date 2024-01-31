@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v2.0.1
+-------
+* Fix : Don't remove amount in refund if value equal zero
+
 v2.0.0
 -------
 * Added Alma insurance endpoints
