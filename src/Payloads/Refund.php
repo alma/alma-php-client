@@ -152,7 +152,7 @@ class Refund
         if (
             $this->getAmount() !== null &&
             $this->getAmount() > 0
-        ){
+        ) {
             $requestBody["amount"] = $this->getAmount();
         }
 
