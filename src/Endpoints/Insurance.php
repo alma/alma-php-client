@@ -165,7 +165,6 @@ class Insurance extends Base
                 'cms_reference' => $subscription->getCmsReference(),
                 'product_price' => $subscription->getProductPrice(),
                 'callback_url' => $subscription->getCallbackUrl(),
-                'callback_token' => $subscription->getCallbackToken(),
                 'subscriber' => [
                     'email' => $subscription->getSubscriber()->getEmail(),
                     'phone_number' => $subscription->getSubscriber()->getPhoneNumber(),

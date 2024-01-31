@@ -25,10 +25,10 @@ class Subscription
      * @var $callbackUrl;
      */
     private $callbackUrl;
-    /**
-     * @var string
-     */
-    private $callbackToken;
+
+    CONST STATE_STARTED = 'started';
+    CONST STATE_FAILED = 'failed';
+    CONST STATE_CANCELLED = 'canceled';
 
     /**
      * @param string $contractId
@@ -50,7 +50,6 @@ class Subscription
         $this->productPrice = $productPrice;
         $this->subscriber = $subscriber;
         $this->callbackUrl = $callbackUrl;
-        $this->callbackToken = bin2hex(openssl_random_pseudo_bytes(32));
     }
 
     public function getAll()
@@ -61,7 +60,6 @@ class Subscription
             $this->productPrice,
             $this->subscriber,
             $this->callbackUrl,
-            $this->callbackToken
         ];
     }
 
@@ -103,13 +101,5 @@ class Subscription
     public function getSubscriber()
     {
         return $this->subscriber;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCallbackToken()
-    {
-        return $this->callbackToken;
     }
 }
