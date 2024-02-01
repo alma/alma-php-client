@@ -22,22 +22,54 @@ class Subscription
     private $subscriber;
 
     /**
+     * @var $callbackUrl;
+     */
+    private $callbackUrl;
+
+    CONST STATE_STARTED = 'started';
+    CONST STATE_FAILED = 'failed';
+    CONST STATE_CANCELLED = 'canceled';
+    CONST STATE_PENDING = 'pending';
+
+    /**
      * @param string $contractId
      * @param string $cmsReference
      * @param int $productPrice
      * @param Subscriber $subscriber
+     * @param string $callbackUrl
      */
     public function __construct(
         $contractId,
         $cmsReference,
         $productPrice,
-        $subscriber
+        $subscriber,
+        $callbackUrl
     )
     {
         $this->contractId = $contractId;
         $this->cmsReference = $cmsReference;
         $this->productPrice = $productPrice;
         $this->subscriber = $subscriber;
+        $this->callbackUrl = $callbackUrl;
+    }
+
+    public function getAll()
+    {
+        return [
+            $this->contractId,
+            $this->cmsReference,
+            $this->productPrice,
+            $this->subscriber,
+            $this->callbackUrl,
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallbackUrl()
+    {
+        return $this->callbackUrl;
     }
 
     /**

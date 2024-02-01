@@ -127,10 +127,10 @@ class Insurance extends Base
             ->setRequestBody($subscriptionData);
 
         $this->addCustomerSessionToRequest($request, $customerSessionId, $cartId);
-
         $response = $request->post();
 
         if ($response->isError()) {
+
             throw new RequestException($response->errorMessage, null, $response);
         }
 
@@ -163,6 +163,7 @@ class Insurance extends Base
                 'insurance_contract_id' => $subscription->getContractId(),
                 'cms_reference' => $subscription->getCmsReference(),
                 'product_price' => $subscription->getProductPrice(),
+                'cms_callback_url' => $subscription->getCallbackUrl(),
                 'subscriber' => [
                     'email' => $subscription->getSubscriber()->getEmail(),
                     'phone_number' => $subscription->getSubscriber()->getPhoneNumber(),
