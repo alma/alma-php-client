@@ -128,7 +128,6 @@ class Insurance extends Base
 
         $this->addCustomerSessionToRequest($request, $customerSessionId, $cartId);
         $response = $request->post();
-        $this->clientContext->logger->info('Alma Response ', [$response]);
 
         if ($response->isError()) {
 
