@@ -2,15 +2,14 @@
 
 namespace Alma\API\Tests\Unit\Legacy\Endpoints;
 
+use Alma\API\Exceptions\ParametersException;
+use Alma\API\Exceptions\RequestException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
 use Alma\API\Endpoints\Payments;
-use Alma\API\Lib\ClientOptionsValidator;
 use Alma\API\ClientContext;
 use Alma\API\Request;
-use Alma\API\ParamsError;
-use Alma\API\RequestError;
 
 /**
  * Class Payments
@@ -149,7 +148,7 @@ class PaymentsTest extends TestCase
      * @param Payments $payments
      * @param $data
      * @return void
-     * @throws RequestError
+     * @throws RequestException
      */
     private function callPartialRefund($payments, $data)
     {
@@ -168,8 +167,8 @@ class PaymentsTest extends TestCase
      * Test the partialRefund method with valid datas
      * @dataProvider getPartialRefundData
      * @param $data
-     * @return void
-     * @throws RequestError
+     * @return voi
+     * @throws RequestException
      */
     public function testPartialRefund($data)
     {
@@ -202,12 +201,12 @@ class PaymentsTest extends TestCase
             [[
                 'id' => "negative_amount",
                 'amount' => -1
-            ], ParamsError::class],
+            ], ParametersException::class],
             [[
                 'id' => "",
                 'amount' => 1500,
                 'merchant_ref' => "no id",
-            ], ParamsError::class],
+            ], ParametersException::class],
         ];
     }
 
@@ -217,7 +216,7 @@ class PaymentsTest extends TestCase
      * @param $data
      * @param $expectedException
      * @return void
-     * @throws RequestError
+     * @throws RequestException
      */
     public function testInvalidPartialRefund($data, $expectedException)
     {
@@ -373,7 +372,7 @@ class PaymentsTest extends TestCase
             [[
                 'id' => "",
                 'merchant_ref' => "no id",
-            ], ParamsError::class],
+            ], ParametersException::class],
         ];
     }
 
@@ -509,7 +508,7 @@ class PaymentsTest extends TestCase
         ;
         $payments->setClientContext($clientContext);
 
-        $this->expectException(RequestError::class);
+        $this->expectException(RequestException::class);
 
         /* Test */
         $payments->fullRefund($id);
