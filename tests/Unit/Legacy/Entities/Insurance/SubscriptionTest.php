@@ -6,7 +6,7 @@ use Alma\API\Entities\Insurance\Subscriber;
 use Alma\API\Entities\Insurance\Subscription;
 use PHPUnit\Framework\TestCase;
 
-class SubscriptionTest extends TestCase
+class  SubscriptionTest extends TestCase
 {
     /**
      * @var Subscription
@@ -38,7 +38,8 @@ class SubscriptionTest extends TestCase
             $data['insurance_contract_id'],
             $data['cms_reference'],
             $data['product_price'],
-            $this->getSubscriber()
+            $this->getSubscriber(),
+            'cancelUrl'
         );
     }
 
