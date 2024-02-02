@@ -79,7 +79,7 @@ class InsuranceTest extends TestCase
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
         $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice)->once();
+        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
 	}
@@ -201,7 +201,7 @@ class InsuranceTest extends TestCase
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
         $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice)->once();
+        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
         $this->assertEquals($contractExpected, $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice));
     }
