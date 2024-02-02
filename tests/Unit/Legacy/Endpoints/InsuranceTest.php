@@ -25,19 +25,32 @@ class InsuranceTest extends TestCase
 	 * @var ClientContext
 	 */
 	private $clientContext;
+    /**
+     * @var Response
+     */
+    private $responseMock;
 
     /**
      * @return void
      */
 	protected function setUp()
 	{
-		$this->clientContext = $this->createMock(ClientContext::class);
+		$this->clientContext = Mockery::mock(ClientContext::class);
         $this->responseMock = Mockery::mock(Response::class);
         $this->requestObject = Mockery::mock(Request::class);
         $this->insuranceMock = Mockery::mock(Insurance::class)->makePartial();
         $this->insuranceValidatorMock = Mockery::mock(InsuranceValidator::class);
         $this->arrayUtilsMock = Mockery::mock(ArrayUtils::class);
 	}
+
+    protected function tearDown()
+    {
+        $this->clientContext = null;
+        $this->responseMock = null;
+        $this->requestObject = null;
+        $this->insuranceMock = null;
+        Mockery::close();
+    }
 
     /**
      * @return void
@@ -61,21 +74,14 @@ class InsuranceTest extends TestCase
      */
 	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
+
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
-		$this->insuranceMock->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
-			->once()
-			->andReturn($this->requestObject);
-        $this->insuranceMock->setClientContext($this->clientContext);
-
-        //$this->insuranceValidatorMock->shouldReceive('checkParamFormat');
-
-        $this->insuranceMock->shouldReceive('checkParameters')->with($cmsReference, $insuranceContractExternalId, $productPrice)->once();
-
-		$this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-		Mockery::close();
+        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
 	}
 
     /**
@@ -97,7 +103,6 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->shouldReceive('checkParameters')->once()->andThrow(ParametersException::class);
         $this->expectException(ParametersException::class);
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-        Mockery::close();
     }
 
     /**
@@ -116,9 +121,11 @@ class InsuranceTest extends TestCase
 
 		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
 		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $requestObject->shouldReceive('setQueryParams')->once()->andReturn($requestObject);
+
 
         $this->insuranceMock->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
+			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)
 			->once()
 			->andReturn($requestObject)
 		;
@@ -127,7 +134,6 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->shouldReceive('checkParameters')->once();
 		$this->expectException(RequestException::class);
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-		Mockery::close();
 	}
 
     /**
@@ -192,19 +198,12 @@ class InsuranceTest extends TestCase
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->responseMock->json = json_decode($json, true);
 
-        $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
-        $requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
-        $this->insuranceMock->shouldReceive('request')
-            ->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
-            ->once()
-            ->andReturn($requestObject)
-        ;
-        $this->insuranceMock->setClientContext($this->clientContext);
-        $this->insuranceMock->shouldReceive('checkParameters')->once();
-        $contract = $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-        $this->assertEquals($contractExpected, $contract);
-        Mockery::close();
+        $this->assertEquals($contractExpected, $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice));
     }
 
     /**
@@ -256,7 +255,6 @@ class InsuranceTest extends TestCase
         $insurance->setClientContext($this->clientContext);
         $this->expectException(RequestException::class);
         $insurance->subscription($subscriptionArray);
-        Mockery::close();
     }
 
     /**
@@ -280,7 +278,6 @@ class InsuranceTest extends TestCase
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
         $insurance->subscription($subscriptionArray, $paymentId);
-        Mockery::close();
     }
 
     /**
