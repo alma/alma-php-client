@@ -281,6 +281,28 @@ class InsuranceTest extends TestCase
     }
 
     /**
+     * @return void
+     */
+    public function testSubscriptionMethodExist()
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'getSubscription'));
+    }
+
+    public function testGetSubscriptionRequestIsCalled()
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with('/v1/insurance/subscriptions')
+            ->once()
+            ->andReturn($this->requestObject);
+
+        $this->insuranceMock->getSubscription();
+    }
+
+    /**
      * @return array
      */
     public function nonArrayParamDataProvider()

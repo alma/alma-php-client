@@ -138,6 +138,25 @@ class Insurance extends Base
     }
 
     /**
+     * @throws RequestError
+     */
+    public function getSubscription()
+    {
+        $subscriptionsId = [
+            'id' => 'subscription_39lGsF0UdBfpjQ8UXdYvkX',
+            'id' => 'subscription_7I02iVfu8vmvDMxIlinXk1'
+        ];
+
+        $response = $this->request(self::INSURANCE_PATH . 'subscriptions')
+            ->setQueryParams($subscriptionsId)
+            ->get();
+
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
+    }
+
+    /**
      * @param array $subscriptionArray
      * @param string|null $paymentId
      * @return array
