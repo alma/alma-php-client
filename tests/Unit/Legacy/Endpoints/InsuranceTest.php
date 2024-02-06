@@ -21,7 +21,9 @@ use PHPUnit\Framework\TestCase;
 
 class InsuranceTest extends TestCase
 {
-	/**
+    const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
+    const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    /**
 	 * @var ClientContext
 	 */
 	private $clientContext;
@@ -29,256 +31,6 @@ class InsuranceTest extends TestCase
      * @var Response
      */
     private $responseMock;
-
-    /**
-     * @return void
-     */
-	protected function setUp()
-	{
-		$this->clientContext = Mockery::mock(ClientContext::class);
-        $this->responseMock = Mockery::mock(Response::class);
-        $this->requestObject = Mockery::mock(Request::class);
-        $this->insuranceMock = Mockery::mock(Insurance::class)->makePartial();
-        $this->insuranceValidatorMock = Mockery::mock(InsuranceValidator::class);
-        $this->arrayUtilsMock = Mockery::mock(ArrayUtils::class);
-	}
-
-    protected function tearDown()
-    {
-        $this->clientContext = null;
-        $this->responseMock = null;
-        $this->requestObject = null;
-        $this->insuranceMock = null;
-        Mockery::close();
-    }
-
-    /**
-     * @return void
-     */
-	public function testInsuranceEligibilityMethodExist()
-	{
-		$insurance = new Insurance($this->clientContext);
-		$this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
-	}
-
-    /**
-     * @dataProvider requestDataProviderRightParams
-     * @param string $insuranceContractExternalId
-     * @param string $cmsReference
-     * @param int $productPrice
-     * @return void
-     * @throws MissingKeyException
-     * @throws ParametersException
-     * @throws RequestException
-     * @throws RequestError
-     */
-	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
-	{
-
-        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
-        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
-
-        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-	}
-
-    /**
-     * @dataProvider requestDataProvider
-     * @param string $insuranceContractExternalId
-     * @param string $cmsReference
-     * @param int $productPrice
-     * @return void
-     * @throws MissingKeyException
-     * @throws ParametersException
-     * @throws RequestError
-     * @throws RequestException
-     */
-    public function testThrowParametersExceptionWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
-    {
-        $this->requestObject->shouldNotReceive('get');
-        $this->insuranceMock->shouldNotReceive('request');
-
-        $this->insuranceMock->shouldReceive('checkParameters')->once()->andThrow(ParametersException::class);
-        $this->expectException(ParametersException::class);
-        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-    }
-
-    /**
-     * @return void
-     * @throws MissingKeyException
-     * @throws ParametersException
-     * @throws RequestError
-     * @throws RequestException
-     */
-	public function testApiResponseErrorThrowRequestException()
-	{
-        $insuranceContractExternalId = 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx';
-		$cmsReference = '18-24';
-        $productPrice = 10000;
-        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
-
-		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
-		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
-        $requestObject->shouldReceive('setQueryParams')->once()->andReturn($requestObject);
-
-
-        $this->insuranceMock->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)
-			->once()
-			->andReturn($requestObject)
-		;
-
-        $this->insuranceMock->setClientContext($this->clientContext);
-        $this->insuranceMock->shouldReceive('checkParameters')->once();
-		$this->expectException(RequestException::class);
-        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-	}
-
-    /**
-     * @dataProvider requestDataProviderRightParams
-     * @param string $insuranceContractExternalId
-     * @param string $cmsReference
-     * @param int $productPrice
-     * @return void
-     * @throws MissingKeyException
-     * @throws ParametersException
-     * @throws RequestError
-     * @throws RequestException
-     */
-    public function testApiResponseInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
-    {
-        $files = [
-            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'ipid-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'),
-            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'fic-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'),
-            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'notice-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf')
-        ];
-        $contractExpected = new Contract(
-            "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
-            "Alma outillage thermique 3 ans (Vol + casse)",
-            1095,
-            null,
-            null,
-            null,
-            null,
-            null,
-            500,
-            $files
-        );
-        $json = '{
-            "id": "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
-            "name": "Alma outillage thermique 3 ans (Vol + casse)",
-            "protection_days": 1095,
-            "description": null,
-            "cover_area": null,
-            "compensation_area": null,
-            "exclusion_area": null,
-            "uncovered_area": null,
-            "price": 500,
-            "files": [
-                {
-                    "name": "Alma mobility 1 an (vol+casse+assistance) - Alma}",
-                    "type": "ipid-document",
-                    "public_url": "https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf"
-                },
-                {
-                    "name": "Alma mobility 1 an (vol+casse+assistance) - Alma}",
-                    "type": "fic-document",
-                    "public_url": "https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf"
-                },
-                {
-                    "name": "Alma mobility 1 an (vol+casse+assistance) - Alma}",
-                    "type": "notice-document",
-                    "public_url": "https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf"
-                }
-            ]
-        }';
-
-        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->responseMock->json = json_decode($json, true);
-
-        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
-        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
-
-        $this->assertEquals($contractExpected, $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice));
-    }
-
-    /**
-     * @return void
-     */
-    public function testInsuranceSubscriptionMethodExist()
-    {
-        $insurance = new Insurance($this->clientContext);
-        $this->assertTrue(method_exists($insurance, 'subscription'));
-    }
-
-    /**
-     * @dataProvider nonArrayParamDataProvider
-     * @param $nonArrayParam
-     * @param $nonStringPaymentId
-     * @throws ParametersException
-     * @throws RequestError
-     * @throws RequestException
-     */
-    public function testSubscriptionThrowExceptionIfNotArrayInParam($nonArrayParam, $nonStringPaymentId)
-    {
-        $insurance = new Insurance($this->clientContext);
-        $this->expectException(ParametersException::class);
-        $insurance->subscription($nonArrayParam, $nonStringPaymentId);
-    }
-
-    /**
-     * @dataProvider subscriptionDataProvider
-     * @param $subscriptionArray
-     * @return void
-     * @throws ParametersException
-     * @throws RequestError
-     * @throws RequestException
-     */
-    public function testSubscriptionThrowExceptionRequestError($subscriptionArray)
-    {
-        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
-        $this->responseMock->json = $subscriptionArray;
-
-        $requestObject = Mockery::mock(Request::class);
-        $requestObject->shouldReceive('setRequestBody')->andReturn($requestObject);
-        $requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
-
-        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-        $insurance->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
-            ->once()
-            ->andReturn($requestObject);
-        $insurance->setClientContext($this->clientContext);
-        $this->expectException(RequestException::class);
-        $insurance->subscription($subscriptionArray);
-    }
-
-    /**
-     * @dataProvider subscriptionDataProvider
-     * @param $subscriptionArray
-     * @param $paymentId
-     * @throws ParametersException
-     * @throws RequestError
-     * @throws RequestException
-     */
-    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
-    {
-        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
-        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
-
-        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-        $insurance->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
-            ->once()
-            ->andReturn($this->requestObject);
-        $insurance->setClientContext($this->clientContext);
-        $insurance->subscription($subscriptionArray, $paymentId);
-    }
 
     /**
      * @return array
@@ -395,78 +147,547 @@ class InsuranceTest extends TestCase
     /**
      * @return array[]
      */
-	public static function requestDataProvider()
-	{
-		return [
-			'Throw exception with cms reference null' => [
+    public static function requestDataProvider()
+    {
+        return [
+            'Throw exception with cms reference null' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => null,
+                'cms_reference' => null,
                 'product_price' => 10000
-			],
+            ],
             'Throw exception with insurance_contract_external_id null and cms reference null' => [
                 'insurance_contract_external_id' => null,
                 'cms_reference' => null,
                 'product_price' => 10000
             ],
-			'Throw exception with cms reference array' => [
+            'Throw exception with cms reference array' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => ['10','13'],
+                'cms_reference' => ['10','13'],
                 'product_price' => 10000
-			],
-			'Throw exception with cms reference class' => [
+            ],
+            'Throw exception with cms reference class' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => new \stdClass(),
+                'cms_reference' => new \stdClass(),
                 'product_price' => 10000
-			],
-			'Throw exception with cms reference bool' => [
+            ],
+            'Throw exception with cms reference bool' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => true,
+                'cms_reference' => true,
                 'product_price' => 10000
-			],
-			'Throw exception with cms reference string and special characters' => [
+            ],
+            'Throw exception with cms reference string and special characters' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'Une Str|ng [Avec] des *',
+                'cms_reference' => 'Une Str|ng [Avec] des *',
                 'product_price' => 10000
-			],
-			'Throw exception with cms reference string and spacial characters 2' => [
+            ],
+            'Throw exception with cms reference string and spacial characters 2' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'alma-%product',
+                'cms_reference' => 'alma-%product',
                 'product_price' => 10000
-			],
-			'Throw exception with cms reference empty string' => [
+            ],
+            'Throw exception with cms reference empty string' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => '',
+                'cms_reference' => '',
                 'product_price' => 10000
-			]
-		];
-	}
+            ]
+        ];
+    }
 
     /**
      * @return array[]
      */
-	public static function requestDataProviderRightParams()
+    public static function requestDataProviderRightParams()
+    {
+        return [
+            'call get with cms reference a string' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => '1-2',
+                'product_price' => 10000
+            ],
+            'call get with cms reference an integer' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 18,
+                'product_price' => 10000
+            ],
+            'Call get with cms reference a string and space' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 'Alma insurance2 product',
+                'product_price' => 10000
+            ],
+            'Call get with cms reference a string and - ' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 'Alma01-insurance-product',
+                'product_price' => 10000
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function nonArrayParamGetSubscriptionDataProvider()
+    {
+        return [
+            'Test with Null' => [
+                null
+            ],
+            'Test with String' => [
+                'my string'
+            ],
+            'Test with Object' => [
+                $this->createMock(\stdClass::class)
+            ],
+            'Test with Integer' => [
+                10
+            ],
+            'Test with Boolean' => [
+                true
+            ]
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getSubscriptionsRightParamDataProvider()
+    {
+        return [
+            'Test with 1 subscription id' => [
+                ['id' => 'subscription_39lGsF0UdBfpjQ8UXdYvkX'],
+                '{
+                    "subscriptions": [
+                        {
+                            "id": "subscription_39lGsF0UdBfpjQ8UXdYvkX",
+                            "broker_subscription_id": "ec407087-65f0-410d-88d7-911178120887",
+                            "subscriber": {
+                                "email": "benjamin.freoua@getalma.eu",
+                                "phone_number": "0613595410",
+                                "first_name": "Freoua",
+                                "last_name": "Benjamin",
+                                "address_line_1": "13 boulevard de Picpus",
+                                "address_line_2": "",
+                                "zip_code": "75012",
+                                "city": "Paris",
+                                "country": "France"
+                            },
+                            "contract_id": "insurance_contract_4D6UBXtagTd5DZlTGPpKuT",
+                            "amount": 35000,
+                            "state": "started",
+                            "cms_reference": "1-1"
+                        }
+                    ]
+                }'
+            ],
+            'Test with 2 subscription ids' => [
+                [
+                    'id' => 'subscription_39lGsF0UdBfpjQ8UXdYvkX',
+                    'id' => 'subscription_7I02iVfu8vmvDMxIlinXk1'
+                ],
+                '{
+                    "subscriptions": [
+                        {
+                            "id": "subscription_39lGsF0UdBfpjQ8UXdYvkX",
+                            "broker_subscription_id": "ec407087-65f0-410d-88d7-911178120887",
+                            "subscriber": {
+                                "email": "benjamin.freoua@getalma.eu",
+                                "phone_number": "0613595410",
+                                "first_name": "Freoua",
+                                "last_name": "Benjamin",
+                                "address_line_1": "13 boulevard de Picpus",
+                                "address_line_2": "",
+                                "zip_code": "75012",
+                                "city": "Paris",
+                                "country": "France"
+                            },
+                            "contract_id": "insurance_contract_4D6UBXtagTd5DZlTGPpKuT",
+                            "amount": 35000,
+                            "state": "started",
+                            "cms_reference": "1-1"
+                        },
+                        {
+                            "id": "subscription_7I02iVfu8vmvDMxIlinXk1",
+                            "broker_subscription_id": "db774ddd-f50c-4e65-b5bc-5f073acef987",
+                            "subscriber": {
+                                "email": "benjamin.freoua@getalma.eu",
+                                "phone_number": "0613595410",
+                                "first_name": "Freoua",
+                                "last_name": "Benjamin",
+                                "address_line_1": "13 boulevard de Picpus",
+                                "address_line_2": "",
+                                "zip_code": "75012",
+                                "city": "Paris",
+                                "country": "France"
+                            },
+                            "contract_id": "insurance_contract_4D6UBXtagTd5DZlTGPpKuT",
+                            "amount": 35000,
+                            "state": "started",
+                            "cms_reference": "1-1"
+                        }
+                    ]
+                }'
+            ]
+        ];
+    }
+
+    /**
+     * @return void
+     */
+	protected function setUp()
 	{
-		return [
-			'call get with cms reference a string' => [
-				'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => '1-2',
-				'product_price' => 10000
-			],
-			'call get with cms reference an integer' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 18,
-                'product_price' => 10000
-			],
-			'Call get with cms reference a string and space' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'Alma insurance2 product',
-                'product_price' => 10000
-			],
-			'Call get with cms reference a string and - ' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'Alma01-insurance-product',
-                'product_price' => 10000
-			]
-		];
+		$this->clientContext = Mockery::mock(ClientContext::class);
+        $this->responseMock = Mockery::mock(Response::class);
+        $this->requestObject = Mockery::mock(Request::class);
+        $this->insuranceMock = Mockery::mock(Insurance::class)->makePartial();
+        $this->insuranceValidatorMock = Mockery::mock(InsuranceValidator::class);
+        $this->insuranceMock->insuranceValidator = $this->insuranceValidatorMock;
+
+        $this->arrayUtilsMock = Mockery::mock(ArrayUtils::class);
 	}
+
+    protected function tearDown()
+    {
+        $this->clientContext = null;
+        $this->responseMock = null;
+        $this->requestObject = null;
+        $this->insuranceMock = null;
+        $this->insuranceValidatorMock = null;
+        Mockery::close();
+    }
+
+    /**
+     * @return void
+     */
+	public function testInsuranceEligibilityMethodExist()
+	{
+		$insurance = new Insurance($this->clientContext);
+		$this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
+	}
+
+    /**
+     * @dataProvider requestDataProviderRightParams
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
+     * @return void
+     * @throws MissingKeyException
+     * @throws ParametersException
+     * @throws RequestException
+     * @throws RequestError
+     */
+	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
+	{
+
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('checkParameters')
+            ->once()
+            ->with($cmsReference, $insuranceContractExternalId, $productPrice);
+
+        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+	}
+
+    /**
+     * @dataProvider requestDataProvider
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
+     * @return void
+     * @throws MissingKeyException
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testThrowParametersExceptionWithWrongParams($insuranceContractExternalId, $cmsReference, $productPrice)
+    {
+        $this->requestObject->shouldNotReceive('get');
+        $this->insuranceMock->shouldNotReceive('request');
+
+        $this->insuranceMock->shouldReceive('checkParameters')->once()->andThrow(ParametersException::class);
+        $this->expectException(ParametersException::class);
+        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+    }
+
+    /**
+     * @return void
+     * @throws MissingKeyException
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+	public function testApiResponseErrorThrowRequestException()
+	{
+        $insuranceContractExternalId = 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx';
+		$cmsReference = '18-24';
+        $productPrice = 10000;
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+
+		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
+		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $requestObject->shouldReceive('setQueryParams')->once()->andReturn($requestObject);
+
+
+        $this->insuranceMock->shouldReceive('request')
+			->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
+			->once()
+			->andReturn($requestObject)
+		;
+
+        $this->insuranceMock->setClientContext($this->clientContext);
+        $this->insuranceMock->shouldReceive('checkParameters')->once();
+		$this->expectException(RequestException::class);
+        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
+	}
+
+    /**
+     * @dataProvider requestDataProviderRightParams
+     * @param string $insuranceContractExternalId
+     * @param string $cmsReference
+     * @param int $productPrice
+     * @return void
+     * @throws MissingKeyException
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testApiResponseInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
+    {
+        $files = [
+            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'ipid-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'),
+            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'fic-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'),
+            new File('Alma mobility 1 an (vol+casse+assistance) - Alma}', 'notice-document', 'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf')
+        ];
+        $contractExpected = new Contract(
+            "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
+            "Alma outillage thermique 3 ans (Vol + casse)",
+            1095,
+            null,
+            null,
+            null,
+            null,
+            null,
+            500,
+            $files
+        );
+        $json = '{
+            "id": "insurance_contract_6XxGHbjr51CE5Oly8E2Amx",
+            "name": "Alma outillage thermique 3 ans (Vol + casse)",
+            "protection_days": 1095,
+            "description": null,
+            "cover_area": null,
+            "compensation_area": null,
+            "exclusion_area": null,
+            "uncovered_area": null,
+            "price": 500,
+            "files": [
+                {
+                    "name": "Alma mobility 1 an (vol+casse+assistance) - Alma}",
+                    "type": "ipid-document",
+                    "public_url": "https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf"
+                },
+                {
+                    "name": "Alma mobility 1 an (vol+casse+assistance) - Alma}",
+                    "type": "fic-document",
+                    "public_url": "https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf"
+                },
+                {
+                    "name": "Alma mobility 1 an (vol+casse+assistance) - Alma}",
+                    "type": "notice-document",
+                    "public_url": "https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf"
+                }
+            ]
+        }';
+
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->responseMock->json = json_decode($json, true);
+
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('checkParameters')
+            ->once()
+            ->with($cmsReference, $insuranceContractExternalId, $productPrice);
+
+        $this->assertEquals(
+            $contractExpected,
+            $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testInsuranceSubscriptionMethodExist()
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'subscription'));
+    }
+
+    /**
+     * @dataProvider nonArrayParamDataProvider
+     * @param $nonArrayParam
+     * @param $nonStringPaymentId
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testSubscriptionThrowExceptionIfNotArrayInParam($nonArrayParam, $nonStringPaymentId)
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->expectException(ParametersException::class);
+        $insurance->subscription($nonArrayParam, $nonStringPaymentId);
+    }
+
+    /**
+     * @dataProvider subscriptionDataProvider
+     * @param $subscriptionArray
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testSubscriptionThrowExceptionRequestError($subscriptionArray)
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->responseMock->json = $subscriptionArray;
+
+        $requestObject = Mockery::mock(Request::class);
+        $requestObject->shouldReceive('setRequestBody')->andReturn($requestObject);
+        $requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($requestObject);
+        $insurance->setClientContext($this->clientContext);
+        $this->expectException(RequestException::class);
+        $insurance->subscription($subscriptionArray);
+    }
+
+    /**
+     * @dataProvider subscriptionDataProvider
+     * @param $subscriptionArray
+     * @param $paymentId
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+        $insurance->setClientContext($this->clientContext);
+        $insurance->subscription($subscriptionArray, $paymentId);
+    }
+
+    /**
+     * @return void
+     */
+    public function testSubscriptionMethodExist()
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'getSubscription'));
+    }
+
+    /**
+     * @dataProvider getSubscriptionsRightParamDataProvider
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testGetSubscriptionRequestIsCalled($subscriptionIds)
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+
+        $this->insuranceMock->getSubscription($subscriptionIds);
+    }
+
+    /**
+     * @dataProvider getSubscriptionsRightParamDataProvider
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testGetSubscriptionThrowExceptionIfResponseHasAnError($subscriptionIds)
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')
+            ->once()
+            ->with($subscriptionIds);
+
+        $this->expectException(RequestException::class);
+        $this->insuranceMock->getSubscription($subscriptionIds);
+    }
+
+    /**
+     * @dataProvider nonArrayParamGetSubscriptionDataProvider
+     * @param $subscriptionIds
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testGetSubscriptionThrowExceptionIfWeDontSendAnArray($subscriptionIds)
+    {
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')
+            ->once()
+            ->with($subscriptionIds)
+            ->andThrow(ParametersException::class);
+        $this->expectException(ParametersException::class);
+        $this->insuranceMock->getSubscription($subscriptionIds);
+    }
+
+    /**
+     * @dataProvider getSubscriptionsRightParamDataProvider
+     * @param $subscriptionIds
+     * @param $json
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testGetSubscriptionsReturnApiResponse($subscriptionIds, $json)
+    {
+        $this->responseMock->json = $json;
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
+
+        $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
+    }
 }
