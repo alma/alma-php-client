@@ -21,7 +21,9 @@ use PHPUnit\Framework\TestCase;
 
 class InsuranceTest extends TestCase
 {
-	/**
+    const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
+    const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    /**
 	 * @var ClientContext
 	 */
 	private $clientContext;
@@ -378,7 +380,7 @@ class InsuranceTest extends TestCase
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
         $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
@@ -425,7 +427,7 @@ class InsuranceTest extends TestCase
 
 
         $this->insuranceMock->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)
+			->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
 			->once()
 			->andReturn($requestObject)
 		;
@@ -500,7 +502,7 @@ class InsuranceTest extends TestCase
 
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
-        $this->insuranceMock->shouldReceive('request')->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)->once()->andReturn($this->requestObject);
         $this->insuranceMock->shouldReceive('checkParameters')->once()->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
         $this->assertEquals($contractExpected, $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice));
@@ -549,7 +551,7 @@ class InsuranceTest extends TestCase
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
         $insurance->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($requestObject);
         $insurance->setClientContext($this->clientContext);
@@ -573,7 +575,7 @@ class InsuranceTest extends TestCase
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
         $insurance->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
@@ -602,7 +604,7 @@ class InsuranceTest extends TestCase
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
         $this->insuranceMock->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($this->requestObject);
 
@@ -621,7 +623,7 @@ class InsuranceTest extends TestCase
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->insuranceMock->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($this->requestObject);
 
@@ -666,7 +668,7 @@ class InsuranceTest extends TestCase
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
         $this->insuranceMock->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($this->requestObject);
         $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
