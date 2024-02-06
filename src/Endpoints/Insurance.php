@@ -19,7 +19,7 @@ class Insurance extends Base
     /**
      * @var InsuranceValidator
      */
-    protected $insuranceValidator;
+    public $insuranceValidator;
 
     public function __construct($client_context)
     {
@@ -130,7 +130,6 @@ class Insurance extends Base
         $response = $request->post();
 
         if ($response->isError()) {
-
             throw new RequestException($response->errorMessage, null, $response);
         }
 
@@ -139,21 +138,24 @@ class Insurance extends Base
 
     /**
      * @throws RequestError
+     * @throws RequestException
+     * @throws ParametersException
+     * @return array json_decode in response constructor
      */
-    public function getSubscription()
+    public function getSubscription($subscriptionIds)
     {
-        $subscriptionsId = [
-            'id' => 'subscription_39lGsF0UdBfpjQ8UXdYvkX',
-            'id' => 'subscription_7I02iVfu8vmvDMxIlinXk1'
-        ];
-
-        $response = $this->request(self::INSURANCE_PATH . 'subscriptions')
-            ->setQueryParams($subscriptionsId)
-            ->get();
+        $this->insuranceValidator->checkSubscriptionIds($subscriptionIds);
+        $response = $this->request(
+            self::INSURANCE_PATH . 'subscriptions'
+        )->setQueryParams(
+            $subscriptionIds
+        )->get();
 
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
         }
+
+        return $response->json;
     }
 
     /**
