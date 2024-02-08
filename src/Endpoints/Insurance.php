@@ -137,10 +137,10 @@ class Insurance extends Base
     }
 
     /**
-     * @throws RequestError
+     * @return array json_decode in response constructor
      * @throws RequestException
      * @throws ParametersException
-     * @return array json_decode in response constructor
+     * @throws RequestError
      */
     public function getSubscription($subscriptionIds)
     {
