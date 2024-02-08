@@ -9,6 +9,10 @@ class Subscription
      */
     private $contractId;
     /**
+     * @var int
+     */
+    private $amount;
+    /**
      * @var string
      */
     private $cmsReference;
@@ -33,6 +37,7 @@ class Subscription
 
     /**
      * @param string $contractId
+     * @param int  $amount
      * @param string $cmsReference
      * @param int $productPrice
      * @param Subscriber $subscriber
@@ -40,6 +45,7 @@ class Subscription
      */
     public function __construct(
         $contractId,
+        $amount,
         $cmsReference,
         $productPrice,
         $subscriber,
@@ -47,6 +53,7 @@ class Subscription
     )
     {
         $this->contractId = $contractId;
+        $this->amount = $amount;
         $this->cmsReference = $cmsReference;
         $this->productPrice = $productPrice;
         $this->subscriber = $subscriber;
@@ -56,11 +63,12 @@ class Subscription
     public function getAll()
     {
         return [
-            $this->contractId,
-            $this->cmsReference,
-            $this->productPrice,
-            $this->subscriber,
-            $this->callbackUrl,
+            $this->getContractId(),
+            $this->getAmount(),
+            $this->getCmsReference(),
+            $this->getProductPrice(),
+            $this->getSubscriber(),
+            $this->getCallbackUrl(),
         ];
     }
 
@@ -102,5 +110,13 @@ class Subscription
     public function getSubscriber()
     {
         return $this->subscriber;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmount()
+    {
+        return $this->amount;
     }
 }

@@ -21,23 +21,342 @@ use PHPUnit\Framework\TestCase;
 
 class InsuranceTest extends TestCase
 {
-	/**
+    const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
+    const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    /**
 	 * @var ClientContext
 	 */
 	private $clientContext;
+    /**
+     * @var Response
+     */
+    private $responseMock;
+
+    /**
+     * @return array
+     */
+    public function nonArrayParamDataProvider()
+    {
+        return [
+            'Test with Null and payment id valid' => [
+                null,
+                'payment_xxx'
+            ],
+            'Test with String and payment id valid' => [
+                'my string',
+                'payment_xxx'
+            ],
+            'Test with Object and payment id valid' => [
+                $this->createMock(Subscription::class),
+                'payment_xxx'
+            ]
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function subscriptionDataProvider()
+    {
+        return [
+            'Test with right data and without payment id' => [
+                [
+                    new Subscription(
+                        'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                        1235,
+                        '19',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub1',
+                            'sub1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            null
+                        ),
+                        'cancelUrl'
+                    ),
+                    new Subscription(
+                        'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                        1568,
+                        '17-35',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub2',
+                            'sub2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            '1988-08-22'
+                        ),
+                        'cancelUrl'
+                    )
+                ],
+                null
+            ],
+            'Test with right data and payment id' => [
+                [
+                    new Subscription(
+                        'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                        1235,
+                        '19',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub1',
+                            'sub1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            'adr1',
+                            null
+                        ),
+                        'cancelUrl'
+                    ),
+                    new Subscription(
+                        'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                        1568,
+                        '17-35',
+                        1312,
+                        new Subscriber(
+                            'mathis.dupuy@almapay.com',
+                            '+33622484646',
+                            'sub2',
+                            'sub2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            'adr2',
+                            '1988-08-22'
+                        ),
+                        'cancelUrl'
+                    )
+                ],
+                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X'
+            ]
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function requestDataProvider()
+    {
+        return [
+            'Throw exception with cms reference null' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => null,
+                'product_price' => 10000
+            ],
+            'Throw exception with insurance_contract_external_id null and cms reference null' => [
+                'insurance_contract_external_id' => null,
+                'cms_reference' => null,
+                'product_price' => 10000
+            ],
+            'Throw exception with cms reference array' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => ['10','13'],
+                'product_price' => 10000
+            ],
+            'Throw exception with cms reference class' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => new \stdClass(),
+                'product_price' => 10000
+            ],
+            'Throw exception with cms reference bool' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => true,
+                'product_price' => 10000
+            ],
+            'Throw exception with cms reference string and special characters' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 'Une Str|ng [Avec] des *',
+                'product_price' => 10000
+            ],
+            'Throw exception with cms reference string and spacial characters 2' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 'alma-%product',
+                'product_price' => 10000
+            ],
+            'Throw exception with cms reference empty string' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => '',
+                'product_price' => 10000
+            ]
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function requestDataProviderRightParams()
+    {
+        return [
+            'call get with cms reference a string' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => '1-2',
+                'product_price' => 10000
+            ],
+            'call get with cms reference an integer' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 18,
+                'product_price' => 10000
+            ],
+            'Call get with cms reference a string and space' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 'Alma insurance2 product',
+                'product_price' => 10000
+            ],
+            'Call get with cms reference a string and - ' => [
+                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
+                'cms_reference' => 'Alma01-insurance-product',
+                'product_price' => 10000
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function nonArrayParamGetSubscriptionDataProvider()
+    {
+        return [
+            'Test with Null' => [
+                null
+            ],
+            'Test with String' => [
+                'my string'
+            ],
+            'Test with Object' => [
+                $this->createMock(\stdClass::class)
+            ],
+            'Test with Integer' => [
+                10
+            ],
+            'Test with Boolean' => [
+                true
+            ]
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getSubscriptionsRightParamDataProvider()
+    {
+        return [
+            'Test with 1 subscription id' => [
+                ['id' => 'subscription_39lGsF0UdBfpjQ8UXdYvkX'],
+                '{
+                    "subscriptions": [
+                        {
+                            "id": "subscription_39lGsF0UdBfpjQ8UXdYvkX",
+                            "broker_subscription_id": "ec407087-65f0-410d-88d7-911178120887",
+                            "subscriber": {
+                                "email": "benjamin.freoua@getalma.eu",
+                                "phone_number": "0613595410",
+                                "first_name": "Freoua",
+                                "last_name": "Benjamin",
+                                "address_line_1": "13 boulevard de Picpus",
+                                "address_line_2": "",
+                                "zip_code": "75012",
+                                "city": "Paris",
+                                "country": "France"
+                            },
+                            "contract_id": "insurance_contract_4D6UBXtagTd5DZlTGPpKuT",
+                            "amount": 35000,
+                            "state": "started",
+                            "cms_reference": "1-1"
+                        }
+                    ]
+                }'
+            ],
+            'Test with 2 subscription ids' => [
+                [
+                    'id' => 'subscription_39lGsF0UdBfpjQ8UXdYvkX',
+                    'id' => 'subscription_7I02iVfu8vmvDMxIlinXk1'
+                ],
+                '{
+                    "subscriptions": [
+                        {
+                            "id": "subscription_39lGsF0UdBfpjQ8UXdYvkX",
+                            "broker_subscription_id": "ec407087-65f0-410d-88d7-911178120887",
+                            "subscriber": {
+                                "email": "benjamin.freoua@getalma.eu",
+                                "phone_number": "0613595410",
+                                "first_name": "Freoua",
+                                "last_name": "Benjamin",
+                                "address_line_1": "13 boulevard de Picpus",
+                                "address_line_2": "",
+                                "zip_code": "75012",
+                                "city": "Paris",
+                                "country": "France"
+                            },
+                            "contract_id": "insurance_contract_4D6UBXtagTd5DZlTGPpKuT",
+                            "amount": 35000,
+                            "state": "started",
+                            "cms_reference": "1-1"
+                        },
+                        {
+                            "id": "subscription_7I02iVfu8vmvDMxIlinXk1",
+                            "broker_subscription_id": "db774ddd-f50c-4e65-b5bc-5f073acef987",
+                            "subscriber": {
+                                "email": "benjamin.freoua@getalma.eu",
+                                "phone_number": "0613595410",
+                                "first_name": "Freoua",
+                                "last_name": "Benjamin",
+                                "address_line_1": "13 boulevard de Picpus",
+                                "address_line_2": "",
+                                "zip_code": "75012",
+                                "city": "Paris",
+                                "country": "France"
+                            },
+                            "contract_id": "insurance_contract_4D6UBXtagTd5DZlTGPpKuT",
+                            "amount": 35000,
+                            "state": "started",
+                            "cms_reference": "1-1"
+                        }
+                    ]
+                }'
+            ]
+        ];
+    }
 
     /**
      * @return void
      */
 	protected function setUp()
 	{
-		$this->clientContext = $this->createMock(ClientContext::class);
+		$this->clientContext = Mockery::mock(ClientContext::class);
         $this->responseMock = Mockery::mock(Response::class);
         $this->requestObject = Mockery::mock(Request::class);
         $this->insuranceMock = Mockery::mock(Insurance::class)->makePartial();
         $this->insuranceValidatorMock = Mockery::mock(InsuranceValidator::class);
+        $this->insuranceMock->insuranceValidator = $this->insuranceValidatorMock;
+
         $this->arrayUtilsMock = Mockery::mock(ArrayUtils::class);
 	}
+
+    protected function tearDown()
+    {
+        $this->clientContext = null;
+        $this->responseMock = null;
+        $this->requestObject = null;
+        $this->insuranceMock = null;
+        $this->insuranceValidatorMock = null;
+        Mockery::close();
+    }
 
     /**
      * @return void
@@ -61,21 +380,19 @@ class InsuranceTest extends TestCase
      */
 	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
 	{
+
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('checkParameters')
+            ->once()
+            ->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
-		$this->insuranceMock->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
-			->once()
-			->andReturn($this->requestObject);
-        $this->insuranceMock->setClientContext($this->clientContext);
-
-        //$this->insuranceValidatorMock->shouldReceive('checkParamFormat');
-
-        $this->insuranceMock->shouldReceive('checkParameters')->with($cmsReference, $insuranceContractExternalId, $productPrice)->once();
-
-		$this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-		Mockery::close();
+        $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
 	}
 
     /**
@@ -97,7 +414,6 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->shouldReceive('checkParameters')->once()->andThrow(ParametersException::class);
         $this->expectException(ParametersException::class);
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-        Mockery::close();
     }
 
     /**
@@ -116,9 +432,11 @@ class InsuranceTest extends TestCase
 
 		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
 		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $requestObject->shouldReceive('setQueryParams')->once()->andReturn($requestObject);
+
 
         $this->insuranceMock->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
+			->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
 			->once()
 			->andReturn($requestObject)
 		;
@@ -127,7 +445,6 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->shouldReceive('checkParameters')->once();
 		$this->expectException(RequestException::class);
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-		Mockery::close();
 	}
 
     /**
@@ -192,19 +509,22 @@ class InsuranceTest extends TestCase
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->responseMock->json = json_decode($json, true);
 
-        $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
-        $requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
-
-        $this->insuranceMock->shouldReceive('request')
-            ->with('/v1/insurance/insurance-contracts/' . $insuranceContractExternalId . '?cms_reference=' . $cmsReference . '&product_price=' . $productPrice)
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')
             ->once()
-            ->andReturn($requestObject)
-        ;
-        $this->insuranceMock->setClientContext($this->clientContext);
-        $this->insuranceMock->shouldReceive('checkParameters')->once();
-        $contract = $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-        $this->assertEquals($contractExpected, $contract);
-        Mockery::close();
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('checkParameters')
+            ->once()
+            ->with($cmsReference, $insuranceContractExternalId, $productPrice);
+
+        $this->assertEquals(
+            $contractExpected,
+            $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice)
+        );
     }
 
     /**
@@ -250,13 +570,12 @@ class InsuranceTest extends TestCase
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
         $insurance->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($requestObject);
         $insurance->setClientContext($this->clientContext);
         $this->expectException(RequestException::class);
         $insurance->subscription($subscriptionArray);
-        Mockery::close();
     }
 
     /**
@@ -275,201 +594,104 @@ class InsuranceTest extends TestCase
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
         $insurance->shouldReceive('request')
-            ->with('/v1/insurance/subscriptions')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
         $insurance->subscription($subscriptionArray, $paymentId);
-        Mockery::close();
     }
 
     /**
-     * @return array
+     * @return void
      */
-    public function nonArrayParamDataProvider()
+    public function testSubscriptionMethodExist()
     {
-        return [
-            'Test with Null and payment id valid' => [
-                null,
-                'payment_xxx'
-            ],
-            'Test with String and payment id valid' => [
-                'my string',
-                'payment_xxx'
-            ],
-            'Test with Object and payment id valid' => [
-                $this->createMock(Subscription::class),
-                'payment_xxx'
-            ]
-        ];
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'getSubscription'));
     }
 
     /**
-     * @return array[]
+     * @dataProvider getSubscriptionsRightParamDataProvider
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
      */
-    public function subscriptionDataProvider()
+    public function testGetSubscriptionRequestIsCalled($subscriptionIds)
     {
-        return [
-            'Test with right data and without payment id' => [
-                [
-                    new Subscription(
-                        'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
-                        '19',
-                        1312,
-                        new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            null
-                        ),
-                        'cancelUrl'
-                    ),
-                    new Subscription(
-                        'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
-                        '17-35',
-                        1312,
-                        new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            '1988-08-22'
-                        ),
-                        'cancelUrl'
-                    )
-                ],
-                null
-            ],
-            'Test with right data and payment id' => [
-                [
-                    new Subscription(
-                        'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
-                        '19',
-                        1312,
-                        new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            null
-                        ),
-                        'cancelUrl'
-                    ),
-                    new Subscription(
-                        'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
-                        '17-35',
-                        1312,
-                        new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            '1988-08-22'
-                        ),
-                        'cancelUrl'
-                    )
-                ],
-                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X'
-            ]
-        ];
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+
+        $this->insuranceMock->getSubscription($subscriptionIds);
     }
 
     /**
-     * @return array[]
+     * @dataProvider getSubscriptionsRightParamDataProvider
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
      */
-	public static function requestDataProvider()
-	{
-		return [
-			'Throw exception with cms reference null' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => null,
-                'product_price' => 10000
-			],
-            'Throw exception with insurance_contract_external_id null and cms reference null' => [
-                'insurance_contract_external_id' => null,
-                'cms_reference' => null,
-                'product_price' => 10000
-            ],
-			'Throw exception with cms reference array' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => ['10','13'],
-                'product_price' => 10000
-			],
-			'Throw exception with cms reference class' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => new \stdClass(),
-                'product_price' => 10000
-			],
-			'Throw exception with cms reference bool' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => true,
-                'product_price' => 10000
-			],
-			'Throw exception with cms reference string and special characters' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'Une Str|ng [Avec] des *',
-                'product_price' => 10000
-			],
-			'Throw exception with cms reference string and spacial characters 2' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'alma-%product',
-                'product_price' => 10000
-			],
-			'Throw exception with cms reference empty string' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => '',
-                'product_price' => 10000
-			]
-		];
-	}
+    public function testGetSubscriptionThrowExceptionIfResponseHasAnError($subscriptionIds)
+    {
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')
+            ->once()
+            ->with($subscriptionIds);
+
+        $this->expectException(RequestException::class);
+        $this->insuranceMock->getSubscription($subscriptionIds);
+    }
 
     /**
-     * @return array[]
+     * @dataProvider nonArrayParamGetSubscriptionDataProvider
+     * @param $subscriptionIds
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
      */
-	public static function requestDataProviderRightParams()
-	{
-		return [
-			'call get with cms reference a string' => [
-				'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => '1-2',
-				'product_price' => 10000
-			],
-			'call get with cms reference an integer' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 18,
-                'product_price' => 10000
-			],
-			'Call get with cms reference a string and space' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'Alma insurance2 product',
-                'product_price' => 10000
-			],
-			'Call get with cms reference a string and - ' => [
-                'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-				'cms_reference' => 'Alma01-insurance-product',
-                'product_price' => 10000
-			]
-		];
-	}
+    public function testGetSubscriptionThrowExceptionIfWeDontSendAnArray($subscriptionIds)
+    {
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')
+            ->once()
+            ->with($subscriptionIds)
+            ->andThrow(ParametersException::class);
+        $this->expectException(ParametersException::class);
+        $this->insuranceMock->getSubscription($subscriptionIds);
+    }
+
+    /**
+     * @dataProvider getSubscriptionsRightParamDataProvider
+     * @param $subscriptionIds
+     * @param $json
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testGetSubscriptionsReturnApiResponse($subscriptionIds, $json)
+    {
+        $this->responseMock->json = $json;
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
+
+        $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
+    }
 }

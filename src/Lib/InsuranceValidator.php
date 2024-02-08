@@ -65,4 +65,17 @@ class InsuranceValidator
             ));
         }
     }
+
+    /**
+     * @throws ParametersException
+     */
+    public function checkSubscriptionIds($subscriptionIds)
+    {
+        if (!is_array($subscriptionIds)) {
+            throw new ParametersException(sprintf(
+                'The subscription ids need to be an array, "%s" given',
+                gettype($subscriptionIds)
+            ));
+        }
+    }
 }

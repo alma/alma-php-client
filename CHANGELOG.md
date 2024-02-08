@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v2.0.2
+-------
+* Added getSubscription endpoint Insurance
+* Fix Subscription amount model
+
 v2.0.1
 -------
 * Fix : Don't remove amount in refund if value equal zero
