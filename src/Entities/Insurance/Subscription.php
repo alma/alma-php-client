@@ -63,12 +63,12 @@ class Subscription
     public function getAll()
     {
         return [
-            $this->contractId,
-            $this->amount,
-            $this->cmsReference,
-            $this->productPrice,
-            $this->subscriber,
-            $this->callbackUrl,
+            $this->getContractId(),
+            $this->getAmount(),
+            $this->getCmsReference(),
+            $this->getProductPrice(),
+            $this->getSubscriber(),
+            $this->getCallbackUrl(),
         ];
     }
 
