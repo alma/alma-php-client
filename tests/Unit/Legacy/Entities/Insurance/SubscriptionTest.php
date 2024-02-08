@@ -36,6 +36,7 @@ class  SubscriptionTest extends TestCase
 
         return new Subscription(
             $data['insurance_contract_id'],
+            $data['amount'],
             $data['cms_reference'],
             $data['product_price'],
             $this->getSubscriber(),
@@ -50,6 +51,7 @@ class  SubscriptionTest extends TestCase
     {
         return [
             'insurance_contract_id' => 'insurance_contract_id_123456789',
+            'amount' => 1235,
             'cms_reference' => '14-35',
             'product_price' => 10012
         ];
