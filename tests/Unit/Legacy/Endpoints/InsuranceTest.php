@@ -31,6 +31,10 @@ class InsuranceTest extends TestCase
      * @var Response
      */
     private $responseMock;
+    /**
+     * @var Insurance
+     */
+    private $insuranceMock;
 
     /**
      * @return array
@@ -694,4 +698,70 @@ class InsuranceTest extends TestCase
 
         $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
     }
+
+    /**
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     */
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndNoThrowExceptionForResponse200()
+    {
+        $subscriptionCancelPayload = 'subscriptionId1';
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
+    }
+
+    /**
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     */
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowExceptionForResponseUpperThan400()
+    {
+        $this->expectException(RequestException::class);
+        $subscriptionCancelPayload = 'subscriptionId1';
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
+    }
+
+    /**
+     * @dataProvider cancelSubscriptionErrorPayloadDataProvider
+     * @param $payload
+     * @return void
+     * @throws ParametersException
+     */
+    public function testCheckSubscriptionIdFormatThrowParamsErrorForBadPayload($payload)
+    {
+        $this->expectException(ParametersException::class);
+        $this->insuranceMock->checkSubscriptionIdFormat($payload);
+    }
+
+    public function cancelSubscriptionErrorPayloadDataProvider()
+    {
+        return [
+            'Null payload' => [
+                'subscriptionIdsArray' => null
+            ],
+            'empty string payload' => [
+                'subscriptionIdsArray' => ''
+            ],
+            'empty array payload' => [
+                'subscriptionIdsArray' => []
+            ],
+            'Subscription Object payload' => [
+                'subscriptionIdsArray' => $this->createMock(Subscription::class)
+            ],
+        ];
+    }
+
 }

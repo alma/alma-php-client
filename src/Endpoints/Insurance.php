@@ -273,4 +273,36 @@ class Insurance extends Base
             $request->addCartIdToHeader($cartId);
         }
     }
+
+    /**
+     * @param string $subscriptionId
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function cancelSubscription($subscriptionId)
+    {
+        $this->checkSubscriptionIdFormat($subscriptionId);
+
+        $request = $this->request(self::INSURANCE_PATH . 'subscriptions/' . $subscriptionId . '/void');
+        $response = $request->post();
+
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, $request, $response);
+        }
+    }
+
+    /**
+     * @param string $subscriptionId
+     * @return void
+     * @throws ParametersException
+     */
+    public function checkSubscriptionIdFormat($subscriptionId)
+    {
+        if (!is_string($subscriptionId) || empty($subscriptionId)) {
+            throw new ParametersException('Invalid subscriptions Array');
+        }
+
+    }
 }
