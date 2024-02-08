@@ -63,6 +63,7 @@ class InsuranceTest extends TestCase
                 [
                     new Subscription(
                         'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                        1235,
                         '19',
                         1312,
                         new Subscriber(
@@ -81,6 +82,7 @@ class InsuranceTest extends TestCase
                     ),
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                        1568,
                         '17-35',
                         1312,
                         new Subscriber(
@@ -104,6 +106,7 @@ class InsuranceTest extends TestCase
                 [
                     new Subscription(
                         'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                        1235,
                         '19',
                         1312,
                         new Subscriber(
@@ -122,6 +125,7 @@ class InsuranceTest extends TestCase
                     ),
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                        1568,
                         '17-35',
                         1312,
                         new Subscriber(

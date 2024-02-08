@@ -4,6 +4,7 @@ CHANGELOG
 v2.0.2
 -------
 * Added getSubscription endpoint Insurance
+* Fix Subscription amount model
 
 v2.0.1
 -------

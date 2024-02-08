@@ -182,6 +182,7 @@ class Insurance extends Base
 
             $subscriptionData['subscriptions'][] = [
                 'insurance_contract_id' => $subscription->getContractId(),
+                'amount' => $subscription->getAmount(),
                 'cms_reference' => $subscription->getCmsReference(),
                 'product_price' => $subscription->getProductPrice(),
                 'cms_callback_url' => $subscription->getCallbackUrl(),
