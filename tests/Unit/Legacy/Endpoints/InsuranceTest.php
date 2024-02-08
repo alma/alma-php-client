@@ -702,10 +702,11 @@ class InsuranceTest extends TestCase
      * @return void
      * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndNoThrowExceptionForResponse200()
     {
-        $subscriptionCancelPayload = 'subscriptionId1';
+        $subscriptionCancelPayload = ' subscriptionId1 ';
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->insuranceMock->shouldReceive('request')
@@ -719,6 +720,7 @@ class InsuranceTest extends TestCase
      * @return void
      * @throws ParametersException
      * @throws RequestError
+     * @throws RequestException
      */
     public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowExceptionForResponseUpperThan400()
     {

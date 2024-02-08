@@ -283,6 +283,7 @@ class Insurance extends Base
      */
     public function cancelSubscription($subscriptionId)
     {
+        $subscriptionId = trim($subscriptionId);
         $this->checkSubscriptionIdFormat($subscriptionId);
 
         $request = $this->request(self::INSURANCE_PATH . 'subscriptions/' . $subscriptionId . '/void');
