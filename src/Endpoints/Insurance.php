@@ -169,7 +169,7 @@ class Insurance extends Base
     protected function buildSubscriptionData($subscriptionArray, $orderId ,$paymentId = null)
     {
         $subscriptionData = ['subscriptions' => []];
-        $subscriptionData['orderId'] = $orderId;
+        $subscriptionData['order_id'] = $orderId;
 
         /**
          * @var Subscription $subscription
@@ -212,7 +212,6 @@ class Insurance extends Base
         ) {
             $subscriptionData['payment_id'] = $paymentId;
         }
-
         return $subscriptionData;
     }
 

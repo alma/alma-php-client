@@ -67,15 +67,15 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
+                            'test@almapay.com',
+                            '+33601010101',
+                            'lastname',
+                            'firstname',
+                            'address1',
+                            'address2',
+                            'zipcode',
+                            'city',
+                            'country',
                             null
                         ),
                         'cancelUrl'
@@ -86,21 +86,67 @@ class InsuranceTest extends TestCase
                         '17-35',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
+                            'test@almapay.com',
+                            '+33601010101',
+                            'last',
+                            'first',
+                            'adr1',
                             'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
+                            'zip',
+                            'city',
+                            'country',
                             '1988-08-22'
                         ),
                         'cancelUrl'
                     )
                 ],
-                null
+                null,
+                [
+                    'subscriptions' => [
+                        [
+                            'insurance_contract_id' => 'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                            'amount' => 1235,
+                            'cms_reference' => '19',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => 'test@almapay.com',
+                                'phone_number' => '+33601010101',
+                                'last_name' => 'lastname',
+                                'first_name' => 'firstname',
+                                'birthdate' => null,
+                                'address' => [
+                                    'address_line_1' => 'address1',
+                                    'address_line_2' => 'address2',
+                                    'zip_code' => 'zipcode',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ],
+                        [
+                            'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                            'amount' => 1568,
+                            'cms_reference' => '17-35',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => 'test@almapay.com',
+                                'phone_number' => '+33601010101',
+                                'last_name' => 'last',
+                                'first_name' => 'first',
+                                'birthdate' => '1988-08-22',
+                                'address' => [
+                                    'address_line_1' => 'adr1',
+                                    'address_line_2' => 'adr2',
+                                    'zip_code' => 'zip',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
             ],
             'Test with right data and payment id' => [
                 [
@@ -110,15 +156,15 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
+                            'test@almapay.com',
+                            '+33601010101',
+                            'lastname',
+                            'firstname',
+                            'address1',
+                            'address2',
+                            'zipcode',
+                            'city',
+                            'country',
                             null
                         ),
                         'cancelUrl'
@@ -129,21 +175,67 @@ class InsuranceTest extends TestCase
                         '17-35',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
+                            'test@almapay.com',
+                            '+33601010101',
+                            'last',
+                            'first',
+                            'adr1',
                             'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
+                            'zip',
+                            'city',
+                            'country',
                             '1988-08-22'
                         ),
                         'cancelUrl'
                     )
                 ],
-                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X'
+                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X',
+                [
+                    'subscriptions' => [
+                        [
+                            'insurance_contract_id' => 'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                            'amount' => 1235,
+                            'cms_reference' => '19',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => 'test@almapay.com',
+                                'phone_number' => '+33601010101',
+                                'last_name' => 'lastname',
+                                'first_name' => 'firstname',
+                                'birthdate' => null,
+                                'address' => [
+                                    'address_line_1' => 'address1',
+                                    'address_line_2' => 'address2',
+                                    'zip_code' => 'zipcode',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ],
+                        [
+                            'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                            'amount' => 1568,
+                            'cms_reference' => '17-35',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => 'test@almapay.com',
+                                'phone_number' => '+33601010101',
+                                'last_name' => 'last',
+                                'first_name' => 'first',
+                                'birthdate' => '1988-08-22',
+                                'address' => [
+                                    'address_line_1' => 'adr1',
+                                    'address_line_2' => 'adr2',
+                                    'zip_code' => 'zip',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
             ]
         ];
     }
@@ -582,21 +674,22 @@ class InsuranceTest extends TestCase
      * @dataProvider subscriptionDataProvider
      * @param $subscriptionArray
      * @param $paymentId
+     * @param $expectedSubscriptionPayload
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
      */
-    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
+    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId, $expectedSubscriptionPayload)
     {
-        $setRequestPayload =   [
-            'subscriptions' => $subscriptionArray,
-            'orderId' => 'myOrderId'
-        ];
-        if($paymentId){
-            $setRequestPayload['paymentId'] = $paymentId;
+        $expectedSubscriptionPayload['order_id'] = 'myOrderId';
+
+        if ($paymentId) {
+            $expectedSubscriptionPayload['payment_id'] = $paymentId;
         }
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody')->once()->with($setRequestPayload)->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('setRequestBody')->once()
+            ->with($expectedSubscriptionPayload)
+            ->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
