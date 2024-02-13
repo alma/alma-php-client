@@ -78,4 +78,26 @@ class InsuranceValidator
             ));
         }
     }
+
+    /**
+     * Throw Exception if payload isn't valid
+     * @throws ParametersException
+     */
+    public function checkCmsReference($cmsReferenceArray)
+    {
+        if (is_array($cmsReferenceArray) && !empty($cmsReferenceArray)) {
+            foreach ($cmsReferenceArray as $cmsReference) {
+                if (!is_string($cmsReference)) {
+                    throw new ParametersException(sprintf(
+                        'Invalid parameters : %s',
+                        json_encode($cmsReferenceArray)
+                    ));
+                }
+            }
+        }
+        throw new ParametersException(sprintf(
+            'Invalid parameters : %s',
+            json_encode($cmsReferenceArray)
+        ));
+    }
 }

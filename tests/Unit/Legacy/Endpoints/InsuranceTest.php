@@ -694,4 +694,19 @@ class InsuranceTest extends TestCase
 
         $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
     }
+
+
+    /**
+     * @return void
+     */
+    public function testGivenInvalidCmsReferenceArrayReturnFalse()
+    {
+        //$this->assertFalse($this->insuranceMock->sendCustomerCart($cmsReferenceArray));
+    }
+
+    public function testSendCustomerCartCallApiPostCustomerCartWithCmsReferencesArray()
+    {
+
+
+    }
 }

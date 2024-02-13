@@ -158,6 +158,11 @@ class Insurance extends Base
         return $response->json;
     }
 
+    public function sendCustomerCart($cmsReferenceArray)
+    {
+        $this->insuranceValidator->checkCmsReference($cmsReferenceArray);
+    }
+
     /**
      * @param array $subscriptionArray
      * @param string|null $paymentId
