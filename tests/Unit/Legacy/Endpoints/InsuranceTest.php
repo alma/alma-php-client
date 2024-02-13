@@ -548,7 +548,7 @@ class InsuranceTest extends TestCase
     {
         $insurance = new Insurance($this->clientContext);
         $this->expectException(ParametersException::class);
-        $insurance->subscription($nonArrayParam, $nonStringPaymentId);
+        $insurance->subscription($nonArrayParam,'orderID', $nonStringPaymentId);
     }
 
     /**
@@ -575,7 +575,7 @@ class InsuranceTest extends TestCase
             ->andReturn($requestObject);
         $insurance->setClientContext($this->clientContext);
         $this->expectException(RequestException::class);
-        $insurance->subscription($subscriptionArray);
+        $insurance->subscription($subscriptionArray,'orderId');
     }
 
     /**
@@ -588,8 +588,15 @@ class InsuranceTest extends TestCase
      */
     public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
     {
+        $setRequestPayload =   [
+            'subscriptions' => $subscriptionArray,
+            'orderId' => 'myOrderId'
+        ];
+        if($paymentId){
+            $setRequestPayload['paymentId'] = $paymentId;
+        }
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('setRequestBody')->once()->with($setRequestPayload)->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
@@ -598,7 +605,7 @@ class InsuranceTest extends TestCase
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
-        $insurance->subscription($subscriptionArray, $paymentId);
+        $insurance->subscription($subscriptionArray, 'myOrderId' ,$paymentId);
     }
 
     /**

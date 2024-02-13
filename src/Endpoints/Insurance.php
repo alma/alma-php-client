@@ -102,6 +102,7 @@ class Insurance extends Base
 
     /**
      * @param $subscriptionArray
+     * @param string $orderId
      * @param null $paymentId
      * @param string | null $customerSessionId
      * @param string | null $cartId
@@ -110,7 +111,7 @@ class Insurance extends Base
      * @throws RequestError
      * @throws RequestException
      */
-    public function subscription($subscriptionArray, $paymentId = null, $customerSessionId = null, $cartId = null)
+    public function subscription($subscriptionArray, $orderId, $paymentId = null, $customerSessionId = null, $cartId = null)
     {
 
         if (!is_array($subscriptionArray)) {
@@ -122,7 +123,7 @@ class Insurance extends Base
             );
         }
 
-        $subscriptionData = $this->buildSubscriptionData($subscriptionArray, $paymentId);
+        $subscriptionData = $this->buildSubscriptionData($subscriptionArray, $orderId, $paymentId);
         $request = $this->request(self::INSURANCE_PATH . 'subscriptions')
             ->setRequestBody($subscriptionData);
 
@@ -145,7 +146,7 @@ class Insurance extends Base
     public function getSubscription($subscriptionIds)
     {
         $this->insuranceValidator->checkSubscriptionIds($subscriptionIds);
-        $response = $this->request(
+          $response = $this->request(
             self::INSURANCE_PATH . 'subscriptions'
         )->setQueryParams(
             $subscriptionIds
@@ -160,13 +161,15 @@ class Insurance extends Base
 
     /**
      * @param array $subscriptionArray
+     * @param string $orderId
      * @param string|null $paymentId
      * @return array
      * @throws ParametersException
      */
-    protected function buildSubscriptionData($subscriptionArray, $paymentId = null)
+    protected function buildSubscriptionData($subscriptionArray, $orderId ,$paymentId = null)
     {
         $subscriptionData = ['subscriptions' => []];
+        $subscriptionData['orderId'] = $orderId;
 
         /**
          * @var Subscription $subscription
