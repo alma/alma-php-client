@@ -41,7 +41,6 @@ class Base
     public function __construct($client_context)
     {
         $this->setClientContext($client_context);
-        $this->logger = $client_context->logger;
     }
 
     /**
@@ -60,5 +59,6 @@ class Base
     public function setClientContext($clientContext)
     {
         $this->clientContext = $clientContext;
+        $this->logger = $clientContext->logger;
     }
 }

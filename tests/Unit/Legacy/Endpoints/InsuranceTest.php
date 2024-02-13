@@ -18,11 +18,13 @@ use Alma\API\RequestError;
 use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class InsuranceTest extends TestCase
 {
     const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
     const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-cart';
     /**
 	 * @var ClientContext
 	 */
@@ -31,6 +33,7 @@ class InsuranceTest extends TestCase
      * @var Response
      */
     private $responseMock;
+    private $requestObject;
 
     /**
      * @return array
@@ -695,18 +698,46 @@ class InsuranceTest extends TestCase
         $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
     }
 
+    /**
+     * @return void
+     * @throws RequestError
+     */
+    public function testGivenInvalidCmsReferenceArrayNoCallEndpointAndReturnFalse()
+    {
+        $this->insuranceValidatorMock->shouldReceive('checkCmsReference')
+            ->once()
+            ->andThrow(ParametersException::class);
+        $loggerMock = Mockery::mock(LoggerInterface::class);
+        $loggerMock->shouldReceive('error')->once();
+        $this->clientContext->logger = $loggerMock;
+        $this->insuranceMock->setClientContext($this->clientContext);
+        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'],42));
+    }
 
     /**
      * @return void
+     * @throws RequestError
      */
-    public function testGivenInvalidCmsReferenceArrayReturnFalse()
-    {
-        //$this->assertFalse($this->insuranceMock->sendCustomerCart($cmsReferenceArray));
-    }
-
     public function testSendCustomerCartCallApiPostCustomerCartWithCmsReferencesArray()
     {
-
-
+        $cartId = 42;
+        $this->insuranceValidatorMock->shouldReceive('checkCmsReference')
+            ->once();
+        $this->requestObject->shouldReceive('setRequestBody')->once()->with(
+            [
+                'cms_references' => ['123','456']
+            ]
+        )->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_CUSTOMER_CART_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('addCustomerSessionToRequest')->once()->with(
+            $this->requestObject,
+            null,
+            $cartId
+        );
+        $this->requestObject->shouldReceive('post')->once();
+        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'], $cartId));
     }
 }

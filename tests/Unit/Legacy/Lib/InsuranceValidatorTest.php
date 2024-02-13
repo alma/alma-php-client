@@ -11,6 +11,16 @@ class InsuranceValidatorTest extends TestCase
 
 
     /**
+     * @var InsuranceValidator
+     */
+    protected $insuranceValidator;
+
+    public function setUp()
+    {
+        $this->insuranceValidator = new InsuranceValidator();
+    }
+
+    /**
      * @dataProvider checkCmsReferenceInvalidPayloadDataProvider
      * @param $invalidPayload
      * @return void
@@ -19,10 +29,20 @@ class InsuranceValidatorTest extends TestCase
     public function testCheckCmsReferenceWithInvalidPayloadThrowParameterException($invalidPayload)
     {
         $this->expectException(ParametersException::class);
-        $insuranceValidator = new InsuranceValidator();
-        $insuranceValidator->checkCmsReference($invalidPayload);
+        $this->insuranceValidator->checkCmsReference($invalidPayload);
     }
 
+    /**
+     * @throws ParametersException
+     */
+    public function testCheckCmsReferenceWithValidPayload()
+    {
+        $this->assertNull($this->insuranceValidator->checkCmsReference(['123', '456']));
+    }
+    
+    /**
+     * @return array
+     */
     public function checkCmsReferenceInvalidPayloadDataProvider()
     {
         return [
