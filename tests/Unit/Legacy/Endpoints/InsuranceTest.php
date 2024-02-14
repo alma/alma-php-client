@@ -18,6 +18,7 @@ use Alma\API\RequestError;
 use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class InsuranceTest extends TestCase
 {
@@ -27,14 +28,23 @@ class InsuranceTest extends TestCase
     const TEST_EMAIL = 'test@almapay.com';
     const TEST_CMSREFERENCE = '17-35';
     const TEST_BIRTHDATE = '1988-08-22';
+    const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-cart';
     /**
-	 * @var ClientContext
-	 */
-	private $clientContext;
+     * @var ClientContext
+     */
+    private $clientContext;
     /**
      * @var Response
      */
     private $responseMock;
+    /**
+     * @var Request
+     */
+    private $requestObject;
+    /**
+     * @var Insurance
+     */
+    private $insuranceMock;
 
     /**
      * @return array
@@ -262,7 +272,7 @@ class InsuranceTest extends TestCase
             ],
             'Throw exception with cms reference array' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-                'cms_reference' => ['10','13'],
+                'cms_reference' => ['10', '13'],
                 'product_price' => 10000
             ],
             'Throw exception with cms reference class' => [
@@ -432,9 +442,9 @@ class InsuranceTest extends TestCase
     /**
      * @return void
      */
-	protected function setUp()
-	{
-		$this->clientContext = Mockery::mock(ClientContext::class);
+    protected function setUp()
+    {
+        $this->clientContext = Mockery::mock(ClientContext::class);
         $this->responseMock = Mockery::mock(Response::class);
         $this->requestObject = Mockery::mock(Request::class);
         $this->insuranceMock = Mockery::mock(Insurance::class)->makePartial();
@@ -442,7 +452,7 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->insuranceValidator = $this->insuranceValidatorMock;
 
         $this->arrayUtilsMock = Mockery::mock(ArrayUtils::class);
-	}
+    }
 
     protected function tearDown()
     {
@@ -457,11 +467,11 @@ class InsuranceTest extends TestCase
     /**
      * @return void
      */
-	public function testInsuranceEligibilityMethodExist()
-	{
-		$insurance = new Insurance($this->clientContext);
-		$this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
-	}
+    public function testInsuranceEligibilityMethodExist()
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
+    }
 
     /**
      * @dataProvider requestDataProviderRightParams
@@ -474,8 +484,8 @@ class InsuranceTest extends TestCase
      * @throws RequestException
      * @throws RequestError
      */
-	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
-	{
+    public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
+    {
 
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
@@ -489,7 +499,7 @@ class InsuranceTest extends TestCase
             ->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-	}
+    }
 
     /**
      * @dataProvider requestDataProvider
@@ -519,29 +529,28 @@ class InsuranceTest extends TestCase
      * @throws RequestError
      * @throws RequestException
      */
-	public function testApiResponseErrorThrowRequestException()
-	{
+    public function testApiResponseErrorThrowRequestException()
+    {
         $insuranceContractExternalId = 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx';
-		$cmsReference = '18-24';
+        $cmsReference = '18-24';
         $productPrice = 10000;
         $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
 
-		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
-		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
+        $requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $requestObject->shouldReceive('setQueryParams')->once()->andReturn($requestObject);
 
 
         $this->insuranceMock->shouldReceive('request')
-			->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
-			->once()
-			->andReturn($requestObject)
-		;
+            ->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
+            ->once()
+            ->andReturn($requestObject);
 
         $this->insuranceMock->setClientContext($this->clientContext);
         $this->insuranceMock->shouldReceive('checkParameters')->once();
-		$this->expectException(RequestException::class);
+        $this->expectException(RequestException::class);
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-	}
+    }
 
     /**
      * @dataProvider requestDataProviderRightParams
@@ -797,5 +806,115 @@ class InsuranceTest extends TestCase
         $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
 
         $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
+    }
+
+    /**
+     * @return void
+     * @throws RequestError
+     */
+    public function testGivenInvalidCmsReferenceArrayNoCallEndpointAndReturnFalse()
+    {
+        $this->insuranceValidatorMock->shouldReceive('checkCmsReference')
+            ->once()
+            ->andThrow(ParametersException::class);
+        $loggerMock = Mockery::mock(LoggerInterface::class);
+        $loggerMock->shouldReceive('error')->once();
+        $this->clientContext->logger = $loggerMock;
+        $this->insuranceMock->setClientContext($this->clientContext);
+        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'], 42));
+    }
+
+    /**
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndNoThrowExceptionForResponse200()
+    {
+        $subscriptionCancelPayload = ' subscriptionId1 ';
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
+    }
+
+    /**
+     * @return void
+     * @throws RequestError
+     */
+    public function testSendCustomerCartCallApiPostCustomerCartWithCmsReferencesArray()
+    {
+        $cartId = 42;
+        $this->insuranceValidatorMock->shouldReceive('checkCmsReference')
+            ->once();
+        $this->requestObject->shouldReceive('setRequestBody')->once()->with(
+            [
+                'cms_references' => ['123','456']
+            ]
+        )->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_CUSTOMER_CART_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('addCustomerSessionToRequest')->once()->with(
+            $this->requestObject,
+            null,
+            $cartId
+        );
+        $this->requestObject->shouldReceive('post')->once();
+        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'], $cartId));
+    }
+
+    /**
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowExceptionForResponseUpperThan400()
+    {
+        $this->expectException(RequestException::class);
+        $subscriptionCancelPayload = 'subscriptionId1';
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
+    }
+
+    /**
+     * @dataProvider cancelSubscriptionErrorPayloadDataProvider
+     * @param $payload
+     * @return void
+     * @throws ParametersException
+     */
+    public function testCheckSubscriptionIdFormatThrowParamsErrorForBadPayload($payload)
+    {
+        $this->expectException(ParametersException::class);
+        $this->insuranceMock->checkSubscriptionIdFormat($payload);
+    }
+
+    public function cancelSubscriptionErrorPayloadDataProvider()
+    {
+        return [
+            'Null payload' => [
+                'subscriptionIdsArray' => null
+            ],
+            'empty string payload' => [
+                'subscriptionIdsArray' => ''
+            ],
+            'empty array payload' => [
+                'subscriptionIdsArray' => []
+            ],
+            'Subscription Object payload' => [
+                'subscriptionIdsArray' => $this->createMock(Subscription::class)
+            ],
+        ];
     }
 }

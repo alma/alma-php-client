@@ -144,10 +144,10 @@ class Insurance extends Base
     }
 
     /**
-     * @throws RequestError
+     * @return array json_decode in response constructor
      * @throws RequestException
      * @throws ParametersException
-     * @return array json_decode in response constructor
+     * @throws RequestError
      */
     public function getSubscription($subscriptionIds)
     {
@@ -163,6 +163,30 @@ class Insurance extends Base
         }
 
         return $response->json;
+    }
+
+    /**
+     * @param $cmsReferenceArray
+     * @param $cartId
+     * @return void
+     * @throws RequestError
+     */
+    public function sendCustomerCart($cmsReferenceArray, $cartId)
+    {
+        try {
+            $this->insuranceValidator->checkCmsReference($cmsReferenceArray);
+            $request = $this->request(self::INSURANCE_PATH . 'customer-cart')
+                ->setRequestBody(
+                    [
+                        'cms_references' => $cmsReferenceArray
+                    ]
+                );
+
+            $this->addCustomerSessionToRequest($request, null, $cartId);
+            $request->post();
+        } catch (ParametersException $e) {
+            $this->logger->error('Impossible to send customer cart data', [$e->getMessage()]);
+        }
     }
 
     /**
@@ -280,5 +304,38 @@ class Insurance extends Base
         if ($cartId) {
             $request->addCartIdToHeader($cartId);
         }
+    }
+
+    /**
+     * @param string $subscriptionId
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function cancelSubscription($subscriptionId)
+    {
+        $subscriptionId = trim($subscriptionId);
+        $this->checkSubscriptionIdFormat($subscriptionId);
+
+        $request = $this->request(self::INSURANCE_PATH . 'subscriptions/' . $subscriptionId . '/void');
+        $response = $request->post();
+
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, $request, $response);
+        }
+    }
+
+    /**
+     * @param string $subscriptionId
+     * @return void
+     * @throws ParametersException
+     */
+    public function checkSubscriptionIdFormat($subscriptionId)
+    {
+        if (!is_string($subscriptionId) || empty($subscriptionId)) {
+            throw new ParametersException('Invalid subscriptions Array');
+        }
+
     }
 }
