@@ -23,6 +23,10 @@ class InsuranceTest extends TestCase
 {
     const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
     const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    const TEST_PHONENUMBER = '+33601010101';
+    const TEST_EMAIL = 'test@almapay.com';
+    const TEST_CMSREFERENCE = '17-35';
+    const TEST_BIRTHDATE = '1988-08-22';
     /**
 	 * @var ClientContext
 	 */
@@ -67,8 +71,8 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'test@almapay.com',
-                            '+33601010101',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
                             'lastname',
                             'firstname',
                             'address1',
@@ -83,11 +87,11 @@ class InsuranceTest extends TestCase
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                         1568,
-                        '17-35',
+                        self::TEST_CMSREFERENCE,
                         1312,
                         new Subscriber(
-                            'test@almapay.com',
-                            '+33601010101',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
                             'last',
                             'first',
                             'adr1',
@@ -95,7 +99,7 @@ class InsuranceTest extends TestCase
                             'zip',
                             'city',
                             'country',
-                            '1988-08-22'
+                            self::TEST_BIRTHDATE
                         ),
                         'cancelUrl'
                     )
@@ -110,8 +114,8 @@ class InsuranceTest extends TestCase
                             'product_price' => 1312,
                             'cms_callback_url' => 'cancelUrl',
                             'subscriber' => [
-                                'email' => 'test@almapay.com',
-                                'phone_number' => '+33601010101',
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
                                 'last_name' => 'lastname',
                                 'first_name' => 'firstname',
                                 'birthdate' => null,
@@ -127,15 +131,15 @@ class InsuranceTest extends TestCase
                         [
                             'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                             'amount' => 1568,
-                            'cms_reference' => '17-35',
+                            'cms_reference' => self::TEST_CMSREFERENCE,
                             'product_price' => 1312,
                             'cms_callback_url' => 'cancelUrl',
                             'subscriber' => [
-                                'email' => 'test@almapay.com',
-                                'phone_number' => '+33601010101',
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
                                 'last_name' => 'last',
                                 'first_name' => 'first',
-                                'birthdate' => '1988-08-22',
+                                'birthdate' => self::TEST_BIRTHDATE,
                                 'address' => [
                                     'address_line_1' => 'adr1',
                                     'address_line_2' => 'adr2',
@@ -156,8 +160,8 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'test@almapay.com',
-                            '+33601010101',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
                             'lastname',
                             'firstname',
                             'address1',
@@ -172,11 +176,11 @@ class InsuranceTest extends TestCase
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                         1568,
-                        '17-35',
+                        self::TEST_CMSREFERENCE,
                         1312,
                         new Subscriber(
-                            'test@almapay.com',
-                            '+33601010101',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
                             'last',
                             'first',
                             'adr1',
@@ -184,7 +188,7 @@ class InsuranceTest extends TestCase
                             'zip',
                             'city',
                             'country',
-                            '1988-08-22'
+                            self::TEST_BIRTHDATE
                         ),
                         'cancelUrl'
                     )
@@ -199,8 +203,8 @@ class InsuranceTest extends TestCase
                             'product_price' => 1312,
                             'cms_callback_url' => 'cancelUrl',
                             'subscriber' => [
-                                'email' => 'test@almapay.com',
-                                'phone_number' => '+33601010101',
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
                                 'last_name' => 'lastname',
                                 'first_name' => 'firstname',
                                 'birthdate' => null,
@@ -216,15 +220,15 @@ class InsuranceTest extends TestCase
                         [
                             'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                             'amount' => 1568,
-                            'cms_reference' => '17-35',
+                            'cms_reference' => self::TEST_CMSREFERENCE,
                             'product_price' => 1312,
                             'cms_callback_url' => 'cancelUrl',
                             'subscriber' => [
-                                'email' => 'test@almapay.com',
-                                'phone_number' => '+33601010101',
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
                                 'last_name' => 'last',
                                 'first_name' => 'first',
-                                'birthdate' => '1988-08-22',
+                                'birthdate' => self::TEST_BIRTHDATE,
                                 'address' => [
                                     'address_line_1' => 'adr1',
                                     'address_line_2' => 'adr2',
@@ -640,7 +644,7 @@ class InsuranceTest extends TestCase
     {
         $insurance = new Insurance($this->clientContext);
         $this->expectException(ParametersException::class);
-        $insurance->subscription($nonArrayParam,'orderID', $nonStringPaymentId);
+        $insurance->subscription($nonArrayParam, 'orderID', $nonStringPaymentId);
     }
 
     /**
@@ -667,7 +671,7 @@ class InsuranceTest extends TestCase
             ->andReturn($requestObject);
         $insurance->setClientContext($this->clientContext);
         $this->expectException(RequestException::class);
-        $insurance->subscription($subscriptionArray,'orderId');
+        $insurance->subscription($subscriptionArray, 'orderId');
     }
 
     /**
@@ -698,7 +702,7 @@ class InsuranceTest extends TestCase
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
-        $insurance->subscription($subscriptionArray, 'myOrderId' ,$paymentId);
+        $insurance->subscription($subscriptionArray, 'myOrderId', $paymentId);
     }
 
     /**

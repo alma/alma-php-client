@@ -111,7 +111,13 @@ class Insurance extends Base
      * @throws RequestError
      * @throws RequestException
      */
-    public function subscription($subscriptionArray, $orderId, $paymentId = null, $customerSessionId = null, $cartId = null)
+    public function subscription(
+        $subscriptionArray,
+        $orderId,
+        $paymentId = null,
+        $customerSessionId = null,
+        $cartId = null
+    )
     {
 
         if (!is_array($subscriptionArray)) {
@@ -166,7 +172,7 @@ class Insurance extends Base
      * @return array
      * @throws ParametersException
      */
-    protected function buildSubscriptionData($subscriptionArray, $orderId ,$paymentId = null)
+    protected function buildSubscriptionData($subscriptionArray, $orderId, $paymentId = null)
     {
         $subscriptionData = ['subscriptions' => []];
         $subscriptionData['order_id'] = $orderId;
