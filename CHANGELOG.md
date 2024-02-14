@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v2.0.3
+-------
+* Added order_id in subscription model
+* Added sendCustomerCart endpoint Insurance
+* Added cancelSubscription endpoint Insurance
+
 v2.0.2
 -------
 * Added getSubscription endpoint Insurance
