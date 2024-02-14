@@ -159,6 +159,30 @@ class Insurance extends Base
     }
 
     /**
+     * @param $cmsReferenceArray
+     * @param $cartId
+     * @return void
+     * @throws RequestError
+     */
+    public function sendCustomerCart($cmsReferenceArray, $cartId)
+    {
+        try {
+            $this->insuranceValidator->checkCmsReference($cmsReferenceArray);
+            $request = $this->request(self::INSURANCE_PATH . 'customer-cart')
+                ->setRequestBody(
+                    [
+                        'cms_references' => $cmsReferenceArray
+                    ]
+                );
+
+            $this->addCustomerSessionToRequest($request, null, $cartId);
+            $request->post();
+        } catch (ParametersException $e) {
+            $this->logger->error('Impossible to send customer cart data', [$e->getMessage()]);
+        }
+    }
+
+    /**
      * @param array $subscriptionArray
      * @param string|null $paymentId
      * @return array
