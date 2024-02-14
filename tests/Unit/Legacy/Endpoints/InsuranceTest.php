@@ -711,7 +711,7 @@ class InsuranceTest extends TestCase
         $loggerMock->shouldReceive('error')->once();
         $this->clientContext->logger = $loggerMock;
         $this->insuranceMock->setClientContext($this->clientContext);
-        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'],42));
+        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'], 42));
     }
 
     /**

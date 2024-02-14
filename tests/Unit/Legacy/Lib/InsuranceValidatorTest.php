@@ -73,4 +73,5 @@ class InsuranceValidatorTest extends TestCase
                 'payload' => ['1236', new \stdClass()]
             ],
         ];
-    }}
+    }
+}
