@@ -8,6 +8,7 @@ use Alma\API\Entities\Insurance\Subscription;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
+use Alma\API\Exceptions\ResponseException;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\Lib\InsuranceValidator;
 use Alma\API\RequestError;
@@ -137,10 +138,11 @@ class Insurance extends Base
     }
 
     /**
-     * @throws RequestError
+     * @return array json_decode in response constructor
      * @throws RequestException
      * @throws ParametersException
-     * @return array json_decode in response constructor
+     * @throws ResponseException
+     * @throws RequestError
      */
     public function getSubscription($subscriptionIds)
     {
@@ -153,6 +155,11 @@ class Insurance extends Base
 
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
+        }
+
+        $subscriptions = json_decode($response->json, true)['subscriptions'];
+        if (!count($subscriptions)) {
+            throw new ResponseException('No data was found', 404);
         }
 
         return $response->json;
