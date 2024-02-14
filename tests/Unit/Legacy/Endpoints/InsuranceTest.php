@@ -19,19 +19,33 @@ use Alma\API\RequestError;
 use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class InsuranceTest extends TestCase
 {
     const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
     const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    const TEST_PHONENUMBER = '+33601010101';
+    const TEST_EMAIL = 'test@almapay.com';
+    const TEST_CMSREFERENCE = '17-35';
+    const TEST_BIRTHDATE = '1988-08-22';
+    const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-cart';
     /**
-	 * @var ClientContext
-	 */
-	private $clientContext;
+     * @var ClientContext
+     */
+    private $clientContext;
     /**
      * @var Response
      */
     private $responseMock;
+    /**
+     * @var Request
+     */
+    private $requestObject;
+    /**
+     * @var Insurance
+     */
+    private $insuranceMock;
 
     /**
      * @return array
@@ -68,15 +82,15 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'lastname',
+                            'firstname',
+                            'address1',
+                            'address2',
+                            'zipcode',
+                            'city',
+                            'country',
                             null
                         ),
                         'cancelUrl'
@@ -84,24 +98,70 @@ class InsuranceTest extends TestCase
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                         1568,
-                        '17-35',
+                        self::TEST_CMSREFERENCE,
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'last',
+                            'first',
+                            'adr1',
                             'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            '1988-08-22'
+                            'zip',
+                            'city',
+                            'country',
+                            self::TEST_BIRTHDATE
                         ),
                         'cancelUrl'
                     )
                 ],
-                null
+                null,
+                [
+                    'subscriptions' => [
+                        [
+                            'insurance_contract_id' => 'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                            'amount' => 1235,
+                            'cms_reference' => '19',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'lastname',
+                                'first_name' => 'firstname',
+                                'birthdate' => null,
+                                'address' => [
+                                    'address_line_1' => 'address1',
+                                    'address_line_2' => 'address2',
+                                    'zip_code' => 'zipcode',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ],
+                        [
+                            'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                            'amount' => 1568,
+                            'cms_reference' => self::TEST_CMSREFERENCE,
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'last',
+                                'first_name' => 'first',
+                                'birthdate' => self::TEST_BIRTHDATE,
+                                'address' => [
+                                    'address_line_1' => 'adr1',
+                                    'address_line_2' => 'adr2',
+                                    'zip_code' => 'zip',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
             ],
             'Test with right data and payment id' => [
                 [
@@ -111,15 +171,15 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'lastname',
+                            'firstname',
+                            'address1',
+                            'address2',
+                            'zipcode',
+                            'city',
+                            'country',
                             null
                         ),
                         'cancelUrl'
@@ -127,24 +187,70 @@ class InsuranceTest extends TestCase
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                         1568,
-                        '17-35',
+                        self::TEST_CMSREFERENCE,
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'last',
+                            'first',
+                            'adr1',
                             'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            '1988-08-22'
+                            'zip',
+                            'city',
+                            'country',
+                            self::TEST_BIRTHDATE
                         ),
                         'cancelUrl'
                     )
                 ],
-                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X'
+                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X',
+                [
+                    'subscriptions' => [
+                        [
+                            'insurance_contract_id' => 'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                            'amount' => 1235,
+                            'cms_reference' => '19',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'lastname',
+                                'first_name' => 'firstname',
+                                'birthdate' => null,
+                                'address' => [
+                                    'address_line_1' => 'address1',
+                                    'address_line_2' => 'address2',
+                                    'zip_code' => 'zipcode',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ],
+                        [
+                            'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                            'amount' => 1568,
+                            'cms_reference' => self::TEST_CMSREFERENCE,
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'last',
+                                'first_name' => 'first',
+                                'birthdate' => self::TEST_BIRTHDATE,
+                                'address' => [
+                                    'address_line_1' => 'adr1',
+                                    'address_line_2' => 'adr2',
+                                    'zip_code' => 'zip',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
             ]
         ];
     }
@@ -167,7 +273,7 @@ class InsuranceTest extends TestCase
             ],
             'Throw exception with cms reference array' => [
                 'insurance_contract_external_id' => 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx',
-                'cms_reference' => ['10','13'],
+                'cms_reference' => ['10', '13'],
                 'product_price' => 10000
             ],
             'Throw exception with cms reference class' => [
@@ -354,9 +460,9 @@ class InsuranceTest extends TestCase
     /**
      * @return void
      */
-	protected function setUp()
-	{
-		$this->clientContext = Mockery::mock(ClientContext::class);
+    protected function setUp()
+    {
+        $this->clientContext = Mockery::mock(ClientContext::class);
         $this->responseMock = Mockery::mock(Response::class);
         $this->requestObject = Mockery::mock(Request::class);
         $this->insuranceMock = Mockery::mock(Insurance::class)->makePartial();
@@ -364,7 +470,7 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->insuranceValidator = $this->insuranceValidatorMock;
 
         $this->arrayUtilsMock = Mockery::mock(ArrayUtils::class);
-	}
+    }
 
     protected function tearDown()
     {
@@ -379,11 +485,11 @@ class InsuranceTest extends TestCase
     /**
      * @return void
      */
-	public function testInsuranceEligibilityMethodExist()
-	{
-		$insurance = new Insurance($this->clientContext);
-		$this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
-	}
+    public function testInsuranceEligibilityMethodExist()
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
+    }
 
     /**
      * @dataProvider requestDataProviderRightParams
@@ -396,8 +502,8 @@ class InsuranceTest extends TestCase
      * @throws RequestException
      * @throws RequestError
      */
-	public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
-	{
+    public function testGetRequestIsCalled($insuranceContractExternalId, $cmsReference, $productPrice)
+    {
 
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
@@ -411,7 +517,7 @@ class InsuranceTest extends TestCase
             ->with($cmsReference, $insuranceContractExternalId, $productPrice);
 
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-	}
+    }
 
     /**
      * @dataProvider requestDataProvider
@@ -441,29 +547,28 @@ class InsuranceTest extends TestCase
      * @throws RequestError
      * @throws RequestException
      */
-	public function testApiResponseErrorThrowRequestException()
-	{
+    public function testApiResponseErrorThrowRequestException()
+    {
         $insuranceContractExternalId = 'insurance_contract_6XxGHbjr51CE5Oly8E2Amx';
-		$cmsReference = '18-24';
+        $cmsReference = '18-24';
         $productPrice = 10000;
         $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
 
-		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
-		$requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
+        $requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $requestObject->shouldReceive('setQueryParams')->once()->andReturn($requestObject);
 
 
         $this->insuranceMock->shouldReceive('request')
-			->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
-			->once()
-			->andReturn($requestObject)
-		;
+            ->with(self::INSURANCE_CONTRACTS_PATH . $insuranceContractExternalId)
+            ->once()
+            ->andReturn($requestObject);
 
         $this->insuranceMock->setClientContext($this->clientContext);
         $this->insuranceMock->shouldReceive('checkParameters')->once();
-		$this->expectException(RequestException::class);
+        $this->expectException(RequestException::class);
         $this->insuranceMock->getInsuranceContract($insuranceContractExternalId, $cmsReference, $productPrice);
-	}
+    }
 
     /**
      * @dataProvider requestDataProviderRightParams
@@ -566,7 +671,7 @@ class InsuranceTest extends TestCase
     {
         $insurance = new Insurance($this->clientContext);
         $this->expectException(ParametersException::class);
-        $insurance->subscription($nonArrayParam, $nonStringPaymentId);
+        $insurance->subscription($nonArrayParam, 'orderID', $nonStringPaymentId);
     }
 
     /**
@@ -593,21 +698,29 @@ class InsuranceTest extends TestCase
             ->andReturn($requestObject);
         $insurance->setClientContext($this->clientContext);
         $this->expectException(RequestException::class);
-        $insurance->subscription($subscriptionArray);
+        $insurance->subscription($subscriptionArray, 'orderId');
     }
 
     /**
      * @dataProvider subscriptionDataProvider
      * @param $subscriptionArray
      * @param $paymentId
+     * @param $expectedSubscriptionPayload
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
      */
-    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
+    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId, $expectedSubscriptionPayload)
     {
+        $expectedSubscriptionPayload['order_id'] = 'myOrderId';
+
+        if ($paymentId) {
+            $expectedSubscriptionPayload['payment_id'] = $paymentId;
+        }
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('setRequestBody')->once()
+            ->with($expectedSubscriptionPayload)
+            ->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
@@ -616,7 +729,7 @@ class InsuranceTest extends TestCase
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
-        $insurance->subscription($subscriptionArray, $paymentId);
+        $insurance->subscription($subscriptionArray, 'myOrderId', $paymentId);
     }
 
     /**
@@ -723,6 +836,116 @@ class InsuranceTest extends TestCase
     }
 
     /**
+     * @return void
+     * @throws RequestError
+     */
+    public function testGivenInvalidCmsReferenceArrayNoCallEndpointAndReturnFalse()
+    {
+        $this->insuranceValidatorMock->shouldReceive('checkCmsReference')
+            ->once()
+            ->andThrow(ParametersException::class);
+        $loggerMock = Mockery::mock(LoggerInterface::class);
+        $loggerMock->shouldReceive('error')->once();
+        $this->clientContext->logger = $loggerMock;
+        $this->insuranceMock->setClientContext($this->clientContext);
+        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'], 42));
+    }
+
+    /**
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndNoThrowExceptionForResponse200()
+    {
+        $subscriptionCancelPayload = ' subscriptionId1 ';
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
+    }
+
+    /**
+     * @return void
+     * @throws RequestError
+     */
+    public function testSendCustomerCartCallApiPostCustomerCartWithCmsReferencesArray()
+    {
+        $cartId = 42;
+        $this->insuranceValidatorMock->shouldReceive('checkCmsReference')
+            ->once();
+        $this->requestObject->shouldReceive('setRequestBody')->once()->with(
+            [
+                'cms_references' => ['123','456']
+            ]
+        )->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_CUSTOMER_CART_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->shouldReceive('addCustomerSessionToRequest')->once()->with(
+            $this->requestObject,
+            null,
+            $cartId
+        );
+        $this->requestObject->shouldReceive('post')->once();
+        $this->assertNull($this->insuranceMock->sendCustomerCart(['123','456'], $cartId));
+    }
+
+    /**
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowExceptionForResponseUpperThan400()
+    {
+        $this->expectException(RequestException::class);
+        $subscriptionCancelPayload = 'subscriptionId1';
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
+    }
+
+    /**
+     * @dataProvider cancelSubscriptionErrorPayloadDataProvider
+     * @param $payload
+     * @return void
+     * @throws ParametersException
+     */
+    public function testCheckSubscriptionIdFormatThrowParamsErrorForBadPayload($payload)
+    {
+        $this->expectException(ParametersException::class);
+        $this->insuranceMock->checkSubscriptionIdFormat($payload);
+    }
+
+    public function cancelSubscriptionErrorPayloadDataProvider()
+    {
+        return [
+            'Null payload' => [
+                'subscriptionIdsArray' => null
+            ],
+            'empty string payload' => [
+                'subscriptionIdsArray' => ''
+            ],
+            'empty array payload' => [
+                'subscriptionIdsArray' => []
+            ],
+            'Subscription Object payload' => [
+                'subscriptionIdsArray' => $this->createMock(Subscription::class)
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider subscriptionIdInvalidDataProvider
      * @param $subscriptionIdInvalid
      * @param $jsonReturnRequest
@@ -730,7 +953,6 @@ class InsuranceTest extends TestCase
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
-     * @throws ResponseException
      */
     public function testGetSubscriptionIfReturnZeroDataThrowException($subscriptionIdInvalid, $jsonReturnRequest)
     {

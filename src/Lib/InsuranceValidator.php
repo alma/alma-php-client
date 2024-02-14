@@ -78,4 +78,26 @@ class InsuranceValidator
             ));
         }
     }
+
+    /**
+     * Throw Exception if payload isn't valid
+     * @throws ParametersException
+     */
+    public function checkCmsReference($cmsReferenceArray)
+    {
+        if (!is_array($cmsReferenceArray) || empty($cmsReferenceArray)) {
+            throw new ParametersException(sprintf(
+                'Invalid parameters must be an array with strings : %s',
+                gettype($cmsReferenceArray)
+            ));
+        }
+        foreach ($cmsReferenceArray as $cmsReference) {
+            if (!is_string($cmsReference)) {
+                throw new ParametersException(sprintf(
+                    'Cms references must be a string : %s',
+                    json_encode($cmsReference)
+                ));
+            }
+        }
+    }
 }

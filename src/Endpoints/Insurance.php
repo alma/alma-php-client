@@ -103,6 +103,7 @@ class Insurance extends Base
 
     /**
      * @param $subscriptionArray
+     * @param string $orderId
      * @param null $paymentId
      * @param string | null $customerSessionId
      * @param string | null $cartId
@@ -111,7 +112,13 @@ class Insurance extends Base
      * @throws RequestError
      * @throws RequestException
      */
-    public function subscription($subscriptionArray, $paymentId = null, $customerSessionId = null, $cartId = null)
+    public function subscription(
+        $subscriptionArray,
+        $orderId,
+        $paymentId = null,
+        $customerSessionId = null,
+        $cartId = null
+    )
     {
 
         if (!is_array($subscriptionArray)) {
@@ -123,7 +130,7 @@ class Insurance extends Base
             );
         }
 
-        $subscriptionData = $this->buildSubscriptionData($subscriptionArray, $paymentId);
+        $subscriptionData = $this->buildSubscriptionData($subscriptionArray, $orderId, $paymentId);
         $request = $this->request(self::INSURANCE_PATH . 'subscriptions')
             ->setRequestBody($subscriptionData);
 
@@ -138,11 +145,11 @@ class Insurance extends Base
     }
 
     /**
+     * @param $subscriptionIds
      * @return array json_decode in response constructor
-     * @throws RequestException
      * @throws ParametersException
-     * @throws ResponseException
      * @throws RequestError
+     * @throws RequestException
      */
     public function getSubscription($subscriptionIds)
     {
@@ -166,14 +173,40 @@ class Insurance extends Base
     }
 
     /**
+     * @param $cmsReferenceArray
+     * @param $cartId
+     * @return void
+     * @throws RequestError
+     */
+    public function sendCustomerCart($cmsReferenceArray, $cartId)
+    {
+        try {
+            $this->insuranceValidator->checkCmsReference($cmsReferenceArray);
+            $request = $this->request(self::INSURANCE_PATH . 'customer-cart')
+                ->setRequestBody(
+                    [
+                        'cms_references' => $cmsReferenceArray
+                    ]
+                );
+
+            $this->addCustomerSessionToRequest($request, null, $cartId);
+            $request->post();
+        } catch (ParametersException $e) {
+            $this->logger->error('Impossible to send customer cart data', [$e->getMessage()]);
+        }
+    }
+
+    /**
      * @param array $subscriptionArray
+     * @param string $orderId
      * @param string|null $paymentId
      * @return array
      * @throws ParametersException
      */
-    protected function buildSubscriptionData($subscriptionArray, $paymentId = null)
+    protected function buildSubscriptionData($subscriptionArray, $orderId, $paymentId = null)
     {
         $subscriptionData = ['subscriptions' => []];
+        $subscriptionData['order_id'] = $orderId;
 
         /**
          * @var Subscription $subscription
@@ -279,5 +312,38 @@ class Insurance extends Base
         if ($cartId) {
             $request->addCartIdToHeader($cartId);
         }
+    }
+
+    /**
+     * @param string $subscriptionId
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function cancelSubscription($subscriptionId)
+    {
+        $subscriptionId = trim($subscriptionId);
+        $this->checkSubscriptionIdFormat($subscriptionId);
+
+        $request = $this->request(self::INSURANCE_PATH . 'subscriptions/' . $subscriptionId . '/void');
+        $response = $request->post();
+
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, $request, $response);
+        }
+    }
+
+    /**
+     * @param string $subscriptionId
+     * @return void
+     * @throws ParametersException
+     */
+    public function checkSubscriptionIdFormat($subscriptionId)
+    {
+        if (!is_string($subscriptionId) || empty($subscriptionId)) {
+            throw new ParametersException('Invalid subscriptions Array');
+        }
+
     }
 }
