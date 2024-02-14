@@ -24,6 +24,10 @@ class InsuranceTest extends TestCase
 {
     const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
     const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    const TEST_PHONENUMBER = '+33601010101';
+    const TEST_EMAIL = 'test@almapay.com';
+    const TEST_CMSREFERENCE = '17-35';
+    const TEST_BIRTHDATE = '1988-08-22';
     const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-cart';
     /**
      * @var ClientContext
@@ -77,15 +81,15 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'lastname',
+                            'firstname',
+                            'address1',
+                            'address2',
+                            'zipcode',
+                            'city',
+                            'country',
                             null
                         ),
                         'cancelUrl'
@@ -93,24 +97,70 @@ class InsuranceTest extends TestCase
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                         1568,
-                        '17-35',
+                        self::TEST_CMSREFERENCE,
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'last',
+                            'first',
+                            'adr1',
                             'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            '1988-08-22'
+                            'zip',
+                            'city',
+                            'country',
+                            self::TEST_BIRTHDATE
                         ),
                         'cancelUrl'
                     )
                 ],
-                null
+                null,
+                [
+                    'subscriptions' => [
+                        [
+                            'insurance_contract_id' => 'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                            'amount' => 1235,
+                            'cms_reference' => '19',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'lastname',
+                                'first_name' => 'firstname',
+                                'birthdate' => null,
+                                'address' => [
+                                    'address_line_1' => 'address1',
+                                    'address_line_2' => 'address2',
+                                    'zip_code' => 'zipcode',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ],
+                        [
+                            'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                            'amount' => 1568,
+                            'cms_reference' => self::TEST_CMSREFERENCE,
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'last',
+                                'first_name' => 'first',
+                                'birthdate' => self::TEST_BIRTHDATE,
+                                'address' => [
+                                    'address_line_1' => 'adr1',
+                                    'address_line_2' => 'adr2',
+                                    'zip_code' => 'zip',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
             ],
             'Test with right data and payment id' => [
                 [
@@ -120,15 +170,15 @@ class InsuranceTest extends TestCase
                         '19',
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub1',
-                            'sub1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
-                            'adr1',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'lastname',
+                            'firstname',
+                            'address1',
+                            'address2',
+                            'zipcode',
+                            'city',
+                            'country',
                             null
                         ),
                         'cancelUrl'
@@ -136,24 +186,70 @@ class InsuranceTest extends TestCase
                     new Subscription(
                         'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
                         1568,
-                        '17-35',
+                        self::TEST_CMSREFERENCE,
                         1312,
                         new Subscriber(
-                            'mathis.dupuy@almapay.com',
-                            '+33622484646',
-                            'sub2',
-                            'sub2',
+                            self::TEST_EMAIL,
+                            self::TEST_PHONENUMBER,
+                            'last',
+                            'first',
+                            'adr1',
                             'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            'adr2',
-                            '1988-08-22'
+                            'zip',
+                            'city',
+                            'country',
+                            self::TEST_BIRTHDATE
                         ),
                         'cancelUrl'
                     )
                 ],
-                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X'
+                'payment_id' => 'payment_11xlpX9QQYhd3xZVzNMrtdKw4myV7QET7X',
+                [
+                    'subscriptions' => [
+                        [
+                            'insurance_contract_id' => 'insurance_contract_6VU1zZ5AKfy6EejiNxmLXh',
+                            'amount' => 1235,
+                            'cms_reference' => '19',
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'lastname',
+                                'first_name' => 'firstname',
+                                'birthdate' => null,
+                                'address' => [
+                                    'address_line_1' => 'address1',
+                                    'address_line_2' => 'address2',
+                                    'zip_code' => 'zipcode',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ],
+                        [
+                            'insurance_contract_id' => 'insurance_contract_3vt2jyvWWQc9wZCmWd1KtI',
+                            'amount' => 1568,
+                            'cms_reference' => self::TEST_CMSREFERENCE,
+                            'product_price' => 1312,
+                            'cms_callback_url' => 'cancelUrl',
+                            'subscriber' => [
+                                'email' => self::TEST_EMAIL,
+                                'phone_number' => self::TEST_PHONENUMBER,
+                                'last_name' => 'last',
+                                'first_name' => 'first',
+                                'birthdate' => self::TEST_BIRTHDATE,
+                                'address' => [
+                                    'address_line_1' => 'adr1',
+                                    'address_line_2' => 'adr2',
+                                    'zip_code' => 'zip',
+                                    'city' => 'city',
+                                    'country' => 'country',
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
             ]
         ];
     }
@@ -557,7 +653,7 @@ class InsuranceTest extends TestCase
     {
         $insurance = new Insurance($this->clientContext);
         $this->expectException(ParametersException::class);
-        $insurance->subscription($nonArrayParam, $nonStringPaymentId);
+        $insurance->subscription($nonArrayParam, 'orderID', $nonStringPaymentId);
     }
 
     /**
@@ -584,21 +680,29 @@ class InsuranceTest extends TestCase
             ->andReturn($requestObject);
         $insurance->setClientContext($this->clientContext);
         $this->expectException(RequestException::class);
-        $insurance->subscription($subscriptionArray);
+        $insurance->subscription($subscriptionArray, 'orderId');
     }
 
     /**
      * @dataProvider subscriptionDataProvider
      * @param $subscriptionArray
      * @param $paymentId
+     * @param $expectedSubscriptionPayload
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
      */
-    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId)
+    public function testSubscriptionGetRequestCall($subscriptionArray, $paymentId, $expectedSubscriptionPayload)
     {
+        $expectedSubscriptionPayload['order_id'] = 'myOrderId';
+
+        if ($paymentId) {
+            $expectedSubscriptionPayload['payment_id'] = $paymentId;
+        }
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('setRequestBody')->once()
+            ->with($expectedSubscriptionPayload)
+            ->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
         $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
@@ -607,7 +711,7 @@ class InsuranceTest extends TestCase
             ->once()
             ->andReturn($this->requestObject);
         $insurance->setClientContext($this->clientContext);
-        $insurance->subscription($subscriptionArray, $paymentId);
+        $insurance->subscription($subscriptionArray, 'myOrderId', $paymentId);
     }
 
     /**
