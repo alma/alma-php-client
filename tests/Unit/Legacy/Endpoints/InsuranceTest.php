@@ -818,7 +818,6 @@ class InsuranceTest extends TestCase
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
-     * @throws ResponseException
      */
     public function testGetSubscriptionsReturnApiResponse($subscriptionIds, $json)
     {
@@ -832,7 +831,7 @@ class InsuranceTest extends TestCase
             ->andReturn($this->requestObject);
         $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
 
-        $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
+        $this->assertEquals($this->responseMock->json, $this->insuranceMock->getSubscription($subscriptionIds));
     }
 
     /**

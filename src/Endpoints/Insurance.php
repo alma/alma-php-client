@@ -150,6 +150,7 @@ class Insurance extends Base
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
+     * @throws ResponseException
      */
     public function getSubscription($subscriptionIds)
     {
