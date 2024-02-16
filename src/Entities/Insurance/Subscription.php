@@ -34,6 +34,7 @@ class Subscription
     CONST STATE_FAILED = 'failed';
     CONST STATE_CANCELLED = 'canceled';
     CONST STATE_PENDING = 'pending';
+    CONST STATE_PENDING_CANCELLATION = 'pending_cancellation';
 
     /**
      * @param string $contractId
