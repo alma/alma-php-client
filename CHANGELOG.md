@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v2.0.4
+-------
+* Fix json_decode in getSubscriptionDetails
+* Add subscription pending_cancellation status 
+
 v2.0.3
 -------
 * Added order_id in subscription model
