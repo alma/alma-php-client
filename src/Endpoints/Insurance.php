@@ -163,8 +163,7 @@ class Insurance extends Base
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
         }
-
-        $subscriptions = json_decode($response->json, true)['subscriptions'];
+        $subscriptions = $response->json['subscriptions'];
         if (!count($subscriptions)) {
             throw new ResponseException('No data was found', 404);
         }

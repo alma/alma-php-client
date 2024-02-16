@@ -750,7 +750,7 @@ class InsuranceTest extends TestCase
      */
     public function testGetSubscriptionRequestIsCalled($subscriptionIds, $json)
     {
-        $this->responseMock->json = $json;
+        $this->responseMock->json = json_decode($json,true);
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')
@@ -822,7 +822,7 @@ class InsuranceTest extends TestCase
      */
     public function testGetSubscriptionsReturnApiResponse($subscriptionIds, $json)
     {
-        $this->responseMock->json = $json;
+        $this->responseMock->json = json_decode($json,true);
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
@@ -956,7 +956,7 @@ class InsuranceTest extends TestCase
      */
     public function testGetSubscriptionIfReturnZeroDataThrowException($subscriptionIdInvalid, $jsonReturnRequest)
     {
-        $this->responseMock->json = $jsonReturnRequest;
+        $this->responseMock->json = json_decode($jsonReturnRequest,true);
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
