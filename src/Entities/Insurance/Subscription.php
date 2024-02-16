@@ -30,11 +30,11 @@ class Subscription
      */
     private $callbackUrl;
 
-    CONST STATE_STARTED = 'started';
-    CONST STATE_FAILED = 'failed';
-    CONST STATE_CANCELLED = 'canceled';
-    CONST STATE_PENDING = 'pending';
-    CONST STATE_PENDING_CANCELLATION = 'pending_cancellation';
+    const STATE_STARTED = 'started';
+    const STATE_FAILED = 'failed';
+    const STATE_CANCELLED = 'canceled';
+    const STATE_PENDING = 'pending';
+    const STATE_PENDING_CANCELLATION = 'pending_cancellation';
 
     /**
      * @param string $contractId
