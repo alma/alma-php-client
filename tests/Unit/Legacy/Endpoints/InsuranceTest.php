@@ -11,6 +11,7 @@ use Alma\API\Entities\Insurance\Subscription;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
+use Alma\API\Exceptions\ResponseException;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\Lib\InsuranceValidator;
 use Alma\API\Request;
@@ -440,6 +441,23 @@ class InsuranceTest extends TestCase
     }
 
     /**
+     * @return array[]
+     */
+    public function subscriptionIdInvalidDataProvider()
+    {
+        return [
+            'Test with subscription id invalid' => [
+                [
+                    'id' => 'toto'
+                ],
+                '{
+                    "subscriptions": []
+                }'
+            ]
+        ];
+    }
+
+    /**
      * @return void
      */
     protected function setUp()
@@ -728,26 +746,33 @@ class InsuranceTest extends TestCase
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
+     * @throws ResponseException
      */
-    public function testGetSubscriptionRequestIsCalled($subscriptionIds)
+    public function testGetSubscriptionRequestIsCalled($subscriptionIds, $json)
     {
+        $this->responseMock->json = json_decode($json, true);
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
-        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
-        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
+        $this->requestObject->shouldReceive('setQueryParams')
+            ->once()
+            ->with($subscriptionIds)
+            ->andReturn($this->requestObject);
         $this->insuranceMock->shouldReceive('request')
             ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
             ->once()
             ->andReturn($this->requestObject);
 
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
         $this->insuranceMock->getSubscription($subscriptionIds);
     }
 
     /**
      * @dataProvider getSubscriptionsRightParamDataProvider
+     * @param $subscriptionIds
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
+     * @throws ResponseException
      */
     public function testGetSubscriptionThrowExceptionIfResponseHasAnError($subscriptionIds)
     {
@@ -773,6 +798,7 @@ class InsuranceTest extends TestCase
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
+     * @throws ResponseException
      */
     public function testGetSubscriptionThrowExceptionIfWeDontSendAnArray($subscriptionIds)
     {
@@ -795,7 +821,7 @@ class InsuranceTest extends TestCase
      */
     public function testGetSubscriptionsReturnApiResponse($subscriptionIds, $json)
     {
-        $this->responseMock->json = $json;
+        $this->responseMock->json = json_decode($json, true);
         $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
         $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
@@ -805,7 +831,7 @@ class InsuranceTest extends TestCase
             ->andReturn($this->requestObject);
         $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')->once();
 
-        $this->assertEquals($json, $this->insuranceMock->getSubscription($subscriptionIds));
+        $this->assertEquals($this->responseMock->json, $this->insuranceMock->getSubscription($subscriptionIds));
     }
 
     /**
@@ -916,5 +942,33 @@ class InsuranceTest extends TestCase
                 'subscriptionIdsArray' => $this->createMock(Subscription::class)
             ],
         ];
+    }
+
+    /**
+     * @dataProvider subscriptionIdInvalidDataProvider
+     * @param $subscriptionIdInvalid
+     * @param $jsonReturnRequest
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testGetSubscriptionIfReturnZeroDataThrowException($subscriptionIdInvalid, $jsonReturnRequest)
+    {
+        $this->responseMock->json = json_decode($jsonReturnRequest, true);
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('setQueryParams')->once()->andReturn($this->requestObject);
+        $this->requestObject->shouldReceive('get')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH)
+            ->once()
+            ->andReturn($this->requestObject);
+
+        $this->insuranceValidatorMock->shouldReceive('checkSubscriptionIds')
+            ->once()
+            ->with($subscriptionIdInvalid);
+
+        $this->expectException(ResponseException::class);
+        $this->insuranceMock->getSubscription($subscriptionIdInvalid);
     }
 }
