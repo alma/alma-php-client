@@ -8,6 +8,7 @@ use Alma\API\Entities\Insurance\Contract;
 use Alma\API\Entities\Insurance\File;
 use Alma\API\Entities\Insurance\Subscriber;
 use Alma\API\Entities\Insurance\Subscription;
+use Alma\API\Exceptions\InsuranceCancelPendingException;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
@@ -901,11 +902,25 @@ class InsuranceTest extends TestCase
      * @throws RequestError
      * @throws RequestException
      */
-    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowExceptionForResponseUpperThan400()
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowExceptionForResponseUpperThan400ButNo410()
     {
         $this->expectException(RequestException::class);
         $subscriptionCancelPayload = 'subscriptionId1';
+
         $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->insuranceMock->shouldReceive('request')
+            ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
+    }
+
+    public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowInsuranceCancelPendingExceptionForResponse410()
+    {
+        $this->expectException(InsuranceCancelPendingException::class);
+        $subscriptionCancelPayload = 'subscriptionId1';
+        $this->responseMock->responseCode = 410;
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->insuranceMock->shouldReceive('request')
             ->with(self::INSURANCE_SUBSCRIPTIONS_PATH . '/subscriptionId1/void')
