@@ -5,6 +5,7 @@ namespace Alma\API\Endpoints;
 use Alma\API\Entities\Insurance\Contract;
 use Alma\API\Entities\Insurance\File;
 use Alma\API\Entities\Insurance\Subscription;
+use Alma\API\Exceptions\InsuranceCancelPendingException;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
@@ -317,6 +318,7 @@ class Insurance extends Base
     /**
      * @param string $subscriptionId
      * @return void
+     * @throws InsuranceCancelPendingException
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
@@ -329,6 +331,9 @@ class Insurance extends Base
         $request = $this->request(self::INSURANCE_PATH . 'subscriptions/' . $subscriptionId . '/void');
         $response = $request->post();
 
+        if ($response->responseCode === 410) {
+            throw new InsuranceCancelPendingException('Subscription can not be cancelled at this time');
+        }
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, $request, $response);
         }
