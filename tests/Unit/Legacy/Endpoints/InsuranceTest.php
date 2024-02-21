@@ -898,6 +898,7 @@ class InsuranceTest extends TestCase
 
     /**
      * @return void
+     * @throws InsuranceCancelPendingException
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
@@ -916,6 +917,13 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->cancelSubscription($subscriptionCancelPayload);
     }
 
+    /**
+     * @return void
+     * @throws InsuranceCancelPendingException
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
     public function testCancelSubscriptionCallRequestWithSubscriptionArrayPayloadAndThrowInsuranceCancelPendingExceptionForResponse410()
     {
         $this->expectException(InsuranceCancelPendingException::class);
@@ -941,6 +949,9 @@ class InsuranceTest extends TestCase
         $this->insuranceMock->checkSubscriptionIdFormat($payload);
     }
 
+    /**
+     * @return array
+     */
     public function cancelSubscriptionErrorPayloadDataProvider()
     {
         return [

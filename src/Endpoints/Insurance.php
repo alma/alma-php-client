@@ -318,6 +318,7 @@ class Insurance extends Base
     /**
      * @param string $subscriptionId
      * @return void
+     * @throws InsuranceCancelPendingException
      * @throws ParametersException
      * @throws RequestError
      * @throws RequestException
