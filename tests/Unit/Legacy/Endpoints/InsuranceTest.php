@@ -30,7 +30,7 @@ class InsuranceTest extends TestCase
     const TEST_EMAIL = 'test@almapay.com';
     const TEST_CMSREFERENCE = '17-35';
     const TEST_BIRTHDATE = '1988-08-22';
-    const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-cart';
+    const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-carts';
     /**
      * @var ClientContext
      */
