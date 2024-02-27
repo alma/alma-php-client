@@ -183,7 +183,7 @@ class Insurance extends Base
     {
         try {
             $this->insuranceValidator->checkCmsReference($cmsReferenceArray);
-            $request = $this->request(self::INSURANCE_PATH . 'customer-cart')
+            $request = $this->request(self::INSURANCE_PATH . 'customer-carts')
                 ->setRequestBody(
                     [
                         'cms_references' => $cmsReferenceArray
