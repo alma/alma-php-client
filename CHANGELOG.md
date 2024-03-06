@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v2.0.5
+-------
+* Fix endpoint customer-carts
+
 v2.0.4
 -------
 * Fix json_decode in getSubscriptionDetails
