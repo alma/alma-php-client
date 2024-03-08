@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v2.0.6
+-------
+* Fix error in throw exception without sprintf
+
 v2.0.5
 -------
 * Fix endpoint customer-carts
