@@ -55,7 +55,12 @@ class ArrayUtils
     {
         foreach ($keys as $key) {
             if(!array_key_exists($key, $array)){
-                throw new MissingKeyException('The key "%s" is missing from the array "%s"', $key, json_encode($array));
+                throw new MissingKeyException(
+                    sprintf(
+                        'The key "%s" is missing from the array "%s"',
+                        $key,
+                        json_encode($array)
+                ));
             }
         }
     }
