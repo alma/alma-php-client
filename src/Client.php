@@ -30,13 +30,13 @@ use Alma\API\Lib\ClientOptionsValidator;
 
 class Client
 {
-    const VERSION = '2.0.6';
+    public const VERSION = '2.0.6';
 
-    const LIVE_MODE = 'live';
-    const TEST_MODE = 'test';
+    public const LIVE_MODE = 'live';
+    public const TEST_MODE = 'test';
 
-    const LIVE_API_URL = 'https://api.getalma.eu';
-    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
+    public const LIVE_API_URL = 'https://api.getalma.eu';
+    public const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
 
     protected $context;
 
@@ -110,7 +110,8 @@ class Client
         $this->initEndpoints();
     }
 
-    public function addUserAgentComponent($component, $version) {
+    public function addUserAgentComponent($component, $version)
+    {
         $this->context->addUserAgentComponent($component, $version);
     }
 
@@ -164,4 +165,3 @@ class Client
 // Keep those here for backward compatibility
 const LIVE_MODE = Client::LIVE_MODE;
 const TEST_MODE = Client::TEST_MODE;
-

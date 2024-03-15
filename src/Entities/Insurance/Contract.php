@@ -81,8 +81,7 @@ class Contract
         $uncoveredArea,
         $price,
         $files
-    )
-    {
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->protectionDays = $protectionDays;
@@ -181,7 +180,7 @@ class Contract
      */
     public function getProtectionDurationInYear()
     {
-        return (int)($this->protectionDays/365);
+        return (int)($this->protectionDays / 365);
     }
 
     /**

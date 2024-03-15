@@ -27,12 +27,12 @@ namespace Alma\API\Entities;
 
 class Refund extends Base
 {
-  /** @var int UNIX timestamp for the creation of the refund */
-  public $created;
+    /** @var int UNIX timestamp for the creation of the refund */
+    public $created;
 
-  /** @var int Refunded amount, in cents */
-  public $amount;
+    /** @var int Refunded amount, in cents */
+    public $amount;
 
-  /** @var string Reference for that refund, provided by the merchant */
-  public $merchant_reference;
+    /** @var string Reference for that refund, provided by the merchant */
+    public $merchant_reference;
 }

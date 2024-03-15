@@ -13,7 +13,6 @@ use Psr\Log\NullLogger;
  */
 class RequestErrorTest extends TestCase
 {
-
     /**
      * Return faulty options to test ClientOptionsValidator::validateOptions
      * @return array

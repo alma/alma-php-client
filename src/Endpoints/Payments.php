@@ -38,9 +38,9 @@ use Alma\API\RequestError;
 
 class Payments extends Base
 {
-    const PAYMENTS_PATH       = '/v1/payments';
-    const ELIGIBILITY_PATH    = '/v1/payments/eligibility';
-    const ELIGIBILITY_PATH_V2 = '/v2/payments/eligibility';
+    public const PAYMENTS_PATH       = '/v1/payments';
+    public const ELIGIBILITY_PATH    = '/v1/payments/eligibility';
+    public const ELIGIBILITY_PATH_V2 = '/v2/payments/eligibility';
 
     /**
      * @param array $data           Payment data to check the eligibility for – same data format as payment creation,
@@ -196,7 +196,7 @@ class Payments extends Base
      * @return bool
      * @throws RequestError
      */
-    public function flagAsPotentialFraud($id, $reason=null)
+    public function flagAsPotentialFraud($id, $reason = null)
     {
         $req = $this->request(self::PAYMENTS_PATH . "/$id/potential-fraud");
 
@@ -225,7 +225,8 @@ class Payments extends Base
      * @throws RequestError
      * @throws RequestException
      */
-    public function partialRefund($id, $amount, $merchantReference = "", $comment = "") {
+    public function partialRefund($id, $amount, $merchantReference = "", $comment = "")
+    {
         return $this->doRefund(
             Refund::create($id, $amount, $merchantReference, $comment)
         );
@@ -242,7 +243,8 @@ class Payments extends Base
      * @throws RequestError
      * @throws RequestException
      */
-    public function fullRefund($id, $merchantReference = "", $comment = "") {
+    public function fullRefund($id, $merchantReference = "", $comment = "")
+    {
         return $this->doRefund(
             Refund::create($id, null, $merchantReference, $comment)
         );
@@ -257,7 +259,8 @@ class Payments extends Base
      * @throws RequestException
      * @throws ParametersException
      */
-    private function doRefund(Refund $refundPayload) {
+    private function doRefund(Refund $refundPayload)
+    {
         $id = $refundPayload->getId();
         $req = $this->request(self::PAYMENTS_PATH . "/$id/refund");
 
@@ -285,7 +288,8 @@ class Payments extends Base
      * @throws RequestException
      * @deprecated please use `partialRefund` or `fullRefund`
      */
-    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "") {
+    public function refund($id, $totalRefund = true, $amount = null, $merchantReference = "")
+    {
         if ($totalRefund !== true) {
             return $this->partialRefund($id, $amount, $merchantReference);
         }

@@ -23,12 +23,11 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-
 namespace Alma\API\Entities;
 
 class Webhook extends Base
 {
-    const TYPE_INTEGRATION_CAPABILITIES = "integration_capabilities";
+    public const TYPE_INTEGRATION_CAPABILITIES = "integration_capabilities";
 
     /** @var string */
     public $type;

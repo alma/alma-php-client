@@ -16,7 +16,7 @@ use Alma\API\RequestError;
 
 class Insurance extends Base
 {
-    const INSURANCE_PATH = '/v1/insurance/';
+    public const INSURANCE_PATH = '/v1/insurance/';
 
     /**
      * @var InsuranceValidator
@@ -48,8 +48,7 @@ class Insurance extends Base
         $productPrice,
         $customerSessionId = null,
         $cartId = null
-    )
-    {
+    ) {
         if (is_int($cmsReference)) {
             $cmsReference = (string)$cmsReference;
         }
@@ -119,8 +118,7 @@ class Insurance extends Base
         $paymentId = null,
         $customerSessionId = null,
         $cartId = null
-    )
-    {
+    ) {
 
         if (!is_array($subscriptionArray)) {
             throw new ParametersException(

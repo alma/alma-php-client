@@ -32,5 +32,4 @@ namespace Alma\API;
  */
 class ParamsError extends \Exception
 {
-
 }

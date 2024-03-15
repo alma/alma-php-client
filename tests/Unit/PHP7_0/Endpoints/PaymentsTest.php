@@ -17,7 +17,7 @@ use Alma\API\RequestError;
  */
 class PaymentsTest extends TestCase
 {
-    const MERCHANT_REF = "merchant_ref";
+    public const MERCHANT_REF = "merchant_ref";
 
     /**
      * Ensure that the methods exists

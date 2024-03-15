@@ -28,16 +28,16 @@ namespace Alma\API\Entities;
 class Payment extends Base
 {
     /** @var string Payment is ongoing */
-    const STATE_IN_PROGRESS = 'in_progress';
+    public const STATE_IN_PROGRESS = 'in_progress';
 
     /** @var string Payment has been fully paid, either at once after being scored negatively, or after all installments
      *              have been paid for. Note that by extension, a payment that has no amount due left after partial or
      *              total refunds will be considered PAID as well.
      */
-    const STATE_PAID = 'paid';
+    public const STATE_PAID = 'paid';
 
-    const FRAUD_AMOUNT_MISMATCH = 'amount_mismatch';
-    const FRAUD_STATE_ERROR = 'state_error';
+    public const FRAUD_AMOUNT_MISMATCH = 'amount_mismatch';
+    public const FRAUD_STATE_ERROR = 'state_error';
 
     /** @var int Creation UNIX timestamp */
     public $created;

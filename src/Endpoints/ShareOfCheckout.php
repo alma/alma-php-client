@@ -6,7 +6,7 @@ use Alma\API\RequestError;
 
 class ShareOfCheckout extends Base
 {
-    const SHARE_OF_CHECKOUT_PATH = '/v1/share-of-checkout/';
+    public const SHARE_OF_CHECKOUT_PATH = '/v1/share-of-checkout/';
 
     /**
      * @param array $data

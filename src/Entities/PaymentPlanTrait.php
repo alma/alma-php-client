@@ -9,7 +9,6 @@ namespace Alma\API\Entities;
  */
 trait PaymentPlanTrait
 {
-
     /**
      * @return string
      */

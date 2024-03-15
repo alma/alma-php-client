@@ -29,8 +29,8 @@ class FeePlan extends Base implements PaymentPlanInterface
 {
     use PaymentPlanTrait;
 
-    const KIND_GENERAL = 'general';
-    const KIND_POS = 'pos';
+    public const KIND_GENERAL = 'general';
+    public const KIND_POS = 'pos';
 
     /** @var int Installments count this fee plan applies to*/
     public $installments_count;
@@ -65,7 +65,7 @@ class FeePlan extends Base implements PaymentPlanInterface
     /** @var int Percentage of fees in bps paid for by the customer (100bps = 1%) */
     public $customer_fee_variable;
 
-	/** @var int Percentage of lending rate in bps used to calculate the fee plan interest paid by the customer (100bps = 1%) */
+    /** @var int Percentage of lending rate in bps used to calculate the fee plan interest paid by the customer (100bps = 1%) */
     public $customer_lending_rate;
 
     /** @var int Fixed fees in cents paid for by the customer */

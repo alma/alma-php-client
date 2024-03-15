@@ -6,7 +6,6 @@ use Alma\API\Entities\Insurance\Contract;
 use Alma\API\Entities\Insurance\File;
 use PHPUnit\Framework\TestCase;
 
-
 class ContractTest extends TestCase
 {
     /**
@@ -223,7 +222,7 @@ class ContractTest extends TestCase
      */
     private function createNewContract($contractData)
     {
-       return new Contract(
+        return new Contract(
             $contractData['id'],
             $contractData['name'],
             $contractData['protection_days'],

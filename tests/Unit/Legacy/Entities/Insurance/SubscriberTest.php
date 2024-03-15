@@ -46,7 +46,7 @@ class SubscriberTest extends TestCase
     {
         return [
             'email' => "mathis.dupuy@almapay.com",
-            'phone_number'=> '+33622484646',
+            'phone_number' => '+33622484646',
             'last_name' => 'sub1',
             'first_name' => 'sub1',
             'birthdate' => null,

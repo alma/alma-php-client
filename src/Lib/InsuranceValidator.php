@@ -40,7 +40,7 @@ class InsuranceValidator
         if(!preg_match($validationProductReferenceIdRegex, $productPrice)) {
             throw new ParametersException(sprintf(
                 'The product price has a wrong format : "%s"',
-                    $productPrice
+                $productPrice
             ));
         }
     }

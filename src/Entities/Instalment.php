@@ -27,11 +27,11 @@ namespace Alma\API\Entities;
 
 class Instalment extends Base
 {
-    const STATE_PAID = 'paid';
-    const STATE_PENDING = "pending";
-    const STATE_INCIDENT = "incident";
-    const STATE_CLAIMED = "claimed";
-    const STATE_COVERED = "covered";
+    public const STATE_PAID = 'paid';
+    public const STATE_PENDING = "pending";
+    public const STATE_INCIDENT = "incident";
+    public const STATE_CLAIMED = "claimed";
+    public const STATE_COVERED = "covered";
 
     /** @var string */
     public $state;
@@ -48,9 +48,9 @@ class Instalment extends Base
     /** @var int */
     public $customer_fee;
 
-	/** @var int */
+    /** @var int */
     public $customer_interest;
 
-	/** @var int */
+    /** @var int */
     public $total_amount;
 }

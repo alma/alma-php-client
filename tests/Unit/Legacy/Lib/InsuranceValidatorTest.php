@@ -8,8 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class InsuranceValidatorTest extends TestCase
 {
-
-
     /**
      * @var InsuranceValidator
      */
@@ -39,7 +37,7 @@ class InsuranceValidatorTest extends TestCase
     {
         $this->assertNull($this->insuranceValidator->checkCmsReference(['123', '456']));
     }
-    
+
     /**
      * @return array
      */
