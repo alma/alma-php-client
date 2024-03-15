@@ -77,8 +77,7 @@ class Subscriber
         $city,
         $country,
         $birthDate = null
-    )
-    {
+    ) {
         $this->email = $email;
         $this->phoneNumber = $phoneNumber;
         $this->lastName = $lastName;

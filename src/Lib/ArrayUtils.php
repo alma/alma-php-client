@@ -38,7 +38,8 @@ class ArrayUtils
      * @param $array
      * @return bool
      */
-    public static function isAssocArray($array) {
+    public static function isAssocArray($array)
+    {
         if (!is_array($array)) {
             return false;
         }
@@ -54,13 +55,14 @@ class ArrayUtils
     public function checkMandatoryKeys($keys, $array)
     {
         foreach ($keys as $key) {
-            if(!array_key_exists($key, $array)){
+            if(!array_key_exists($key, $array)) {
                 throw new MissingKeyException(
                     sprintf(
                         'The key "%s" is missing from the array "%s"',
                         $key,
                         json_encode($array)
-                ));
+                    )
+                );
             }
         }
     }

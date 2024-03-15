@@ -46,7 +46,7 @@ class RequestError extends AlmaException
             && isset($this->response->json['errors'])
             && isset($this->response->json['errors'][0])
             && isset($this->response->json['errors'][0]['message'])
-            ) {
+        ) {
             return $this->response->json['errors'][0]['message'];
         }
 

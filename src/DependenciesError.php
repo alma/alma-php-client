@@ -31,5 +31,4 @@ namespace Alma\API;
  */
 class DependenciesError extends \Exception
 {
-
 }

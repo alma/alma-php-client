@@ -31,8 +31,8 @@ use Alma\API\RequestError;
 
 class Merchants extends Base
 {
-    const MERCHANTS_PATH = '/v1/merchants';
-    const ME_PATH = '/v1/me';
+    public const MERCHANTS_PATH = '/v1/merchants';
+    public const ME_PATH = '/v1/me';
 
     /**
      * @return Merchant

@@ -30,11 +30,11 @@ class Subscription
      */
     private $callbackUrl;
 
-    const STATE_STARTED = 'started';
-    const STATE_FAILED = 'failed';
-    const STATE_CANCELLED = 'canceled';
-    const STATE_PENDING = 'pending';
-    const STATE_PENDING_CANCELLATION = 'pending_cancellation';
+    public const STATE_STARTED = 'started';
+    public const STATE_FAILED = 'failed';
+    public const STATE_CANCELLED = 'canceled';
+    public const STATE_PENDING = 'pending';
+    public const STATE_PENDING_CANCELLATION = 'pending_cancellation';
 
     /**
      * @param string $contractId
@@ -51,8 +51,7 @@ class Subscription
         $productPrice,
         $subscriber,
         $callbackUrl
-    )
-    {
+    ) {
         $this->contractId = $contractId;
         $this->amount = $amount;
         $this->cmsReference = $cmsReference;

@@ -24,13 +24,13 @@ use Psr\Log\LoggerInterface;
 
 class InsuranceTest extends TestCase
 {
-    const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
-    const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
-    const TEST_PHONENUMBER = '+33601010101';
-    const TEST_EMAIL = 'test@almapay.com';
-    const TEST_CMSREFERENCE = '17-35';
-    const TEST_BIRTHDATE = '1988-08-22';
-    const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-carts';
+    public const INSURANCE_SUBSCRIPTIONS_PATH = '/v1/insurance/subscriptions';
+    public const INSURANCE_CONTRACTS_PATH = '/v1/insurance/insurance-contracts/';
+    public const TEST_PHONENUMBER = '+33601010101';
+    public const TEST_EMAIL = 'test@almapay.com';
+    public const TEST_CMSREFERENCE = '17-35';
+    public const TEST_BIRTHDATE = '1988-08-22';
+    public const INSURANCE_CUSTOMER_CART_PATH = '/v1/insurance/customer-carts';
     /**
      * @var ClientContext
      */
