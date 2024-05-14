@@ -31,13 +31,13 @@ class ArrayUtilsTest extends TestCase
 
     public function testSlugifyEmptyQuery()
     {
-        $this->expectException(AlmaException::class);
+        $this->expectException(ParametersException::class);
         $this->arrayUtils->slugify('');
     }
 
     public function testSlugifyWrongLabel()
     {
-        $this->expectException(AlmaException::class);
+        $this->expectException(ParametersException::class);
         $this->arrayUtils->slugify('\\ @ ---- ');
     }
 }

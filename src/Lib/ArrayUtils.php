@@ -73,6 +73,7 @@ class ArrayUtils
      * @param string $textToSlugify
      *
      * @throws AlmaException
+     * @throws ParametersException
      *
      * @return String
      */
@@ -104,7 +105,7 @@ class ArrayUtils
             empty($text)
             || '_' === $text
         ) {
-            throw new AlmaException(sprintf('The slug is empty, label "%s"', $textToSlugify));
+            throw new ParametersException(sprintf('The slug is empty, label "%s"', $textToSlugify));
         }
 
         return $text;
