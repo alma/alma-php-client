@@ -28,6 +28,7 @@ namespace Alma\API\Lib;
 
 use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\ParametersException;
 
 /**
  * Class ArrayUtils
@@ -76,6 +77,10 @@ class ArrayUtils
      * @return String
      */
     public function slugify($textToSlugify){
+        if(!is_string($textToSlugify)) {
+            throw new ParametersException('Label must be a string');
+        }
+
         // trim
         $text = trim($textToSlugify, '-');
 

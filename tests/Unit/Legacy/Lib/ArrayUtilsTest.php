@@ -3,6 +3,7 @@
 namespace Alma\API\Tests\Unit\Legacy\Lib;
 
 use Alma\API\Exceptions\AlmaException;
+use Alma\API\Exceptions\ParametersException;
 use Alma\API\Lib\ArrayUtils;
 use PHPUnit\Framework\TestCase;
 
@@ -11,6 +12,12 @@ class ArrayUtilsTest extends TestCase
     public function setUp()
     {
         $this->arrayUtils = new ArrayUtils();
+    }
+
+    public function testSlugifyNotString()
+    {
+        $this->expectException(ParametersException::class);
+        $this->arrayUtils->slugify(array());
     }
 
     public function testSlugifyOk()
