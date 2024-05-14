@@ -72,7 +72,6 @@ class ArrayUtils
      *
      * @param string $textToSlugify
      *
-     * @throws AlmaException
      * @throws ParametersException
      *
      * @return String
