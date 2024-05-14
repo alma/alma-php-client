@@ -26,6 +26,7 @@
 
 namespace Alma\API\Lib;
 
+use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\MissingKeyException;
 
 /**
@@ -64,4 +65,44 @@ class ArrayUtils
             }
         }
     }
+
+    /**
+     * Return the slug of a string to be used in a URL.
+     *
+     * @param string $textToSlugify
+     *
+     * @throws AlmaException
+     *
+     * @return String
+     */
+    public function slugify($textToSlugify){
+        // trim
+        $text = trim($textToSlugify, '-');
+
+        // replace non letter or digits by -
+        $text = preg_replace('~[^\pL\d]+~u', '_', $text);
+
+        // transliterate
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+        // remove unwanted characters
+        $text = preg_replace('~[^-\w]+~', '', $text);
+
+
+        // remove duplicated - symbols
+        $text = preg_replace('~-+~', '-', $text);
+
+        // lowercase
+        $text = strtolower($text);
+
+        if (
+            empty($text)
+            || '_' === $text
+        ) {
+            throw new AlmaException(sprintf('The slug is empty, label "%s"', $textToSlugify));
+        }
+
+        return $text;
+    }
+
 }

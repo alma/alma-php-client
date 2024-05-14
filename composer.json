@@ -8,7 +8,8 @@
     "psr/log": "^1 || ^2 || ^3",
     "ext-curl": "*",
     "ext-json": "*",
-    "ext-simplexml": "*"
+    "ext-simplexml": "*",
+    "ext-iconv": "*"
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",

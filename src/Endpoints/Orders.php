@@ -26,12 +26,30 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Entities\Order;
+use Alma\API\Exceptions\AlmaException;
+use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\ParametersException;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\ArrayUtils;
 use Alma\API\RequestError;
 use Alma\API\PaginatedResults;
 
 class Orders extends Base
 {
+    /**
+     * @var ArrayUtils
+     */
+    public $arrayUtils;
+
     const ORDERS_PATH = '/v1/orders';
+    const ORDERS_PATH_V2 = '/2/orders';
+
+    public function __construct($client_context)
+    {
+        parent::__construct($client_context);
+
+        $this->arrayUtils = new ArrayUtils();
+    }
 
     /**
      * @param string $orderId
@@ -89,5 +107,61 @@ class Orders extends Base
     {
         $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->get();
         return new Order($response->json);
+    }
+
+    /**
+     * @param string $orderExternalId
+     * @param array $orderData
+     * @return void
+     * @throws ParametersException
+     * @throws RequestException
+     */
+    public function sendStatus($orderExternalId = null, $orderData = array())
+    {
+        $this->validateStatusData($orderExternalId, $orderData);
+
+        try {
+            $orderData['label'] = $this->arrayUtils->slugify($orderData['label']);
+
+            $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderExternalId}/status")->setRequestBody($orderData)->post();
+        }catch (AlmaException $e) {
+            $this->logger->error('Error sending status');
+            throw new RequestException('Error sending status', $e);
+        }
+
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
+    }
+
+    /**
+     * @param string $orderExternalId
+     * @param array $orderData
+     * @return void
+     * @throws ParametersException
+     */
+    public function validateStatusData($orderExternalId = null, $orderData = array())
+    {
+        if(!$orderExternalId) {
+            throw new ParametersException('Missing the required parameter $orderExternalId when calling orders.sendStatus', '404');
+        }
+
+        if(count($orderData) == 0) {
+            throw new ParametersException('Missing in the required parameters (label, is_shipped) when calling orders.sendStatus', '204');
+        }
+
+        try {
+            $this->arrayUtils->checkMandatoryKeys(['label', 'is_shipped'], $orderData);
+        } catch (MissingKeyException $e ) {
+            throw new ParametersException('Error in the required parameters (label, is_shipped) when calling orders.sendStatus', '404', $e);
+        }
+
+        if(!is_bool($orderData['is_shipped'])) {
+            throw new ParametersException('Parameter "is_shipped" must be a boolean', '404');
+        }
+
+        if(!$orderData['label']) {
+            throw new ParametersException('Missing the required parameter "label" when calling orders.sendStatus', '404');
+        }
     }
 }

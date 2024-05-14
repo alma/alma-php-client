@@ -4,6 +4,7 @@ namespace Alma\API\Tests\Unit\Legacy\Endpoints;
 
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
+use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -514,8 +515,4 @@ class PaymentsTest extends TestCase
         $payments->fullRefund($id);
     }
 
-    public function tearDown()
-    {
-        Mockery::close();
-    }
 }
