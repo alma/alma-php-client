@@ -43,7 +43,6 @@ class OrdersTest extends TestCase
     public function testValidateStatusDataNoOrderData()
     {
         $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('204');
         $this->expectExceptionMessage('Missing in the required parameters (label, is_shipped) when calling orders.sendStatus');
         $this->orderEndpoint->validateStatusData();
     }
@@ -56,7 +55,6 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Error in the required parameters (label, is_shipped) when calling orders.sendStatus');
         $orderEndpoint->validateStatusData(array('label'));
     }
@@ -69,7 +67,6 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Parameter "is_shipped" must be a boolean');
 
         $orderEndpoint->validateStatusData(array(
@@ -86,7 +83,6 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Missing the required parameter "label" when calling orders.sendStatus');
 
         $orderEndpoint->validateStatusData(array(

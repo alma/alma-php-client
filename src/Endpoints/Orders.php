@@ -145,21 +145,21 @@ class Orders extends Base
     public function validateStatusData($orderData = array())
     {
         if(count($orderData) == 0) {
-            throw new ParametersException('Missing in the required parameters (label, is_shipped) when calling orders.sendStatus', '204');
+            throw new ParametersException('Missing in the required parameters (label, is_shipped) when calling orders.sendStatus');
         }
 
         try {
             $this->arrayUtils->checkMandatoryKeys(['label', 'is_shipped'], $orderData);
         } catch (MissingKeyException $e ) {
-            throw new ParametersException('Error in the required parameters (label, is_shipped) when calling orders.sendStatus', '400', $e);
+            throw new ParametersException('Error in the required parameters (label, is_shipped) when calling orders.sendStatus',null,  $e);
         }
 
         if(!is_bool($orderData['is_shipped'])) {
-            throw new ParametersException('Parameter "is_shipped" must be a boolean', '400');
+            throw new ParametersException('Parameter "is_shipped" must be a boolean');
         }
 
         if(!$orderData['label']) {
-            throw new ParametersException('Missing the required parameter "label" when calling orders.sendStatus', '400');
+            throw new ParametersException('Missing the required parameter "label" when calling orders.sendStatus');
         }
     }
 }
