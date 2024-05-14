@@ -121,10 +121,8 @@ class Orders extends Base
         $this->validateStatusData($orderData);
 
         try {
-            $orderData['label'] = $this->arrayUtils->slugify($orderData['label']);
-
             $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderExternalId}/status")->setRequestBody(array(
-                'label' => $orderData['label'],
+                'label' =>  $this->arrayUtils->slugify($orderData['label']),
                 'is_shipped' => $orderData['is_shipped'],
             ))->post();
         }catch (AlmaException $e) {
