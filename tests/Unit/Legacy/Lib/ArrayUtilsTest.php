@@ -31,6 +31,6 @@ class ArrayUtilsTest extends TestCase
     public function testSlugifyWrongLabel()
     {
         $this->expectException(AlmaException::class);
-        $result = $this->arrayUtils->slugify('\\ @ ---- ');
+        $this->arrayUtils->slugify('\\ @ ---- ');
     }
 }

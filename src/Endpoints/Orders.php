@@ -116,14 +116,17 @@ class Orders extends Base
      * @throws ParametersException
      * @throws RequestException
      */
-    public function sendStatus($orderExternalId = null, $orderData = array())
+    public function sendStatus($orderExternalId, $orderData = array())
     {
-        $this->validateStatusData($orderExternalId, $orderData);
+        $this->validateStatusData($orderData);
 
         try {
             $orderData['label'] = $this->arrayUtils->slugify($orderData['label']);
 
-            $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderExternalId}/status")->setRequestBody($orderData)->post();
+            $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderExternalId}/status")->setRequestBody(array(
+                'label' => $orderData['label'],
+                'is_shipped' => $orderData['is_shipped'],
+            ))->post();
         }catch (AlmaException $e) {
             $this->logger->error('Error sending status');
             throw new RequestException('Error sending status', $e);
@@ -135,17 +138,12 @@ class Orders extends Base
     }
 
     /**
-     * @param string $orderExternalId
      * @param array $orderData
      * @return void
      * @throws ParametersException
      */
-    public function validateStatusData($orderExternalId = null, $orderData = array())
+    public function validateStatusData($orderData = array())
     {
-        if(!$orderExternalId) {
-            throw new ParametersException('Missing the required parameter $orderExternalId when calling orders.sendStatus', '404');
-        }
-
         if(count($orderData) == 0) {
             throw new ParametersException('Missing in the required parameters (label, is_shipped) when calling orders.sendStatus', '204');
         }
@@ -153,15 +151,15 @@ class Orders extends Base
         try {
             $this->arrayUtils->checkMandatoryKeys(['label', 'is_shipped'], $orderData);
         } catch (MissingKeyException $e ) {
-            throw new ParametersException('Error in the required parameters (label, is_shipped) when calling orders.sendStatus', '404', $e);
+            throw new ParametersException('Error in the required parameters (label, is_shipped) when calling orders.sendStatus', '400', $e);
         }
 
         if(!is_bool($orderData['is_shipped'])) {
-            throw new ParametersException('Parameter "is_shipped" must be a boolean', '404');
+            throw new ParametersException('Parameter "is_shipped" must be a boolean', '400');
         }
 
         if(!$orderData['label']) {
-            throw new ParametersException('Missing the required parameter "label" when calling orders.sendStatus', '404');
+            throw new ParametersException('Missing the required parameter "label" when calling orders.sendStatus', '400');
         }
     }
 }

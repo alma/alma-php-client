@@ -40,21 +40,12 @@ class OrdersTest extends TestCase
         $this->orderEndpoint->setClientContext($this->clientContext);
 
     }
-    public function testValidateStatusDataNoOrderExternalId()
-    {
-        $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('404');
-        $this->expectExceptionMessage('Missing the required parameter $orderExternalId when calling orders.sendStatus');
-        $this->orderEndpoint->validateStatusData();
-
-    }
-
     public function testValidateStatusDataNoOrderData()
     {
         $this->expectException(ParametersException::class);
         $this->expectExceptionCode('204');
         $this->expectExceptionMessage('Missing in the required parameters (label, is_shipped) when calling orders.sendStatus');
-        $this->orderEndpoint->validateStatusData($this->externalId  );
+        $this->orderEndpoint->validateStatusData();
     }
 
     public function testValidateStatusDataMissingSomeOrderData()
@@ -65,9 +56,9 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('404');
+        $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Error in the required parameters (label, is_shipped) when calling orders.sendStatus');
-        $orderEndpoint->validateStatusData($this->externalId  , array('label'));
+        $orderEndpoint->validateStatusData(array('label'));
     }
 
     public function testValidateStatusDataIsShippedNotBool()
@@ -78,10 +69,10 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('404');
+        $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Parameter "is_shipped" must be a boolean');
 
-        $orderEndpoint->validateStatusData($this->externalId  , array(
+        $orderEndpoint->validateStatusData(array(
             'label' => $this->label,
             'is_shipped' => 'oui',
         ));
@@ -95,10 +86,10 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionCode('404');
+        $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Missing the required parameter "label" when calling orders.sendStatus');
 
-        $orderEndpoint->validateStatusData($this->externalId  , array(
+        $orderEndpoint->validateStatusData(array(
             'label' => '',
             'is_shipped' => true,
         ));
