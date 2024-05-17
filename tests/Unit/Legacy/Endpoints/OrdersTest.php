@@ -35,7 +35,7 @@ class OrdersTest extends TestCase
 
         $this->orderEndpoint->arrayUtils = $this->arrayUtils;
         $this->externalId  = 'Mon external Id';
-        $this->label = 'Mon Label - 1';
+        $this->status = 'Mon Status - 1';
         $this->clientContext->logger = $loggerMock;
         $this->orderEndpoint->setClientContext($this->clientContext);
 
@@ -43,7 +43,7 @@ class OrdersTest extends TestCase
     public function testValidateStatusDataNoOrderData()
     {
         $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('Missing in the required parameters (label, is_shipped) when calling orders.sendStatus');
+        $this->expectExceptionMessage('Missing in the required parameters (status, is_shipped) when calling orders.sendStatus');
         $this->orderEndpoint->validateStatusData();
     }
 
@@ -55,8 +55,8 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('Error in the required parameters (label, is_shipped) when calling orders.sendStatus');
-        $orderEndpoint->validateStatusData(array('label'));
+        $this->expectExceptionMessage('Error in the required parameters (status, is_shipped) when calling orders.sendStatus');
+        $orderEndpoint->validateStatusData(array('status'));
     }
 
     public function testValidateStatusDataIsShippedNotBool()
@@ -70,12 +70,12 @@ class OrdersTest extends TestCase
         $this->expectExceptionMessage('Parameter "is_shipped" must be a boolean');
 
         $orderEndpoint->validateStatusData(array(
-            'label' => $this->label,
+            'status' => $this->status,
             'is_shipped' => 'oui',
         ));
     }
 
-    public function testValidateStatusDataLabelIsEmpty()
+    public function testValidateStatusDataStatusIsEmpty()
     {
         $orderEndpoint = \Mockery::mock(Orders::class)->makePartial();
         $arrayUtils = \Mockery::mock(ArrayUtils::class)->makePartial();
@@ -83,10 +83,10 @@ class OrdersTest extends TestCase
         $orderEndpoint->arrayUtils = $arrayUtils;
 
         $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('Missing the required parameter "label" when calling orders.sendStatus');
+        $this->expectExceptionMessage('Missing the required parameter "status" when calling orders.sendStatus');
 
         $orderEndpoint->validateStatusData(array(
-            'label' => '',
+            'status' => '',
             'is_shipped' => true,
         ));
     }
@@ -105,7 +105,7 @@ class OrdersTest extends TestCase
             ->andReturn($this->requestObject);
 
         $this->orderEndpoint->sendStatus($this->externalId  , array(
-            'label' => $this->label,
+            'status' => $this->status,
             'is_shipped' => true,
         ));
     }
@@ -125,7 +125,7 @@ class OrdersTest extends TestCase
 
         $this->expectException(RequestException::class);
         $this->orderEndpoint->sendStatus($this->externalId  , array(
-            'label' => $this->label,
+            'status' => $this->status,
             'is_shipped' => true,
         ));
 
@@ -145,7 +145,7 @@ class OrdersTest extends TestCase
 
         $this->expectException(RequestException::class);
         $this->orderEndpoint->sendStatus($this->externalId  , array(
-            'label' => $this->label,
+            'status' => $this->status,
             'is_shipped' => true,
         ));
     }

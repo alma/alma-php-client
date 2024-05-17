@@ -78,7 +78,7 @@ class ArrayUtils
      */
     public function slugify($textToSlugify){
         if(!is_string($textToSlugify)) {
-            throw new ParametersException('Label must be a string');
+            throw new ParametersException('Status must be a string');
         }
 
         // trim
@@ -104,7 +104,7 @@ class ArrayUtils
             empty($text)
             || '_' === $text
         ) {
-            throw new ParametersException(sprintf('The slug is empty, label "%s"', $textToSlugify));
+            throw new ParametersException(sprintf('The slug is empty, status "%s"', $textToSlugify));
         }
 
         return $text;

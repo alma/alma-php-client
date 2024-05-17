@@ -22,10 +22,10 @@ class ArrayUtilsTest extends TestCase
 
     public function testSlugifyOk()
     {
-        $this->assertEquals('mon_label_1', $this->arrayUtils->slugify('Mon label 1'));
-        $this->assertEquals('mon_label_1', $this->arrayUtils->slugify('Mon label - 1'));
-        $this->assertEquals('mon_label_1', $this->arrayUtils->slugify('Mon label @ 1'));
-        $this->assertEquals('mon_label_1', $this->arrayUtils->slugify('Mon label \ -- 1'));
+        $this->assertEquals('mon_status_1', $this->arrayUtils->slugify('Mon status 1'));
+        $this->assertEquals('mon_status_1', $this->arrayUtils->slugify('Mon status - 1'));
+        $this->assertEquals('mon_status_1', $this->arrayUtils->slugify('Mon status @ 1'));
+        $this->assertEquals('mon_status_1', $this->arrayUtils->slugify('Mon status \ -- 1'));
         $this->assertEquals('_test', $this->arrayUtils->slugify('@ test'));
     }
 
@@ -35,7 +35,7 @@ class ArrayUtilsTest extends TestCase
         $this->arrayUtils->slugify('');
     }
 
-    public function testSlugifyWrongLabel()
+    public function testSlugifyWrongStatus()
     {
         $this->expectException(ParametersException::class);
         $this->arrayUtils->slugify('\\ @ ---- ');
