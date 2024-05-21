@@ -42,7 +42,7 @@ class Orders extends Base
     public $arrayUtils;
 
     const ORDERS_PATH = '/v1/orders';
-    const ORDERS_PATH_V2 = '/2/orders';
+    const ORDERS_PATH_V2 = '/v2/orders';
 
     public function __construct($client_context)
     {
