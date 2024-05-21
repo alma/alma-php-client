@@ -26,12 +26,30 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Entities\Order;
+use Alma\API\Exceptions\AlmaException;
+use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\ParametersException;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\ArrayUtils;
 use Alma\API\RequestError;
 use Alma\API\PaginatedResults;
 
 class Orders extends Base
 {
+    /**
+     * @var ArrayUtils
+     */
+    public $arrayUtils;
+
     const ORDERS_PATH = '/v1/orders';
+    const ORDERS_PATH_V2 = '/v2/orders';
+
+    public function __construct($client_context)
+    {
+        parent::__construct($client_context);
+
+        $this->arrayUtils = new ArrayUtils();
+    }
 
     /**
      * @param string $orderId
@@ -89,5 +107,58 @@ class Orders extends Base
     {
         $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->get();
         return new Order($response->json);
+    }
+
+    /**
+     * @param string $orderExternalId
+     * @param array $orderData
+     * @return void
+     * @throws ParametersException
+     * @throws RequestException
+     */
+    public function sendStatus($orderExternalId, $orderData = array())
+    {
+        $this->validateStatusData($orderData);
+        $label = $this->arrayUtils->slugify($orderData['status']);
+
+        try {
+            $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderExternalId}/status")->setRequestBody(array(
+                'status' =>  $label,
+                'is_shipped' => $orderData['is_shipped'],
+            ))->post();
+        }catch (AlmaException $e) {
+            $this->logger->error('Error sending status');
+            throw new RequestException('Error sending status', $e);
+        }
+
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
+    }
+
+    /**
+     * @param array $orderData
+     * @return void
+     * @throws ParametersException
+     */
+    public function validateStatusData($orderData = array())
+    {
+        if(count($orderData) == 0) {
+            throw new ParametersException('Missing in the required parameters (status, is_shipped) when calling orders.sendStatus');
+        }
+
+        try {
+            $this->arrayUtils->checkMandatoryKeys(['status', 'is_shipped'], $orderData);
+        } catch (MissingKeyException $e ) {
+            throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus',null,  $e);
+        }
+
+        if(!is_bool($orderData['is_shipped'])) {
+            throw new ParametersException('Parameter "is_shipped" must be a boolean');
+        }
+
+        if(!$orderData['status']) {
+            throw new ParametersException('Missing the required parameter "status" when calling orders.sendStatus');
+        }
     }
 }

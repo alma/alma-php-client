@@ -26,7 +26,9 @@
 
 namespace Alma\API\Lib;
 
+use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\ParametersException;
 
 /**
  * Class ArrayUtils
@@ -64,4 +66,48 @@ class ArrayUtils
             }
         }
     }
+
+    /**
+     * Return the slug of a string to be used in a URL.
+     *
+     * @param string $textToSlugify
+     *
+     * @throws ParametersException
+     *
+     * @return String
+     */
+    public function slugify($textToSlugify){
+        if(!is_string($textToSlugify)) {
+            throw new ParametersException('Status must be a string');
+        }
+
+        // trim
+        $text = trim($textToSlugify, '-');
+
+        // replace non letter or digits by -
+        $text = preg_replace('~[^\pL\d]+~u', '_', $text);
+
+        // transliterate
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+        // remove unwanted characters
+        $text = preg_replace('~[^-\w]+~', '', $text);
+
+
+        // remove duplicated - symbols
+        $text = preg_replace('~-+~', '-', $text);
+
+        // lowercase
+        $text = strtolower($text);
+
+        if (
+            empty($text)
+            || '_' === $text
+        ) {
+            throw new ParametersException(sprintf('The slug is empty, status "%s"', $textToSlugify));
+        }
+
+        return $text;
+    }
+
 }

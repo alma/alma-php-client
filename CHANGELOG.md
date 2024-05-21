@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v2.0.7
+-------
+* Add endpoint Order State
+
+
 v2.0.6
 -------
 * Fix error in throw exception without sprintf
