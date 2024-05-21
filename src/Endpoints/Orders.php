@@ -31,7 +31,7 @@ use Alma\API\PaginatedResults;
 
 class Orders extends Base
 {
-    const ORDERS_PATH = '/v1/orders';
+    public const ORDERS_PATH = '/v1/orders';
 
     /**
      * @param string $orderId
@@ -73,7 +73,7 @@ class Orders extends Base
         $response = $this->request(self::ORDERS_PATH)->setQueryParams($args)->get();
         return new PaginatedResults(
             $response,
-            function($startingAfter) use ($limit, $filters) {
+            function ($startingAfter) use ($limit, $filters) {
                 return $this->fetchAll($limit, $startingAfter, $filters);
             }
         );

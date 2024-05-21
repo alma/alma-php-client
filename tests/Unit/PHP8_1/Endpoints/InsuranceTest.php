@@ -13,132 +13,132 @@ use PHPUnit\Framework\TestCase;
 
 class InsuranceTest extends TestCase
 {
-	/**
-	 * @var ClientContext
-	 */
-	private $clientContext;
+    /**
+     * @var ClientContext
+     */
+    private $clientContext;
 
-	protected function setUp(): void
-	{
-		$this->clientContext = $this->createMock(ClientContext::class);
+    protected function setUp(): void
+    {
+        $this->clientContext = $this->createMock(ClientContext::class);
 
-	}
+    }
 
-	public function testInsuranceEligibilityMethodExist(): void
-	{
-		$insurance = new Insurance($this->clientContext);
-		$this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
-	}
+    public function testInsuranceEligibilityMethodExist(): void
+    {
+        $insurance = new Insurance($this->clientContext);
+        $this->assertTrue(method_exists($insurance, 'getInsuranceContract'));
+    }
 
-	/**
-	 * @dataProvider requestDataProviderRightParams
-	 * @return void
-	 * @throws ParamsException
-	 */
-	public function testGetRequestIsCalled($productId): void
-	{
+    /**
+     * @dataProvider requestDataProviderRightParams
+     * @return void
+     * @throws ParamsException
+     */
+    public function testGetRequestIsCalled($productId): void
+    {
 
-		$responseMock = Mockery::mock(Response::class);
-		$responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $responseMock = Mockery::mock(Response::class);
+        $responseMock->shouldReceive('isError')->once()->andReturn(false);
 
-		$requestObject = Mockery::mock(Request::class);
-		$requestObject->shouldReceive('get')->once()->andReturn($responseMock);
+        $requestObject = Mockery::mock(Request::class);
+        $requestObject->shouldReceive('get')->once()->andReturn($responseMock);
 
-		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-		$insurance->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts?cms_product_id='.$productId)
-			->once()
-			->andReturn($requestObject)
-			;
-		$insurance->setClientContext($this->clientContext);
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with('/v1/insurance/insurance-contracts?cms_product_id='.$productId)
+            ->once()
+            ->andReturn($requestObject)
+        ;
+        $insurance->setClientContext($this->clientContext);
 
-		$insurance->getInsuranceContract($productId);
-		Mockery::close();
-	}
+        $insurance->getInsuranceContract($productId);
+        Mockery::close();
+    }
 
 
-	/**
-	 * @dataProvider requestDataProvider
-	 * @param $productId
-	 * @return void
-	 */
-	public function  testGetRequestWithWrongParams($productId):void
-	{
-		$requestObject = Mockery::mock(Request::class);
-		$requestObject->shouldNotReceive('get');
+    /**
+     * @dataProvider requestDataProvider
+     * @param $productId
+     * @return void
+     */
+    public function testGetRequestWithWrongParams($productId): void
+    {
+        $requestObject = Mockery::mock(Request::class);
+        $requestObject->shouldNotReceive('get');
 
-		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-		$insurance->shouldNotReceive('request');
-		$insurance->setClientContext($this->clientContext);
-		$this->expectException(ParamsException::class);
-		$insurance->getInsuranceContract($productId);
-		Mockery::close();
-	}
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldNotReceive('request');
+        $insurance->setClientContext($this->clientContext);
+        $this->expectException(ParamsException::class);
+        $insurance->getInsuranceContract($productId);
+        Mockery::close();
+    }
 
-	public function testApiResponseErrorThrowRequestException()
-	{
-		$productId = '18-24';
-		$responseMock = Mockery::mock(Response::class);
-		$responseMock->shouldReceive('isError')->once()->andReturn(true);
+    public function testApiResponseErrorThrowRequestException()
+    {
+        $productId = '18-24';
+        $responseMock = Mockery::mock(Response::class);
+        $responseMock->shouldReceive('isError')->once()->andReturn(true);
 
-		$requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
-		$requestObject->shouldReceive('get')->once()->andReturn($responseMock);
+        $requestObject = Mockery::mock(Request::class)->shouldAllowMockingProtectedMethods();
+        $requestObject->shouldReceive('get')->once()->andReturn($responseMock);
 
-		$insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
-		$insurance->shouldReceive('request')
-			->with('/v1/insurance/insurance-contracts?cms_product_id='.$productId)
-			->once()
-			->andReturn($requestObject)
-		;
+        $insurance = Mockery::mock(Insurance::class)->shouldAllowMockingProtectedMethods()->makePartial();
+        $insurance->shouldReceive('request')
+            ->with('/v1/insurance/insurance-contracts?cms_product_id='.$productId)
+            ->once()
+            ->andReturn($requestObject)
+        ;
 
-		$insurance->setClientContext($this->clientContext);
-		$this->expectException(RequestError::class);
-		$insurance->getInsuranceContract($productId);
-		Mockery::close();
-	}
+        $insurance->setClientContext($this->clientContext);
+        $this->expectException(RequestError::class);
+        $insurance->getInsuranceContract($productId);
+        Mockery::close();
+    }
 
-	public static function requestDataProvider(): array
-	{
-		return [
-			'Throw exception with null' => [
-				'product_id' => null
-			],
-			'Throw exception with array' => [
-				'product_id' => ['10','13']
-			],
-			'Throw exception with class' => [
-				'product_id' => new \stdClass()
-			],
-			'Throw exception with bool' => [
-				'product_id' => true
-			],
-			'Throw exception with string and special characters' => [
-				'product_id' => 'Une Str|ng [Avec] des *'
-			],
-			'Throw exception with string and spacial characters 2' => [
-				'product_id' => 'alma-%product'
-			],
-			'Throw exception with empty string' => [
-				'product_id' => ''
-			]
-		];
-	}
-	public static function requestDataProviderRightParams(): array
-	{
-		return [
-			'call get with a string' => [
-				'product_id' => '18'
-			],
-			'call get with an integer' => [
-				'product_id' => 18
-			],
-			'Call get with a string and space' => [
-				'product_id' => 'Alma insurance2 product'
-			],
-			'Call get with a string and - ' => [
-				'product_id' => 'Alma01-insurance-product'
-			]
-		];
-	}
+    public static function requestDataProvider(): array
+    {
+        return [
+            'Throw exception with null' => [
+                'product_id' => null
+            ],
+            'Throw exception with array' => [
+                'product_id' => ['10','13']
+            ],
+            'Throw exception with class' => [
+                'product_id' => new \stdClass()
+            ],
+            'Throw exception with bool' => [
+                'product_id' => true
+            ],
+            'Throw exception with string and special characters' => [
+                'product_id' => 'Une Str|ng [Avec] des *'
+            ],
+            'Throw exception with string and spacial characters 2' => [
+                'product_id' => 'alma-%product'
+            ],
+            'Throw exception with empty string' => [
+                'product_id' => ''
+            ]
+        ];
+    }
+    public static function requestDataProviderRightParams(): array
+    {
+        return [
+            'call get with a string' => [
+                'product_id' => '18'
+            ],
+            'call get with an integer' => [
+                'product_id' => 18
+            ],
+            'Call get with a string and space' => [
+                'product_id' => 'Alma insurance2 product'
+            ],
+            'Call get with a string and - ' => [
+                'product_id' => 'Alma01-insurance-product'
+            ]
+        ];
+    }
 
 }

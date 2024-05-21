@@ -75,63 +75,72 @@ class Refund
     /**
      * @param string
      */
-    public function __construct($id) {
+    public function __construct($id)
+    {
         $this->setId($id);
     }
 
     /**
      * @return string
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param string $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
     /**
      * @return int
      */
-    public function getAmount() {
+    public function getAmount()
+    {
         return $this->amount;
     }
 
     /**
      * @param int $amount
      */
-    public function setAmount($amount) {
+    public function setAmount($amount)
+    {
         $this->amount = $amount;
     }
 
     /**
      * @return string
      */
-    public function getMerchantReference() {
+    public function getMerchantReference()
+    {
         return $this->merchantReference;
     }
 
     /**
      * @param string $merchantReference
      */
-    public function setMerchantReference($merchantReference) {
+    public function setMerchantReference($merchantReference)
+    {
         $this->merchantReference = $merchantReference;
     }
 
     /**
      * @return string
      */
-    public function getComment() {
+    public function getComment()
+    {
         return $this->comment;
     }
 
     /**
      * @param string $comment
      */
-    public function setComment($comment) {
+    public function setComment($comment)
+    {
         $this->comment = $comment;
     }
 
@@ -139,7 +148,8 @@ class Refund
      * @return array
      * @throws ParametersException
      */
-    public function getRequestBody() {
+    public function getRequestBody()
+    {
         if ($this->getAmount() === 0) {
             throw new ParametersException('Refund warning, the refund is zero');
         }

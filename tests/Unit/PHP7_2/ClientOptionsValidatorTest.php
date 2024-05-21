@@ -14,7 +14,7 @@ use Alma\API\ParamsError;
 class ClientOptionsValidatorTest extends TestCase
 {
     /** @var string  */
-    const FAKE_API_URI = 'https://fake-api.getalma.eu';
+    public const FAKE_API_URI = 'https://fake-api.getalma.eu';
 
     /**
      * Return options to test ClientOptionsValidator::validateOptions
