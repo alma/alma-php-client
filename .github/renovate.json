@@ -1,21 +1,21 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "prHourlyLimit": 20,
-  "prConcurrentLimit": 20,
-  "recreateWhen": "always",
-  "enabledManagers": ["github-actions", "pre-commit", "composer"],
-  "extends": [
-    "github>alma/renovate:github-actions",
-    "github>alma/renovate:confidence-badges",
-    "github>alma/renovate:pre-commit"
-  ],
-  "dependencyDashboard": true,
-  "reviewers": ["team:squad-pre-purchase"],
-  "baseBranches": ["develop"],
-  "packageRules": [
-    {
-      "matchManagers": ["composer"],
-      "groupName": "composer updates"
-    }
-  ]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"prHourlyLimit": 20,
+	"prConcurrentLimit": 20,
+	"recreateWhen": "always",
+	"enabledManagers": ["github-actions", "pre-commit", "composer"],
+	"extends": [
+		"github>alma/renovate:github-actions",
+		"github>alma/renovate:confidence-badges",
+		"github>alma/renovate:pre-commit"
+	],
+	"dependencyDashboard": true,
+	"reviewers": ["team:squad-e-commerce-integrations"],
+	"baseBranches": ["develop"],
+	"packageRules": [
+		{
+			"matchManagers": ["composer"],
+			"groupName": "composer updates"
+		}
+	]
 }
