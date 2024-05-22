@@ -2,9 +2,9 @@ name: PHPUnit Coverage Report
 
 on:
   push:
-    branches: [develop, master]
+    branches: [develop, main]
   pull_request:
-    branches: [develop, master]
+    branches: [develop, main]
   workflow_dispatch: ~
 
 jobs:
