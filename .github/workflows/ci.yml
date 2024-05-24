@@ -1,18 +1,27 @@
-name: PHPUnit Coverage Report
+name: Continuous integration
 
 on:
-  push:
-    branches: [develop, main]
-  pull_request:
-    branches: [develop, main]
   workflow_dispatch: ~
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
 
 jobs:
   ci:
+    name: Linting, tests and coverage
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: ./
+
+    strategy:
+      matrix:
+        php-version:
+          - 8.1
+          - 8.2
+          - 8.3
 
     steps:
       - uses: actions/checkout@v4
@@ -20,8 +29,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 5.6
-          tools: composer:v1
+          php-version: ${{ matrix.php-version }}
+          tools: composer:v2
 
       - name: Validate composer.json and composer.lock
         run: composer validate
