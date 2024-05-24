@@ -1,13 +1,13 @@
-version: '3.7'
-
 services:
   test-php:
     container_name: test-php
     build:
       context: ./
       dockerfile: Dockerfile
+    user: ${UID:-1000}:${GID:-1000}
     volumes:
-      - ../:/app
+      - ./:/app
+      - /app/vendor
     ports:
       - "8080:80"
     restart: unless-stopped

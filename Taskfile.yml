@@ -1,0 +1,43 @@
+version: 3
+
+env:
+  UID:
+    sh: id -u
+  GID:
+    sh: id -g
+
+tasks:
+  default:
+    cmds:
+      - cmd: task -l
+        silent: true
+
+  docker:remove:
+    desc: Remove PHP test container
+    cmds:
+      - docker compose down --volumes
+
+  docker:shell:
+    desc: Connect to test container
+    cmds:
+      - docker compose run test-php /bin/bash
+
+  unit-test:
+    desc: Execute PHPUnit tests
+    cmds:
+      - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"
+
+  integration-test:
+    desc: Execute intregration tests
+    cmds:
+      - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"
+
+  lint:
+    desc: Lint the php code
+    cmds:
+      - docker compose run test-php ./vendor/bin/phpcs src/
+
+  fix:
+    desc: Lint fix the php code
+    cmds:
+      - docker compose run test-php ./vendor/bin/phpcbf src/ tests/
