@@ -1,5 +1,5 @@
 FROM composer:2 as composer
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 ENV DEBIAN_FRONTEND noninteractive
 

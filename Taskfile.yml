@@ -12,6 +12,11 @@ tasks:
       - cmd: task -l
         silent: true
 
+  docker:build:
+    desc: Build the PHP test container
+    cmds:
+      - docker compose build
+
   docker:remove:
     desc: Remove PHP test container
     cmds:
@@ -22,12 +27,12 @@ tasks:
     cmds:
       - docker compose run test-php /bin/bash
 
-  unit-test:
+  tests:
     desc: Execute PHPUnit tests
     cmds:
       - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"
 
-  integration-test:
+  tests:integration:
     desc: Execute intregration tests
     cmds:
       - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"
@@ -37,7 +42,7 @@ tasks:
     cmds:
       - docker compose run test-php ./vendor/bin/phpcs src/
 
-  fix:
+  lint:fix:
     desc: Lint fix the php code
     cmds:
       - docker compose run test-php ./vendor/bin/phpcbf src/ tests/

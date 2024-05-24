@@ -1,15 +1,11 @@
 services:
   test-php:
-    container_name: test-php
+    user: ${UID:-1000}:${GID:-1000}
     build:
       context: ./
       dockerfile: Dockerfile
-    user: ${UID:-1000}:${GID:-1000}
+    ports:
+      - "8080:80"
     volumes:
       - ./:/app
       - /app/vendor
-    ports:
-      - "8080:80"
-    restart: unless-stopped
-    stdin_open: true
-    tty: true
