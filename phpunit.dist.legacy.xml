@@ -13,10 +13,10 @@
 
     <testsuites>
         <testsuite name="Alma PHP Client Unit Test Suite">
-            <directory>tests/Unit/PHP7_2</directory>
+            <directory>tests/Unit/{MYVERSION}</directory>
         </testsuite>
         <testsuite name="Alma PHP Client Integration Test Suite">
-            <directory>tests/Integration/PHP7_2</directory>
+            <directory>tests/Integration/{MYVERSION}</directory>
         </testsuite>
     </testsuites>
     <php>
