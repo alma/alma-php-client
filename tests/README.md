@@ -27,7 +27,7 @@ You need to change in phpunit.xml the variable {MYVERSION} by "PHP7_2"
 
 ---------------------
 
-## Launch tests 
+## Launch tests
 
 to launch unit test :
 ```

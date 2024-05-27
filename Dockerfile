@@ -1,5 +1,7 @@
+ARG PHP_VERSION=8.3
+
 FROM composer:2 as composer
-FROM php:8.3-fpm
+FROM php:${PHP_VERSION}-fpm
 
 ENV DEBIAN_FRONTEND noninteractive
 

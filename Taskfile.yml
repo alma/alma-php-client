@@ -14,6 +14,8 @@ tasks:
 
   docker:build:
     desc: Build the PHP test container
+    env:
+      PHP_VERSION: '{{ .PHP_VERSION | default "8.3" }}'
     cmds:
       - docker compose build
 
