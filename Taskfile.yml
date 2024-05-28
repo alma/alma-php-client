@@ -17,7 +17,7 @@ tasks:
     desc: Build the PHP test container
     cmds:
       - sed 's/{MYVERSION}/PHP8_1/g' phpunit.dist.xml > phpunit.xml
-      - docker compose build
+      - docker compose build --pull
 
   docker:remove:
     desc: Remove PHP test container
@@ -29,32 +29,39 @@ tasks:
     deps:
       - docker:build
     cmds:
-      - docker compose run test-php /bin/bash
+      - docker compose run php bash
 
   tests:
     desc: Execute PHPUnit tests
     deps:
       - docker:build
     cmds:
-      - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"
+      - docker compose run php ./vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"
 
   tests:integration:
     desc: Execute intregration tests
     deps:
       - docker:build
     cmds:
-      - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"
+      - docker compose run php ./vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"
 
   lint:
     desc: Lint the php code
     deps:
       - docker:build
     cmds:
-      - docker compose run test-php ./vendor/bin/phpcs src/
+      - docker compose run php ./vendor/bin/phpcs src/
 
   lint:fix:
     desc: Lint fix the php code
     deps:
       - docker:build
     cmds:
-      - docker compose run test-php ./vendor/bin/phpcbf src/ tests/
+      - docker compose run php ./vendor/bin/phpcbf src/ tests/
+
+  build:
+    desc: Build zip dist package using Docker
+    deps:
+      - docker:build
+    cmds:
+      - docker compose run php ./build.sh

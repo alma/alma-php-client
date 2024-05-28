@@ -1,5 +1,5 @@
 services:
-  test-php:
+  php:
     user: ${UID:-1000}:${GID:-1000}
     build:
       context: ./

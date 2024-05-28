@@ -5,6 +5,5 @@
 .phpunit.result.cache
 .idea
 dist/
-composer.lock
 phpunit.xml
 .phpunit.cache/

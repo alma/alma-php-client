@@ -9,6 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt update && \
     apt install -y --no-install-recommends \
     git \
+    zip \
     unzip \
     && \
     apt-get clean && \
@@ -25,5 +26,5 @@ WORKDIR /app
 COPY --link .docker/php.ini /usr/local/etc/php/php.ini
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-COPY --link composer.json ./
+COPY --link composer.json composer.lock ./
 RUN composer install --prefer-dist --no-progress --no-suggest
