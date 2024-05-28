@@ -26,5 +26,5 @@ WORKDIR /app
 COPY --link .docker/php.ini /usr/local/etc/php/php.ini
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-COPY --link composer.json composer.lock ./
+COPY --link composer.json ./
 RUN composer install --prefer-dist --no-progress --no-suggest
