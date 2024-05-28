@@ -5,6 +5,7 @@ env:
     sh: id -u
   GID:
     sh: id -g
+  PHP_VERSION: '{{ .PHP_VERSION | default "8.3" }}'
 
 tasks:
   default:
@@ -14,9 +15,8 @@ tasks:
 
   docker:build:
     desc: Build the PHP test container
-    env:
-      PHP_VERSION: '{{ .PHP_VERSION | default "8.3" }}'
     cmds:
+      - sed 's/{MYVERSION}/PHP8_1/g' phpunit.dist.xml > phpunit.xml
       - docker compose build
 
   docker:remove:
@@ -26,25 +26,35 @@ tasks:
 
   docker:shell:
     desc: Connect to test container
+    deps:
+      - docker:build
     cmds:
       - docker compose run test-php /bin/bash
 
   tests:
     desc: Execute PHPUnit tests
+    deps:
+      - docker:build
     cmds:
       - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Unit Test Suite"
 
   tests:integration:
     desc: Execute intregration tests
+    deps:
+      - docker:build
     cmds:
       - docker compose run test-php ./vendor/bin/phpunit --testsuite "Alma PHP Client Integration Test Suite"
 
   lint:
     desc: Lint the php code
+    deps:
+      - docker:build
     cmds:
       - docker compose run test-php ./vendor/bin/phpcs src/
 
   lint:fix:
     desc: Lint fix the php code
+    deps:
+      - docker:build
     cmds:
       - docker compose run test-php ./vendor/bin/phpcbf src/ tests/
