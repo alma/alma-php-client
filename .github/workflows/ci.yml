@@ -57,7 +57,7 @@ jobs:
         run: composer validate
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
 
       - name: Prepare unittests configuration
         run: sed -i 's/{MYVERSION}/${{ matrix.php.unittest-version }}/g' phpunit.ci.xml

@@ -18,7 +18,7 @@ RUN apt update && \
 RUN usermod -u 1000 www-data
 RUN groupmod -g 1000 www-data
 
-RUN mkdir -p /app && chown -R www-data:www-data /app
+RUN mkdir -p /app/vendor && chown -R www-data:www-data /app
 
 USER www-data
 WORKDIR /app
@@ -27,4 +27,4 @@ COPY --link .docker/php.ini /usr/local/etc/php/php.ini
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY --link composer.json ./
-RUN composer install --prefer-dist --no-progress --no-suggest
+RUN composer install --prefer-dist --no-progress
