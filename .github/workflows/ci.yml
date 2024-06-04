@@ -1,0 +1,74 @@
+name: Continuous integration
+
+on:
+  workflow_dispatch: ~
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  ci:
+    name: Linting, tests and coverage
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - version: 5.6
+            unittest-version: Legacy
+          - version: 7.0
+            unittest-version: PHP7_0
+          - version: 7.1
+            unittest-version: PHP7_0
+          - version: 7.2
+            unittest-version: PHP7_2
+          - version: 7.3
+            unittest-version: PHP7_2
+          - version: 7.4
+            unittest-version: PHP7_2
+          - version: 8.0
+            unittest-version: PHP7_2
+          - version: 8.1
+            unittest-version: PHP8_1
+          - version: 8.2
+            unittest-version: PHP8_1
+          - version: 8.3
+            unittest-version: PHP8_1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php.version }}
+          tools: composer:v2
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Prepare unittests configuration
+        run: sed -i 's/{MYVERSION}/${{ matrix.php.unittest-version }}/g' phpunit.ci.xml
+
+      - name: Ensure source code is linted
+        run: ./vendor/bin/phpcs src
+
+      - name: PHPUnit
+        run: ./vendor/bin/phpunit -c phpunit.ci.xml --coverage-xml ./.coverage
+        env:
+          XDEBUG_MODE: coverage
+
+      - name: PHPUnit threshold
+        run: php ./phpunit-threshold.php
