@@ -9,17 +9,12 @@ vars:
   PHPUNIT_FILE: '{{ .PHPUNIT_FILE | default "phpunit.dist.xml" }}'
 
 env:
-  UID:
-    sh: id -u
-  GID:
-    sh: id -g
+  PHP_VERSION: '{{ .PHP_VERSION }}'
 
 tasks:
   docker:build:
     internal: true
     desc: Build the PHP test container
-    env:
-      PHP_VERSION: '{{ .PHP_VERSION }}'
     cmds:
       - docker compose build --pull {{ .COMPOSE_SERVICE }}
 
