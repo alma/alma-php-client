@@ -1,9 +1,14 @@
 ARG PHP_VERSION
 
-FROM composer:2 as composer
+FROM composer:1 as composer
 FROM php:${PHP_VERSION}-fpm
 
 ENV DEBIAN_FRONTEND noninteractive
+
+# Update sources.list to outdated Debian archives
+RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list && \
+    sed -i s/security.debian.org/archive.debian.org/g /etc/apt/sources.list && \
+    sed -i s/stretch-updates/stretch/g /etc/apt/sources.list
 
 # Install dependencies
 RUN apt update && \

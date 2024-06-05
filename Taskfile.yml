@@ -7,61 +7,89 @@ env:
     sh: id -g
   PHP_VERSION: '{{ .PHP_VERSION | default "8.3" }}'
 
+includes:
+  "5.6":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "5.6"
+      COMPOSE_SERVICE: php-legacy  # Dockerfile needs specific APT configuration
+      PHPUNIT_VERSION: Legacy
+      PHPUNIT_FILE: phpunit.dist.legacy.xml
+  "7.0":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "7.0"
+      COMPOSE_SERVICE: php-legacy  # Dockerfile needs specific APT configuration
+      PHPUNIT_VERSION: PHP7_0
+  "7.1":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "7.1"
+      PHPUNIT_VERSION: PHP7_0
+  "7.2":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "7.2"
+      PHPUNIT_VERSION: PHP7_2
+  "7.3":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "7.3"
+      PHPUNIT_VERSION: PHP7_2
+  "7.4":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "7.4"
+      PHPUNIT_VERSION: PHP7_2
+  "8.0":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "8.0"
+      PHPUNIT_VERSION: PHP7_2
+  "8.1":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "8.1"
+      PHPUNIT_VERSION: PHP8_1
+  "8.2":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "8.2"
+      PHPUNIT_VERSION: PHP8_1
+  "8.3":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "8.3"
+      PHPUNIT_VERSION: PHP8_1
+
 tasks:
   default:
     cmds:
       - cmd: task -l
         silent: true
 
-  docker:build:
-    desc: Build the PHP test container
+  docker:down:
+    desc: Clean up the docker environment
     cmds:
-      - sed 's/{MYVERSION}/PHP8_1/g' phpunit.dist.xml > phpunit.xml
-      - docker compose build --pull
-
-  docker:remove:
-    desc: Remove PHP test container
-    cmds:
-      - docker compose down --volumes
-
-  docker:shell:
-    desc: Connect to test container
-    deps:
-      - docker:build
-    cmds:
-      - docker compose run php bash
-
-  tests:
-    desc: Execute PHPUnit tests
-    deps:
-      - docker:build
-    cmds:
-      - docker compose run php composer exec phpunit -- --testsuite "Alma PHP Client Unit Test Suite"
-
-  tests:integration:
-    desc: Execute intregration tests
-    deps:
-      - docker:build
-    cmds:
-      - docker compose run php composer exec phpunit -- --testsuite "Alma PHP Client Integration Test Suite"
+      - docker compose down --volumes --remove-orphans
 
   lint:
     desc: Lint the php code
     deps:
-      - docker:build
+      - 8.3:docker:build
     cmds:
       - docker compose run php composer exec phpcs -- src/
 
   lint:fix:
     desc: Lint fix the php code
     deps:
-      - docker:build
+      - 8.3:docker:build
     cmds:
       - docker compose run php composer exec phpcbf -- src/ tests/
 
   build:
     desc: Build zip dist package using Docker
     deps:
-      - docker:build
+      - 8.3:docker:build
     cmds:
       - docker compose run php ./build.sh
