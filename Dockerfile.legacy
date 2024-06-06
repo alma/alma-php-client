@@ -1,0 +1,35 @@
+ARG PHP_VERSION
+
+FROM composer:1 as composer
+FROM php:${PHP_VERSION}-fpm
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# Update sources.list to outdated Debian archives
+RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list && \
+    sed -i s/security.debian.org/archive.debian.org/g /etc/apt/sources.list && \
+    sed -i s/stretch-updates/stretch/g /etc/apt/sources.list
+
+# Install dependencies
+RUN apt update && \
+    apt install -y --no-install-recommends \
+    git \
+    zip \
+    unzip \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
+
+RUN mkdir -p /app/vendor && chown -R www-data:www-data /app
+
+USER www-data
+WORKDIR /app
+
+COPY --link .docker/php.ini /usr/local/etc/php/php.ini
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --link composer.json ./
+RUN composer install --prefer-dist --no-progress

@@ -1,0 +1,26 @@
+services:
+  php:
+    user: ${UID:-1000}:${GID:-1000}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/app
+      - /app/vendor
+
+  php-legacy:
+    user: ${UID:-1000}:${GID:-1000}
+    build:
+      context: ./
+      dockerfile: Dockerfile.legacy
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/app
+      - /app/vendor
