@@ -12,8 +12,9 @@ use Mockery;
  */
 class RequestErrorTest extends TestCase
 {
+	const ERROR_MESSAGE = 'error message hidden in response';
 
-    /**
+	/**
      * Return faulty options to test ClientOptionsValidator::validateOptions
      * @return array
      */
@@ -23,9 +24,9 @@ class RequestErrorTest extends TestCase
         $validResponse = Mockery::mock(Response::class);
         $validResponse->errorMessage = $validExpected;
 
-        $noMessageExpected = 'error message hidden in response';
+        $noMessageExpected = self::ERROR_MESSAGE;
         $noMessageResponse = Mockery::mock(Response::class);
-        $noMessageResponse->errorMessage = 'error message hidden in response';
+        $noMessageResponse->errorMessage = self::ERROR_MESSAGE;
         $noMessageResponse->json = [
             'errors' => [
                 0 => [
@@ -38,8 +39,8 @@ class RequestErrorTest extends TestCase
             'valid example' => [
                 "valid example", $validResponse, $validExpected,
             ],
-            'error message hidden in response' => [
-                "error message hidden in response", $noMessageResponse, $noMessageExpected,
+            self::ERROR_MESSAGE => [
+				self::ERROR_MESSAGE, $noMessageResponse, $noMessageExpected,
             ]
         ];
     }

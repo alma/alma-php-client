@@ -292,10 +292,10 @@ class PaymentsTest extends TestCase
 
 		$payments = new Payments($clientContext);
 
-		$this->assertEquals(true, method_exists($payments, 'partialRefund'));
-		$this->assertEquals(true, method_exists($payments, 'fullRefund'));
+		$this->assertTrue(method_exists($payments, 'partialRefund'));
+		$this->assertTrue(method_exists($payments, 'fullRefund'));
 		# ensure backward compatibility
-		$this->assertEquals(true, method_exists($payments, 'refund'));
+		$this->assertTrue(method_exists($payments, 'refund'));
 	}
 
     /**

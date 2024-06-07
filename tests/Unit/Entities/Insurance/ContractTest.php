@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContractTest extends TestCase
 {
+	const CONTRACT_FILE_NAME = 'Alma mobility 1 an (vol+casse+assistance) - Alma}';
 	/**
 	 * @var Contract $contract
 	 */
@@ -183,19 +184,19 @@ class ContractTest extends TestCase
 	public static function fileDataProvider()
 	{
 		$ipidFileData = new File(
-			'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+			self::CONTRACT_FILE_NAME,
 			'ipid-document',
 			'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'
 		);
 		$ipidFile = new File($ipidFileData->getName(), $ipidFileData->getType(), $ipidFileData->getPublicUrl());
 		$ficFileData = new File(
-			'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+			self::CONTRACT_FILE_NAME,
 			'fic-document',
 			'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'
 		);
 		$ficFile = new File($ficFileData->getName(), $ficFileData->getType(), $ficFileData->getPublicUrl());
 		$noticeFileData = new File(
-			'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+			self::CONTRACT_FILE_NAME,
 			'notice-document',
 			'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf'
 		);
@@ -266,17 +267,17 @@ class ContractTest extends TestCase
 			'price' => 6000, //price in cent
 			'files' => [
 				new File(
-					'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+					self::CONTRACT_FILE_NAME,
 					'ipid-document',
 					'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/I6LK9O3XUNKNZPDTMH58IIK2HKBMRM2MIH-V0YGPECCD5Z20YIQUKXVCZYEU_TJD.pdf/OFXRU1UHY7J0CFO7X0Y24RSDMTG-W5BVB1GZRPPZFPSJRNIGGP2HXR2CEXIPBWZ-.pdf'
 				),
 				new File(
-					'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+					self::CONTRACT_FILE_NAME,
 					'fic-document',
 					'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/Y-PSWZG6-ADZ9MEY8PAZS2TMAUBXOLU6GYOLDWULMEAJB_VW0RGBKJTPMY7SPASN.pdf/UHSB9KVIGRLHP9DMXRZNCSWUGXCHS9VOW2EHAUNCYM_ANJIE7DOAKVLIH6EEOQYW.pdf'
 				),
 				new File(
-					'Alma mobility 1 an (vol+casse+assistance) - Alma}',
+					self::CONTRACT_FILE_NAME,
 					'notice-document',
 					'https://object-storage-s3-staging.s3.fr-par.scw.cloud/contracts/43acb66c-4b24-42d2-864a-24b4ade33e81/JVPHA9RROHB6RPCG9K3VFG4EELBIMALK4QY2JVYEUTBFFT4SP1YN_ZUFXHOYRUSP.pdf/YTBTRJ6C9FFQFNW3234PHJJJT28VZR0FDOXVV0HV1SULI79S3UPSYRX7SZDNX1FX.pdf'
 				)
