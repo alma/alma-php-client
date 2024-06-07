@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\PHP7_2;
+namespace Alma\API\Tests\Unit;
 
 use Alma\API\Lib\ClientOptionsValidator;
 use Alma\API\Client;
@@ -20,7 +20,7 @@ class ClientOptionsValidatorTest extends TestCase
      * Return options to test ClientOptionsValidator::validateOptions
      * @return array
      */
-    public function getClientOptions()
+    public static function getClientOptions()
     {
         return [
             [
@@ -95,6 +95,41 @@ class ClientOptionsValidatorTest extends TestCase
         ];
     }
 
+	/**
+	 * Return faulty options to test ClientOptionsValidator::validateOptions
+	 * @return array
+	 */
+	public static function getInvalidClientOptions()
+	{
+		return [
+			'invalid api_root' => [
+				[
+					'api_root' => [
+						'something wrong' => Client::SANDBOX_API_URL,
+						'something wronger' => Client::LIVE_API_URL
+					],
+				],
+			],
+			'invalid tls' => [
+				[
+					'force_tls' => -1,
+				],
+			],
+			'invalid mode' => [
+				[
+					'mode' => 'sad',
+				],
+			],
+			'invalid user_agent_component' => [
+				[
+					'user_agent_component' => [
+						'I dont give a key:value pair',
+					]
+				],
+			],
+		];
+	}
+
     /**
      * @dataProvider getClientOptions
      * @return void
@@ -105,41 +140,6 @@ class ClientOptionsValidatorTest extends TestCase
         $validatedConfig = ClientOptionsValidator::validateOptions($options);
 
         $this->assertEquals($expectedResult, $validatedConfig);
-    }
-
-    /**
-     * Return faulty options to test ClientOptionsValidator::validateOptions
-     * @return array
-     */
-    public function getInvalidClientOptions()
-    {
-        return [
-            'invalid api_root' => [
-                [
-                    'api_root' => [
-                        'something wrong' => Client::SANDBOX_API_URL,
-                        'something wronger' => Client::LIVE_API_URL
-                    ],
-                ],
-            ],
-            'invalid tls' => [
-                [
-                    'force_tls' => -1,
-                ],
-            ],
-            'invalid mode' => [
-                [
-                    'mode' => 'sad',
-                ],
-            ],
-            'invalid user_agent_component' => [
-                [
-                    'user_agent_component' => [
-                        'I dont give a key:value pair',
-                    ]
-                ],
-            ],
-        ];
     }
 
     /**

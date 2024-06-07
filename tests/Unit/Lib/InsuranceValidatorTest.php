@@ -1,10 +1,11 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy\Lib;
+namespace Alma\API\Tests\Unit\Lib;
 
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Lib\InsuranceValidator;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class InsuranceValidatorTest extends TestCase
 {
@@ -15,7 +16,7 @@ class InsuranceValidatorTest extends TestCase
      */
     protected $insuranceValidator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->insuranceValidator = new InsuranceValidator();
     }
@@ -43,34 +44,34 @@ class InsuranceValidatorTest extends TestCase
     /**
      * @return array
      */
-    public function checkCmsReferenceInvalidPayloadDataProvider()
+    public static function checkCmsReferenceInvalidPayloadDataProvider()
     {
         return [
             'String payload' =>
                 [
-                    'payload' => 'mb-024, mb-048'
+                    'invalidPayload' => 'mb-024, mb-048'
                 ],
             'Empty string payload' =>
                 [
-                    'payload' => ''
+                    'invalidPayload' => ''
                 ],
             'Object payload' =>
                 [
-                    'payload' => new \stdClass()
+                    'invalidPayload' => new stdClass()
                 ],
             'Empty array' =>
                 [
-                    'payload' => []
+                    'invalidPayload' => []
                 ],
             'Int payload' =>
                 [
-                    'payload' => 123
+                    'invalidPayload' => 123
                 ],
             'Bool payload' => [
-                'payload' => true
+                'invalidPayload' => true
             ],
             'Object payload in array' => [
-                'payload' => ['1236', new \stdClass()]
+                'invalidPayload' => ['1236', new stdClass()]
             ],
         ];
     }

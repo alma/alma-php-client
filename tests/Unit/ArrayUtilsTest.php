@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy;
+namespace Alma\API\Tests\Unit;
 
 use Alma\API\Lib\ArrayUtils;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,7 @@ class ArrayUtilsTest extends TestCase
      * Return options to test ArrayUtils::isAssocArray
      * @return array[]
      */
-    public function getTestArrays()
+    public static function getTestArrays()
     {
         return [
             [['a', 'b', 'c'], false],

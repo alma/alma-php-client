@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy\Entities\Insurance;
+namespace Alma\API\Tests\Unit\Entities\Insurance;
 
 use Alma\API\Entities\Insurance\File;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class FileTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fileData = $this->getFileData();
         $this->file = $this->createNewFile($this->fileData);

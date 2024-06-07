@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy\Entities\Insurance;
+namespace Alma\API\Tests\Unit\Entities\Insurance;
 
 use Alma\API\Entities\Insurance\Subscriber;
 use Alma\API\Entities\Insurance\Subscription;
@@ -13,7 +13,7 @@ class  SubscriptionTest extends TestCase
      */
     private $subscription;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subscription = $this->createNewSubscription();
     }

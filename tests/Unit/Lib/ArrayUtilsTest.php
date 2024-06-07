@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy\Lib;
+namespace Alma\API\Tests\Unit\Lib;
 
 use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\ParametersException;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayUtilsTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->arrayUtils = new ArrayUtils();
     }

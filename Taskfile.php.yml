@@ -23,7 +23,7 @@ tasks:
     deps:
       - docker:build
     cmds:
-      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' {{ .PHPUNIT_FILE }} > phpunit.xml
+#      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' {{ .PHPUNIT_FILE }} > phpunit.xml
       - docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --testsuite "Alma PHP Client Unit Test Suite"
 
   tests:integration:

@@ -127,7 +127,7 @@ class Orders extends Base
                 'is_shipped' => $orderData['is_shipped'],
             ))->post();
         }catch (AlmaException $e) {
-            $this->logger->error('Error sending status');
+			$this->logger->error('Error sending status');
             throw new RequestException('Error sending status', $e);
         }
 
@@ -150,7 +150,7 @@ class Orders extends Base
         try {
             $this->arrayUtils->checkMandatoryKeys(['status', 'is_shipped'], $orderData);
         } catch (MissingKeyException $e ) {
-            throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus',null,  $e);
+            throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus',0,  $e);
         }
 
         if(!is_bool($orderData['is_shipped'])) {
