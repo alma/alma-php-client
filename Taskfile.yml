@@ -1,6 +1,7 @@
 version: 3
 
 env:
+  REPOSITORY: alma-php-client
   UID:
     sh: id -u
   GID:
@@ -72,23 +73,98 @@ tasks:
     cmds:
       - docker compose down --volumes --remove-orphans
 
+  brew:
+    preconditions:
+      - sh: brew -v
+        msg: 'This task requires `brew`. Please refer to this documentation: https://brew.sh/'
+
+  pre-commit:
+    desc: Install pre-commit tool
+    internal: true
+    deps: [brew]
+    status:
+      - pre-commit --version
+    cmds:
+      - brew install pre-commit
+
+  pre-commit:install:
+    desc: Install and set up pre-commit hooks
+    deps: [pre-commit]
+    cmds:
+      - pre-commit install --hook-type pre-commit --hook-type commit-msg
+
   lint:
     desc: Lint the php code
     deps:
       - 8.3:docker:build
     cmds:
-      - docker compose run php composer exec phpcs -- src/
+      - docker compose run --rm -T php composer exec phpcs -- src/
 
   lint:fix:
     desc: Lint fix the php code
     deps:
       - 8.3:docker:build
     cmds:
-      - docker compose run php composer exec phpcbf -- src/ tests/
+      - docker compose run --rm -T php composer exec phpcbf -- src/ tests/
 
-  build:
+  dist:
     desc: Build zip dist package using Docker
     deps:
       - 8.3:docker:build
     cmds:
-      - docker compose run php ./build.sh
+      - docker compose run --rm php ./scripts/build.sh
+
+  php-compatibility:
+    desc: Check compatibility code
+    cmds:
+      - docker compose run --rm -T php composer exec phpcs -- -p src --standard=PHPCompatibility -s --runtime-set testVersion 5.6-8.1 --ignore=\*/vendor/\*
+
+  gh-cli:
+    internal: true
+    preconditions:
+      - sh: gh --version
+        msg: |
+          ⚠️ This task requires `gh` (Github CLI).
+          Please check out: https://github.com/cli/cli#installation
+          You'll need a personal access token to authenticate with `gh`.
+          Please check out: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic
+          Then, run `gh auth login` or set the GITHUB_TOKEN environment variable with your personal access token.
+
+  release:
+    deps:
+      - gh-cli
+    desc: Create a release pull request
+    cmds:
+      - gh workflow run release-pull-request.yml
+      - cmd: sleep 2
+        silent: true
+      - cmd: echo "Release pull request created, check out https://github.com/alma/{{.REPOSITORY}}/pulls?q=is%3Aopen+is%3Apr+label%3Arelease"
+        silent: true
+      - cmd: echo "If no pull request is created, check out https://github.com/alma/{{.REPOSITORY}}/actions/workflows/release-pull-request.yml"
+        silent: true
+      - cmd: echo "Please, review and merge the pull request."
+        silent: true
+      - cmd: echo "After merging, the release will be automatically created."
+        silent: true
+
+  hotfix:
+    deps:
+      - gh-cli
+    desc: Create a hotfix pull request
+    preconditions:
+      - sh: test -n "{{.CHANGELOG_MESSAGE}}"
+        msg: |
+          ⚠️ This task requires a changelog message.
+          Please provide a changelog message. Example: `task hotfix CHANGELOG_MESSAGE='This is a message'`.
+    cmds:
+      - gh workflow run hotfix-pull-request.yml -F changelog-message='{{.CHANGELOG_MESSAGE}}'
+      - cmd: sleep 2
+        silent: true
+      - cmd: echo "Hotfix pull request created, check out https://github.com/alma/{{.REPOSITORY}}/pulls?q=is%3Aopen+is%3Apr+label%3Ahotfix"
+        silent: true
+      - cmd: echo "If no pull request is created, check out https://github.com/alma/{{.REPOSITORY}}/actions/workflows/hotfix-pull-request.yml"
+        silent: true
+      - cmd: echo "Please, review and merge the pull request."
+        silent: true
+      - cmd: echo "After merging, the release will be automatically created."
+        silent: true
