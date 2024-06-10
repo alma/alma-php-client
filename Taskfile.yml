@@ -1,6 +1,7 @@
 version: 3
 
 env:
+  REPOSITORY: alma-php-client
   UID:
     sh: id -u
   GID:
