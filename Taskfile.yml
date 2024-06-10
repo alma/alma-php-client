@@ -77,18 +77,23 @@ tasks:
     deps:
       - 8.3:docker:build
     cmds:
-      - docker compose run php composer exec phpcs -- src/
+      - docker compose run -T php composer exec phpcs -- src/
 
   lint:fix:
     desc: Lint fix the php code
     deps:
       - 8.3:docker:build
     cmds:
-      - docker compose run php composer exec phpcbf -- src/ tests/
+      - docker compose run -T php composer exec phpcbf -- src/ tests/
 
-  build:
+  dist:
     desc: Build zip dist package using Docker
     deps:
       - 8.3:docker:build
     cmds:
       - docker compose run php ./build.sh
+
+  php-compatibility:
+    desc: Check compatibility code
+    cmds:
+      - docker compose run -T php composer exec phpcs -- -p src --standard=PHPCompatibility -s --runtime-set testVersion 5.6-8.1 --ignore=\*/vendor/\*
