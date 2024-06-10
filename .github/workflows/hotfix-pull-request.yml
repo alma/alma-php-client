@@ -1,0 +1,66 @@
+name: Create hotfix pull request
+
+on:
+  workflow_dispatch:
+    inputs:
+      changelog-message:
+        type: string
+        description: The message to add to the changelog
+        required: true
+
+jobs:
+
+  create-hotfix-pull-request:
+    runs-on: ubuntu-22.04
+
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Release drafter
+        uses: release-drafter/release-drafter@v6
+        id: release-drafter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update release draft
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            await github.rest.repos.updateRelease({
+              owner,
+              repo,
+              release_id: "${{ steps.release-drafter.outputs.id }}",
+              draft: true,
+              body: "### 🐛 Bug Fixes\n ${{ inputs.changelog-message }}\n"
+            });
+
+      - name: Update CHANGELOG.md file
+        uses: stefanzweifel/changelog-updater-action@v1
+        with:
+          latest-version: ${{ steps.release-drafter.outputs.tag_name }}
+          release-notes: "### 🐛 Bug Fixes\n ${{ inputs.changelog-message }}\n"
+
+      - name: Update other files
+        run: |
+          ./scripts/update-files-with-release-version.sh ${{ steps.release-drafter.outputs.tag_name }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: update version'
+          title: Release ${{ steps.release-drafter.outputs.tag_name }}
+          body: |
+            Update version to ${{ steps.release-drafter.outputs.tag_name }}
+    
+            ### Checklist of actions to be done before merging
+            - [ ] Review and update the CHANGELOG.md if needed
+            - [ ] Review and update the Github release draft if needed
+            - [ ] Review the files updated with the new version number in the commit named "chore: update version"
+          branch: hotfix/${{ steps.release-drafter.outputs.tag_name }}
+          base: main
+          labels: hotfix, release
+

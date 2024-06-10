@@ -91,7 +91,7 @@ tasks:
     deps:
       - 8.3:docker:build
     cmds:
-      - docker compose run php ./build.sh
+      - docker compose run php ./scripts/build.sh
 
   php-compatibility:
     desc: Check compatibility code
