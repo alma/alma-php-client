@@ -30,7 +30,7 @@ use Alma\API\Lib\ClientOptionsValidator;
 
 class Client
 {
-    const VERSION = '2.0.7';
+    const VERSION = '2.0.8';
 
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';
