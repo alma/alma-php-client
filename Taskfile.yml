@@ -22,6 +22,7 @@ includes:
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "7.1"
+      COMPOSER_VERSION: "2.2"  # Composer >2.2 deprecated PHP 7.1
   "7.2":
     taskfile: Taskfile.php.yml
     vars:

@@ -5,11 +5,13 @@ vars:
   PHP_VERSION: '{{ .PHP_VERSION }}'
   PHPUNIT_VERSION: '{{ .PHPUNIT_VERSION  }}'
   # Defaulted variable
+  COMPOSER_VERSION: '{{ .COMPOSER_VERSION | default "2" }}'
   COMPOSE_SERVICE: '{{ .COMPOSE_SERVICE | default "php" }}'
   PHPUNIT_FILE: '{{ .PHPUNIT_FILE | default "phpunit.dist.xml" }}'
 
 env:
   PHP_VERSION: '{{ .PHP_VERSION }}'
+  COMPOSER_VERSION: '{{ .COMPOSER_VERSION }}'
 
 tasks:
   docker:build:
