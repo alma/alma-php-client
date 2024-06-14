@@ -23,15 +23,19 @@ tasks:
     deps:
       - docker:build
     cmds:
-#      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' {{ .PHPUNIT_FILE }} > phpunit.xml
-      - docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --testsuite "Alma PHP Client Unit Test Suite"
+      - >-
+        {{ if eq .PHP_VERSION "5.6" "7.0" }}
+        docker compose run {{ .COMPOSE_SERVICE }} ./tests/legacy_tests.sh
+        {{ else }}
+        docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --configuration phpunit.dist.xml --testsuite "Alma PHP Client Unit Test Suite"
+        {{ end }}
 
   tests:integration:
     desc: Execute intregration tests
     deps:
       - docker:build
     cmds:
-      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' {{ .PHPUNIT_FILE }} > phpunit.xml
+      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' phpunit.dist.xml > phpunit.xml
       - docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --testsuite "Alma PHP Client Integration Test Suite"
 
   shell:
@@ -39,5 +43,5 @@ tasks:
     deps:
       - docker:build
     cmds:
-      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' {{ .PHPUNIT_FILE }} > phpunit.xml
+      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' phpunit.dist.xml > phpunit.xml
       - docker compose run {{ .COMPOSE_SERVICE }} bash

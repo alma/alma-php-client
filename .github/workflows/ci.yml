@@ -21,25 +21,15 @@ jobs:
       matrix:
         php:
           - version: 5.6
-            unittest-version: Legacy
           - version: 7.0
-            unittest-version: PHP7_0
           - version: 7.1
-            unittest-version: PHP7_0
           - version: 7.2
-            unittest-version: PHP7_2
           - version: 7.3
-            unittest-version: PHP7_2
           - version: 7.4
-            unittest-version: PHP7_2
           - version: 8.0
-            unittest-version: PHP7_2
           - version: 8.1
-            unittest-version: PHP8_1
           - version: 8.2
-            unittest-version: PHP8_1
           - version: 8.3
-            unittest-version: PHP8_1
 
     steps:
       - name: Checkout repository
@@ -59,14 +49,18 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Prepare unittests configuration
-        run: sed -i 's/{MYVERSION}/${{ matrix.php.unittest-version }}/g' phpunit.ci.xml
-
       - name: Ensure source code is linted
         run: composer exec phpcs -- src/
 
+      - name: Remove uncompliant statements in legacy code
+        if: contains(fromJson('["5.6", "7.0"]'), matrix.php.version)
+        run: |
+          # Replace string in files
+          string=': void'
+          grep -r -l "$string" tests/ | xargs sed -i "s/$string//g"
+
       - name: PHPUnit
-        run: composer exec phpunit -- -c phpunit.ci.xml --coverage-xml ./.coverage
+        run: composer exec phpunit -- --configuration phpunit.ci.xml --coverage-xml ./.coverage
         env:
           XDEBUG_MODE: coverage
 
