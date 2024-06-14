@@ -1,0 +1,21 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+template: |
+
+  $CHANGES
+
+change-template: '- $TITLE'
+change-title-escapes: '\<*_&#@`'
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+      - 'type: feature'
+  patch:
+    labels:
+      - 'patch'
+  default: patch
