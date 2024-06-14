@@ -20,8 +20,8 @@ jobs:
       # See https://github.com/peter-evans/create-pull-request/blob/main/docs/examples.md#keep-a-branch-up-to-date-with-another
       - name: Fetch develop branch
         run: |
-          git fetch origin develop:develop
-          git reset --hard develop
+          git fetch origin devx/dex-889-update-cicd-pipeline:devx/dex-889-update-cicd-pipeline
+          git reset --hard devx/dex-889-update-cicd-pipeline
 
       - name: Create release draft
         uses: release-drafter/release-drafter@v6
@@ -37,6 +37,8 @@ jobs:
 
       - name: Update files with release version
         run: |
+          ls -la
+          ls -la ./scripts
           ./scripts/update-files-with-release-version.sh ${{ steps.release-drafter.outputs.tag_name }}
 
       - name: Create Pull Request
