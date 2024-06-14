@@ -20,16 +20,16 @@ jobs:
       fail-fast: false
       matrix:
         php:
-          - version: 5.6
-          - version: 7.0
-          - version: 7.1
-          - version: 7.2
-          - version: 7.3
-          - version: 7.4
-          - version: 8.0
-          - version: 8.1
-          - version: 8.2
-          - version: 8.3
+          - "5.6"
+          - "7.0"
+          - "7.1"
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
+          - "8.3"
 
     steps:
       - name: Checkout repository
@@ -40,7 +40,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php.version }}
+          php-version: ${{ matrix.php }}
           tools: composer:v2
 
       - name: Validate composer.json and composer.lock
@@ -53,7 +53,7 @@ jobs:
         run: composer exec phpcs -- src/
 
       - name: Remove uncompliant statements in legacy code
-        if: contains(fromJson('["5.6", "7.0"]'), matrix.php.version)
+        if: contains(fromJson('["5.6", "7.0"]'), matrix.php)
         run: |
           # Replace string in files
           string=': void'
