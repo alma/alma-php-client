@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy\Endpoints;
+namespace Alma\API\Tests\Unit\Endpoints;
 
 
 use Alma\API\ClientContext;
@@ -12,6 +12,7 @@ use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\Request;
 use Alma\API\Response;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -23,14 +24,15 @@ class OrdersTest extends TestCase
      */
     protected $orderEndpoint;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->clientContext = \Mockery::mock(ClientContext::class);
-        $this->orderEndpoint = \Mockery::mock(Orders::class)->makePartial();
-        $this->arrayUtils = \Mockery::mock(ArrayUtils::class)->makePartial();
-        $this->responseMock = \Mockery::mock(Response::class);
-        $this->requestObject = \Mockery::mock(Request::class);
-        $loggerMock = \Mockery::mock(LoggerInterface::class);
+        $this->clientContext = Mockery::mock(ClientContext::class);
+        $this->orderEndpoint = Mockery::mock(Orders::class)->makePartial();
+        $this->arrayUtils = Mockery::mock(ArrayUtils::class)->makePartial();
+        $this->responseMock = Mockery::mock(Response::class);
+		$this->responseMock->errorMessage = 'Exception Error message';
+		$this->requestObject = Mockery::mock(Request::class);
+        $loggerMock = Mockery::mock(LoggerInterface::class);
         $loggerMock->shouldReceive('error');
 
         $this->orderEndpoint->arrayUtils = $this->arrayUtils;
@@ -40,6 +42,16 @@ class OrdersTest extends TestCase
         $this->orderEndpoint->setClientContext($this->clientContext);
 
     }
+
+	public function tearDown(): void
+	{
+		$this->orderEndpoint = null;
+		$this->arrayUtils = null;
+		$this->responseMock = null;
+		$this->requestObject = null;
+		Mockery::close();
+	}
+
     public function testValidateStatusDataNoOrderData()
     {
         $this->expectException(ParametersException::class);
@@ -49,8 +61,8 @@ class OrdersTest extends TestCase
 
     public function testValidateStatusDataMissingSomeOrderData()
     {
-        $orderEndpoint = \Mockery::mock(Orders::class)->makePartial();
-        $arrayUtils = \Mockery::mock(ArrayUtils::class)->makePartial();
+        $orderEndpoint = Mockery::mock(Orders::class)->makePartial();
+        $arrayUtils = Mockery::mock(ArrayUtils::class)->makePartial();
         $arrayUtils->shouldReceive('checkMandatoryKeys')->andThrow(new MissingKeyException());
         $orderEndpoint->arrayUtils = $arrayUtils;
 
@@ -61,8 +73,8 @@ class OrdersTest extends TestCase
 
     public function testValidateStatusDataIsShippedNotBool()
     {
-        $orderEndpoint = \Mockery::mock(Orders::class)->makePartial();
-        $arrayUtils = \Mockery::mock(ArrayUtils::class)->makePartial();
+        $orderEndpoint = Mockery::mock(Orders::class)->makePartial();
+        $arrayUtils = Mockery::mock(ArrayUtils::class)->makePartial();
         $arrayUtils->shouldReceive('checkMandatoryKeys')->andReturn(null);
         $orderEndpoint->arrayUtils = $arrayUtils;
 
@@ -77,8 +89,8 @@ class OrdersTest extends TestCase
 
     public function testValidateStatusDataStatusIsEmpty()
     {
-        $orderEndpoint = \Mockery::mock(Orders::class)->makePartial();
-        $arrayUtils = \Mockery::mock(ArrayUtils::class)->makePartial();
+        $orderEndpoint = Mockery::mock(Orders::class)->makePartial();
+        $arrayUtils = Mockery::mock(ArrayUtils::class)->makePartial();
         $arrayUtils->shouldReceive('checkMandatoryKeys')->andReturn(null);
         $orderEndpoint->arrayUtils = $arrayUtils;
 
@@ -91,7 +103,7 @@ class OrdersTest extends TestCase
         ));
     }
 
-    public function testSendStatusOK()
+    public function testSendStatusOk()
     {
         $this->orderEndpoint->shouldReceive('validateStatusData')->andReturn(null);
 
@@ -134,7 +146,7 @@ class OrdersTest extends TestCase
     {
         $this->orderEndpoint->shouldReceive('validateStatusData')->andReturn(null);
 
-        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->responseMock->shouldReceive('isError')->never();
         $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
 
         $this->requestObject->shouldReceive('post')->andThrow(new RequestException());
@@ -150,13 +162,5 @@ class OrdersTest extends TestCase
         ));
     }
 
-
-    public function tearDown()
-    {
-        $this->orderEndpoint = null;
-        $this->arrayUtils = null;
-        $this->responseMock = null;
-        $this->requestObject = null;
-    }
 
 }

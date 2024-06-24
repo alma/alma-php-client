@@ -12,54 +12,45 @@ includes:
     vars:
       PHP_VERSION: "5.6"
       COMPOSE_SERVICE: php-legacy  # Dockerfile needs specific APT configuration
-      PHPUNIT_VERSION: Legacy
       PHPUNIT_FILE: phpunit.dist.legacy.xml
   "7.0":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "7.0"
       COMPOSE_SERVICE: php-legacy  # Dockerfile needs specific APT configuration
-      PHPUNIT_VERSION: PHP7_0
   "7.1":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "7.1"
-      PHPUNIT_VERSION: PHP7_0
+      COMPOSER_VERSION: "2.2"  # Composer >2.2 deprecated PHP 7.1
   "7.2":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "7.2"
-      PHPUNIT_VERSION: PHP7_2
   "7.3":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "7.3"
-      PHPUNIT_VERSION: PHP7_2
   "7.4":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "7.4"
-      PHPUNIT_VERSION: PHP7_2
   "8.0":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "8.0"
-      PHPUNIT_VERSION: PHP7_2
   "8.1":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "8.1"
-      PHPUNIT_VERSION: PHP8_1
   "8.2":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "8.2"
-      PHPUNIT_VERSION: PHP8_1
   "8.3":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "8.3"
-      PHPUNIT_VERSION: PHP8_1
 
 tasks:
   default:

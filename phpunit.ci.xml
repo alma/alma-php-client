@@ -12,15 +12,12 @@
 
     <testsuites>
         <testsuite name="Alma PHP Client Unit Test Suite">
-            <directory>tests/Unit/{MYVERSION}</directory>
+            <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src/*</directory>
-            <exclude>
-                <directory suffix=".php">./src/vendor/*</directory>
-            </exclude>
         </whitelist>
     </filter>
 </phpunit>

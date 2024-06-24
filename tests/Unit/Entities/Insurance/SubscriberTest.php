@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy\Entities\Insurance;
+namespace Alma\API\Tests\Unit\Entities\Insurance;
 
 use Alma\API\Entities\Insurance\Subscriber;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class SubscriberTest extends TestCase
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->subscriber = $this->createNewSubscriber();
     }

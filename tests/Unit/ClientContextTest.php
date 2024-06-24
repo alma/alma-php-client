@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\PHP7_2;
+namespace Alma\API\Tests\Unit;
 
 use Alma\API\ClientContext;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class ClientContextTest extends TestCase
      * Return faulty options to test ClientOptionsValidator::validateOptions
      * @return array
      */
-    public function getClientconfigOptions()
+    public static function getClientconfigOptions()
     {
         return [
             'empty' => [[

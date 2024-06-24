@@ -1,32 +1,32 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Legacy;
+namespace Alma\API\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Alma\API\Response;
 use Alma\API\RequestError;
 use Mockery;
-use Psr\Log\NullLogger;
 
 /**
  * Class RequestErrorTest
  */
 class RequestErrorTest extends TestCase
 {
+	const ERROR_MESSAGE = 'error message hidden in response';
 
-    /**
+	/**
      * Return faulty options to test ClientOptionsValidator::validateOptions
      * @return array
      */
-    public function getErrorMessageProvider()
+    public static function getErrorMessageProvider()
     {
         $validExpected = 'some error message';
         $validResponse = Mockery::mock(Response::class);
         $validResponse->errorMessage = $validExpected;
 
-        $noMessageExpected = 'error message hidden in response';
+        $noMessageExpected = self::ERROR_MESSAGE;
         $noMessageResponse = Mockery::mock(Response::class);
-        $noMessageResponse->errorMessage = null;
+        $noMessageResponse->errorMessage = self::ERROR_MESSAGE;
         $noMessageResponse->json = [
             'errors' => [
                 0 => [
@@ -37,10 +37,10 @@ class RequestErrorTest extends TestCase
 
         return [
             'valid example' => [
-                null, $validResponse, $validExpected,
+                "valid example", $validResponse, $validExpected,
             ],
-            'error message hidden in response' => [
-                null, $noMessageResponse, $noMessageExpected,
+            self::ERROR_MESSAGE => [
+				self::ERROR_MESSAGE, $noMessageResponse, $noMessageExpected,
             ]
         ];
     }

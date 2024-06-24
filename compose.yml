@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
       args:
         PHP_VERSION: ${PHP_VERSION}
+        COMPOSER_VERSION: ${COMPOSER_VERSION:-2}
     ports:
       - "8080:80"
     volumes:
