@@ -1,0 +1,7 @@
+---
+commitizen:
+  name: cz_conventional_commits
+  tag_format: v$version
+  update_changelog_on_bump: true
+  version: 2.0.7
+  version_scheme: semver
