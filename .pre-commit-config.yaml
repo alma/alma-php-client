@@ -11,49 +11,46 @@ repos:
       - id: no-commit-to-branch
         args: [--branch, develop, --branch, main]
 
+  - repo: local
+    hooks:
+      - id: coding-standard-fixer
+        name: Check PHP coding standards and fix
+        language: system
+        pass_filenames: false
+        entry:  task lint:fix
+        stages: [commit]
 
-  #  - repo: local
-#    hooks:
-#      - id: coding-standard-fixer
-#        name: PHP coding standards Fixer test
-#        language: script
-#        entry:  ./scripts/coding-standard-fixer.sh
-#        stages: [commit]
-#
-#  - repo: local
-#    hooks:
-#      - id: coding-standard
-#        name: Check the PHP and Prestashop coding standards
-#        language: script
-#        entry:  ./scripts/coding-standard.sh
-#        stages: [commit]
-#
-#  - repo: local
-#    hooks:
-#      - id: php-compatibility
-#        name: Check the PHP compatibility
-#        language: script
-#        entry:  ./scripts/php-compatibility.sh
-#        stages: [commit]
-#
-#  - repo: https://github.com/returntocorp/semgrep
-#    rev: v1.27.0
-#    hooks:
-#      - id: semgrep
-#        args:
-#          - --error
-#          - --config
-#          - semgrep/rules/
-#          - --metrics
-#          - "off"
-#          - --quiet
-#          - --disable-version-check
-#          - --skip-unknown-extensions
-#        pass_filenames: false # Passing files explicitely override semgremignore
+      - id: coding-standard
+        name: Check PHP coding standards
+        language: system
+        pass_filenames: false
+        entry:  task lint
+        stages: [commit]
+
+      - id: php-compatibility
+        name: Check the PHP compatibility
+        language: system
+        pass_filenames: false
+        entry:  task php-compatibility
+        stages: [commit]
+
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.27.0
+    hooks:
+      - id: semgrep
+        args:
+          - --error
+          - --config
+          - semgrep/rules/
+          - --metrics
+          - "off"
+          - --disable-version-check
+          - --skip-unknown-extensions
+        pass_filenames: false # Passing files explicitely override semgrepignore
 
   - repo: https://github.com/alma/pre-commit-hooks
     rev: 1.1.2
     hooks:
       - id: check-branch-name
         args:
-          - "-r^((chore|ci|dependabot|devx|docs|feature|fix|hotfix|hotfix-backport|infra|other|perf|refactor|security|test)\/.+|(snyk)-.+|main|develop|HEAD)$$"
+          - "-r^((chore|ci|dependabot|devx|docs|feature|fix|release|hotfix|hotfix-backport|infra|other|perf|refactor|security|test)\/.+|(snyk)-.+|main|develop|HEAD)$$"
