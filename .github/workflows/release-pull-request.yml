@@ -1,0 +1,56 @@
+name: Create release pull request
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  create-release-pull-request:
+    runs-on: ubuntu-22.04
+
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      # This is needed to get all changes from develop in the PR
+      # It won't work if we checkout from develop, see https://github.com/peter-evans/create-pull-request/issues/2841
+      # See https://github.com/peter-evans/create-pull-request/blob/main/docs/examples.md#keep-a-branch-up-to-date-with-another
+      - name: Fetch develop branch
+        run: |
+          git fetch origin develop:develop
+          git reset --hard develop
+
+      - name: Create release draft
+        uses: release-drafter/release-drafter@v6
+        id: release-drafter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update CHANGELOG.md
+        uses: stefanzweifel/changelog-updater-action@v1
+        with:
+          latest-version: ${{ steps.release-drafter.outputs.tag_name }}
+          release-notes: ${{ steps.release-drafter.outputs.body }}
+
+      - name: Update files with release version
+        run: |
+          ./scripts/update-files-with-release-version.sh ${{ steps.release-drafter.outputs.tag_name }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: update version'
+          title: Release ${{ steps.release-drafter.outputs.tag_name }}
+          body: |
+            Update version to ${{ steps.release-drafter.outputs.tag_name }}
+
+            ### Checklist of actions to be done before merging
+            - [ ] Review and update the CHANGELOG.md if needed
+            - [ ] Review and update the Github release draft if needed
+            - [ ] Review the files updated with the new version number in the commit named "chore: update version"
+          branch: release/${{ steps.release-drafter.outputs.tag_name }}
+          base: main
+          labels: release
