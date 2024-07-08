@@ -100,7 +100,7 @@ jobs:
 
       - name: Format release notes for Slack
         # v1.0.2 cannot be used as it is not correctly handling the newlines
-        uses: LoveToKnow/slackify-markdown-action@v1.0.0
+        uses: LoveToKnow/slackify-markdown-action@v1.1.1
         id: slack-markdown-release-notes
         with:
           text: |
