@@ -87,6 +87,8 @@ jobs:
       - name: Publish Github release
         uses: actions/github-script@v7
         with:
+          # target_commitish is set to refs/heads/develop by release-drafter as we need to retrieve pull requests merged into develop
+          # We need to override it to refs/heads/main to point to the last commit of main branch instead of develop branch
           script: |
             const { owner, repo } = context.repo;
             await github.rest.repos.updateRelease({
@@ -95,7 +97,8 @@ jobs:
               release_id: "${{ steps.fetch-release-draft.outputs.id }}",
               draft: false,
               make_latest: true,
-              tag_name: "${{ steps.fetch-release-draft.outputs.name }}"
+              tag_name: "${{ steps.fetch-release-draft.outputs.name }}",
+              target_commitish: "refs/heads/main
             });
 
       - name: Format release notes for Slack

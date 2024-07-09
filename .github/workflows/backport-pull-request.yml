@@ -34,3 +34,4 @@ jobs:
             title: Backport main to develop
             branch: chore/backport-main-to-develop
             base: develop
+            labels: skip-changelog
