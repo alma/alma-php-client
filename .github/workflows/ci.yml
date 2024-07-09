@@ -1,0 +1,68 @@
+name: Continuous integration
+
+on:
+  workflow_dispatch: ~
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  ci:
+    name: Linting, tests and coverage
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - "5.6"
+          - "7.0"
+          - "7.1"
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
+          - "8.3"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Ensure source code is linted
+        run: composer exec phpcs -- src/
+
+      - name: Remove uncompliant statements in legacy code
+        if: contains(fromJson('["5.6", "7.0"]'), matrix.php)
+        run: |
+          # Replace string in files
+          string=': void'
+          grep -r -l "$string" tests/ | xargs sed -i "s/$string//g"
+
+      - name: PHPUnit
+        run: composer exec phpunit -- --configuration phpunit.ci.xml --coverage-xml ./.coverage
+        env:
+          XDEBUG_MODE: coverage
+
+      - name: PHPUnit threshold
+        run: php ./phpunit-threshold.php

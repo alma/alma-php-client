@@ -1,0 +1,49 @@
+version: 3
+
+vars:
+  # Required variables
+  PHP_VERSION: '{{ .PHP_VERSION }}'
+  PHPUNIT_VERSION: '{{ .PHPUNIT_VERSION  }}'
+  # Defaulted variable
+  COMPOSER_VERSION: '{{ .COMPOSER_VERSION | default "2" }}'
+  COMPOSE_SERVICE: '{{ .COMPOSE_SERVICE | default "php" }}'
+  PHPUNIT_FILE: '{{ .PHPUNIT_FILE | default "phpunit.dist.xml" }}'
+
+env:
+  PHP_VERSION: '{{ .PHP_VERSION }}'
+  COMPOSER_VERSION: '{{ .COMPOSER_VERSION }}'
+
+tasks:
+  docker:build:
+    internal: true
+    desc: Build the PHP test container
+    cmds:
+      - docker compose build --pull {{ .COMPOSE_SERVICE }}
+
+  tests:
+    desc: Execute PHPUnit tests on PHP {{ .PHP_VERSION }}
+    deps:
+      - docker:build
+    cmds:
+      - >-
+        {{ if eq .PHP_VERSION "5.6" "7.0" }}
+        docker compose run {{ .COMPOSE_SERVICE }} ./tests/legacy_tests.sh
+        {{ else }}
+        docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --configuration phpunit.dist.xml --testsuite "Alma PHP Client Unit Test Suite"
+        {{ end }}
+
+  tests:integration:
+    desc: Execute intregration tests
+    deps:
+      - docker:build
+    cmds:
+      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' phpunit.dist.xml > phpunit.xml
+      - docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --testsuite "Alma PHP Client Integration Test Suite"
+
+  shell:
+    desc: Connect to PHP container
+    deps:
+      - docker:build
+    cmds:
+      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' phpunit.dist.xml > phpunit.xml
+      - docker compose run {{ .COMPOSE_SERVICE }} bash

@@ -4,7 +4,7 @@
   "version": "2.0.7",
   "type": "library",
   "require": {
-    "php": "^5.6 || ~7.0 || ~7.1 || ~7.2 || ~7.3 || ~7.4 || ~8.0 || ~8.1 || ~8.2",
+    "php": "^5.6 || ~7.0 || ~7.1 || ~7.2 || ~7.3 || ~7.4 || ~8.0 || ~8.1 || ~8.2 || ~8.3",
     "psr/log": "^1 || ^2 || ^3",
     "ext-curl": "*",
     "ext-json": "*",
@@ -39,6 +39,7 @@
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
-    }
+    },
+    "lock": false
   }
 }
