@@ -26,6 +26,11 @@ jobs:
       - name: Create release draft
         uses: release-drafter/release-drafter@v6
         id: release-drafter
+        with:
+          # release-drafter should be based on develop to get the correct content as pull requests are merged into develop
+          # Note that the target commitish of the release should be updated to refs/heads/main when published
+          # (Otherwise the tag will point to the last commit on develop branch instead of the last commit of main branch)
+          commitish: refs/heads/develop
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

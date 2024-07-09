@@ -1,0 +1,11 @@
+'type: chore': ['chore/*', 'renovate/*', 'chore(deps):*']
+'type: ci': ci/*
+'type: perf': perf/*
+'type: refator': refactor/*
+'type: test': test/*
+'type: docs': docs/*
+'type: bugfix': ['fix/*', 'bug/*', 'hotfix-backport/*']
+'type: feature': ['feature/*', 'feat/*']
+'type: security': ['security/*', 'dependabot/*']
+'type: hotfix': 'hotfix/*'
+'type: devx': 'devx/*'
