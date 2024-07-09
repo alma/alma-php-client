@@ -10,7 +10,8 @@
     "github>alma/renovate:pre-commit"
   ],
   "dependencyDashboard": true,
-  "reviewers": ["team:squad-pre-purchase"],
+  "reviewers": ["team:squad-e-commerce-integrations"],
+  "baseBranches": ["develop"],
   "packageRules": [
     {
       "matchManagers": ["composer"],
