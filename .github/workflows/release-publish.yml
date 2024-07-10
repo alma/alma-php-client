@@ -102,7 +102,6 @@ jobs:
             });
 
       - name: Format release notes for Slack
-        # v1.0.2 cannot be used as it is not correctly handling the newlines
         uses: LoveToKnow/slackify-markdown-action@v1.1.1
         id: slack-markdown-release-notes
         with:
@@ -111,12 +110,12 @@ jobs:
 
             ${{ steps.fetch-release-draft.outputs.body }}
 
+            cc <@france.berut> <@khadija.cherif>
+
       - name: Send changelog to Slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          # TODO: Replace with channel #alma_changelog (id: CR9C57YM6) once full testing is done
-          # Channel `#devx-experiments`
-          channel-id: C04MQ9VEWRF
+          channel-id: CR9C57YM6
           slack-message: ${{ steps.slack-markdown-release-notes.outputs.text }}
           payload: |
             {
