@@ -64,8 +64,14 @@ class Order
     /** @var string | null  URL to the merchant's backoffice for that Order */
     private $merchantUrl;
 
-    /** @var array  Free-form custom data */
+    /**
+     * @var array  Free-form custom data
+     * @deprecated
+     * */
     public $data;
+
+    /** @var array  Free-form custom data */
+    private $orderData;
 
     /**
      * @var string | null Order comment
@@ -104,6 +110,7 @@ class Order
         $this->createdAt = $orderDataArray['created'];
         $this->customerUrl = $orderDataArray['customer_url'];
         $this->data = $orderDataArray['data'];
+        $this->orderData = $orderDataArray['data'];
         $this->id = $orderDataArray['id'];
         $this->externalId = $orderDataArray['id'];
         $this->merchant_reference = $orderDataArray['merchant_reference'];
@@ -205,6 +212,14 @@ class Order
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderData()
+    {
+        return $this->orderData;
     }
 
 }

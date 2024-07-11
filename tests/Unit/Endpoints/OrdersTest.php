@@ -18,6 +18,7 @@ use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Unit\Entities\OrderTest;
 
 class OrdersTest extends TestCase
 {
@@ -263,34 +264,12 @@ class OrdersTest extends TestCase
     }
 
     public function orderDataFactory(
-        $carrier = 'ups',
-        $tracking_number = 'ups_123456',
-        $tracking_url = 'http://tracking.url',
-        $comment = 'my comment',
-        $created = 1715331839,
-        $customer_url = 'http://customer.url',
-        $data = ['key' => 'value'],
-        $id = 'order_123',
-        $merchant_reference = 'my reference',
-        $merchant_url = 'http://merchant.url',
-        $payment = 'payment_123456',
-        $updated = 1715331839
+        $carrier,
+        $tracking_number,
+        $tracking_url
     )
     {
-        return [
-            'carrier' => $carrier,
-            'comment' => $comment,
-            'created' => $created,
-            'customer_url' => $customer_url,
-            'data' => $data,
-            'id' => $id,
-            'merchant_reference' => $merchant_reference,
-            'merchant_url' => $merchant_url,
-            'payment' => $payment,
-            'tracking_number' => $tracking_number,
-            'tracking_url' => $tracking_url,
-            'updated' => $updated
-        ];
+        return OrderTest::orderDataFactory($carrier, $tracking_number, $tracking_url);
     }
 
 
