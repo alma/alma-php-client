@@ -21,6 +21,7 @@ categories:
 
 exclude-labels:
   - 'skip-changelog'
+  - 'release'
   - 'type: chore'
   - 'type: ci'
   - 'type: refactor'
