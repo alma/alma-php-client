@@ -6,11 +6,14 @@ namespace Alma\API\Tests\Unit\Endpoints;
 use Alma\API\ClientContext;
 use Alma\API\Endpoints\Orders;
 
+use Alma\API\Entities\Order;
+use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
 use Alma\API\Request;
+use Alma\API\RequestError;
 use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -20,9 +23,28 @@ class OrdersTest extends TestCase
 {
 
     /**
-     * @var \Mockery\Mock|(\Mockery\MockInterface&Orders)
+     * @var ClientContext
+     */
+    private $clientContext;
+    /**
+     * @var Orders
      */
     protected $orderEndpoint;
+    /**
+     * @var ArrayUtils
+     */
+    protected $arrayUtils;
+    /**
+     * @var Response
+     */
+    protected $responseMock;
+    /**
+     * @var Request
+     */
+    protected $requestObject;
+
+    private $status;
+    private $externalId;
 
     public function setUp(): void
     {
@@ -30,27 +52,27 @@ class OrdersTest extends TestCase
         $this->orderEndpoint = Mockery::mock(Orders::class)->makePartial();
         $this->arrayUtils = Mockery::mock(ArrayUtils::class)->makePartial();
         $this->responseMock = Mockery::mock(Response::class);
-		$this->responseMock->errorMessage = 'Exception Error message';
-		$this->requestObject = Mockery::mock(Request::class);
+        $this->responseMock->errorMessage = 'Exception Error message';
+        $this->requestObject = Mockery::mock(Request::class);
         $loggerMock = Mockery::mock(LoggerInterface::class);
         $loggerMock->shouldReceive('error');
 
         $this->orderEndpoint->arrayUtils = $this->arrayUtils;
-        $this->externalId  = 'Mon external Id';
+        $this->externalId = 'Mon external Id';
         $this->status = 'Mon Status - 1';
         $this->clientContext->logger = $loggerMock;
         $this->orderEndpoint->setClientContext($this->clientContext);
 
     }
 
-	public function tearDown(): void
-	{
-		$this->orderEndpoint = null;
-		$this->arrayUtils = null;
-		$this->responseMock = null;
-		$this->requestObject = null;
-		Mockery::close();
-	}
+    public function tearDown(): void
+    {
+        $this->orderEndpoint = null;
+        $this->arrayUtils = null;
+        $this->responseMock = null;
+        $this->requestObject = null;
+        Mockery::close();
+    }
 
     public function testValidateStatusDataNoOrderData()
     {
@@ -112,11 +134,11 @@ class OrdersTest extends TestCase
 
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->orderEndpoint->shouldReceive('request')
-            ->with(Orders::ORDERS_PATH_V2 .  "/{$this->externalId}/status")
+            ->with(Orders::ORDERS_PATH_V2 . "/{$this->externalId}/status")
             ->once()
             ->andReturn($this->requestObject);
 
-        $this->orderEndpoint->sendStatus($this->externalId  , array(
+        $this->orderEndpoint->sendStatus($this->externalId, array(
             'status' => $this->status,
             'is_shipped' => true,
         ));
@@ -131,17 +153,18 @@ class OrdersTest extends TestCase
 
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->orderEndpoint->shouldReceive('request')
-            ->with(Orders::ORDERS_PATH_V2 .  "/{$this->externalId}/status")
+            ->with(Orders::ORDERS_PATH_V2 . "/{$this->externalId}/status")
             ->once()
             ->andReturn($this->requestObject);
 
         $this->expectException(RequestException::class);
-        $this->orderEndpoint->sendStatus($this->externalId  , array(
+        $this->orderEndpoint->sendStatus($this->externalId, array(
             'status' => $this->status,
             'is_shipped' => true,
         ));
 
     }
+
     public function testSendStatusWithException()
     {
         $this->orderEndpoint->shouldReceive('validateStatusData')->andReturn(null);
@@ -151,15 +174,123 @@ class OrdersTest extends TestCase
 
         $this->requestObject->shouldReceive('post')->andThrow(new RequestException());
         $this->orderEndpoint->shouldReceive('request')
-            ->with(Orders::ORDERS_PATH_V2 .  "/{$this->externalId}/status")
+            ->with(Orders::ORDERS_PATH_V2 . "/{$this->externalId}/status")
             ->once()
             ->andReturn($this->requestObject);
 
         $this->expectException(RequestException::class);
-        $this->orderEndpoint->sendStatus($this->externalId  , array(
+        $this->orderEndpoint->sendStatus($this->externalId, array(
             'status' => $this->status,
             'is_shipped' => true,
         ));
+    }
+
+    public function testUpdateTrackingThrowsAlmaException()
+    {
+        $this->expectException(AlmaException::class);
+        $this->requestObject->shouldReceive('put')->andThrow(new RequestError());
+        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
+        $this->orderEndpoint->shouldReceive('request')
+            ->with('/v1/orders/123')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->orderEndpoint->updateTracking('123', 'ups', '123456', 'myUrl');
+    }
+
+
+    /**
+     * @dataProvider updateTrackingDataProvider
+     * @param $carrier
+     * @param $trackingNumber
+     * @param $trackingUrl
+     * @param $trackingData
+     * @return void
+     * @throws AlmaException
+     */
+    public function testUpdateTracking($carrier, $trackingNumber, $trackingUrl, $trackingData)
+    {
+        $this->responseMock->json = $this->orderDataFactory($carrier, $trackingNumber, $trackingUrl);
+        $this->requestObject->shouldReceive('put')->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setRequestBody')->with($trackingData)->andReturn($this->requestObject);
+        $this->orderEndpoint->shouldReceive('request')
+            ->with('/v1/orders/123')
+            ->once()
+            ->andReturn($this->requestObject);
+        $order = $this->orderEndpoint->updateTracking('123', $carrier, $trackingNumber, $trackingUrl);
+        $this->isInstanceOf(Order::class, $order);
+        $this->assertEquals($carrier, $order->getCarrier());
+        $this->assertEquals($trackingNumber, $order->getTrackingNumber());
+        $this->assertEquals($trackingUrl, $order->getTrackingUrl());
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function updateTrackingDataProvider()
+    {
+        return [
+            'no data' => [
+                null,
+                null,
+                null,
+                []
+            ],
+            'Only Carrier' => [
+                'ups',
+                null,
+                null,
+                ['carrier' => 'ups']
+            ],
+            'Only Url' => [
+                null,
+                null,
+                'myUrl',
+                ['tracking_url' => 'myUrl']
+            ],
+            'Carrier and Url' => [
+                'ups',
+                null,
+                'myUrl',
+                ['carrier' => 'ups', 'tracking_url' => 'myUrl']
+            ],
+            'All params' => [
+                'ups',
+                '123456',
+                'myUrl',
+                ['carrier' => 'ups', 'tracking_number' => '123456', 'tracking_url' => 'myUrl']
+            ],
+        ];
+    }
+
+    public function orderDataFactory(
+        $carrier = 'ups',
+        $tracking_number = 'ups_123456',
+        $tracking_url = 'http://tracking.url',
+        $comment = 'my comment',
+        $created = 1715331839,
+        $customer_url = 'http://customer.url',
+        $data = ['key' => 'value'],
+        $id = 'order_123',
+        $merchant_reference = 'my reference',
+        $merchant_url = 'http://merchant.url',
+        $payment = 'payment_123456',
+        $updated = 1715331839
+    )
+    {
+        return [
+            'carrier' => $carrier,
+            'comment' => $comment,
+            'created' => $created,
+            'customer_url' => $customer_url,
+            'data' => $data,
+            'id' => $id,
+            'merchant_reference' => $merchant_reference,
+            'merchant_url' => $merchant_url,
+            'payment' => $payment,
+            'tracking_number' => $tracking_number,
+            'tracking_url' => $tracking_url,
+            'updated' => $updated
+        ];
     }
 
 
