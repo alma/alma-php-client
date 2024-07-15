@@ -17,8 +17,7 @@ final class PaymentsTest extends TestCase
      * @throws ParamsError
      */
     public static function setUpBeforeClass(): void
-	{
-		var_dump($_ENV);die();
+    {
         self::$almaClient = new Client(
             $_ENV['ALMA_API_KEY'],
             ['mode' => 'test', 'api_root' => $_ENV['ALMA_API_ROOT'], 'force_tls' => false]
