@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Integration\PHP7_2\Endpoints;
+namespace Alma\API\Tests\Integration\Legacy\Endpoints;
 
 use Alma\API\Client;
 use Alma\API\DependenciesError;
@@ -16,7 +16,7 @@ final class PaymentsTest extends TestCase
      * @throws DependenciesError
      * @throws ParamsError
      */
-    public static function setUpBeforeClass() : void
+    public static function setUpBeforeClass(): void
     {
         self::$almaClient = new Client(
             $_ENV['ALMA_API_KEY'],
