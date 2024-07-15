@@ -61,7 +61,6 @@ class PaymentsTest extends TestCase
                  "tracking_url":null,
                  "comment":null,
                  "created":1649672451,
-                 "updated":1649672451,
                  "customer_url":null,
                  "data":{},
                  "id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V",

@@ -121,10 +121,8 @@ class Order
         $this->paymentId = $orderDataArray['payment'];
         $this->trackingNumber = $orderDataArray['tracking_number'];
         $this->trackingUrl = $orderDataArray['tracking_url'];
-        $this->updatedAt = $orderDataArray['updated'];
+        $this->updatedAt = isset($orderDataArray['updated']) ? $orderDataArray['updated'] : null;
     }
-
-
 
     /**
      * @return string|null
