@@ -218,7 +218,7 @@ class OrdersTest extends TestCase
             ->once()
             ->andReturn($this->requestObject);
         $order = $this->orderEndpoint->updateTracking('123', $carrier, $trackingNumber, $trackingUrl);
-        $this->isInstanceOf(Order::class, $order);
+        $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals($carrier, $order->getCarrier());
         $this->assertEquals($trackingNumber, $order->getTrackingNumber());
         $this->assertEquals($trackingUrl, $order->getTrackingUrl());
