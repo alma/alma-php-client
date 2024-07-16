@@ -19,8 +19,8 @@ final class PaymentsTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        self::$payment = PaymentTestHelper::createPayment(26500, 3);
-        self::$almaClient = ClientTestHelper::getAlmaClient();
+        PaymentsTest::$payment = PaymentTestHelper::createPayment(26500, 3);
+        PaymentsTest::$almaClient = ClientTestHelper::getAlmaClient();
     }
 
     /**
@@ -34,7 +34,7 @@ final class PaymentsTest extends TestCase
                 ['installments_count' => 3],
             ]
         ];
-        $eligibility = self::$almaClient->payments->eligibility($eligibilityPayload);
+        $eligibility = PaymentsTest::$almaClient->payments->eligibility($eligibilityPayload);
         $eligibility = $eligibility['general_3_0_0'];
 
         $this->assertEquals($eligible, $eligibility->isEligible);
@@ -64,7 +64,7 @@ final class PaymentsTest extends TestCase
      */
     public function testCanCreateAPayment()
     {
-        $payment = self::$payment;
+        $payment = PaymentsTest::$payment;
         $this->assertEquals(26500, $payment->purchase_amount);
     }
 
@@ -73,8 +73,8 @@ final class PaymentsTest extends TestCase
      */
     public function testCanFetchAPayment()
     {
-        $p1 = self::$payment;
-        $p2 = self::$almaClient->payments->fetch($p1->id);
+        $p1 = PaymentsTest::$payment;
+        $p2 = PaymentsTest::$almaClient->payments->fetch($p1->id);
 
         $this->assertEquals($p1->id, $p2->id);
     }

@@ -14,43 +14,43 @@ class OrdersTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$almaClient = ClientTestHelper::getAlmaClient();
-        self::$payment = PaymentTestHelper::createPayment(26500, 3);
+        OrdersTest::$almaClient = ClientTestHelper::getAlmaClient();
+        OrdersTest::$payment = PaymentTestHelper::createPayment(26500, 3);
     }
 
     public function testCanCreateANewOrder()
     {
-        $payment = self::$payment;
+        $payment = OrdersTest::$payment;
         $order = $payment->orders[0];
         $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals('ABC-123', $order->getMerchantReference());
-        $newOrder = self::$almaClient->payments->addOrder($payment->id, ['merchant_reference' => 'ABC-123-NEW']);
+        $newOrder = OrdersTest::$almaClient->payments->addOrder($payment->id, ['merchant_reference' => 'ABC-123-NEW']);
         $this->assertInstanceOf(Order::class, $newOrder);
         $this->assertEquals('ABC-123-NEW', $newOrder->getMerchantReference());
     }
 
     public function testCanUpdateOrderTracking()
     {
-        $payment = self::$payment;
+        $payment = OrdersTest::$payment;
         $order = $payment->orders[0];
         $this->assertInstanceOf(Order::class, $order);
         $this->assertNull($order->getCarrier());
         $this->assertNull($order->getTrackingUrl());
         $this->assertNull($order->getTrackingNumber());
 
-        $updatedOrder = self::$almaClient->orders->updateTracking($order->getExternalId(), null,null , 'https://tracking.com');
+        $updatedOrder = OrdersTest::$almaClient->orders->updateTracking($order->getExternalId(), null,null , 'https://tracking.com');
         $this->assertInstanceOf(Order::class, $updatedOrder);
         $this->assertNull($order->getCarrier());
         $this->assertNull($updatedOrder->getTrackingNumber());
         $this->assertEquals('https://tracking.com', $updatedOrder->getTrackingUrl());
 
-        $updatedOrder = self::$almaClient->orders->updateTracking($order->getExternalId(), 'UPS');
+        $updatedOrder = OrdersTest::$almaClient->orders->updateTracking($order->getExternalId(), 'UPS');
         $this->assertInstanceOf(Order::class, $updatedOrder);
         $this->assertEquals('UPS', $updatedOrder->getCarrier());
         $this->assertNull($updatedOrder->getTrackingNumber());
         $this->assertEquals('https://tracking.com', $updatedOrder->getTrackingUrl());
 
-        $updatedOrder = self::$almaClient->orders->updateTracking($order->getExternalId(), 'LAPOSTE','123456789' , 'https://laposte.com');
+        $updatedOrder = OrdersTest::$almaClient->orders->updateTracking($order->getExternalId(), 'LAPOSTE','123456789' , 'https://laposte.com');
         $this->assertInstanceOf(Order::class, $updatedOrder);
         $this->assertEquals('LAPOSTE', $updatedOrder->getCarrier());
         $this->assertEquals('123456789', $updatedOrder->getTrackingNumber());
