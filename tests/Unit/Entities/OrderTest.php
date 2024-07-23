@@ -13,9 +13,6 @@ class OrderTest extends TestCase
         $orderData = $this->orderDataFactory();
         $order = new Order($orderData);
 
-        $this->assertEquals($orderData['carrier'], $order->getCarrier());
-        $this->assertEquals($orderData['tracking_number'], $order->getTrackingNumber());
-        $this->assertEquals($orderData['tracking_url'], $order->getTrackingUrl());
         $this->assertEquals($orderData['payment'], $order->payment);
         $this->assertEquals($orderData['payment'], $order->getPaymentId());
         $this->assertEquals($orderData['merchant_reference'], $order->merchant_reference);
@@ -34,9 +31,6 @@ class OrderTest extends TestCase
 
 
     public static function orderDataFactory(
-        $carrier = 'ups',
-        $tracking_number = 'ups_123456',
-        $tracking_url = 'http://tracking.url',
         $comment = 'my comment',
         $created = 1715331839,
         $customer_url = 'http://customer.url',
@@ -49,7 +43,6 @@ class OrderTest extends TestCase
     )
     {
         return [
-            'carrier' => $carrier,
             'comment' => $comment,
             'created' => $created,
             'customer_url' => $customer_url,
@@ -58,8 +51,6 @@ class OrderTest extends TestCase
             'merchant_reference' => $merchant_reference,
             'merchant_url' => $merchant_url,
             'payment' => $payment,
-            'tracking_number' => $tracking_number,
-            'tracking_url' => $tracking_url,
             'updated' => $updated
         ];
     }
