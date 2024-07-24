@@ -76,7 +76,7 @@ class Insurance extends Base
             throw new RequestException($response->errorMessage, null, $response);
         }
 
-        // @todo is it a possible case, or do we need to throw an exception
+        // Is it a possible case, or do we need to throw an exception
         if (!$response->json) {
             return null;
         }

@@ -30,23 +30,23 @@ class OrdersTest extends TestCase
         $this->assertInstanceOf(Order::class, $newOrder);
         $this->assertEquals('ABC-123-NEW', $newOrder->getMerchantReference());
     }
+
     public function testAddOrderTrackingThrowErrorWithBadData()
     {
         $this->expectException(RequestException::class);
         $payment = OrdersTest::$payment;
         $order = $payment->orders[0];
         $this->assertInstanceOf(Order::class, $order);
-        $this->assertNull(
-            OrdersTest::$almaClient->orders->addTracking($order->getExternalId(), 'UPS',null )
-        );
+        OrdersTest::$almaClient->orders->addTracking($order->getExternalId(), 'UPS', null);
     }
+
     public function testAddOrderTracking()
     {
         $payment = OrdersTest::$payment;
         $order = $payment->orders[0];
         $this->assertInstanceOf(Order::class, $order);
         $this->assertNull(
-            OrdersTest::$almaClient->orders->addTracking($order->getExternalId(), 'UPS','UPS_123456' , 'https://tracking.com')
+            OrdersTest::$almaClient->orders->addTracking($order->getExternalId(), 'UPS', 'UPS_123456', 'https://tracking.com')
         );
     }
 }
