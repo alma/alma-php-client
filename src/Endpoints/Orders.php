@@ -79,7 +79,9 @@ class Orders extends Base
             'tracking_number' => $trackingNumber,
             'tracking_url' => $trackingUrl
         ]);
-        $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderId}/shipment")->setRequestBody($trackingData)->post();
+        $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderId}/shipment")
+            ->setRequestBody($trackingData)
+            ->post();
         if ($response->isError()) {
             throw new RequestException($response->errorMessage, null, $response);
         }

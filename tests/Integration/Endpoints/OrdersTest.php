@@ -46,7 +46,12 @@ class OrdersTest extends TestCase
         $order = $payment->orders[0];
         $this->assertInstanceOf(Order::class, $order);
         $this->assertNull(
-            OrdersTest::$almaClient->orders->addTracking($order->getExternalId(), 'UPS', 'UPS_123456', 'https://tracking.com')
+            OrdersTest::$almaClient->orders->addTracking(
+                $order->getExternalId(),
+                'UPS',
+                'UPS_123456',
+                'https://tracking.com'
+            )
         );
     }
 }
