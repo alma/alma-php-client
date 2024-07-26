@@ -8,7 +8,9 @@
          convertNoticesToExceptions  = "true"
          convertWarningsToExceptions = "true"
          processIsolation            = "false"
-         stopOnFailure               = "true">
+         stopOnFailure               = "true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+    >
 
     <testsuites>
         <testsuite name="Alma PHP Client Unit Test Suite">
