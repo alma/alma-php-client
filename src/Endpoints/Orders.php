@@ -66,21 +66,25 @@ class Orders extends Base
 
     /**
      * @param string $orderId
-     * @param string|null $carrier
-     * @param string|null $trackingNumber
+     * @param string $carrier
+     * @param string $trackingNumber
      * @param string|null $trackingUrl
-     * @return Order
+     * @return void
      * @throws AlmaException
      */
-    public function updateTracking($orderId, $carrier = null, $trackingNumber = null, $trackingUrl = null)
+    public function addTracking($orderId, $carrier, $trackingNumber, $trackingUrl = null)
     {
         $trackingData = array_filter([
             'carrier' => $carrier,
             'tracking_number' => $trackingNumber,
             'tracking_url' => $trackingUrl
         ]);
-        $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->setRequestBody($trackingData)->put();
-        return new Order($response->json);
+        $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderId}/shipment")
+            ->setRequestBody($trackingData)
+            ->post();
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
     }
 
     /**

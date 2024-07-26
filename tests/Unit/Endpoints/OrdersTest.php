@@ -186,91 +186,57 @@ class OrdersTest extends TestCase
         ));
     }
 
-    public function testUpdateTrackingThrowsAlmaException()
+    public function testAddTrackingThrowsAlmaException()
     {
         $this->expectException(AlmaException::class);
-        $this->requestObject->shouldReceive('put')->andThrow(new RequestError());
+        $this->requestObject->shouldReceive('post')->andThrow(new RequestError());
         $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
         $this->orderEndpoint->shouldReceive('request')
-            ->with('/v1/orders/123')
+            ->with('/v2/orders/123/shipment')
             ->once()
             ->andReturn($this->requestObject);
-        $this->orderEndpoint->updateTracking('123', 'ups', '123456', 'myUrl');
+        $this->orderEndpoint->addTracking('123', 'ups', '123456', 'myUrl');
+    }
+    public function testAddTrackingThrowsAlmaExceptionForBadData()
+    {
+        $this->expectException(RequestException::class);
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
+        $this->requestObject->shouldReceive('setRequestBody')->andReturn($this->requestObject);
+        $this->orderEndpoint->shouldReceive('request')
+            ->with('/v2/orders/123/shipment')
+            ->once()
+            ->andReturn($this->requestObject);
+        $this->orderEndpoint->addTracking('123', 'ups', null);
     }
 
 
     /**
-     * @dataProvider updateTrackingDataProvider
-     * @param $carrier
-     * @param $trackingNumber
-     * @param $trackingUrl
-     * @param $trackingData
      * @return void
      * @throws AlmaException
      */
-    public function testUpdateTracking($carrier, $trackingNumber, $trackingUrl, $trackingData)
+    public function testAddTracking()
     {
-        $this->responseMock->json = $this->orderDataFactory($carrier, $trackingNumber, $trackingUrl);
-        $this->requestObject->shouldReceive('put')->andReturn($this->responseMock);
+        $trackingData = [
+            'carrier' => 'UPS',
+            'tracking_number' => 'UPS_123456',
+            'tracking_url' => 'https://tracking.com'
+        ];
+        $this->responseMock->shouldReceive('isError')->once()->andReturn(false);
+        $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->requestObject->shouldReceive('setRequestBody')->with($trackingData)->andReturn($this->requestObject);
+
         $this->orderEndpoint->shouldReceive('request')
-            ->with('/v1/orders/123')
+            ->with('/v2/orders/123/shipment')
             ->once()
             ->andReturn($this->requestObject);
-        $order = $this->orderEndpoint->updateTracking('123', $carrier, $trackingNumber, $trackingUrl);
-        $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($carrier, $order->getCarrier());
-        $this->assertEquals($trackingNumber, $order->getTrackingNumber());
-        $this->assertEquals($trackingUrl, $order->getTrackingUrl());
-    }
 
-    /**
-     * @return array[]
-     */
-    public static function updateTrackingDataProvider()
-    {
-        return [
-            'no data' => [
-                null,
-                null,
-                null,
-                []
-            ],
-            'Only Carrier' => [
-                'ups',
-                null,
-                null,
-                ['carrier' => 'ups']
-            ],
-            'Only Url' => [
-                null,
-                null,
-                'myUrl',
-                ['tracking_url' => 'myUrl']
-            ],
-            'Carrier and Url' => [
-                'ups',
-                null,
-                'myUrl',
-                ['carrier' => 'ups', 'tracking_url' => 'myUrl']
-            ],
-            'All params' => [
-                'ups',
-                '123456',
-                'myUrl',
-                ['carrier' => 'ups', 'tracking_number' => '123456', 'tracking_url' => 'myUrl']
-            ],
-        ];
+        $this->orderEndpoint->addTracking(
+            '123',
+            $trackingData['carrier'],
+            $trackingData['tracking_number'],
+            $trackingData['tracking_url']
+        );
     }
-
-    public function orderDataFactory(
-        $carrier,
-        $tracking_number,
-        $tracking_url
-    )
-    {
-        return OrderTest::orderDataFactory($carrier, $tracking_number, $tracking_url);
-    }
-
 
 }

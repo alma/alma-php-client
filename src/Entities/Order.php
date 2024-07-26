@@ -27,15 +27,6 @@ namespace Alma\API\Entities;
 
 class Order
 {
-    /** @var string | null  Order carrier */
-    private $carrier;
-
-    /** @var string | null  Order carrier tracking number */
-    private $trackingNumber;
-
-    /** @var string | null  Order carrier tracking URL */
-    private $trackingUrl;
-
     /** @var string ID of the Payment owning this Order
      * @deprecated
      */
@@ -105,7 +96,6 @@ class Order
 
     public function __construct($orderDataArray)
     {
-        $this->carrier = $orderDataArray['carrier'];
         $this->comment = $orderDataArray['comment'];
         $this->createdAt = $orderDataArray['created'];
         $this->customerUrl = $orderDataArray['customer_url'];
@@ -119,33 +109,7 @@ class Order
         $this->merchantUrl = $orderDataArray['merchant_url'];
         $this->payment = $orderDataArray['payment'];
         $this->paymentId = $orderDataArray['payment'];
-        $this->trackingNumber = $orderDataArray['tracking_number'];
-        $this->trackingUrl = $orderDataArray['tracking_url'];
         $this->updatedAt = isset($orderDataArray['updated']) ? $orderDataArray['updated'] : null;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCarrier()
-    {
-        return $this->carrier;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTrackingNumber()
-    {
-        return $this->trackingNumber;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTrackingUrl()
-    {
-        return $this->trackingUrl;
     }
 
     /**
