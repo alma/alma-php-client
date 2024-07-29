@@ -65,6 +65,29 @@ class Orders extends Base
     }
 
     /**
+     * @param string $orderId
+     * @param string $carrier
+     * @param string $trackingNumber
+     * @param string|null $trackingUrl
+     * @return void
+     * @throws AlmaException
+     */
+    public function addTracking($orderId, $carrier, $trackingNumber, $trackingUrl = null)
+    {
+        $trackingData = [
+            'carrier' => $carrier,
+            'tracking_number' => $trackingNumber,
+            'tracking_url' => $trackingUrl
+        ];
+        $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderId}/shipment")
+            ->setRequestBody($trackingData)
+            ->post();
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
+    }
+
+    /**
      * @param int $limit
      * @param string|null $startingAfter
      * @param array $filters
@@ -91,7 +114,7 @@ class Orders extends Base
         $response = $this->request(self::ORDERS_PATH)->setQueryParams($args)->get();
         return new PaginatedResults(
             $response,
-            function($startingAfter) use ($limit, $filters) {
+            function ($startingAfter) use ($limit, $filters) {
                 return $this->fetchAll($limit, $startingAfter, $filters);
             }
         );
@@ -123,11 +146,11 @@ class Orders extends Base
 
         try {
             $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderExternalId}/status")->setRequestBody(array(
-                'status' =>  $label,
+                'status' => $label,
                 'is_shipped' => $orderData['is_shipped'],
             ))->post();
-        }catch (AlmaException $e) {
-			$this->logger->error('Error sending status');
+        } catch (AlmaException $e) {
+            $this->logger->error('Error sending status');
             throw new RequestException('Error sending status', $e);
         }
 
@@ -143,21 +166,21 @@ class Orders extends Base
      */
     public function validateStatusData($orderData = array())
     {
-        if(count($orderData) == 0) {
+        if (count($orderData) == 0) {
             throw new ParametersException('Missing in the required parameters (status, is_shipped) when calling orders.sendStatus');
         }
 
         try {
             $this->arrayUtils->checkMandatoryKeys(['status', 'is_shipped'], $orderData);
-        } catch (MissingKeyException $e ) {
-            throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus',0,  $e);
+        } catch (MissingKeyException $e) {
+            throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus', 0, $e);
         }
 
-        if(!is_bool($orderData['is_shipped'])) {
+        if (!is_bool($orderData['is_shipped'])) {
             throw new ParametersException('Parameter "is_shipped" must be a boolean');
         }
 
-        if(!$orderData['status']) {
+        if (!$orderData['status']) {
             throw new ParametersException('Missing the required parameter "status" when calling orders.sendStatus');
         }
     }

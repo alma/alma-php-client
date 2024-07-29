@@ -5,7 +5,7 @@
       <directory>tests/Unit</directory>
     </testsuite>
     <testsuite name="Alma PHP Client Integration Test Suite">
-      <directory>tests/Integration/{MYVERSION}</directory>
+      <directory>tests/Integration</directory>
     </testsuite>
   </testsuites>
   <php>

@@ -37,8 +37,12 @@ tasks:
     deps:
       - docker:build
     cmds:
-      - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' phpunit.dist.xml > phpunit.xml
-      - docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --testsuite "Alma PHP Client Integration Test Suite"
+       - >-
+          {{ if eq .PHP_VERSION "5.6" "7.0" }}
+          docker compose run {{ .COMPOSE_SERVICE }} ./tests/legacy_integration_tests.sh
+          {{ else }}
+          docker compose run {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --configuration phpunit.dist.xml --testsuite "Alma PHP Client Integration Test Suite"
+          {{ end }}
 
   shell:
     desc: Connect to PHP container
