@@ -98,7 +98,7 @@ jobs:
               draft: false,
               make_latest: true,
               tag_name: "${{ steps.fetch-release-draft.outputs.name }}",
-              target_commitish: "refs/heads/main
+              target_commitish: "refs/heads/main"
             });
 
       - name: Format release notes for Slack
