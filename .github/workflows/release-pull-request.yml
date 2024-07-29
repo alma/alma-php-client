@@ -44,9 +44,20 @@ jobs:
         run: |
           ./scripts/update-files-with-release-version.sh ${{ steps.release-drafter.outputs.tag_name }}
 
+      # If using default Github token, the created pull request won't trigger workflows with pull_request event
+      # See https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
+      - name: Generate Github token to create PR
+        uses: actions/create-github-app-token@v1
+        id: github-token
+        with:
+          app-id: ${{ secrets.ALMA_CREATE_TEAM_PRS_APP_ID }}
+          private-key: ${{ secrets.ALMA_CREATE_TEAM_PRS_APP_PEM }}
+          repositories: alma-php-client
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ steps.github-token.outputs.token }}
           commit-message: 'chore: update version'
           title: Release ${{ steps.release-drafter.outputs.tag_name }}
           body: |
