@@ -74,11 +74,11 @@ class Orders extends Base
      */
     public function addTracking($orderId, $carrier, $trackingNumber, $trackingUrl = null)
     {
-        $trackingData = array_filter([
+        $trackingData = [
             'carrier' => $carrier,
             'tracking_number' => $trackingNumber,
             'tracking_url' => $trackingUrl
-        ]);
+        ];
         $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderId}/shipment")
             ->setRequestBody($trackingData)
             ->post();
