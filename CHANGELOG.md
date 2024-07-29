@@ -4,27 +4,17 @@
 
 ### Changes
 
-- chore(deps): update lovetoknow/slackify-markdown-action action to v1.1.1 (#115)
-- Merge release workflow and unit tests improvement into main (#120)
-- [DEVX] Fix release zip filename (#117)
-- [DEX-889] Add new release workflow (#111)
+- Add new release workflow (#111)
 - Improve unit tests (#110)
-- [DEX-889] Add a template for release-drafter (#112)
-- Update the local docker development experience (#107)
-- Run CI on multiple PHP versions (#108)
-- [Security] Update deprecated Aqua scanner options (#106)
-- chore(deps): update dependency ubuntu to v22 (#109)
-- Add missing Renovate base branch configuration (#105)
+- Rework integration test in php client (#125)
 
 ### 🚀 New Features
 
-- Change shipment data endpoint (#127)
-- feature: refactor order and add updateTracking put endpoint (#124)
-- Feature/ecom 1867 php client rework integration test in php client (#125)
+- Add updateTracking put endpoint & refactor Order Model (#124)
 
 #### Contributors
 
-@Francois-Gomis, @alma-renovate-bot, @alma-renovate-bot[bot], @carine-bonnafous, @gdraynz, @joyet-simon and @remic-alma
+@Francois-Gomis, @carine-bonnafous, @gdraynz, @joyet-simon and @remic-alma
 
 ## v2.0.7
 
