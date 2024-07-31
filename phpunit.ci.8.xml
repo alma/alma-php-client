@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  bootstrap="vendor/autoload.php"
+  backupGlobals="false"
+  colors="true"
+  processIsolation="false"
+  stopOnFailure="true"
+  beStrictAboutTestsThatDoNotTestAnything="false"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+  cacheDirectory=".phpunit.cache"
+  backupStaticProperties="false">
+
+  <testsuites>
+    <testsuite name="Alma PHP Client Unit Test Suite">
+      <directory>tests/Unit</directory>
+    </testsuite>
+  </testsuites>
+
+  <coverage includeUncoveredFiles="true"
+    pathCoverage="false"
+    ignoreDeprecatedCodeUnits="true"
+    disableCodeCoverageIgnore="true">
+  </coverage>
+
+  <source>
+    <include>
+      <directory suffix=".php">./src/*</directory>
+    </include>
+  </source>
+
+</phpunit>

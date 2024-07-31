@@ -60,7 +60,11 @@ jobs:
           grep -r -l "$string" tests/ | xargs sed -i "s/$string//g"
 
       - name: PHPUnit
-        run: composer exec phpunit -- --configuration phpunit.ci.xml --coverage-xml ./.coverage
+        run: |
+          case ${{ matrix.php }} in
+            8.1|8.2|8.3 ) composer exec phpunit -- --configuration phpunit.ci.8.xml --coverage-xml ./.coverage;;
+            *) composer exec phpunit -- --configuration phpunit.ci.xml --coverage-xml ./.coverage;;
+          esac
         env:
           XDEBUG_MODE: coverage
 

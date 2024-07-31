@@ -11,4 +11,4 @@ string=': void'
 grep -r -l "$string" tests/ | xargs sed -i "s/$string//g"
 
 # Run tests
-composer exec phpunit --verbose -- --configuration phpunit.dist.xml --testsuite "Alma PHP Client Unit Test Suite"
+composer exec phpunit --verbose -- --configuration phpunit.dist.xml --testsuite "Alma PHP Client Unit Test Suite" --coverage-xml ./.coverage
