@@ -62,10 +62,10 @@ class PaymentValidator
      */
     public function isHmacValidated($data, $apiKey,  $signature)
     {
-        if (is_string($data) && is_string($apiKey) && is_string($signature) && hash_hmac('sha256', $data, $apiKey) == $signature) {
-            return true;
-        }
-
-        return false;
+        return (
+            is_string($data) &&
+            is_string($apiKey) &&
+            hash_hmac('sha256', $data, $apiKey) === $signature
+        );
     }
 }
