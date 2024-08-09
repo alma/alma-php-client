@@ -53,4 +53,19 @@ class PaymentValidator
             ));
         }
     }
+
+    /**
+     * @param string $data
+     * @param string $apiKey
+     * @param string $signature
+     * @return bool
+     */
+    public function isHmacValidated($data, $apiKey,  $signature)
+    {
+        if (is_string($data) && is_string($apiKey) && is_string($signature) && hash_hmac('sha256', $data, $apiKey) == $signature) {
+            return true;
+        }
+
+        return false;
+    }
 }
