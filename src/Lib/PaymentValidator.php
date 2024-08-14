@@ -34,6 +34,9 @@ use Alma\API\ParamsError;
  */
 class PaymentValidator
 {
+
+    const HEADER_SIGNATURE_KEY = 'X-Alma-Signature';
+
     /**
      * Ensure that the purchase amount is an integer
      *
