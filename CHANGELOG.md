@@ -6,8 +6,7 @@
 
 ### 🚀 New Features
 
-- Add signature const (#133)
-- feat: Add function for HMAC verification (#132)
+- Add function for HMAC verification (#132)
 
 #### Contributors
 
