@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v2.2.0 - 2024-09-05
+
+### Changes
+
+### 🚀 New Features
+
+- Add signature const (#133)
+- feat: Add function for HMAC verification (#132)
+
+#### Contributors
+
+@Benjamin-Freoua-Alma, @CamilleFljt, @Francois-Gomis and @carine-bonnafous
+
 ## v2.1.0 - 2024-07-29
 
 ### Changes
@@ -149,6 +162,7 @@
         // Handle errors
     }
   
+  
   ```
 * Add fields and docs to the Payment entity
 * Add a Refund entity and extract refunds data within the Payment entity constructor
@@ -268,10 +282,15 @@ Getting more serious with a 1.0.0 release! 🎉
 ## v0.0.1
 
 * Initial "pre-release" of the API Client
+  
 * Includes two main endpoints: Payments and Merchants
+  
 * Provides what's necessary for a typical payment flow:
+  
   * `Payments.createPayment` and `Payments.eligibility`
   * `Merchants.me`
   
 * Base `Alma\API\Client` class can be configured with API key and live/test mode
+  
 * TLS is automatically forced to TLS 1.2 to meet Alma's security requirements, but configurable
+  
