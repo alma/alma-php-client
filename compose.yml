@@ -12,6 +12,8 @@ services:
     volumes:
       - ./:/app
       - /app/vendor
+    environment:
+      XDEBUG_MODE: coverage
 
   php-legacy:
     user: ${UID:-1000}:${GID:-1000}

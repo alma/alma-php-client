@@ -34,6 +34,9 @@ use Alma\API\ParamsError;
  */
 class PaymentValidator
 {
+
+    const HEADER_SIGNATURE_KEY = 'X-Alma-Signature';
+
     /**
      * Ensure that the purchase amount is an integer
      *
@@ -52,5 +55,18 @@ class PaymentValidator
                 gettype($data['payment']['purchase_amount'])
             ));
         }
+    }
+
+    /**
+     * @param string $data
+     * @param string $apiKey
+     * @param string $signature
+     * @return bool
+     */
+    public function isHmacValidated($data, $apiKey,  $signature)
+    {
+        return is_string($data) &&
+            is_string($apiKey) &&
+            hash_hmac('sha256', $data, $apiKey) === $signature;
     }
 }

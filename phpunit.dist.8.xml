@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        bootstrap="vendor/autoload.php" 
+        backupGlobals="false" 
+        colors="true" 
+        testdox="true" 
+        displayDetailsOnTestsThatTriggerDeprecations="true" 
+        processIsolation="false" 
+        stopOnFailure="false" 
+        beStrictAboutTestsThatDoNotTestAnything="false" 
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd" 
+        cacheDirectory=".phpunit.cache" 
+        backupStaticProperties="false">
+
+  <testsuites>
+    <testsuite name="Alma PHP Client Unit Test Suite">
+      <directory>tests/Unit</directory>
+    </testsuite>
+    <testsuite name="Alma PHP Client Integration Test Suite">
+      <directory>tests/Integration</directory>
+    </testsuite>
+  </testsuites>
+
+  <coverage includeUncoveredFiles="true"
+    pathCoverage="false"
+    ignoreDeprecatedCodeUnits="true"
+    disableCodeCoverageIgnore="true">
+  </coverage>
+
+  <source>
+    <include>
+      <directory suffix=".php">./src/*</directory>
+    </include>
+  </source>
+
+  <php>
+    <env name="ALMA_API_KEY" value="sk_test_*******"/>
+    <env name="ALMA_API_ROOT" value="alma-api-url"/>
+  </php>
+</phpunit>
