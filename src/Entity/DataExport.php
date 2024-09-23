@@ -22,50 +22,47 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Entity;
+namespace Alma\API\Entities;
 
 class DataExport extends Base
 {
-    /** @var bool */
     public $complete;
 
-    /** @var int Timestamp */
     public $created;
 
-    /** @var int Timestamp */
     public $end;
 
-    /** @var string */
+    public $holder_id;
+
     public $id;
 
-    /** @var bool */
-    public $includeChildAccounts;
+    public $include_child_accounts;
 
-    /** @var string */
     public $merchant;
 
+    public $receivable_export_type;
 
-    /** @var int Timestamp */
     public $start;
 
-    /** @var string */
     public $type;
 
-    /** @var string Timestamp */
     public $updated;
 
-    /** @var string */
-    public $csvUrl;
+    public $url_csv;
 
-    /** @var string */
-    public $pdfUrl;
+    public $url_pdf;
 
-    /** @var string */
-    public $xlsxUrl;
+    public $url_xlsx;
 
-    /** @var string */
-    public $xmlUrl;
+    public $url_xml;
 
-    /** @var string */
-    public $zipUrl;
+    public $url_zip;
+
+    /**
+     * @param array $attributes
+     */
+    public function __construct($attributes)
+    {
+        parent::__construct($attributes);
+    }
 }
