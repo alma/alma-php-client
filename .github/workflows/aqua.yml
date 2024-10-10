@@ -8,8 +8,43 @@ on:
 
 jobs:
   aqua:
-    name: Aqua scanner
-    uses: alma/actions/.github/workflows/aqua.yml@v3
-    secrets: inherit
-    with:
-      service-account: github-gar-alma-php-client@lyrical-carver-335213.iam.gserviceaccount.com
+    name: Code scanning
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+
+      - name: Authenticate to Google Cloud
+        id: gcloud-auth
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/699052769907/locations/global/workloadIdentityPools/github-identity-pool-shared/providers/github-identity-provider-shared  # yamllint disable-line
+          service_account: github-gar-alma-php-client@lyrical-carver-335213.iam.gserviceaccount.com
+
+      - name: Authenticate to Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: europe-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.gcloud-auth.outputs.access_token }}
+
+      - name: Run Aqua scanner
+        uses: docker://aquasec/aqua-scanner
+        env:
+          AQUA_KEY: ${{ secrets.AQUA_KEY }}
+          AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
+          GITHUB_TOKEN: ${{ github.token }}
+          AQUA_URL: https://api.eu-1.supply-chain.cloud.aquasec.com
+          CSPM_URL: https://eu-1.api.cloudsploit.com
+          TRIVY_RUN_AS_PLUGIN: aqua
+          TRIVY_DB_REPOSITORY: europe-docker.pkg.dev/lyrical-carver-335213/ghcr-remote-cache/aquasecurity/trivy-db:2
+        with:
+          args: trivy fs --sast --reachability --scanners misconfig,vuln,secret .
