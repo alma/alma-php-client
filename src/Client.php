@@ -70,6 +70,11 @@ class Client
      * @var Endpoints\Insurance
      */
     public $insurance;
+
+    /**
+     * @var Endpoints\DataExports
+     */
+    public $dataExports;
     /*************************/
 
     /**
@@ -150,6 +155,7 @@ class Client
         $this->shareOfCheckout = new Endpoints\ShareOfCheckout($this->context);
         $this->webhooks = new Endpoints\Webhooks($this->context);
         $this->insurance = new Endpoints\Insurance($this->context);
+        $this->dataExports = new Endpoints\DataExports($this->context);
     }
 
     private function initUserAgent()
