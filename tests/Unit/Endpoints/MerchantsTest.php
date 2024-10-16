@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class MerchantsTest extends TestCase
 {
+	const URL = "https://www.example.com/integrations/configurations";
+
 	public function setUp(): void
 	{
 		$this->merchantEndpoint = Mockery::mock(Merchants::class)->makePartial();
@@ -29,7 +31,7 @@ class MerchantsTest extends TestCase
 	public function testSendIntegrationsConfigurationsUrlIsOk(){
 		$this->responseMock->shouldReceive('isError')->once()->andReturn(false);
 		$this->requestObject->shouldReceive('setRequestBody')
-			->with(['endpoint_url' => 'https://www.example.com/integrations/configurations'])
+			->with(['endpoint_url' => self::URL])
 			->andReturn($this->requestObject);
 
 		$this->merchantEndpoint->shouldReceive('request')
@@ -38,14 +40,14 @@ class MerchantsTest extends TestCase
 			->andReturn($this->requestObject);
 		$this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
-		$url = "https://www.example.com/integrations/configurations";
+		$url = self::URL;
 		$this->assertNull($this->merchantEndpoint->sendIntegrationsConfigurationsUrl($url));
 	}
 
 	public function testSendIntegrationsConfigurationsUrlThrowRequestException(){
 		$this->responseMock->shouldReceive('isError')->once()->andReturn(true);
 		$this->requestObject->shouldReceive('setRequestBody')
-			->with(['endpoint_url' => 'https://www.example.com/integrations/configurations'])
+			->with(['endpoint_url' => self::URL])
 			->andReturn($this->requestObject);
 
 		$this->merchantEndpoint->shouldReceive('request')
@@ -54,7 +56,7 @@ class MerchantsTest extends TestCase
 			->andReturn($this->requestObject);
 		$this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
 
-		$url = "https://www.example.com/integrations/configurations";
+		$url = self::URL;
 		$this->expectException(RequestException::class);
 		$this->merchantEndpoint->sendIntegrationsConfigurationsUrl($url);
 

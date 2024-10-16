@@ -27,19 +27,19 @@ class CmsFeaturesTest extends TestCase
 
 		$cmsFeatures = new CmsFeatures($data);
 
-		$this->assertEquals(true, $cmsFeatures->getProperties()['alma_enabled']);
-		$this->assertEquals(true, $cmsFeatures->getProperties()['widget_cart_activated']);
-		$this->assertEquals(false, $cmsFeatures->getProperties()['widget_product_activated']);
+		$this->assertTrue($cmsFeatures->getProperties()['alma_enabled']);
+		$this->assertTrue($cmsFeatures->getProperties()['widget_cart_activated']);
+		$this->assertFalse($cmsFeatures->getProperties()['widget_product_activated']);
 		$this->assertEquals('Plan A', $cmsFeatures->getProperties()['used_fee_plans']);
 		$this->assertEquals(1, $cmsFeatures->getProperties()['payment_method_position']);
-		$this->assertEquals(true, $cmsFeatures->getProperties()['in_page_activated']);
-		$this->assertEquals(false, $cmsFeatures->getProperties()['log_activated']);
+		$this->assertTrue($cmsFeatures->getProperties()['in_page_activated']);
+		$this->assertFalse($cmsFeatures->getProperties()['log_activated']);
 		$this->assertEquals(['category1', 'category2'], $cmsFeatures->getProperties()['excluded_categories']);
-		$this->assertEquals(true, $cmsFeatures->getProperties()['excluded_categories_activated']);
+		$this->assertTrue($cmsFeatures->getProperties()['excluded_categories_activated']);
 		$this->assertEquals(['feature1', 'feature2'], $cmsFeatures->getProperties()['specific_features']);
 		$this->assertEquals(['FR', 'US'], $cmsFeatures->getProperties()['country_restriction']);
-		$this->assertEquals(false, $cmsFeatures->getProperties()['is_multisite']);
-		$this->assertEquals(true, $cmsFeatures->getProperties()['custom_widget_css']);
+		$this->assertFalse($cmsFeatures->getProperties()['is_multisite']);
+		$this->assertTrue($cmsFeatures->getProperties()['custom_widget_css']);
 	}
 
 	public function testConstructorHandlesNullValuesCorrectly()
