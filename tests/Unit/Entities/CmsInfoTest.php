@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class CmsInfoTest extends TestCase
 {
+	const SDK_VERSION = '2.0.0';
+	const SDK_NAME = 'Alma SDK';
+
 	public function testConstructorSetsValuesCorrectly()
 	{
 		$data = [
@@ -17,8 +20,8 @@ class CmsInfoTest extends TestCase
 			'language_name' => 'PHP',
 			'language_version' => '7.4',
 			'alma_plugin_version' => '1.0.0',
-			'alma_sdk_version' => '2.0.0',
-			'alma_sdk_name' => 'Alma SDK'
+			'alma_sdk_version' => self::SDK_VERSION,
+			'alma_sdk_name' => self::SDK_NAME
 		];
 
 		$cmsInfo = new CmsInfo($data);
@@ -30,8 +33,8 @@ class CmsInfoTest extends TestCase
 		$this->assertEquals('PHP', $cmsInfo->getProperties()['language_name']);
 		$this->assertEquals('7.4', $cmsInfo->getProperties()['language_version']);
 		$this->assertEquals('1.0.0', $cmsInfo->getProperties()['alma_plugin_version']);
-		$this->assertEquals('2.0.0', $cmsInfo->getProperties()['alma_sdk_version']);
-		$this->assertEquals('Alma SDK', $cmsInfo->getProperties()['alma_sdk_name']);
+		$this->assertEquals(self::SDK_VERSION, $cmsInfo->getProperties()['alma_sdk_version']);
+		$this->assertEquals(self::SDK_NAME, $cmsInfo->getProperties()['alma_sdk_name']);
 	}
 
 	public function testConstructorHandlesNullValuesCorrectly()
@@ -71,8 +74,8 @@ class CmsInfoTest extends TestCase
 			'language_name' => null,
 			'language_version' => '',
 			'alma_plugin_version' => null,
-			'alma_sdk_version' => '2.0.0',
-			'alma_sdk_name' => 'Alma SDK'
+			'alma_sdk_version' => self::SDK_VERSION,
+			'alma_sdk_name' => self::SDK_NAME
 		];
 
 		$cmsInfo = new CmsInfo($data);
