@@ -9,6 +9,13 @@ use Alma\API\Entities\MerchantData\CmsFeatures;
 
 class PayloadFormatterTest extends TestCase
 {
+    var $payloadFormatter;
+
+    public function setUp(): void
+    {
+        $this->payloadFormatter = new PayloadFormatter();
+    }
+
 	public function testFormatIntegrationConfigurationPayload()
 	{
 		// Simulated input data for CmsInfo
@@ -44,7 +51,7 @@ class PayloadFormatterTest extends TestCase
 		$cmsFeatures = new CmsFeatures($cmsFeaturesData);
 
 		// Call the method to be tested
-		$result = PayloadFormatter::formatIntegrationConfigurationPayload($cmsInfo, $cmsFeatures);
+		$result = $this->payloadFormatter->formatConfigurationPayload($cmsInfo, $cmsFeatures);
 
 		// Expected result in JSON format
 		$expectedPayload = json_encode([
@@ -91,7 +98,7 @@ class PayloadFormatterTest extends TestCase
 		$cmsFeatures = new CmsFeatures($cmsFeaturesData);
 
 		// Call the method to be tested
-		$result = PayloadFormatter::formatIntegrationConfigurationPayload($cmsInfo, $cmsFeatures);
+		$result = $this->payloadFormatter->formatConfigurationPayload($cmsInfo, $cmsFeatures);
 
 		// Expected result in JSON format (should not include keys with null or empty values)
 		$expectedPayload = json_encode([

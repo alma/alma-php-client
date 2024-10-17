@@ -89,4 +89,21 @@ class CmsInfoTest extends TestCase
 		$this->assertArrayHasKey('alma_sdk_version', $properties);
 		$this->assertArrayHasKey('alma_sdk_name', $properties);
 	}
+
+    public function testGetPropertiesFiltersOutWithEmptyData()
+    {
+        $data = [];
+
+        $cmsInfo = new CmsInfo($data);
+        $properties = $cmsInfo->getProperties();
+
+        $this->assertArrayNotHasKey('cms_name', $properties);
+        $this->assertArrayNotHasKey('cms_version', $properties); // Should be filtered out (empty string)
+        $this->assertEquals([], $cmsInfo->getProperties()['third_parties_plugins']);
+        $this->assertEquals([], $cmsInfo->getProperties()['themes']);
+        $this->assertArrayNotHasKey('language_name', $properties); // Should be filtered out (null)
+        $this->assertArrayNotHasKey('language_version', $properties); // Should be filtered out (empty string)
+        $this->assertArrayNotHasKey('alma_sdk_version', $properties);
+        $this->assertArrayNotHasKey('alma_sdk_name', $properties);
+    }
 }

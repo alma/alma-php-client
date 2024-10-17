@@ -35,7 +35,7 @@ class MerchantsTest extends TestCase
 			->andReturn($this->requestObject);
 
 		$this->merchantEndpoint->shouldReceive('request')
-			->with(Merchants::ME_PATH . "/integrations/configurations")
+			->with(Merchants::ME_PATH . "/configuration")
 			->once()
 			->andReturn($this->requestObject);
 		$this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
@@ -51,7 +51,7 @@ class MerchantsTest extends TestCase
 			->andReturn($this->requestObject);
 
 		$this->merchantEndpoint->shouldReceive('request')
-			->with(Merchants::ME_PATH . "/integrations/configurations")
+			->with(Merchants::ME_PATH . "/configuration")
 			->once()
 			->andReturn($this->requestObject);
 		$this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);

@@ -4,117 +4,118 @@ namespace Alma\API\Entities\MerchantData;
 
 class CmsFeatures
 {
-	/**
-	 * @var bool | null
-	 */
-	private $almaEnabled;
+    /**
+     * @var bool | null
+     */
+    private $almaEnabled;
 
-	/**
-	 * @var bool | null
-	 */
-	private $widgetCartActivated;
+    /**
+     * @var bool | null
+     */
+    private $widgetCartActivated;
 
-	/**
-	 * @var bool | null
-	 */
-	private $widgetProductActivated;
+    /**
+     * @var bool | null
+     */
+    private $widgetProductActivated;
 
-	/**
-	 * @var mixed
-	 */
-	private $usedFeePlans;
+    /**
+     * @var array
+     */
+    private $usedFeePlans;
 
-	/**
-	 * @var int | null
-	 */
-	private $paymentMethodPosition;
+    /**
+     * @var int | null
+     */
+    private $paymentMethodPosition;
 
-	/**
-	 * @var bool | null
-	 */
-	private $inPageActivated;
+    /**
+     * @var bool | null
+     */
+    private $inPageActivated;
 
-	/**
-	 * @var bool | null
-	 */
-	private $logActivated;
+    /**
+     * @var bool | null
+     */
+    private $logActivated;
 
-	/**
-	 * @var string[]
-	 */
-	private $excludedCategories;
+    /**
+     * @var string[]
+     */
+    private $excludedCategories;
 
-	/**
-	 * @var bool | null
-	 */
-	private $excludedCategoriesActivated;
+    /**
+     * @var bool | null
+     */
+    private $excludedCategoriesActivated;
 
-	/**
-	 * @var array<array{name: string}>
-	 */
-	private $specificFeatures;
+    /**
+     * @var array<array{name: string}>
+     */
+    private $specificFeatures;
 
-	/**
-	 * @var string[]
-	 */
-	private $countryRestriction;
+    /**
+     * @var string[]
+     */
+    private $countryRestriction;
 
-	/**
-	 * @var bool | null
-	 */
-	private $isMultisite;
+    /**
+     * @var bool | null
+     */
+    private $isMultisite;
 
-	/**
-	 * @var bool | null
-	 */
-	private $customWidgetCss;
+    /**
+     * @var bool | null
+     */
+    private $customWidgetCss;
 
-	/**
-	 * CmsFeatures constructor.
-	 * @param array $cmsFeaturesDataArray
-	 */
-	public function __construct($cmsFeaturesDataArray)
-	{
-		// Ensure values are properly initialized
-		$this->almaEnabled = isset($cmsFeaturesDataArray['alma_enabled']) ? $cmsFeaturesDataArray['alma_enabled'] : null;
-		$this->widgetCartActivated = isset($cmsFeaturesDataArray['widget_cart_activated']) ? $cmsFeaturesDataArray['widget_cart_activated'] : null;
-		$this->widgetProductActivated = isset($cmsFeaturesDataArray['widget_product_activated']) ? $cmsFeaturesDataArray['widget_product_activated'] : null;
-		$this->usedFeePlans = isset($cmsFeaturesDataArray['used_fee_plans']) ? $cmsFeaturesDataArray['used_fee_plans'] : '';
-		$this->inPageActivated = isset($cmsFeaturesDataArray['in_page_activated']) ? $cmsFeaturesDataArray['in_page_activated'] : null;
-		$this->logActivated = isset($cmsFeaturesDataArray['log_activated']) ? $cmsFeaturesDataArray['log_activated'] : null;
-		$this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : [];
-		$this->excludedCategoriesActivated = isset($cmsFeaturesDataArray['excluded_categories_activated']) ?
-			$cmsFeaturesDataArray['excluded_categories_activated'] : null;
-		$this->paymentMethodPosition = isset($cmsFeaturesDataArray['payment_method_position']) ? $cmsFeaturesDataArray['payment_method_position'] : null;
-		$this->specificFeatures = isset($cmsFeaturesDataArray['specific_features']) ? $cmsFeaturesDataArray['specific_features'] : [];
-		$this->countryRestriction = isset($cmsFeaturesDataArray['country_restriction']) ? $cmsFeaturesDataArray['country_restriction'] : [];
-		$this->isMultisite = isset($cmsFeaturesDataArray['is_multisite']) ? $cmsFeaturesDataArray['is_multisite'] : null;
-		$this->customWidgetCss = isset($cmsFeaturesDataArray['custom_widget_css']) ? $cmsFeaturesDataArray['custom_widget_css'] : null;
-	}
+    /**
+     * CmsFeatures constructor.
+     * @param array $cmsFeaturesDataArray
+     */
+    public function __construct($cmsFeaturesDataArray)
+    {
+        // Ensure values are properly initialized
+        $this->almaEnabled = isset($cmsFeaturesDataArray['alma_enabled']) ? $cmsFeaturesDataArray['alma_enabled'] : null;
+        $this->widgetCartActivated = isset($cmsFeaturesDataArray['widget_cart_activated']) ? $cmsFeaturesDataArray['widget_cart_activated'] : null;
+        $this->widgetProductActivated = isset($cmsFeaturesDataArray['widget_product_activated']) ? $cmsFeaturesDataArray['widget_product_activated'] : null;
+        $this->usedFeePlans = isset($cmsFeaturesDataArray['used_fee_plans']) ? $cmsFeaturesDataArray['used_fee_plans'] : [];
+        $this->inPageActivated = isset($cmsFeaturesDataArray['in_page_activated']) ? $cmsFeaturesDataArray['in_page_activated'] : null;
+        $this->logActivated = isset($cmsFeaturesDataArray['log_activated']) ? $cmsFeaturesDataArray['log_activated'] : null;
+        $this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : [];
+        $this->excludedCategoriesActivated = isset($cmsFeaturesDataArray['excluded_categories_activated']) ?
+            $cmsFeaturesDataArray['excluded_categories_activated'] : null;
+        $this->paymentMethodPosition = isset($cmsFeaturesDataArray['payment_method_position']) ? $cmsFeaturesDataArray['payment_method_position'] : null;
+        $this->specificFeatures = isset($cmsFeaturesDataArray['specific_features']) ? $cmsFeaturesDataArray['specific_features'] : [];
+        $this->countryRestriction = isset($cmsFeaturesDataArray['country_restriction']) ? $cmsFeaturesDataArray['country_restriction'] : [];
+        $this->isMultisite = isset($cmsFeaturesDataArray['is_multisite']) ? $cmsFeaturesDataArray['is_multisite'] : null;
+        $this->customWidgetCss = isset($cmsFeaturesDataArray['custom_widget_css']) ? $cmsFeaturesDataArray['custom_widget_css'] : null;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getProperties()
-	{
-		// Use array_filter with ARRAY_FILTER_USE_BOTH to remove null or empty values
-		return array_filter([
-			'alma_enabled' => $this->almaEnabled,
-			'widget_cart_activated' => $this->widgetCartActivated,
-			'widget_product_activated' => $this->widgetProductActivated,
-			'used_fee_plans' => $this->usedFeePlans,
-			'in_page_activated' => $this->inPageActivated,
-			'log_activated' => $this->logActivated,
-			'excluded_categories' => $this->excludedCategories,
-			'excluded_categories_activated' => $this->excludedCategoriesActivated,
-			'payment_method_position' => $this->paymentMethodPosition,
-			'specific_features' => $this->specificFeatures,
-			'country_restriction' => $this->countryRestriction,
-			'is_multisite' => $this->isMultisite,
-			'custom_widget_css' => $this->customWidgetCss,
-		], function($value) {
-			// Keep only values that are not null and not empty
-			return !is_null($value) && $value !== '';
-		});
-	}
+    /**
+     * @return array
+     */
+    public function getProperties()
+    {
+        // Use array_filter with ARRAY_FILTER_USE_BOTH to remove null or empty values
+        return array_filter([
+            'alma_enabled' => $this->almaEnabled,
+            'widget_cart_activated' => $this->widgetCartActivated,
+            'widget_product_activated' => $this->widgetProductActivated,
+            'used_fee_plans' => $this->usedFeePlans,
+            'in_page_activated' => $this->inPageActivated,
+            'log_activated' => $this->logActivated,
+            'excluded_categories' => $this->excludedCategories,
+            'excluded_categories_activated' => $this->excludedCategoriesActivated,
+            'payment_method_position' => $this->paymentMethodPosition,
+            'specific_features' => $this->specificFeatures,
+            'country_restriction' => $this->countryRestriction,
+            'is_multisite' => $this->isMultisite,
+            'custom_widget_css' => $this->customWidgetCss,
+        ], function ($value) {
+            // Keep only values that are not null and not empty
+            // But keep false or 0 values
+            return !is_null($value) && $value !== '';
+        });
+    }
 }

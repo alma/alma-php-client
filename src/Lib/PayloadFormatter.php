@@ -12,7 +12,7 @@ class PayloadFormatter
 	 * @param CmsFeatures $cmsFeatures
 	 * @return string
 	 */
-	public static function formatIntegrationConfigurationPayload(CmsInfo $cmsInfo, CmsFeatures $cmsFeatures)
+	public function formatConfigurationPayload(CmsInfo $cmsInfo, CmsFeatures $cmsFeatures)
 	{
 		$payload = [
 			"cms_info" => $cmsInfo->getProperties(),
