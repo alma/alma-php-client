@@ -56,15 +56,15 @@ class CmsInfo
 	public function __construct($cmsInfoDataArray)
 	{
 		// Initialize values or set them to null if not available
-		$this->cmsName = $cmsInfoDataArray['cms_name'] ?: null;
-		$this->cmsVersion = $cmsInfoDataArray['cms_version'] ?: null;
-		$this->thirdPartiesPlugins = $cmsInfoDataArray['third_parties_plugins'] ?: [];
-		$this->themes = $cmsInfoDataArray['themes'] ?: [];
-		$this->languageName = $cmsInfoDataArray['language_name'] ?: null;
-		$this->languageVersion = $cmsInfoDataArray['language_version'] ?: null;
-		$this->almaPluginVersion = $cmsInfoDataArray['alma_plugin_version'] ?: null;
-		$this->almaSdkVersion = $cmsInfoDataArray['alma_sdk_version'] ?: null;
-		$this->almaSdkName = $cmsInfoDataArray['alma_sdk_name'] ?: null;
+		$this->cmsName = isset($cmsInfoDataArray['cms_name']) ? $cmsInfoDataArray['cms_name'] : null;
+		$this->cmsVersion = isset($cmsInfoDataArray['cms_version']) ? $cmsInfoDataArray['cms_version'] : null;
+		$this->thirdPartiesPlugins = isset($cmsInfoDataArray['third_parties_plugins']) ? $cmsInfoDataArray['third_parties_plugins'] : [];
+		$this->themes = isset($cmsInfoDataArray['themes']) ? $cmsInfoDataArray['themes'] : [];
+		$this->languageName = isset($cmsInfoDataArray['language_name']) ? $cmsInfoDataArray['language_name'] : null;
+		$this->languageVersion = isset($cmsInfoDataArray['language_version']) ? $cmsInfoDataArray['language_version'] : null;
+		$this->almaPluginVersion = isset($cmsInfoDataArray['alma_plugin_version']) ? $cmsInfoDataArray['alma_plugin_version'] : null;
+		$this->almaSdkVersion = isset($cmsInfoDataArray['alma_sdk_version']) ? $cmsInfoDataArray['alma_sdk_version'] : null;
+		$this->almaSdkName = isset($cmsInfoDataArray['alma_sdk_name']) ? $cmsInfoDataArray['alma_sdk_name'] : null;
 	}
 
 	/**
