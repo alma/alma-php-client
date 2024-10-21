@@ -35,7 +35,7 @@ repos:
         stages: [commit]
 
   - repo: https://github.com/returntocorp/semgrep
-    rev: v1.27.0
+    rev: v1.92.0
     hooks:
       - id: semgrep
         args:
