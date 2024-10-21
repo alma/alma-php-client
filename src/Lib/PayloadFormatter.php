@@ -10,16 +10,14 @@ class PayloadFormatter
 	/**
 	 * @param CmsInfo $cmsInfo
 	 * @param CmsFeatures $cmsFeatures
-	 * @return string
+	 * @return array
 	 */
 	public function formatConfigurationPayload(CmsInfo $cmsInfo, CmsFeatures $cmsFeatures)
 	{
-		$payload = [
+		return [
 			"cms_info" => $cmsInfo->getProperties(),
 			"cms_features" => $cmsFeatures->getProperties(),
 		];
-
-		return json_encode($payload);
 	}
 
 }

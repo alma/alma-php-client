@@ -54,13 +54,13 @@ class PayloadFormatterTest extends TestCase
 		$result = $this->payloadFormatter->formatConfigurationPayload($cmsInfo, $cmsFeatures);
 
 		// Expected result in JSON format
-		$expectedPayload = json_encode([
+		$expectedPayload = [
 			'cms_info' => $cmsInfo->getProperties(),
 			'cms_features' => $cmsFeatures->getProperties(),
-		]);
+		];
 
 		// Assertion: Check if the output matches the expected JSON payload
-		$this->assertJsonStringEqualsJsonString($expectedPayload, $result);
+		$this->assertEquals($expectedPayload, $result);
 	}
 
 	public function testFormatIntegrationConfigurationPayloadWithEmptyValues()
@@ -101,12 +101,12 @@ class PayloadFormatterTest extends TestCase
 		$result = $this->payloadFormatter->formatConfigurationPayload($cmsInfo, $cmsFeatures);
 
 		// Expected result in JSON format (should not include keys with null or empty values)
-		$expectedPayload = json_encode([
+		$expectedPayload = [
 			'cms_info' => $cmsInfo->getProperties(),
 			'cms_features' => $cmsFeatures->getProperties(),
-		]);
+		];
 
 		// Assertion: Check if the output matches the expected JSON payload
-		$this->assertJsonStringEqualsJsonString($expectedPayload, $result);
+		$this->assertEquals($expectedPayload, $result);
 	}
 }
