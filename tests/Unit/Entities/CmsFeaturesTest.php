@@ -35,7 +35,6 @@ class CmsFeaturesTest extends TestCase
 		$this->assertTrue($cmsFeatures->getProperties()['in_page_activated']);
 		$this->assertFalse($cmsFeatures->getProperties()['log_activated']);
 		$this->assertEquals(['category1', 'category2'], $cmsFeatures->getProperties()['excluded_categories']);
-		$this->assertTrue($cmsFeatures->getProperties()['excluded_categories_activated']);
 		$this->assertEquals(['feature1', 'feature2'], $cmsFeatures->getProperties()['specific_features']);
 		$this->assertEquals(['FR', 'US'], $cmsFeatures->getProperties()['country_restriction']);
 		$this->assertFalse($cmsFeatures->getProperties()['is_multisite']);
@@ -48,14 +47,14 @@ class CmsFeaturesTest extends TestCase
 			'alma_enabled' => null,
 			'widget_cart_activated' => null,
 			'widget_product_activated' => null,
-			'used_fee_plans' => [],
+			'used_fee_plans' => null,
 			'payment_method_position' => null,
 			'in_page_activated' => null,
 			'log_activated' => null,
-			'excluded_categories' => [],
+			'excluded_categories' => null,
 			'excluded_categories_activated' => null,
-			'specific_features' => [],
-			'country_restriction' => [],
+			'specific_features' => null,
+			'country_restriction' => null,
 			'is_multisite' => null,
 			'custom_widget_css' => null,
 		];
@@ -63,19 +62,18 @@ class CmsFeaturesTest extends TestCase
 		$cmsFeatures = new CmsFeatures($data);
 		$properties = $cmsFeatures->getProperties();
 
-		$this->assertArrayNotHasKey('alma_enabled', $properties);
-		$this->assertArrayNotHasKey('widget_cart_activated', $properties);
-		$this->assertArrayNotHasKey('widget_product_activated', $properties);
-		$this->assertEquals([], $properties['used_fee_plans']);
-		$this->assertArrayNotHasKey('payment_method_position', $properties);
-		$this->assertArrayNotHasKey('in_page_activated', $properties);
-		$this->assertArrayNotHasKey('log_activated', $properties);
-		$this->assertEquals([], $properties['excluded_categories']); // Should be an empty array
-		$this->assertArrayNotHasKey('excluded_categories_activated', $properties);
-		$this->assertEquals([], $properties['specific_features']); // Should be an empty array
-		$this->assertEquals([], $properties['country_restriction']); // Should be an empty array
-		$this->assertArrayNotHasKey('is_multisite', $properties);
-		$this->assertArrayNotHasKey('custom_widget_css', $properties);
+        $this->assertArrayNotHasKey('alma_enabled', $properties);
+        $this->assertArrayNotHasKey('widget_cart_activated', $properties);
+        $this->assertArrayNotHasKey('widget_product_activated', $properties);
+        $this->assertArrayNotHasKey('used_fee_plans', $properties);
+        $this->assertArrayNotHasKey('payment_method_position', $properties);
+        $this->assertArrayNotHasKey('in_page_activated', $properties);
+        $this->assertArrayNotHasKey('excluded_categories', $properties);
+        $this->assertArrayNotHasKey('excluded_categories_activated', $properties);
+        $this->assertArrayNotHasKey('specific_features', $properties);
+        $this->assertArrayNotHasKey('country_restriction', $properties);
+        $this->assertArrayNotHasKey('is_multisite', $properties);
+        $this->assertArrayNotHasKey('custom_widget_css', $properties);
 	}
 
 	public function testGetPropertiesFiltersOutNullAndEmptyValues()
@@ -89,7 +87,7 @@ class CmsFeaturesTest extends TestCase
 			'in_page_activated' => false,
 			'log_activated' => null,
 			'excluded_categories' => ['category3'],
-			'excluded_categories_activated' => null,
+			'excluded_categories_activated' => true,
 			'specific_features' => [],
 			'country_restriction' => [],
 			'is_multisite' => false,
@@ -106,7 +104,6 @@ class CmsFeaturesTest extends TestCase
 		$this->assertArrayNotHasKey('payment_method_position', $properties); // Should be filtered out (null)
 		$this->assertArrayHasKey('in_page_activated', $properties);
 		$this->assertArrayHasKey('excluded_categories', $properties);
-		$this->assertArrayNotHasKey('excluded_categories_activated', $properties); // Should be filtered out (null)
 		$this->assertArrayHasKey('specific_features', $properties);
 		$this->assertArrayHasKey('country_restriction', $properties);
 		$this->assertArrayHasKey('is_multisite', $properties);
@@ -123,13 +120,13 @@ class CmsFeaturesTest extends TestCase
         $this->assertArrayNotHasKey('alma_enabled', $properties);
         $this->assertArrayNotHasKey('widget_cart_activated', $properties);
         $this->assertArrayNotHasKey('widget_product_activated', $properties);
-        $this->assertEquals([], $properties['used_fee_plans']);
+        $this->assertArrayNotHasKey('used_fee_plans', $properties);
         $this->assertArrayNotHasKey('payment_method_position', $properties);
         $this->assertArrayNotHasKey('in_page_activated', $properties);
-        $this->assertEquals([], $properties['excluded_categories']);
+        $this->assertArrayNotHasKey('excluded_categories', $properties);
         $this->assertArrayNotHasKey('excluded_categories_activated', $properties);
-        $this->assertEquals([], $properties['specific_features']);
-        $this->assertEquals([], $properties['country_restriction']);
+        $this->assertArrayNotHasKey('specific_features', $properties);
+        $this->assertArrayNotHasKey('country_restriction', $properties);
         $this->assertArrayNotHasKey('is_multisite', $properties);
         $this->assertArrayNotHasKey('custom_widget_css', $properties);
     }

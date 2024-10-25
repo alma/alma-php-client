@@ -20,7 +20,7 @@ class CmsFeatures
     private $widgetProductActivated;
 
     /**
-     * @var array
+     * @var array|null
      */
     private $usedFeePlans;
 
@@ -40,22 +40,17 @@ class CmsFeatures
     private $logActivated;
 
     /**
-     * @var string[]
+     * @var string[]|null
      */
     private $excludedCategories;
 
     /**
-     * @var bool | null
-     */
-    private $excludedCategoriesActivated;
-
-    /**
-     * @var array<array{name: string}>
+     * @var array<array{name: string}>|null
      */
     private $specificFeatures;
 
     /**
-     * @var string[]
+     * @var string[]|null
      */
     private $countryRestriction;
 
@@ -79,15 +74,17 @@ class CmsFeatures
         $this->almaEnabled = isset($cmsFeaturesDataArray['alma_enabled']) ? $cmsFeaturesDataArray['alma_enabled'] : null;
         $this->widgetCartActivated = isset($cmsFeaturesDataArray['widget_cart_activated']) ? $cmsFeaturesDataArray['widget_cart_activated'] : null;
         $this->widgetProductActivated = isset($cmsFeaturesDataArray['widget_product_activated']) ? $cmsFeaturesDataArray['widget_product_activated'] : null;
-        $this->usedFeePlans = isset($cmsFeaturesDataArray['used_fee_plans']) ? $cmsFeaturesDataArray['used_fee_plans'] : [];
+        $this->usedFeePlans = isset($cmsFeaturesDataArray['used_fee_plans']) ? $cmsFeaturesDataArray['used_fee_plans'] : null;
         $this->inPageActivated = isset($cmsFeaturesDataArray['in_page_activated']) ? $cmsFeaturesDataArray['in_page_activated'] : null;
         $this->logActivated = isset($cmsFeaturesDataArray['log_activated']) ? $cmsFeaturesDataArray['log_activated'] : null;
-        $this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : [];
-        $this->excludedCategoriesActivated = isset($cmsFeaturesDataArray['excluded_categories_activated']) ?
-            $cmsFeaturesDataArray['excluded_categories_activated'] : null;
+        if (isset($cmsFeaturesDataArray['excluded_categories_activated']) && $cmsFeaturesDataArray['excluded_categories_activated']) {
+            $this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : null;
+        } else {
+            $this->excludedCategories = null;
+        }
         $this->paymentMethodPosition = isset($cmsFeaturesDataArray['payment_method_position']) ? $cmsFeaturesDataArray['payment_method_position'] : null;
-        $this->specificFeatures = isset($cmsFeaturesDataArray['specific_features']) ? $cmsFeaturesDataArray['specific_features'] : [];
-        $this->countryRestriction = isset($cmsFeaturesDataArray['country_restriction']) ? $cmsFeaturesDataArray['country_restriction'] : [];
+        $this->specificFeatures = isset($cmsFeaturesDataArray['specific_features']) ? $cmsFeaturesDataArray['specific_features'] : null;
+        $this->countryRestriction = isset($cmsFeaturesDataArray['country_restriction']) ? $cmsFeaturesDataArray['country_restriction'] : null;
         $this->isMultisite = isset($cmsFeaturesDataArray['is_multisite']) ? $cmsFeaturesDataArray['is_multisite'] : null;
         $this->customWidgetCss = isset($cmsFeaturesDataArray['custom_widget_css']) ? $cmsFeaturesDataArray['custom_widget_css'] : null;
     }
@@ -106,7 +103,6 @@ class CmsFeatures
             'in_page_activated' => $this->inPageActivated,
             'log_activated' => $this->logActivated,
             'excluded_categories' => $this->excludedCategories,
-            'excluded_categories_activated' => $this->excludedCategoriesActivated,
             'payment_method_position' => $this->paymentMethodPosition,
             'specific_features' => $this->specificFeatures,
             'country_restriction' => $this->countryRestriction,
