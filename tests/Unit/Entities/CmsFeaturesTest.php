@@ -18,7 +18,6 @@ class CmsFeaturesTest extends TestCase
 			'in_page_activated' => true,
 			'log_activated' => false,
 			'excluded_categories' => ['category1', 'category2'],
-			'excluded_categories_activated' => true,
 			'specific_features' => ['feature1', 'feature2'],
 			'country_restriction' => ['FR', 'US'],
 			'is_multisite' => false,
@@ -52,7 +51,6 @@ class CmsFeaturesTest extends TestCase
 			'in_page_activated' => null,
 			'log_activated' => null,
 			'excluded_categories' => null,
-			'excluded_categories_activated' => null,
 			'specific_features' => null,
 			'country_restriction' => null,
 			'is_multisite' => null,
@@ -69,7 +67,6 @@ class CmsFeaturesTest extends TestCase
         $this->assertArrayNotHasKey('payment_method_position', $properties);
         $this->assertArrayNotHasKey('in_page_activated', $properties);
         $this->assertArrayNotHasKey('excluded_categories', $properties);
-        $this->assertArrayNotHasKey('excluded_categories_activated', $properties);
         $this->assertArrayNotHasKey('specific_features', $properties);
         $this->assertArrayNotHasKey('country_restriction', $properties);
         $this->assertArrayNotHasKey('is_multisite', $properties);
@@ -87,7 +84,6 @@ class CmsFeaturesTest extends TestCase
 			'in_page_activated' => false,
 			'log_activated' => null,
 			'excluded_categories' => ['category3'],
-			'excluded_categories_activated' => true,
 			'specific_features' => [],
 			'country_restriction' => [],
 			'is_multisite' => false,
@@ -124,7 +120,6 @@ class CmsFeaturesTest extends TestCase
         $this->assertArrayNotHasKey('payment_method_position', $properties);
         $this->assertArrayNotHasKey('in_page_activated', $properties);
         $this->assertArrayNotHasKey('excluded_categories', $properties);
-        $this->assertArrayNotHasKey('excluded_categories_activated', $properties);
         $this->assertArrayNotHasKey('specific_features', $properties);
         $this->assertArrayNotHasKey('country_restriction', $properties);
         $this->assertArrayNotHasKey('is_multisite', $properties);

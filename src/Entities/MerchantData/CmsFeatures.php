@@ -77,10 +77,7 @@ class CmsFeatures
         $this->usedFeePlans = isset($cmsFeaturesDataArray['used_fee_plans']) ? $cmsFeaturesDataArray['used_fee_plans'] : null;
         $this->inPageActivated = isset($cmsFeaturesDataArray['in_page_activated']) ? $cmsFeaturesDataArray['in_page_activated'] : null;
         $this->logActivated = isset($cmsFeaturesDataArray['log_activated']) ? $cmsFeaturesDataArray['log_activated'] : null;
-        $this->excludedCategories = null;
-        if (isset($cmsFeaturesDataArray['excluded_categories_activated']) && $cmsFeaturesDataArray['excluded_categories_activated']) {
-            $this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : null;
-        }
+        $this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : null;
         $this->paymentMethodPosition = isset($cmsFeaturesDataArray['payment_method_position']) ? $cmsFeaturesDataArray['payment_method_position'] : null;
         $this->specificFeatures = isset($cmsFeaturesDataArray['specific_features']) ? $cmsFeaturesDataArray['specific_features'] : null;
         $this->countryRestriction = isset($cmsFeaturesDataArray['country_restriction']) ? $cmsFeaturesDataArray['country_restriction'] : null;
