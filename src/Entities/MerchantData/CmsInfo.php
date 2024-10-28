@@ -15,12 +15,12 @@ class CmsInfo
     private $cmsVersion;
 
     /**
-     * @var array<array{name: string, version: string}>
+     * @var array<array{name: string, version: string}>|null
      */
     private $thirdPartiesPlugins;
 
     /**
-     * @var array<array{name: string, version: string}>
+     * @var array<array{name: string, version: string}>|null
      */
     private $themes;
 
@@ -58,8 +58,8 @@ class CmsInfo
         // Initialize values or set them to null if not available
         $this->cmsName = isset($cmsInfoDataArray['cms_name']) ? $cmsInfoDataArray['cms_name'] : '';
         $this->cmsVersion = isset($cmsInfoDataArray['cms_version']) ? $cmsInfoDataArray['cms_version'] : '';
-        $this->thirdPartiesPlugins = isset($cmsInfoDataArray['third_parties_plugins']) ? $cmsInfoDataArray['third_parties_plugins'] : [];
-        $this->themes = isset($cmsInfoDataArray['themes']) ? $cmsInfoDataArray['themes'] : [];
+        $this->thirdPartiesPlugins = isset($cmsInfoDataArray['third_parties_plugins']) ? $cmsInfoDataArray['third_parties_plugins'] : null;
+        $this->themes = isset($cmsInfoDataArray['themes']) ? $cmsInfoDataArray['themes'] : null;
         $this->languageName = isset($cmsInfoDataArray['language_name']) ? $cmsInfoDataArray['language_name'] : '';
         $this->languageVersion = isset($cmsInfoDataArray['language_version']) ? $cmsInfoDataArray['language_version'] : '';
         $this->almaPluginVersion = isset($cmsInfoDataArray['alma_plugin_version']) ? $cmsInfoDataArray['alma_plugin_version'] : '';

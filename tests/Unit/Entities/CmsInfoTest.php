@@ -42,8 +42,8 @@ class CmsInfoTest extends TestCase
 		$data = [
 			'cms_name' => null,
 			'cms_version' => null,
-			'third_parties_plugins' => [],
-			'themes' => [],
+			'third_parties_plugins' => null,
+			'themes' => null,
 			'language_name' => null,
 			'language_version' => null,
 			'alma_plugin_version' => null,
@@ -60,8 +60,8 @@ class CmsInfoTest extends TestCase
 		$this->assertArrayNotHasKey('alma_plugin_version', $cmsInfo->getProperties());
 		$this->assertArrayNotHasKey('alma_sdk_version', $cmsInfo->getProperties());
 		$this->assertArrayNotHasKey('alma_sdk_name', $cmsInfo->getProperties());
-		$this->assertEquals([], $cmsInfo->getProperties()['third_parties_plugins']);
-		$this->assertEquals([], $cmsInfo->getProperties()['themes']);
+		$this->assertArrayNotHasKey('third_parties_plugins', $cmsInfo->getProperties());
+		$this->assertArrayNotHasKey('themes', $cmsInfo->getProperties());
 	}
 
 	public function testGetPropertiesFiltersOutNullAndEmptyValues()
@@ -99,8 +99,8 @@ class CmsInfoTest extends TestCase
 
         $this->assertArrayNotHasKey('cms_name', $properties);
         $this->assertArrayNotHasKey('cms_version', $properties); // Should be filtered out (empty string)
-        $this->assertEquals([], $cmsInfo->getProperties()['third_parties_plugins']);
-        $this->assertEquals([], $cmsInfo->getProperties()['themes']);
+        $this->assertArrayNotHasKey('third_parties_plugins', $properties);
+        $this->assertArrayNotHasKey('themes', $properties);
         $this->assertArrayNotHasKey('language_name', $properties); // Should be filtered out (null)
         $this->assertArrayNotHasKey('language_version', $properties); // Should be filtered out (empty string)
         $this->assertArrayNotHasKey('alma_sdk_version', $properties);
