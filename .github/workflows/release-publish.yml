@@ -11,7 +11,7 @@ jobs:
 
   release:
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release')
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
 
@@ -113,7 +113,7 @@ jobs:
             cc <@france.berut> <@khadija.cherif>
 
       - name: Send changelog to Slack
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v1.27.0
         with:
           channel-id: CR9C57YM6
           slack-message: ${{ steps.slack-markdown-release-notes.outputs.text }}

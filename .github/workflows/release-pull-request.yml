@@ -6,7 +6,7 @@ on:
 jobs:
 
   create-release-pull-request:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
 
@@ -55,7 +55,7 @@ jobs:
           repositories: alma-php-client
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.github-token.outputs.token }}
           commit-message: 'chore: update version'

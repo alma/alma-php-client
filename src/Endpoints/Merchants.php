@@ -27,11 +27,12 @@ namespace Alma\API\Endpoints;
 
 use Alma\API\Entities\FeePlan;
 use Alma\API\Entities\Merchant;
+use Alma\API\Entities\MerchantData\MerchantData;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\RequestError;
 
 class Merchants extends Base
 {
-    const MERCHANTS_PATH = '/v1/merchants';
     const ME_PATH = '/v1/me';
 
     /**
@@ -80,5 +81,21 @@ class Merchants extends Base
         return array_map(function ($val) {
             return new FeePlan($val);
         }, $res->json);
+    }
+
+    /**
+     * @param string $url The URL to send to Alma for integrations configuration
+     * @throws RequestException
+     * @throws RequestError
+     */
+    public function sendIntegrationsConfigurationsUrl($url)
+    {
+        $res = $this->request(self::ME_PATH . "/configuration")->setRequestBody(array(
+            "endpoint_url" => $url
+        ))->post();
+
+        if ($res->isError()) {
+            throw new RequestException($res->errorMessage, null, $res);
+        }
     }
 }
