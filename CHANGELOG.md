@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v2.3.0 - 2024-11-04
+
+### Changes
+
+- chore(deps): update pre-commit hook returntocorp/semgrep to v1.92.0 (#116)
+
+### 🚀 New Features
+
+- feat: replace payment validator hmac verification by request hmac val… (#147)
+- Change CmsInfo themes to theme_name and theme_version (#146)
+- Add isUrlRefreshRequired function (#145)
+- Make nullable for all attributes in CmsInfo and CmsFeatures (#143)
+- Create endpoint and formatter for gather cms data (#142)
+
+#### Contributors
+
+@Benjamin-Freoua-Alma, @Francois-Gomis, @alma-renovate-bot, @alma-renovate-bot[bot], @github-actions, @hyahiaoui, @joyet-simon and @remi-zuffinetti
+
 ## v2.2.0 - 2024-09-05
 
 ### Changes
@@ -160,6 +178,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   ```
