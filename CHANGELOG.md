@@ -4,6 +4,8 @@
 
 ### Changes
 
+- Change send configuration url endpoint (#150)
+
 #### Contributors
 
 @Benjamin-Freoua-Alma and @github-actions
