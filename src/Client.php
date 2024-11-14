@@ -71,6 +71,11 @@ class Client
      */
     public $insurance;
     /*************************/
+    /**
+     * @var Endpoints\Configuration
+     */
+    public $configuration;
+    /*************************/
 
     /**
      * Alma client initialization.
@@ -150,6 +155,7 @@ class Client
         $this->shareOfCheckout = new Endpoints\ShareOfCheckout($this->context);
         $this->webhooks = new Endpoints\Webhooks($this->context);
         $this->insurance = new Endpoints\Insurance($this->context);
+        $this->configuration = new Endpoints\Configuration($this->context);
     }
 
     private function initUserAgent()
