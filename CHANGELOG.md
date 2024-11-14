@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v2.3.1 - 2024-11-14
+
+### Changes
+
+- Change send configuration url endpoint (#150)
+
+#### Contributors
+
+@Benjamin-Freoua-Alma and @github-actions
+
 ## v2.3.0 - 2024-11-04
 
 ### Changes
@@ -178,6 +188,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
