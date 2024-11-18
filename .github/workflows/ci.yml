@@ -59,6 +59,15 @@ jobs:
           string=': void'
           grep -r -l "$string" tests/ | xargs sed -i "s/$string//g"
 
+      - name: Set ReportPortal configuration
+        # ReportPortal agent only works for PHP 7.1, 7.2, 7.3 and 7.4
+        if: github.ref_name == 'main' && vars.REPORT_PORTAL_ENABLED == 'true' && contains(fromJson('["7.1", "7.2", "7.3", "7.4"]'), matrix.php)
+        run: ./tests/reportportal_conf.sh
+        env:
+          REPORT_PORTAL_API_KEY: ${{ secrets.REPORT_PORTAL_API_KEY }}
+          REPORT_PORTAL_ENDPOINT: ${{ vars.REPORT_PORTAL_ENDPOINT }}
+          PHP_VERSION: ${{ matrix.php }}
+
       - name: PHPUnit
         run: |
           case ${{ matrix.php }} in
