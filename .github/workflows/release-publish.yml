@@ -113,14 +113,12 @@ jobs:
             cc <@france.berut> <@khadija.cherif>
 
       - name: Send changelog to Slack
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          channel-id: CR9C57YM6
-          slack-message: ${{ steps.slack-markdown-release-notes.outputs.text }}
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_RELEASE_CHANGELOG_BOT_TOKEN }}
           payload: |
-            {
-              "username": "${{ github.event.sender.login }}",
-              "icon_url": "${{ github.event.sender.avatar_url }}"
-            }
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_RELEASE_CHANGELOG_BOT_TOKEN }}
+            channel: CR9C57YM6
+            username: "${{ github.event.sender.login }}"
+            icon_url: "${{ github.event.sender.avatar_url }}"
+            text: ${{ toJson(steps.slack-markdown-release-notes.outputs.text) }}
