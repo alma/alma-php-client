@@ -1,0 +1,37 @@
+312c312
+<         $result = self::$client->post('v1/' . self::$projectName . '/launch', array(
+---
+>         $result = self::$client->post('v2/' . self::$projectName . '/launch', array(
+337c337
+<         $result = self::$client->put('v1/' . self::$projectName . '/launch/' . self::$launchID . '/finish', array(
+---
+>         $result = self::$client->put('v2/' . self::$projectName . '/launch/' . self::$launchID . '/finish', array(
+358c358
+<         $result = self::$client->put('v1/' . self::$projectName . '/launch/' . self::$launchID . '/stop', array(
+---
+>         $result = self::$client->put('v2/' . self::$projectName . '/launch/' . self::$launchID . '/stop', array(
+383c383
+<         $result = self::$client->post('v1/' . self::$projectName . '/item', array(
+---
+>         $result = self::$client->post('v2/' . self::$projectName . '/item', array(
+425c425
+<         $result = self::$client->post('v1/' . self::$projectName . '/log', array(
+---
+>         $result = self::$client->post('v2/' . self::$projectName . '/log', array(
+478c478
+<                 'v1/' . self::$projectName . '/log',
+---
+>                 'v2/' . self::$projectName . '/log',
+500c500
+<         $result = self::$client->put('v1/' . self::$projectName . '/item/' . $itemID, array(
+---
+>         $result = self::$client->put('v2/' . self::$projectName . '/item/' . $itemID, array(
+507c507,508
+<                 'status' => $status
+---
+>                 'status' => $status,
+>                 'launchUuid' => self::$launchID
+544c545
+<         $result = self::$client->post('v1/' . self::$projectName . '/item/' . $parentItemID, array(
+---
+>         $result = self::$client->post('v2/' . self::$projectName . '/item/' . $parentItemID, array(

@@ -1,0 +1,12 @@
+    <listeners>
+            <listener class="agentPHPUnit" file="vendor/reportportal/phpunit/src/agentPHPUnit.php">
+                <arguments>
+                    <string>${REPORT_PORTAL_API_KEY}</string>
+                    <string>${REPORT_PORTAL_HOST}</string>
+                    <string>integrations</string>
+                    <string>.000+00:00</string>
+                    <string>alma-php-client PHPUnit tests</string>
+                    <string>PHP version: ${PHP_VERSION}</string>
+                </arguments>
+            </listener>
+    </listeners>
