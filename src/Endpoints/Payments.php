@@ -28,7 +28,9 @@ namespace Alma\API\Endpoints;
 use Alma\API\Endpoints\Results\Eligibility;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\BoolUtils;
 use Alma\API\Lib\PaymentValidator;
+use Alma\API\Lib\StringUtils;
 use Alma\API\ParamsError;
 use Alma\API\Payloads\Refund;
 use Alma\API\Entities\Order;
@@ -336,6 +338,37 @@ class Payments extends Base
     }
 
     /**
+     * Add order status to Alma Order by merchant_order_reference
+     *
+     * @param string $paymentId
+     * @param string $merchantOrderReference
+     * @param string $status
+     * @param bool | null $isShipped
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function addOrderStatusByMerchantOrderReference(
+        $paymentId,
+        $merchantOrderReference,
+        $status,
+        $isShipped = null)
+    {
+        $this->checkAddOrderStatusParams($paymentId, $merchantOrderReference, $status, $isShipped);
+
+        $orderStatus = ['status' => $status, 'is_shipped' => $isShipped];
+        $res = $this->request(self::PAYMENTS_PATH . "/$paymentId/orders/$merchantOrderReference/status")
+            ->setRequestBody($orderStatus)
+            ->post();
+
+        if ($res->isError()) {
+            throw new RequestException($res->errorMessage, null, $res);
+        }
+
+    }
+
+    /**
      * Sends a SMS to the customer, containing a link to the payment's page
      * /!\ Your account must be authorized by Alma to use that endpoint; it will otherwise fail with a 403 error
      *
@@ -353,6 +386,30 @@ class Payments extends Base
         }
 
         return true;
+    }
+
+    /**
+     * @param $paymentId
+     * @param $merchantOrderReference
+     * @param $status
+     * @param $isShipped
+     * @return void
+     * @throws ParametersException
+     */
+    public function checkAddOrderStatusParams($paymentId, $merchantOrderReference, $status, $isShipped)
+    {
+        if (!StringUtils::isAValidString($paymentId)) {
+            throw new ParametersException("Payment id must be a string");
+        }
+        if (!StringUtils::isAValidString($merchantOrderReference)) {
+            throw new ParametersException("Order merchant reference must be a string");
+        }
+        if (!StringUtils::isAValidString($status)) {
+            throw new ParametersException("Order merchant reference must be a string");
+        }
+        if (!BoolUtils::isStrictlyBoolOrNull($isShipped)) {
+            throw new ParametersException("Is shipped must be null or boolean");
+        }
     }
 
 }
