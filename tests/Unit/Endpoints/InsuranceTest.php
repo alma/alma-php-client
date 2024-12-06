@@ -50,6 +50,12 @@ class InsuranceTest extends TestCase
 	 */
 	private $insuranceMock;
 
+    /** @var InsuranceValidator */
+    private $insuranceValidatorMock;
+
+    /** @var ArrayUtils */
+    private $arrayUtilsMock;
+
 
 	/**
 	 * @return void
