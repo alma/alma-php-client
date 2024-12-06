@@ -486,6 +486,7 @@ class PaymentsTest extends TestCase
         $paymentEndpoint = Mockery::mock(Payments::class)->makePartial();
         $requestObjectMock = Mockery::mock(Request::class);
         $responseMock = Mockery::mock(Response::class);
+        $responseMock->errorMessage = 'Error in request';
         $responseMock->shouldReceive('isError')->andReturn(true);
         $requestObjectMock->shouldReceive('setRequestBody')
             ->once()
@@ -555,43 +556,43 @@ class PaymentsTest extends TestCase
         );
     }
 
-    public function AddOrderStatusProvider()
+    public static function AddOrderStatusProvider()
     {
         return [
             'With is shipped null' => [
-                'paymentID' => 'payment_1234',
+                'paymentId' => 'payment_1234',
                 'merchantOrderReference' => 'merchant_order_123',
                 'status' => 'status_shipped'
             ],
             'With is shipped bool' => [
-                'paymentID' => 'payment_1234',
+                'paymentId' => 'payment_1234',
                 'merchantOrderReference' => 'merchant_order_123',
                 'status' => 'status_shipped',
-                'is_shipped' => true
+                'isShipped' => true
             ]
         ];
     }
 
-    public function addOrderStatusErrorPayloadProvider()
+    public static function addOrderStatusErrorPayloadProvider()
     {
         return [
             'Payment Id not a string' => [
-                'paymentID' => 1232214,
+                'paymentId' => 1232214,
                 'merchantOrderReference' => 'merchant_order2',
                 'status' => 'shipped'
             ],
             'Merchant order reference is not a string' => [
-                'paymentID' => 'payment_124',
+                'paymentId' => 'payment_124',
                 'merchantOrderReference' => 421,
                 'status' => 'shipped'
             ],
             'status is not a string' => [
-                'paymentID' => 'payment_124',
+                'paymentId' => 'payment_124',
                 'merchantOrderReference' => 'merchant_order1',
                 'status' => true
             ],
             'is Shipped is not a bool' => [
-                'paymentID' => 'payment_124',
+                'paymentId' => 'payment_124',
                 'merchantOrderReference' => 'merchant_order1',
                 'status' => 'Shipped',
                 'isShipped' => 'test'

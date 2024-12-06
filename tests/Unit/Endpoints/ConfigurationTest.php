@@ -49,6 +49,7 @@ class ConfigurationTest extends TestCase
 
 	public function testSendIntegrationsConfigurationsUrlThrowRequestException(){
 		$this->responseMock->shouldReceive('isError')->once()->andReturn(true);
+		$this->responseMock->errorMessage = 'Error in response';
 		$this->requestObject->shouldReceive('setRequestBody')
 			->with(['collect_data_url' => self::URL])
 			->andReturn($this->requestObject);
