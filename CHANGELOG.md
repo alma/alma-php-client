@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v2.4.0 - 2024-12-09
+
+### Changes
+
+### 🚀 New Features
+
+- New endpoint add order status by payment route (#155)
+
+#### Contributors
+
+@Francois-Gomis, @alma-renovate-bot, @alma-renovate-bot[bot], @github-actions and @remi-zuffinetti
+
 ## v2.3.1 - 2024-11-14
 
 ### Changes
@@ -188,6 +200,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
