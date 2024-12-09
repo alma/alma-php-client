@@ -6,7 +6,7 @@
 
 ### 🚀 New Features
 
-- Feature/ecom 2204  php client create new endpoint add order status by payment route (#155)
+- New endpoint add order status by payment route (#155)
 
 #### Contributors
 
