@@ -11,6 +11,10 @@ class FileTest extends TestCase
      * @var File $file
      */
     protected $file;
+    /**
+     * @var string[]
+     */
+    protected $fileData;
 
     /**
      * @return void

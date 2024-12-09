@@ -9,6 +9,10 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayUtilsTest extends TestCase
 {
+    /**
+     * @var ArrayUtils
+     */
+    private $arrayUtils;
     public function setUp(): void
     {
         $this->arrayUtils = new ArrayUtils();

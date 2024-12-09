@@ -4,6 +4,7 @@ namespace Alma\API\Tests\Unit\Endpoints;
 
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
+use Alma\API\RequestError;
 use Alma\API\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -449,6 +450,155 @@ class PaymentsTest extends TestCase
 
         /* Test */
         $payments->fullRefund($id);
+    }
+
+    /**
+     * @dataProvider addOrderStatusErrorPayloadProvider
+     * @param $paymentId
+     * @param $merchantOrderReference
+     * @param $status
+     * @param null $isShipped
+     * @return void
+     * @throws ParametersException
+     * @throws RequestException
+     * @throws RequestError
+     */
+    public function testAddOrderStatusThrowParametersException(
+        $paymentId,
+        $merchantOrderReference,
+        $status,
+        $isShipped = null
+    )
+    {
+        $paymentEndpoint = Mockery::mock(Payments::class)->makePartial();
+        $this->expectException(ParametersException::class);
+        $paymentEndpoint->addOrderStatusByMerchantOrderReference(
+            $paymentId,
+            $merchantOrderReference,
+            $status,
+            $isShipped
+        );
+    }
+
+    public function testAddIOrderStatusThrowRequestExceptionForNon200Return()
+    {
+        $clientContext = Mockery::mock(ClientContext::class);
+        $paymentEndpoint = Mockery::mock(Payments::class)->makePartial();
+        $requestObjectMock = Mockery::mock(Request::class);
+        $responseMock = Mockery::mock(Response::class);
+        $responseMock->errorMessage = 'Error in request';
+        $responseMock->shouldReceive('isError')->andReturn(true);
+        $requestObjectMock->shouldReceive('setRequestBody')
+            ->once()
+            ->with(['status' => 'in progress', 'is_shipped' => false])
+            ->andReturn($requestObjectMock);
+        $requestObjectMock->shouldReceive('post')
+            ->once()
+            ->andReturn($responseMock);
+        $paymentEndpoint->shouldReceive('request')
+            ->with("/v1/payments/payment_42/orders/ref_3546/status")
+            ->once()
+            ->andReturn($requestObjectMock);
+        $paymentEndpoint->setClientContext($clientContext);
+
+        $this->expectException(RequestException::class);
+
+        $paymentEndpoint->addOrderStatusByMerchantOrderReference(
+            'payment_42',
+            'ref_3546',
+            'in progress',
+            false
+        );
+    }
+
+    /**
+     *
+     * @dataProvider AddOrderStatusProvider
+     * @param $paymentId
+     * @param $merchantOrderReference
+     * @param $status
+     * @param null $isShipped
+     * @return void
+     * @throws ParametersException
+     * @throws RequestError
+     * @throws RequestException
+     */
+    public function testAddOrderStatusReturnVoidFor204return(
+        $paymentId,
+        $merchantOrderReference,
+        $status,
+        $isShipped = null
+    )
+    {
+        $clientContext = Mockery::mock(ClientContext::class);
+        $paymentEndpoint = Mockery::mock(Payments::class)->makePartial();
+        $requestObjectMock = Mockery::mock(Request::class);
+        $responseMock = Mockery::mock(Response::class);
+        $responseMock->shouldReceive('isError')->andReturn(false);
+        $requestObjectMock->shouldReceive('setRequestBody')
+            ->once()
+            ->with(['status' => $status, 'is_shipped' => $isShipped])
+            ->andReturn($requestObjectMock);
+        $requestObjectMock->shouldReceive('post')
+            ->once()
+            ->andReturn($responseMock);
+        $paymentEndpoint->shouldReceive('request')
+            ->with("/v1/payments/$paymentId/orders/$merchantOrderReference/status")
+            ->once()
+            ->andReturn($requestObjectMock);
+        $paymentEndpoint->setClientContext($clientContext);
+
+        $paymentEndpoint->addOrderStatusByMerchantOrderReference(
+            $paymentId,
+            $merchantOrderReference,
+            $status,
+            $isShipped
+        );
+    }
+
+    public static function AddOrderStatusProvider()
+    {
+        return [
+            'With is shipped null' => [
+                'paymentId' => 'payment_1234',
+                'merchantOrderReference' => 'merchant_order_123',
+                'status' => 'status_shipped'
+            ],
+            'With is shipped bool' => [
+                'paymentId' => 'payment_1234',
+                'merchantOrderReference' => 'merchant_order_123',
+                'status' => 'status_shipped',
+                'isShipped' => true
+            ]
+        ];
+    }
+
+    public static function addOrderStatusErrorPayloadProvider()
+    {
+        return [
+            'Payment Id not a string' => [
+                'paymentId' => 1232214,
+                'merchantOrderReference' => 'merchant_order2',
+                'status' => 'shipped'
+            ],
+            'Merchant order reference is not a string' => [
+                'paymentId' => 'payment_124',
+                'merchantOrderReference' => 421,
+                'status' => 'shipped'
+            ],
+            'status is not a string' => [
+                'paymentId' => 'payment_124',
+                'merchantOrderReference' => 'merchant_order1',
+                'status' => true
+            ],
+            'is Shipped is not a bool' => [
+                'paymentId' => 'payment_124',
+                'merchantOrderReference' => 'merchant_order1',
+                'status' => 'Shipped',
+                'isShipped' => 'test'
+            ]
+
+        ];
     }
 
 }
