@@ -29,7 +29,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
      */
     private $cartId;
     /**
-     * @var string
+     * @var string | null
      */
     private $almaPaymentId;
 

@@ -6,7 +6,6 @@ use Alma\API\ClientContext;
 use Alma\API\Endpoints\Merchants;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
-use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Request;
 use Alma\API\RequestError;
@@ -45,6 +44,7 @@ class MerchantsTest extends TestCase
         $this->clientContext->logger = $loggerMock;
         $this->merchantEndpoint->setClientContext($this->clientContext);
     }
+
     public function tearDown(): void
     {
         $this->merchantEndpoint = null;
@@ -69,6 +69,7 @@ class MerchantsTest extends TestCase
         $this->expectException(RequestException::class);
         $this->merchantEndpoint->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEvent('42'));
     }
+
     public function testSendBusinessEventBadResponseRequestException()
     {
         $this->merchantEndpoint->shouldReceive('request')
@@ -88,10 +89,7 @@ class MerchantsTest extends TestCase
         $this->expectException(RequestException::class);
         $this->merchantEndpoint->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEvent('42'));
     }
-    /**
-     *
-     * @return void
-     */
+
     public function testSendCartInitiatedEvent()
     {
         $cartInitiatedEvent = new CartInitiatedBusinessEvent('42');
@@ -107,10 +105,7 @@ class MerchantsTest extends TestCase
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->assertNull($this->merchantEndpoint->sendCartInitiatedBusinessEvent($cartInitiatedEvent));
     }
-    /**
-     *
-     * @return void
-     */
+
     public function testSendOrderConfirmedBusinessEventForNonAlmaPayment()
     {
         $orderConfirmedBusinessEvent = new OrderConfirmedBusinessEvent(
@@ -142,6 +137,7 @@ class MerchantsTest extends TestCase
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->assertNull($this->merchantEndpoint->sendOrderConfirmedBusinessEvent($orderConfirmedBusinessEvent));
     }
+
     public function testSendOrderConfirmedBusinessEventForAlmaPayment()
     {
         $orderConfirmedBusinessEvent = new OrderConfirmedBusinessEvent(
@@ -174,5 +170,4 @@ class MerchantsTest extends TestCase
         $this->requestObject->shouldReceive('post')->once()->andReturn($this->responseMock);
         $this->assertNull($this->merchantEndpoint->sendOrderConfirmedBusinessEvent($orderConfirmedBusinessEvent));
     }
-
 }

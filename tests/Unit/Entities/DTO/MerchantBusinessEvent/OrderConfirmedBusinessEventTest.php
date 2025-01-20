@@ -52,6 +52,7 @@ class OrderConfirmedBusinessEventTest extends TestCase
         $this->expectException(ParametersException::class);
         new OrderConfirmedBusinessEvent(false, true, true, "42", "54");
     }
+
     public function testAlmaPaymentIdShouldBeAbsentForNonAlmaPayments()
     {
         $this->expectException(ParametersException::class);
@@ -91,7 +92,6 @@ class OrderConfirmedBusinessEventTest extends TestCase
             $this->assertEquals($item['almaPaymentId'], $orderConfirmedEvent->getAlmaPaymentId());
         }
     }
-
 
     public static function invalidDataForBusinessEventDataProvider()
     {

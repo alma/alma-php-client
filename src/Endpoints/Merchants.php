@@ -101,7 +101,7 @@ class Merchants extends Base
     }
 
     /**
-     * Prepare and send a business event for a cart initiated
+     * Prepare and send a business event for Order confirmed
      *
      * @param OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent
      * @return void
