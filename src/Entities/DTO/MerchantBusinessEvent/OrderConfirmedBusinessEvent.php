@@ -98,7 +98,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     }
 
     /**
-     * @return string
+     * @return string | null
      */
     public function getAlmaPaymentId()
     {
