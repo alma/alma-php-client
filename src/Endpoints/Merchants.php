@@ -111,9 +111,9 @@ class Merchants extends Base
     {
         $cartEventDataPayload = [
             'event_type' => $orderConfirmedBusinessEvent->getEventType(),
-            'is_alma_p1x' => $orderConfirmedBusinessEvent->getIsAlmaP1X(),
-            'is_alma_bnpl' => $orderConfirmedBusinessEvent->getIsAlmaBNPL(),
-            'was_bnpl_eligible' => $orderConfirmedBusinessEvent->getWasBNPLEligible(),
+            'is_alma_p1x' => $orderConfirmedBusinessEvent->isAlmaP1X(),
+            'is_alma_bnpl' => $orderConfirmedBusinessEvent->isAlmaBNPL(),
+            'was_bnpl_eligible' => $orderConfirmedBusinessEvent->wasBNPLEligible(),
             'order_id' => $orderConfirmedBusinessEvent->getOrderId(),
             'cart_id' => $orderConfirmedBusinessEvent->getCartId(),
             'alma_payment_id' => $orderConfirmedBusinessEvent->getAlmaPaymentId()

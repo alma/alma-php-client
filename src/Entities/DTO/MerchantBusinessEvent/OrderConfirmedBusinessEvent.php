@@ -11,11 +11,11 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     /**
      * @var bool
      */
-    private $isAlmaP1X;
+    private $almaP1XStatus;
     /**
      * @var bool
      */
-    private $isAlmaBNPL;
+    private $almaBNPLStatus;
     /**
      * @var bool
      */
@@ -48,8 +48,8 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     public function __construct($isAlmaP1X, $isAlmaBNPL, $wasBNPLEligible, $orderId, $cartId, $almaPaymentId = null)
     {
         $this->eventType = 'order_confirmed';
-        $this->isAlmaP1X = $isAlmaP1X;
-        $this->isAlmaBNPL = $isAlmaBNPL;
+        $this->almaP1XStatus = $isAlmaP1X;
+        $this->almaBNPLStatus = $isAlmaBNPL;
         $this->wasBNPLEligible = $wasBNPLEligible;
         $this->orderId = $orderId;
         $this->cartId = $cartId;
@@ -60,23 +60,25 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     /**
      * @return bool
      */
-    public function getIsAlmaP1X()
+    public function isAlmaP1X()
     {
-        return $this->isAlmaP1X;
+        return $this->almaP1XStatus;
     }
 
     /**
      * @return bool
      */
-    public function getIsAlmaBNPL()
+    public function isAlmaBNPL()
     {
-        return $this->isAlmaBNPL;
+        return $this->almaBNPLStatus;
     }
 
     /**
+     * Was eligible at the time of payment
+     *
      * @return bool
      */
-    public function getWasBNPLEligible()
+    public function wasBNPLEligible()
     {
         return $this->wasBNPLEligible;
     }
@@ -112,7 +114,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
      */
     public function isAlmaPayment()
     {
-        return $this->isAlmaP1X || $this->isAlmaBNPL;
+        return $this->almaP1XStatus || $this->almaBNPLStatus;
     }
 
     /**
@@ -122,8 +124,8 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     protected function validateData()
     {
         if(
-            !is_bool($this->isAlmaP1X) ||
-            !is_bool($this->isAlmaBNPL) ||
+            !is_bool($this->almaP1XStatus) ||
+            !is_bool($this->almaBNPLStatus) ||
             !is_bool($this->wasBNPLEligible) ||
             !is_string($this->orderId) ||
             !is_string($this->cartId) ||
@@ -136,7 +138,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
 
         //Alma payment id for Alma payment, Must be a string
         if(
-            ($this->isAlmaPayment()) &&
+            $this->isAlmaPayment() &&
             !is_string($this->almaPaymentId)
         )
         {

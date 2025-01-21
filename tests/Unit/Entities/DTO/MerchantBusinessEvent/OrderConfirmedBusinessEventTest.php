@@ -18,9 +18,9 @@ class OrderConfirmedBusinessEventTest extends TestCase
         $cartId = "54";
         $event = new OrderConfirmedBusinessEvent($isAlmaP1X, $isAlmaBNPL, $wasBNPLEligible, $orderId, $cartId);
         $this->assertEquals('order_confirmed', $event->getEventType());
-        $this->assertEquals($isAlmaP1X, $event->getIsAlmaP1X());
-        $this->assertEquals($isAlmaBNPL, $event->getIsAlmaBNPL());
-        $this->assertEquals($wasBNPLEligible, $event->getWasBNPLEligible());
+        $this->assertEquals($isAlmaP1X, $event->isAlmaP1X());
+        $this->assertEquals($isAlmaBNPL, $event->isAlmaBNPL());
+        $this->assertEquals($wasBNPLEligible, $event->wasBNPLEligible());
         $this->assertEquals($orderId, $event->getOrderId());
         $this->assertEquals($cartId, $event->getCartId());
         $this->assertNull($event->getAlmaPaymentId());
