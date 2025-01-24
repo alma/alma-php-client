@@ -43,6 +43,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
      * @param bool $wasBNPLEligible
      * @param string $orderId
      * @param string $cartId
+     * @param string | null $almaPaymentId
      * @throws ParametersException
      */
     public function __construct($isAlmaP1X, $isAlmaBNPL, $wasBNPLEligible, $orderId, $cartId, $almaPaymentId = null)

@@ -29,6 +29,7 @@ class CartInitiatedBusinessEventTest extends TestCase
     public static function invalidDataForBusinessEventDataProvider()
     {
         return [
+            "cartId is an empty string" => [''],
             "cartId is an int" => [1],
             "cartId is a float" => [1.1],
             "cartId is an array" => [[]],

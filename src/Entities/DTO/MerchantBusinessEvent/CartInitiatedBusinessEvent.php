@@ -18,7 +18,7 @@ class CartInitiatedBusinessEvent extends AbstractBusinessEvent
     public function __construct($cartId)
     {
         $this->eventType = 'cart_initiated';
-        if(!is_string($cartId)){
+        if(empty($cartId) || !is_string($cartId)) {
             throw new ParametersException('CartId must be a string');
         }
         $this->cartId = $cartId;
