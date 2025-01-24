@@ -25,8 +25,11 @@
 
 namespace Alma\API\Endpoints;
 
+use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
+use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
 use Alma\API\Entities\FeePlan;
 use Alma\API\Entities\Merchant;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\RequestError;
 
 class Merchants extends Base
@@ -80,4 +83,61 @@ class Merchants extends Base
             return new FeePlan($val);
         }, $res->json);
     }
+
+    /**
+     * Prepare and send a business event for a cart initiated
+     *
+     * @param CartInitiatedBusinessEvent $cartEventData
+     * @return void
+     * @throws RequestException
+     */
+    public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEvent $cartEventData)
+    {
+        $cartEventDataPayload = [
+            'event_type' => $cartEventData->getEventType(),
+            'cart_id' => $cartEventData->getCartId()
+        ];
+        $this->sendBusinessEvent($cartEventDataPayload);
+    }
+
+    /**
+     * Prepare and send a business event for Order confirmed
+     *
+     * @param OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent
+     * @return void
+     * @throws RequestException
+     */
+    public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent)
+    {
+        $cartEventDataPayload = [
+            'event_type' => $orderConfirmedBusinessEvent->getEventType(),
+            'is_alma_p1x' => $orderConfirmedBusinessEvent->isAlmaP1X(),
+            'is_alma_bnpl' => $orderConfirmedBusinessEvent->isAlmaBNPL(),
+            'was_bnpl_eligible' => $orderConfirmedBusinessEvent->wasBNPLEligible(),
+            'order_id' => $orderConfirmedBusinessEvent->getOrderId(),
+            'cart_id' => $orderConfirmedBusinessEvent->getCartId(),
+            'alma_payment_id' => $orderConfirmedBusinessEvent->getAlmaPaymentId()
+        ];
+        $this->sendBusinessEvent($cartEventDataPayload);
+    }
+
+    /**
+     * Send merchant_business_event and return 204 no content
+     *
+     * @param array $eventData
+     * @return void
+     * @throws RequestException
+     */
+    private function sendBusinessEvent($eventData)
+    {
+        try {
+            $res = $this->request(self::ME_PATH . "/business-events")->setRequestBody($eventData)->post();
+        } catch (RequestError $e) {
+            throw new RequestException($e->getErrorMessage(), null);
+        }
+        if ($res->isError()) {
+            throw new RequestException($res->errorMessage, null, $res);
+        }
+    }
+
 }
