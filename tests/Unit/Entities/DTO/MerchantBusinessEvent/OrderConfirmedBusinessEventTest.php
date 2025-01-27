@@ -52,6 +52,11 @@ class OrderConfirmedBusinessEventTest extends TestCase
         $this->expectException(ParametersException::class);
         new OrderConfirmedBusinessEvent(false, true, true, "42", "54");
     }
+    public function testAlmaPaymentIdCanNotBeAnEmptyStringForAnAlmaPayment()
+    {
+        $this->expectException(ParametersException::class);
+        new OrderConfirmedBusinessEvent(false, true, true, "42", "54", "");
+    }
 
     public function testAlmaPaymentIdShouldBeAbsentForNonAlmaPayments()
     {
@@ -201,6 +206,13 @@ class OrderConfirmedBusinessEventTest extends TestCase
                 'orderId' => "1",
                 'cartId' => "1"
             ],
+            "Order id is empty string" => [
+                'isP1X' => false,
+                'isBNPL' => false,
+                'wasEligible' => true,
+                'orderId' => "",
+                'cartId' => "14"
+            ],
             "Order id is an int" => [
                 'isP1X' => false,
                 'isBNPL' => false,
@@ -270,6 +282,13 @@ class OrderConfirmedBusinessEventTest extends TestCase
                 'wasEligible' => true,
                 'orderId' => '1',
                 'cartId' => new \stdClass()
+            ],
+            "Cart id is empty string" => [
+                'isP1X' => false,
+                'isBNPL' => false,
+                'wasEligible' => true,
+                'orderId' => "1",
+                'cartId' => ""
             ],
         ];
     }

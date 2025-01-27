@@ -128,8 +128,8 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
             !is_bool($this->almaP1XStatus) ||
             !is_bool($this->almaBNPLStatus) ||
             !is_bool($this->wasBNPLEligible) ||
-            !is_string($this->orderId) ||
-            !is_string($this->cartId) ||
+            (!is_string($this->orderId) || empty($this->orderId)) ||
+            (!is_string($this->cartId) || empty($this->cartId)) ||
             // Alma payment id should be absent for non Alma payments
             (!$this->isAlmaPayment() && !is_null($this->almaPaymentId))
         )
@@ -140,7 +140,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
         //Alma payment id for Alma payment, Must be a string
         if(
             $this->isAlmaPayment() &&
-            !is_string($this->almaPaymentId)
+            (!is_string($this->almaPaymentId) || empty($this->almaPaymentId))
         )
         {
             throw new ParametersException('Alma payment id is mandatory for Alma payment');
