@@ -133,6 +133,7 @@ class Orders extends Base
     }
 
     /**
+     * @deprecated since version 2.5.0 - Use addOrderStatusByMerchantOrderReference() in Payments endpoint
      * @param string $orderExternalId
      * @param array $orderData
      * @return void
