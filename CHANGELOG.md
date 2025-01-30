@@ -7,7 +7,7 @@
 ### 🚀 New Features
 
 - Deprecation of v2/orders status endpoint (#161)
-- fix: Not allow empty string for order confirmed business event construct (#160)
+- Not allow empty string for order confirmed business event construct (#160)
 - Add v1/me/business event endpoint (#158)
 
 #### Contributors
