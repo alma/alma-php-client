@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v2.5.0 - 2025-01-30
+
+### Changes
+
+### 🚀 New Features
+
+- Deprecation of v2/orders status endpoint (#161)
+- Not allow empty string for order confirmed business event construct (#160)
+- Add v1/me/business event endpoint (#158)
+
+#### Contributors
+
+@Francois-Gomis, @alma-renovate-bot[bot], @webaaz, [alma-renovate-bot[bot]](https://github.com/apps/alma-renovate-bot) and [github-actions[bot]](https://github.com/apps/github-actions)
+
 ## v2.4.0 - 2024-12-09
 
 ### Changes
@@ -200,6 +214,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
