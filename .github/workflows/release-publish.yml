@@ -110,7 +110,7 @@ jobs:
 
             ${{ steps.fetch-release-draft.outputs.body }}
 
-            cc <@france.berut> <@khadija.cherif>
+            cc <@khadija.cherif>
 
       - name: Send changelog to Slack
         uses: slackapi/slack-github-action@v2.0.0
