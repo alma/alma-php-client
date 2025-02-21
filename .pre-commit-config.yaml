@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1024"]
@@ -35,7 +35,7 @@ repos:
         stages: [commit]
 
   - repo: https://github.com/returntocorp/semgrep
-    rev: v1.27.0
+    rev: v1.103.0
     hooks:
       - id: semgrep
         args:

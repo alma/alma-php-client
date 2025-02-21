@@ -30,7 +30,7 @@ use Alma\API\Lib\ClientOptionsValidator;
 
 class Client
 {
-    const VERSION = '2.2.0';
+    const VERSION = '2.5.0';
 
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';
@@ -75,6 +75,11 @@ class Client
      * @var Endpoints\DataExports
      */
     public $dataExports;
+    /*************************/
+    /**
+     * @var Endpoints\Configuration
+     */
+    public $configuration;
     /*************************/
 
     /**
@@ -156,6 +161,7 @@ class Client
         $this->webhooks = new Endpoints\Webhooks($this->context);
         $this->insurance = new Endpoints\Insurance($this->context);
         $this->dataExports = new Endpoints\DataExports($this->context);
+        $this->configuration = new Endpoints\Configuration($this->context);
     }
 
     private function initUserAgent()

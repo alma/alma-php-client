@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2018 Alma / Nabla SAS
  *
@@ -24,50 +23,28 @@
  *
  */
 
-namespace Alma\API\Lib;
+namespace Alma\API\Endpoints;
 
-use Alma\API\ParamsError;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\RequestError;
 
-/**
- * Class PaymentValidator
- * @package Alma\API
- */
-class PaymentValidator
+class Configuration extends Base
 {
-
-    const HEADER_SIGNATURE_KEY = 'X-Alma-Signature';
+    const CONFIGURATION_PATH = '/v1/integration-configuration';
 
     /**
-     * Ensure that the purchase amount is an integer
-     *
-     * @param $data
-     * @return void
-     * @throws ParamsError
+     * @param string $url The URL to send to Alma for integrations configuration
+     * @throws RequestException
+     * @throws RequestError
      */
-    public static function checkPurchaseAmount($data)
+    public function sendIntegrationsConfigurationsUrl($url)
     {
-        if (
-            !empty($data['payment']['purchase_amount'])
-            && !is_int($data['payment']['purchase_amount'])
-        ) {
-            throw new ParamsError(sprintf(
-                'The "purchase_amount" field needs to be an integer. "%s" found ',
-                gettype($data['payment']['purchase_amount'])
-            ));
+        $res = $this->request(self::CONFIGURATION_PATH . "/api")->setRequestBody(array(
+            "collect_data_url" => $url
+        ))->put();
+
+        if ($res->isError()) {
+            throw new RequestException($res->errorMessage, null, $res);
         }
-    }
-
-    /**
-     * Validate the HMAC signature of the request
-     *
-     * @param string $data
-     * @param string $apiKey
-     * @param string $signature
-     * @deprecated Use RequestUtils::isHmacValidated instead
-     * @return bool
-     */
-    public function isHmacValidated($data, $apiKey,  $signature)
-    {
-        return RequestUtils::isHmacValidated($data, $apiKey, $signature);
     }
 }
