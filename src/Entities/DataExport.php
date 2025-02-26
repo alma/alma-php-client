@@ -26,36 +26,47 @@ namespace Alma\API\Entities;
 
 class DataExport extends Base
 {
+    /** @var bool */
     public $complete;
 
+    /** @var int Timestamp */
     public $created;
 
+    /** @var int Timestamp */
     public $end;
 
-    public $holder_id;
-
+    /** @var string */
     public $id;
 
+    /** @var bool */
     public $include_child_accounts;
 
+    /** @var string */
     public $merchant;
 
-    public $receivable_export_type;
 
+    /** @var int Timestamp */
     public $start;
 
+    /** @var string */
     public $type;
 
+    /** @var string Timestamp */
     public $updated;
 
+    /** @var string */
     public $url_csv;
 
+    /** @var string */
     public $url_pdf;
 
+    /** @var string */
     public $url_xlsx;
 
+    /** @var string */
     public $url_xml;
 
+    /** @var string */
     public $url_zip;
 
     /**

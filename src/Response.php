@@ -35,8 +35,13 @@ class Response
     public function __construct($curlHandle, $curlResult)
     {
         $this->responseCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
-        $this->json = json_decode($curlResult, true);
-        $this->data = $curlResult;
+
+        if ('application/json' === curl_getinfo($curlHandle, CURLINFO_CONTENT_TYPE)) {
+            $this->json = json_decode($curlResult, true);
+        } else {
+            $this->json = null;
+            $this->data = $curlResult;
+        }
 
         if ($this->isError()) {
             if ($this->json && array_key_exists('message', $this->json)) {
