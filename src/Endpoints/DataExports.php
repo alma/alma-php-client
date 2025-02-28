@@ -95,6 +95,6 @@ class DataExports extends Base
             throw new RequestException($res->errorMessage, null, $res);
         }
 
-        return $res->data;
+        return $res->responseFile;
     }
 }

@@ -176,7 +176,7 @@ class DataExportsTest extends TestCase
             ->andReturn($this->responseMock);
 
         $this->responseMock->shouldReceive('isError')->andReturn(false);
-        $this->responseMock->data = 'file_content';
+        $this->responseMock->responseFile = 'file_content';
 
         $result = $this->dataExportsEndpoint->download('12345', 'csv');
 
