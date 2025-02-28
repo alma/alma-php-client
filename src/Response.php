@@ -29,7 +29,7 @@ class Response
 {
     public $responseCode;
     public $json;
-    public $data;
+    public $responseFile;
     public $errorMessage;
 
     public function __construct($curlHandle, $curlResult)
@@ -40,7 +40,7 @@ class Response
             $this->json = json_decode($curlResult, true);
         } else {
             $this->json = null;
-            $this->data = $curlResult;
+            $this->responseFile = $curlResult;
         }
 
         if ($this->isError()) {
