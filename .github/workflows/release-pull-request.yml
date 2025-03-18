@@ -10,7 +10,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: main
           persist-credentials: false
@@ -24,7 +24,7 @@ jobs:
           git reset --hard develop
 
       - name: Create release draft
-        uses: release-drafter/release-drafter@v6
+        uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6
         id: release-drafter
         with:
           # release-drafter should be based on develop to get the correct content as pull requests are merged into develop
@@ -35,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update CHANGELOG.md
-        uses: stefanzweifel/changelog-updater-action@v1
+        uses: stefanzweifel/changelog-updater-action@a938690fad7edf25368f37e43a1ed1b34303eb36 # v1
         with:
           latest-version: ${{ steps.release-drafter.outputs.tag_name }}
           release-notes: ${{ steps.release-drafter.outputs.body }}
@@ -47,7 +47,7 @@ jobs:
       # If using default Github token, the created pull request won't trigger workflows with pull_request event
       # See https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
       - name: Generate Github token to create PR
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@21cfef2b496dd8ef5b904c159339626a10ad380e # v1
         id: github-token
         with:
           app-id: ${{ secrets.ALMA_CREATE_TEAM_PRS_APP_ID }}
@@ -55,7 +55,7 @@ jobs:
           repositories: alma-php-client
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7
         with:
           token: ${{ steps.github-token.outputs.token }}
           commit-message: 'chore: update version'
