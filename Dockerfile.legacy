@@ -1,6 +1,6 @@
 ARG PHP_VERSION
 
-FROM composer:1 as composer
+FROM composer:2 as composer
 FROM php:${PHP_VERSION}-fpm
 
 ENV DEBIAN_FRONTEND noninteractive
