@@ -14,9 +14,8 @@ class StringUtils
      * @param $stringToCheck
      * @return bool
      */
-    public static function isAValidString($stringToCheck)
+    public static function isAValidString($stringToCheck): bool
     {
         return is_string($stringToCheck) && trim($stringToCheck) !== '';
     }
-
 }

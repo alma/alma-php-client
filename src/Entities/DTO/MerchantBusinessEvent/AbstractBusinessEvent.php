@@ -14,7 +14,7 @@ abstract class AbstractBusinessEvent
      *
      * @return string
      */
-    public function getEventType()
+    public function getEventType(): string
     {
         return $this->eventType;
     }

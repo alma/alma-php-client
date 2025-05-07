@@ -2,8 +2,6 @@
 
 namespace Alma\API\Entities;
 
-use Alma\API\Endpoints\Results\Eligibility;
-
 /**
  * Interface PaymentPlanInterface
  *
@@ -16,33 +14,33 @@ interface PaymentPlanInterface
      *
      * @return int
      */
-    public function getDeferredDays();
+    public function getDeferredDays(): int;
 
     /**
      * Get the value of deferredMonths.
      *
      * @return int
      */
-    public function getDeferredMonths();
+    public function getDeferredMonths(): int;
 
     /**
      * @return string
      */
-    public function getPlanKey();
+    public function getPlanKey(): string;
 
     /**
      * Get the value of installmentsCount.
      *
      * @return int
      */
-    public function getInstallmentsCount();
+    public function getInstallmentsCount(): int;
 
     /**
      * Get the value of kind.
      *
      * @return string
      */
-    public function getKind();
+    public function getKind(): string;
 
     /**
      * Check if a payment plan is "pay later" compliant.
@@ -50,7 +48,7 @@ interface PaymentPlanInterface
      *
      * @return bool
      */
-    public function isPayLaterOnly();
+    public function isPayLaterOnly(): bool;
 
     /**
      * Check if a payment plan is "PnX" compliant.
@@ -58,19 +56,19 @@ interface PaymentPlanInterface
      *
      * @return bool
      */
-    public function isPnXOnly();
+    public function isPnXOnly(): bool;
 
     /**
      * Check if a payment plan is "PnX" AND "pay later" compliant.
      *
      * @return bool
      */
-    public function isBothPnxAndPayLater();
+    public function isBothPnxAndPayLater(): bool;
 
     /**
      * Check if a payment plan is "Pay Now" compliant.
      *
      * @return bool
      */
-    public function isPayNow();
+    public function isPayNow(): bool;
 }

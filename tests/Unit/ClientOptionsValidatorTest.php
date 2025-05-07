@@ -2,16 +2,16 @@
 
 namespace Alma\API\Tests\Unit;
 
+use Alma\API\Configuration;
+use Alma\API\Exceptions\ParametersException;
 use Alma\API\Lib\ClientOptionsValidator;
-use Alma\API\Client;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Psr\Log\NullLogger;
-use Alma\API\ParamsError;
 
 /**
  * Class ClientOptionsValidatorTest
  */
-class ClientOptionsValidatorTest extends TestCase
+class ClientOptionsValidatorTest extends MockeryTestCase
 {
     /** @var string  */
     const FAKE_API_URI = 'https://fake-api.getalma.eu';
@@ -20,38 +20,38 @@ class ClientOptionsValidatorTest extends TestCase
      * Return options to test ClientOptionsValidator::validateOptions
      * @return array
      */
-    public static function getClientOptions()
+    public static function getClientOptions(): array
     {
         return [
             [
                 [],
                 [
                     'api_root' => [
-                        Client::TEST_MODE => Client::SANDBOX_API_URL,
-                        Client::LIVE_MODE => Client::LIVE_API_URL
+                        Configuration::TEST_MODE => Configuration::SANDBOX_API_URL,
+                        Configuration::LIVE_MODE => Configuration::LIVE_API_URL
                     ],
                     'force_tls' => 2,
-                    'mode' => Client::LIVE_MODE,
+                    'mode' => Configuration::LIVE_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
             [
                 [
                     'api_root' => [
-                        Client::TEST_MODE => self::FAKE_API_URI,
-                        Client::LIVE_MODE => self::FAKE_API_URI
+                        Configuration::TEST_MODE => self::FAKE_API_URI,
+                        Configuration::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
-                    'mode' => Client::TEST_MODE,
+                    'mode' => Configuration::TEST_MODE,
                     'logger' => new NullLogger()
                 ],
                 [
                     'api_root' => [
-                        Client::TEST_MODE => self::FAKE_API_URI,
-                        Client::LIVE_MODE => self::FAKE_API_URI
+                        Configuration::TEST_MODE => self::FAKE_API_URI,
+                        Configuration::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
-                    'mode' => Client::TEST_MODE,
+                    'mode' => Configuration::TEST_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
@@ -63,11 +63,11 @@ class ClientOptionsValidatorTest extends TestCase
                 ],
                 [
                     'api_root' => [
-                        Client::TEST_MODE => self::FAKE_API_URI,
-                        Client::LIVE_MODE => self::FAKE_API_URI
+                        Configuration::TEST_MODE => self::FAKE_API_URI,
+                        Configuration::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 2,
-                    'mode' => Client::LIVE_MODE,
+                    'mode' => Configuration::LIVE_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
@@ -80,11 +80,11 @@ class ClientOptionsValidatorTest extends TestCase
                 ],
                 [
                     'api_root' => [
-                        Client::TEST_MODE => Client::SANDBOX_API_URL,
-                        Client::LIVE_MODE => Client::LIVE_API_URL
+                        Configuration::TEST_MODE => Configuration::SANDBOX_API_URL,
+                        Configuration::LIVE_MODE => Configuration::LIVE_API_URL
                     ],
                     'force_tls' => 2,
-                    'mode' => Client::LIVE_MODE,
+                    'mode' => Configuration::LIVE_MODE,
                     'logger' => new NullLogger(),
                     'user_agent_component' => [
                         'PrestaShop' => 2.3,
@@ -99,14 +99,14 @@ class ClientOptionsValidatorTest extends TestCase
 	 * Return faulty options to test ClientOptionsValidator::validateOptions
 	 * @return array
 	 */
-	public static function getInvalidClientOptions()
-	{
+	public static function getInvalidClientOptions(): array
+    {
 		return [
 			'invalid api_root' => [
 				[
 					'api_root' => [
-						'something wrong' => Client::SANDBOX_API_URL,
-						'something wronger' => Client::LIVE_API_URL
+						'something wrong' => Configuration::SANDBOX_API_URL,
+						'something wronger' => Configuration::LIVE_API_URL
 					],
 				],
 			],
@@ -133,10 +133,11 @@ class ClientOptionsValidatorTest extends TestCase
     /**
      * @dataProvider getClientOptions
      * @return void
-     * @throws ParamsError
+     * @throws ParametersException
      */
     public function testClientOptionsValidator($options, $expectedResult)
     {
+        /** @var mixed $validatedConfig */
         $validatedConfig = ClientOptionsValidator::validateOptions($options);
 
         $this->assertEquals($expectedResult, $validatedConfig);
@@ -145,11 +146,11 @@ class ClientOptionsValidatorTest extends TestCase
     /**
      * @dataProvider getInvalidClientOptions
      * @return void
-     * @throws ParamsError
      */
     public function testFaultyClientOptionsValidator($options)
     {
-        $this->expectException(ParamsError::class);
+        $this->expectException(ParametersException::class);
+
         ClientOptionsValidator::validateOptions($options);
     }
 }

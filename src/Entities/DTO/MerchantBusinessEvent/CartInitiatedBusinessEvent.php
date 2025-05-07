@@ -15,10 +15,10 @@ class CartInitiatedBusinessEvent extends AbstractBusinessEvent
      * @param string $cartId
      * @throws ParametersException
      */
-    public function __construct($cartId)
+    public function __construct(string $cartId)
     {
         $this->eventType = 'cart_initiated';
-        if(empty($cartId) || !is_string($cartId)) {
+        if(empty($cartId)) {
             throw new ParametersException('CartId must be a string');
         }
         $this->cartId = $cartId;
@@ -29,7 +29,7 @@ class CartInitiatedBusinessEvent extends AbstractBusinessEvent
      *
      * @return string
      */
-    public function getCartId()
+    public function getCartId(): string
     {
         return $this->cartId;
     }

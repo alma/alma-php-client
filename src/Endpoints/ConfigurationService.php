@@ -23,14 +23,32 @@
  *
  */
 
-namespace Alma\API;
+namespace Alma\API\Endpoints;
 
-/**
- * Class ParamsError
- * @package Alma\API
- * @deprecated use ParametersException
- */
-class ParamsError extends \Exception
+use Alma\API\Exceptions\ConfigurationServiceException;
+use Alma\API\Exceptions\RequestException;
+use Psr\Http\Client\ClientExceptionInterface;
+
+class ConfigurationService extends Base
 {
+    const CONFIGURATION_API_ENDPOINT = '/v1/integration-configuration/api';
 
+    /**
+     * @param string $url The URL to send to Alma for integrations configuration
+     * @throws ConfigurationServiceException
+     */
+    public function sendIntegrationsConfigurationsUrl(string $url)
+    {
+        try {
+            $request = null;
+            $request = $this->createPutRequest(self::CONFIGURATION_API_ENDPOINT, ["collect_data_url" => $url]);
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface|RequestException $e) {
+            throw new ConfigurationServiceException($e->getMessage(), null, $request);
+        }
+
+        if ($response->isError()) {
+            throw new ConfigurationServiceException($response->getReasonPhrase(), $request, $response);
+        }
+    }
 }

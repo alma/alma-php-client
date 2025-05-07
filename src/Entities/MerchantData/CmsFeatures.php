@@ -68,27 +68,27 @@ class CmsFeatures
      * CmsFeatures constructor.
      * @param array $cmsFeaturesDataArray
      */
-    public function __construct($cmsFeaturesDataArray)
+    public function __construct(array $cmsFeaturesDataArray)
     {
         // Ensure values are properly initialized
-        $this->almaEnabled = isset($cmsFeaturesDataArray['alma_enabled']) ? $cmsFeaturesDataArray['alma_enabled'] : null;
-        $this->widgetCartActivated = isset($cmsFeaturesDataArray['widget_cart_activated']) ? $cmsFeaturesDataArray['widget_cart_activated'] : null;
-        $this->widgetProductActivated = isset($cmsFeaturesDataArray['widget_product_activated']) ? $cmsFeaturesDataArray['widget_product_activated'] : null;
-        $this->usedFeePlans = isset($cmsFeaturesDataArray['used_fee_plans']) ? $cmsFeaturesDataArray['used_fee_plans'] : null;
-        $this->inPageActivated = isset($cmsFeaturesDataArray['in_page_activated']) ? $cmsFeaturesDataArray['in_page_activated'] : null;
-        $this->logActivated = isset($cmsFeaturesDataArray['log_activated']) ? $cmsFeaturesDataArray['log_activated'] : null;
-        $this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : null;
-        $this->paymentMethodPosition = isset($cmsFeaturesDataArray['payment_method_position']) ? $cmsFeaturesDataArray['payment_method_position'] : null;
-        $this->specificFeatures = isset($cmsFeaturesDataArray['specific_features']) ? $cmsFeaturesDataArray['specific_features'] : null;
-        $this->countryRestriction = isset($cmsFeaturesDataArray['country_restriction']) ? $cmsFeaturesDataArray['country_restriction'] : null;
-        $this->isMultisite = isset($cmsFeaturesDataArray['is_multisite']) ? $cmsFeaturesDataArray['is_multisite'] : null;
-        $this->customWidgetCss = isset($cmsFeaturesDataArray['custom_widget_css']) ? $cmsFeaturesDataArray['custom_widget_css'] : null;
+        $this->almaEnabled = $cmsFeaturesDataArray['alma_enabled'] ?? null;
+        $this->widgetCartActivated = $cmsFeaturesDataArray['widget_cart_activated'] ?? null;
+        $this->widgetProductActivated = $cmsFeaturesDataArray['widget_product_activated'] ?? null;
+        $this->usedFeePlans = $cmsFeaturesDataArray['used_fee_plans'] ?? null;
+        $this->inPageActivated = $cmsFeaturesDataArray['in_page_activated'] ?? null;
+        $this->logActivated = $cmsFeaturesDataArray['log_activated'] ?? null;
+        $this->excludedCategories = $cmsFeaturesDataArray['excluded_categories'] ?? null;
+        $this->paymentMethodPosition = $cmsFeaturesDataArray['payment_method_position'] ?? null;
+        $this->specificFeatures = $cmsFeaturesDataArray['specific_features'] ?? null;
+        $this->countryRestriction = $cmsFeaturesDataArray['country_restriction'] ?? null;
+        $this->isMultisite = $cmsFeaturesDataArray['is_multisite'] ?? null;
+        $this->customWidgetCss = $cmsFeaturesDataArray['custom_widget_css'] ?? null;
     }
 
     /**
      * @return array
      */
-    public function getProperties()
+    public function getProperties(): array
     {
         // Use array_filter with ARRAY_FILTER_USE_BOTH to remove null or empty values
         return array_filter([

@@ -46,7 +46,7 @@ class Webhook extends Base
      *
      * @return bool Whether the signature is valid or not
      */
-    public static function verifySignature($signature, $params, $secret, $urlEncode = true)
+    public static function verifySignature(string $signature, array $params, string $secret, bool $urlEncode = true): bool
     {
         // Sort params by param name
         ksort($params, SORT_STRING);

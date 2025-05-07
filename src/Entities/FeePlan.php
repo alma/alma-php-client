@@ -33,65 +33,65 @@ class FeePlan extends Base implements PaymentPlanInterface
     const KIND_POS = 'pos';
 
     /** @var int Installments count this fee plan applies to*/
-    public $installments_count;
+    public $installmentsCount;
 
     /** @var string Kind of payments this fee plan applies to (see kinds above, most likely KIND_GENERAL) */
     public $kind;
 
     /** @var int Number of deferred months this fee plan applies to */
-    public $deferred_months;
+    public $deferredMonths;
 
     /** @var int Number of deferred days this fee plan applies to */
-    public $deferred_days;
+    public $deferredDays;
 
     /** @var int Number of deferred trigger limit days this fee plan applies to */
-    public $deferred_trigger_limit_days;
+    public $deferredTriggerLimitDays;
 
     /** @var int Maximum purchase amount allowed for this fee plan */
-    public $max_purchase_amount;
+    public $maxPurchaseAmount;
 
     /** @var int Minimum purchase amount allowed for this fee plan */
-    public $min_purchase_amount;
+    public $minPurchaseAmount;
 
     /** @var int Is this fee plan allowed/enabled? */
     public $allowed;
 
     /** @var int Percentage of fees in bps paid for by the merchant (100bps = 1%) */
-    public $merchant_fee_variable;
+    public $merchantFeeVariable;
 
     /** @var int Fixed fees in cents paid for by the merchant */
-    public $merchant_fee_fixed;
+    public $merchantFeeFixed;
 
     /** @var int Percentage of fees in bps paid for by the customer (100bps = 1%) */
-    public $customer_fee_variable;
+    public $customerFeeVariable;
 
-	/** @var int Percentage of lending rate in bps used to calculate the fee plan interest paid by the customer (100bps = 1%) */
-    public $customer_lending_rate;
+    /** @var int Percentage of lending rate in bps used to calculate the fee plan interest paid by the customer (100bps = 1%) */
+    public $customerLendingRate;
 
     /** @var int Fixed fees in cents paid for by the customer */
-    public $customer_fee_fixed;
+    public $customerFeeFixed;
 
-    public function getDeferredDays()
+    public function getDeferredDays(): int
     {
-        return $this->deferred_days;
+        return $this->deferredDays;
     }
 
-    public function getDeferredMonths()
+    public function getDeferredMonths(): int
     {
-        return $this->deferred_months;
+        return $this->deferredMonths;
     }
 
-    public function getDeferredTriggerLimitDays()
+    public function getDeferredTriggerLimitDays(): int
     {
-        return $this->deferred_trigger_limit_days;
+        return $this->deferredTriggerLimitDays;
     }
 
-    public function getInstallmentsCount()
+    public function getInstallmentsCount(): int
     {
-        return $this->installments_count;
+        return $this->installmentsCount;
     }
 
-    public function getKind()
+    public function getKind(): string
     {
         return $this->kind;
     }

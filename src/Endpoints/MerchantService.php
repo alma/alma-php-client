@@ -29,26 +29,37 @@ use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
 use Alma\API\Entities\FeePlan;
 use Alma\API\Entities\Merchant;
+use Alma\API\Exceptions\MerchantServiceException;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\RequestError;
+use Psr\Http\Client\ClientExceptionInterface;
 
-class Merchants extends Base
+class MerchantService extends Base
 {
-    const ME_PATH = '/v1/me';
+    const ME_ENDPOINT = '/v1/me';
+    const BUSINESS_EVENTS_ENDPOINT = self::ME_ENDPOINT . '/business-events';
+    const FEE_PLANS_ENDPOINT = self::ME_ENDPOINT . '/fee-plans';
+    const EXTENDED_DATA_ENDPOINT = self::ME_ENDPOINT . '/extended-data';
 
     /**
      * @return Merchant
-     * @throws RequestError
+     * @throws RequestException
+     * @throws MerchantServiceException
      */
-    public function me()
+    public function me(): Merchant
     {
-        $res = $this->request(self::ME_PATH . '/extended-data')->get();
-
-        if ($res->isError()) {
-            throw new RequestError($res->errorMessage, null, $res);
+        try {
+            $request = null;
+            $request = $this->createGetRequest(self::EXTENDED_DATA_ENDPOINT);
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface $e) {
+            throw new MerchantServiceException($e->getErrorMessage(), $request);
         }
 
-        return new Merchant($res->json);
+        if ($response->isError()) {
+            throw new RequestException($response->getReasonPhrase(), $request, $response);
+        }
+
+        return new Merchant($response->getJson());
     }
 
     /**
@@ -59,9 +70,10 @@ class Merchants extends Base
      *                                         the string "all" (default) to get all available fee plans
      * @param bool $includeDeferred Include deferred fee plans (i.e. Pay Later plans) in the response
      * @return FeePlan[] An array of available fee plans (some might be disabled, check FeePlan->allowed for each)
-     * @throws RequestError
+     *
+     * @throws MerchantServiceException
      */
-    public function feePlans($kind = FeePlan::KIND_GENERAL, $installmentsCounts = "all", $includeDeferred = false)
+    public function feePlans(string $kind = FeePlan::KIND_GENERAL, $installmentsCounts = "all", bool $includeDeferred = false): array
     {
         if (is_array($installmentsCounts)) {
             $only = implode(",", $installmentsCounts);
@@ -69,19 +81,26 @@ class Merchants extends Base
             $only = $installmentsCounts;
         }
 
-        $res = $this->request(self::ME_PATH . "/fee-plans")->setQueryParams(array(
+        $queryParams = array(
             "kind" => $kind,
             "only" => $only,
             "deferred" => $includeDeferred ? "true" : "false" // Avoid conversion to "0"/"1" our API doesn't recognize
-        ))->get();
+        );
+        try {
+            $request = null;
+            $request = $this->createGetRequest(self::FEE_PLANS_ENDPOINT, $queryParams);
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface|RequestException $e) {
+            throw new MerchantServiceException($e->getErrorMessage(), $request);
+        }
 
-        if ($res->isError()) {
-            throw new RequestError($res->errorMessage, null, $res);
+        if ($response->isError()) {
+            throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);
         }
 
         return array_map(function ($val) {
             return new FeePlan($val);
-        }, $res->json);
+        }, $response->getJson());
     }
 
     /**
@@ -89,7 +108,7 @@ class Merchants extends Base
      *
      * @param CartInitiatedBusinessEvent $cartEventData
      * @return void
-     * @throws RequestException
+     * @throws MerchantServiceException
      */
     public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEvent $cartEventData)
     {
@@ -105,7 +124,7 @@ class Merchants extends Base
      *
      * @param OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent
      * @return void
-     * @throws RequestException
+     * @throws MerchantServiceException
      */
     public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent)
     {
@@ -126,18 +145,19 @@ class Merchants extends Base
      *
      * @param array $eventData
      * @return void
-     * @throws RequestException
+     * @throws MerchantServiceException
      */
-    private function sendBusinessEvent($eventData)
+    private function sendBusinessEvent(array $eventData)
     {
         try {
-            $res = $this->request(self::ME_PATH . "/business-events")->setRequestBody($eventData)->post();
-        } catch (RequestError $e) {
-            throw new RequestException($e->getErrorMessage(), null);
+            $request = null;
+            $request = $this->createPostRequest(self::BUSINESS_EVENTS_ENDPOINT, $eventData);
+            $response = $this->client->sendRequest($request);
+        } catch (RequestException|ClientExceptionInterface $e) {
+            throw new MerchantServiceException($e->getErrorMessage(), $request);
         }
-        if ($res->isError()) {
-            throw new RequestException($res->errorMessage, null, $res);
+        if ($response->isError()) {
+            throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);
         }
     }
-
 }

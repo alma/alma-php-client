@@ -25,155 +25,102 @@
 
 namespace Alma\API;
 
-use Alma\API\Endpoints;
-use Alma\API\Lib\ClientOptionsValidator;
+use Alma\API\Exceptions\AlmaException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Client\ClientInterface;
 
-class Client
+class Client implements ClientInterface
 {
-    const VERSION = '2.5.0';
+    const VERSION = '3.0.0';
 
-    const LIVE_MODE = 'live';
-    const TEST_MODE = 'test';
+    private Configuration $config;
 
-    const LIVE_API_URL = 'https://api.getalma.eu';
-    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
-
-    protected $context;
-
-    /***** API ENDPOINTS *****/
-    /**
-     * @var Endpoints\Payments
-     */
-    public $payments;
-
-    /**
-     * @var Endpoints\Merchants
-     */
-    public $merchants;
-
-    /**
-     * @var Endpoints\Orders
-     */
-    public $orders;
-
-    /**
-     * @var Endpoints\Webhooks
-     */
-    public $webhooks;
-
-    /**
-     * @var Endpoints\ShareOfCheckout
-     */
-    public $shareOfCheckout;
-
-    /**
-     * @var Endpoints\Insurance
-     */
-    public $insurance;
-
-    /**
-     * @var Endpoints\DataExports
-     */
-    public $dataExports;
-    /*************************/
-    /**
-     * @var Endpoints\Configuration
-     */
-    public $configuration;
-    /*************************/
-
-    /**
-     * Alma client initialization.
-     *
-     * @param string $api_key a valid API key for the service
-     *
-     *
-     * @param $options
-     *              - api_root  string|array[$mode => string]   API root URL to use. If you need different URLs for the
-     *                                                          test and live modes, provide an array with the keys
-     *                                                          'test' and 'live' and the URLs to use as values.
-     *                                                          Default: "https://api.getalma.eu"
-     *
-     *              - force_tls int|boolean 0, 1 or 2 will force TLS 1.0, 1.1 or 1.2 when connecting to the API.
-     *                                      `false` will not try to force TLS; `true` wil fallback to default value.
-     *                                      If set to 0/1/2/true, TLS will be forced even if the API ROOT uses the
-     *                                      "http://" scheme.
-     *                                      Default: 2
-     *              - mode      string  'test' or 'live'. Default: 'live'
-     *              - logger    Psr\Log\LoggerInterface The logger instance to use for errors/warnings
-     *
-     * @throws DependenciesError
-     * @throws ParamsError
-     */
-    public function __construct($api_key, $options = array())
+    public function __construct(array $config = [])
     {
-        $this->checkDependencies();
-
-        if (empty($api_key)) {
-            throw new ParamsError('An API key is required to instantiate new Alma\Client');
-        }
-
-        $options = ClientOptionsValidator::validateOptions($options);
-
-        $this->context = new ClientContext($api_key, $options);
-        $this->initUserAgent();
-        $this->initEndpoints();
+        $this->config = new Configuration(
+            array_merge([
+                'base_uri' => '',
+                'timeout'  => 30,
+                'headers'  => [],
+                'verify'   => true, // Check SSL certificate
+            ], $config)
+        );
     }
 
-    public function addUserAgentComponent($component, $version) {
-        $this->context->addUserAgentComponent($component, $version);
+    public function getConfig(): Configuration
+    {
+        return $this->config;
     }
 
     /**
-     * @throws DependenciesError
+     * Sends an HTTP request and returns the response.
+     *
+     * @param RequestInterface $request The HTTP request to send.
+     * @return ResponseInterface The HTTP response received.
+     * @throws AlmaException
      */
-    private function checkDependencies()
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        if (!function_exists('curl_init')) {
-            throw new DependenciesError('Alma requires the CURL PHP extension.');
+        $url = $this->config->getBaseUri() . $request->getUri()->getPath();
+        $headers = array_merge($this->config->getHeaders(), $request->getHeaders());
+
+        $curl = curl_init($url);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_HEADER, 1);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $this->config->getTimeout());
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $this->formatHeaders($headers));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->config->getSslVerify());
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $this->config->getSslVerify() ? 2 : 0);
+
+        $body = $request->getBody();
+        curl_setopt($curl, CURLOPT_POSTFIELDS, (string) $body);
+
+        $response = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            throw new AlmaException("cURL error: " . $error);
         }
 
-        if (!function_exists('json_decode')) {
-            throw new DependenciesError('Alma requires the JSON PHP extension.');
-        }
+        // Getting the HTTP status code and headers
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $responseHeaders = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $headerString = substr($response, 0, $responseHeaders);
+        $bodyContent = substr($response, $responseHeaders);
 
-        $openssl_exception = new DependenciesError('Alma requires OpenSSL >= 1.0.1');
-        if (!defined('OPENSSL_VERSION_TEXT')) {
-            throw $openssl_exception;
-        }
+        curl_close($curl);
 
-        preg_match('/^(?:Libre|Open)SSL ([\d.]+)/', OPENSSL_VERSION_TEXT, $matches);
-        if (empty($matches[1])) {
-            throw $openssl_exception;
-        }
-
-        if (!version_compare($matches[1], '1.0.1', '>=')) {
-            throw $openssl_exception;
-        }
+        // Return the response
+        return new Response($statusCode, $this->parseHeaders($headerString), $bodyContent);
     }
 
-    private function initEndpoints()
+    private function formatHeaders(array $headers): array
     {
-        $this->payments = new Endpoints\Payments($this->context);
-        $this->merchants = new Endpoints\Merchants($this->context);
-        $this->orders = new Endpoints\Orders($this->context);
-        $this->shareOfCheckout = new Endpoints\ShareOfCheckout($this->context);
-        $this->webhooks = new Endpoints\Webhooks($this->context);
-        $this->insurance = new Endpoints\Insurance($this->context);
-        $this->dataExports = new Endpoints\DataExports($this->context);
-        $this->configuration = new Endpoints\Configuration($this->context);
+        $formattedHeaders = [];
+        foreach ($headers as $name => $values) {
+            foreach ($values as $value) {
+                $formattedHeaders[] = $name . ': ' . $value;
+            }
+        }
+        return $formattedHeaders;
     }
 
-    private function initUserAgent()
+    private function parseHeaders(string $headerString): array
     {
-        $phpVersion = rtrim(str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION), '-');
-        $this->addUserAgentComponent('PHP', $phpVersion);
-
-        $this->addUserAgentComponent('Alma for PHP', self::VERSION);
+        $headers = [];
+        $lines = explode("\r\n", trim($headerString));
+        foreach ($lines as $line) {
+            if (strpos($line, ':') !== false) {
+                list($name, $value) = explode(':', $line, 2);
+                $name = trim($name);
+                $value = trim($value);
+                $headers[$name][] = $value;
+            }
+        }
+        return $headers;
     }
 }
-
-// Keep those here for backward compatibility
-const LIVE_MODE = Client::LIVE_MODE;
-const TEST_MODE = Client::TEST_MODE;
-

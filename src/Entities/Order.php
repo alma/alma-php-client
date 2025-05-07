@@ -37,20 +37,8 @@ class Order
 
     /**
      * @var string | null  Order reference from the merchant's platform
-     * @deprecated
-     */
-    public $merchant_reference;
-
-    /**
-     * @var string | null  Order reference from the merchant's platform
      */
     private $merchantReference;
-
-    /**
-     * @var string | null  URL to the merchant's backoffice for that Order
-     * @deprecated
-     */
-    public $merchant_url;
 
     /** @var string | null  URL to the merchant's backoffice for that Order */
     private $merchantUrl;
@@ -87,35 +75,24 @@ class Order
      * @var string Order updated timestamp
      */
     private $updatedAt;
-    /**
-     * @var string Order ID
-     * @deprecated
-     */
-    public $id;
-
 
     public function __construct($orderDataArray)
     {
         $this->comment = $orderDataArray['comment'];
         $this->createdAt = $orderDataArray['created'];
         $this->customerUrl = $orderDataArray['customer_url'];
-        $this->data = $orderDataArray['data'];
         $this->orderData = $orderDataArray['data'];
-        $this->id = $orderDataArray['id'];
         $this->externalId = $orderDataArray['id'];
-        $this->merchant_reference = $orderDataArray['merchant_reference'];
         $this->merchantReference = $orderDataArray['merchant_reference'];
-        $this->merchant_url = $orderDataArray['merchant_url'];
         $this->merchantUrl = $orderDataArray['merchant_url'];
-        $this->payment = $orderDataArray['payment'];
         $this->paymentId = $orderDataArray['payment'];
-        $this->updatedAt = isset($orderDataArray['updated']) ? $orderDataArray['updated'] : null;
+        $this->updatedAt = $orderDataArray['updated'] ?? null;
     }
 
     /**
      * @return string
      */
-    public function getPaymentId()
+    public function getPaymentId(): string
     {
         return $this->paymentId;
     }
@@ -123,7 +100,7 @@ class Order
     /**
      * @return string|null
      */
-    public function getMerchantReference()
+    public function getMerchantReference(): ?string
     {
         return $this->merchantReference;
     }
@@ -131,7 +108,7 @@ class Order
     /**
      * @return string|null
      */
-    public function getMerchantUrl()
+    public function getMerchantUrl(): ?string
     {
         return $this->merchantUrl;
     }
@@ -139,7 +116,7 @@ class Order
     /**
      * @return string
      */
-    public function getExternalId()
+    public function getExternalId(): string
     {
         return $this->externalId;
     }
@@ -147,7 +124,7 @@ class Order
     /**
      * @return string|null
      */
-    public function getComment()
+    public function getComment(): ?string
     {
         return $this->comment;
     }
@@ -155,7 +132,7 @@ class Order
     /**
      * @return int
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): int
     {
         return $this->createdAt;
     }
@@ -163,7 +140,7 @@ class Order
     /**
      * @return string|null
      */
-    public function getCustomerUrl()
+    public function getCustomerUrl(): ?string
     {
         return $this->customerUrl;
     }
@@ -179,9 +156,8 @@ class Order
     /**
      * @return array
      */
-    public function getOrderData()
+    public function getOrderData(): array
     {
         return $this->orderData;
     }
-
 }

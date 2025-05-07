@@ -1,13 +1,13 @@
 <?php
 
-namespace Unit\Lib;
+namespace Alma\API\Tests\Unit\Lib;
 
 use Alma\API\Lib\PayloadFormatter;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Alma\API\Entities\MerchantData\CmsInfo;
 use Alma\API\Entities\MerchantData\CmsFeatures;
 
-class PayloadFormatterTest extends TestCase
+class PayloadFormatterTest extends MockeryTestCase
 {
     var $payloadFormatter;
 

@@ -49,37 +49,37 @@ class Payment extends Base
     public $state;
 
     /** @var int Purchase amount, in cents */
-    public $purchase_amount;
+    public $purchaseAmount;
 
     /** @var int Fees to be paid by the customer, in cents */
-    public $customer_fee;
+    public $customerFee;
 
     /** @var int Interests to be paid by the customer, in cents */
-    public $customer_interest;
+    public $customerInterest;
 
     /** @var int Fees paid by the merchant, in cents */
-    public $merchant_target_fee;
+    public $merchantTargetFee;
 
     /** @var int Number of installments for this payment */
-    public $installments_count;
+    public $installmentsCount;
 
     /** @var int Number of days the payment was deferred for */
-    public $deferred_days;
+    public $deferredDays;
 
     /** @var int Number of months the payment was deferred for */
-    public $deferred_months;
+    public $deferredMonths;
 
     /**
      * @var Instalment[] Array of installments, representing the payment plan for this payment.
      * Might include more than $installments_count installments in some cases.
      */
-    public $payment_plan;
+    public $paymentPlan;
 
     /** @var string URL the customer is sent back to once the payment is complete */
-    public $return_url;
+    public $returnUrl;
 
     /** @var array Custom data provided at creation time */
-    public $custom_data;
+    public $customData;
 
     /** @var Order[] List of orders associated to that payment */
     public $orders;
@@ -91,19 +91,19 @@ class Payment extends Base
     public $customer;
 
     /** @var array Billing address representation */
-    public $billing_address;
+    public $billingAddress;
 
     /** @var bool If is a payment with trigger or not */
-    public $deferred_trigger;
+    public $deferredTrigger;
 
     /** @var string|null Description given at payment creation */
-    public $deferred_trigger_description;
+    public $deferredTriggerDescription;
 
     /** @var int|null Timestamp or NULL if not already applied */
-    public $deferred_trigger_applied;
+    public $deferredTriggerApplied;
 
     /** @var int|null Timestamp or NULL if not expired */
-    public $expired_at;
+    public $expiredAt;
 
     /**
      * @param array $attributes
@@ -112,10 +112,10 @@ class Payment extends Base
     {
         // Manually process `payment_plan` to create Instalment instances
         if (array_key_exists('payment_plan', $attributes)) {
-            $this->payment_plan = array();
+            $this->paymentPlan = array();
 
             foreach ($attributes['payment_plan'] as $instalment) {
-                $this->payment_plan[] = new Instalment($instalment);
+                $this->paymentPlan[] = new Instalment($instalment);
             }
 
             unset($attributes['payment_plan']);

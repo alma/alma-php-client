@@ -1,11 +1,11 @@
 <?php
 
-namespace Unit\Entities;
+namespace Alma\API\Tests\Unit\Entities;
 
 use Alma\API\Entities\MerchantData\CmsInfo;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class CmsInfoTest extends TestCase
+class CmsInfoTest extends MockeryTestCase
 {
     const SDK_VERSION = '2.0.0';
     const SDK_NAME = 'Alma SDK';

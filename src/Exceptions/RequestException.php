@@ -2,26 +2,26 @@
 
 namespace Alma\API\Exceptions;
 
-use Alma\API\Request;
-use Alma\API\Response;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class RequestException extends AlmaException
 {
     /**
-     * @var Request|null
+     * @var RequestInterface|null
      */
-    public $request;
+    public ?RequestInterface $request;
     /**
-     * @var Response|null
+     * @var ResponseInterface|null
      */
-    public $response;
+    public ?ResponseInterface $response;
 
     /**
-     * @param $message
-     * @param $request
-     * @param $response
+     * @param string $message
+     * @param RequestInterface|null $request
+     * @param ResponseInterface|null $response
      */
-    public function __construct($message = "", $request = null, $response = null)
+    public function __construct(string $message = "", ?RequestInterface $request = null, ?ResponseInterface $response = null)
     {
         parent::__construct($message);
 
@@ -40,10 +40,7 @@ class RequestException extends AlmaException
             return $message;
         }
 
-        if (isset($this->response->json)
-            && isset($this->response->json['errors'])
-            && isset($this->response->json['errors'][0])
-            && isset($this->response->json['errors'][0]['message'])
+        if (isset($this->response->json['errors'][0]['message'])
         ) {
             return $this->response->json['errors'][0]['message'];
         }

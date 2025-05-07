@@ -3,23 +3,22 @@
 namespace Alma\API\Tests\Integration\TestHelpers;
 
 use Alma\API\Entities\Payment;
-use Alma\API\ParamsError;
-use Alma\API\RequestError;
+use Alma\API\Exceptions\ParametersException;
 
 class PaymentTestHelper
 {
     /**
      * @param int $amount
+     * @param $installmentsCount
      * @return Payment
-     * @throws RequestError
-     * @throws ParamsError
+     * @throws ParametersException
      */
-    public static function createPayment($amount, $installmentsCount)
+    public static function createPayment(int $amount, $installmentsCount): Payment
     {
         return ClientTestHelper::getAlmaClient()->payments->create(self::paymentData($amount, $installmentsCount));
     }
 
-    private static function paymentData($amount, $installmentsCount = 3)
+    private static function paymentData($amount, $installmentsCount = 3): array
     {
         return [
             'payment' => [

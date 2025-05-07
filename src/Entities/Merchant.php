@@ -34,13 +34,13 @@ class Merchant extends Base
     /** @var string */
     public $state;
     /** @var bool */
-    public $manually_reviewed;
+    public $manuallyReviewed;
     /** @var bool */
-    public $can_create_payments;
+    public $canCreatePayments;
     /** @var int */
-    public $minimum_purchase_amount;
+    public $minimumPurchaseAmount;
     /** @var int */
-    public $maximum_purchase_amount;
+    public $maximumPurchaseAmount;
     /** @var array */
-    public $fee_plans;
+    public $feePlans;
 }

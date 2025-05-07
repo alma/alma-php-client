@@ -2,12 +2,11 @@
 
 namespace Alma\API\Tests\Unit\Lib;
 
-use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Lib\ArrayUtils;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class ArrayUtilsTest extends TestCase
+class ArrayUtilsTest extends MockeryTestCase
 {
     /**
      * @var ArrayUtils
@@ -16,12 +15,6 @@ class ArrayUtilsTest extends TestCase
     public function setUp(): void
     {
         $this->arrayUtils = new ArrayUtils();
-    }
-
-    public function testSlugifyNotString()
-    {
-        $this->expectException(ParametersException::class);
-        $this->arrayUtils->slugify(array());
     }
 
     public function testSlugifyOk()
@@ -36,12 +29,14 @@ class ArrayUtilsTest extends TestCase
     public function testSlugifyEmptyQuery()
     {
         $this->expectException(ParametersException::class);
+
         $this->arrayUtils->slugify('');
     }
 
     public function testSlugifyWrongStatus()
     {
         $this->expectException(ParametersException::class);
+
         $this->arrayUtils->slugify('\\ @ ---- ');
     }
 }

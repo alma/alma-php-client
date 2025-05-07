@@ -12,12 +12,11 @@ class PayloadFormatter
 	 * @param CmsFeatures $cmsFeatures
 	 * @return array
 	 */
-	public function formatConfigurationPayload(CmsInfo $cmsInfo, CmsFeatures $cmsFeatures)
-	{
+	public function formatConfigurationPayload(CmsInfo $cmsInfo, CmsFeatures $cmsFeatures): array
+    {
 		return [
 			"cms_info" => $cmsInfo->getProperties(),
 			"cms_features" => $cmsFeatures->getProperties(),
 		];
 	}
-
 }

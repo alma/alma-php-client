@@ -33,7 +33,7 @@ tasks:
         {{ end }}
 
   tests:integration:
-    desc: Execute intregration tests
+    desc: Execute integration tests
     deps:
       - docker:build
     cmds:

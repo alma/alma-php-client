@@ -26,7 +26,7 @@
 
 namespace Alma\API\Lib;
 
-use Alma\API\ParamsError;
+use Alma\API\Exceptions\ParametersException;
 
 /**
  * Class PaymentValidator
@@ -42,7 +42,7 @@ class PaymentValidator
      *
      * @param $data
      * @return void
-     * @throws ParamsError
+     * @throws ParametersException
      */
     public static function checkPurchaseAmount($data)
     {
@@ -50,24 +50,10 @@ class PaymentValidator
             !empty($data['payment']['purchase_amount'])
             && !is_int($data['payment']['purchase_amount'])
         ) {
-            throw new ParamsError(sprintf(
+            throw new ParametersException(sprintf(
                 'The "purchase_amount" field needs to be an integer. "%s" found ',
                 gettype($data['payment']['purchase_amount'])
             ));
         }
-    }
-
-    /**
-     * Validate the HMAC signature of the request
-     *
-     * @param string $data
-     * @param string $apiKey
-     * @param string $signature
-     * @deprecated Use RequestUtils::isHmacValidated instead
-     * @return bool
-     */
-    public function isHmacValidated($data, $apiKey,  $signature)
-    {
-        return RequestUtils::isHmacValidated($data, $apiKey, $signature);
     }
 }

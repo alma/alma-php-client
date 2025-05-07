@@ -26,7 +26,6 @@
 
 namespace Alma\API\Lib;
 
-use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\ParametersException;
 
@@ -40,7 +39,8 @@ class ArrayUtils
      * @param $array
      * @return bool
      */
-    public static function isAssocArray($array) {
+    public static function isAssocArray($array): bool
+    {
         if (!is_array($array)) {
             return false;
         }
@@ -53,7 +53,7 @@ class ArrayUtils
      * @return void
      * @throws MissingKeyException
      */
-    public function checkMandatoryKeys($keys, $array)
+    public function checkMandatoryKeys(array $keys, array $array)
     {
         foreach ($keys as $key) {
             if(!array_key_exists($key, $array)){
@@ -72,15 +72,11 @@ class ArrayUtils
      *
      * @param string $textToSlugify
      *
-     * @throws ParametersException
-     *
      * @return String
+     * @throws ParametersException
      */
-    public function slugify($textToSlugify){
-        if(!is_string($textToSlugify)) {
-            throw new ParametersException('Status must be a string');
-        }
-
+    public function slugify(string $textToSlugify): string
+    {
         // trim
         $text = trim($textToSlugify, '-');
 
@@ -109,5 +105,4 @@ class ArrayUtils
 
         return $text;
     }
-
 }

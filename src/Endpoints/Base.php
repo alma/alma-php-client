@@ -1,64 +1,72 @@
 <?php
-/**
- * Copyright (c) 2018 Alma / Nabla SAS
- *
- * THE MIT LICENSE
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
- * Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
- * @author    Alma / Nabla SAS <contact@getalma.eu>
- * @copyright Copyright (c) 2018 Alma / Nabla SAS
- * @license   https://opensource.org/licenses/MIT The MIT License
- *
- */
 
 namespace Alma\API\Endpoints;
 
-use Alma\API\ClientContext;
+use Alma\API\Exceptions\RequestException;
+use Psr\Http\Client\ClientInterface;
 use Alma\API\Request;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class Base
 {
-    /** @var ClientContext */
-    protected $clientContext;
-    protected $logger;
+    /** @var ClientInterface */
+    protected ClientInterface $client;
 
-    /**
-     * Base constructor.
-     * @param $client_context ClientContext
-     */
-    public function __construct($client_context)
+    /** @var LoggerInterface */
+    protected LoggerInterface $logger;
+
+    public function __construct(ClientInterface $client)
     {
-        $this->setClientContext($client_context);
+        $this->client = $client;
+        $this->logger = new NullLogger();
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
-     * @param string $path
-     * @return Request
+     * @throws RequestException
      */
-    public function request($path)
-    {
-        return Request::build($this->clientContext, $this->clientContext->urlFor($path));
+    private function createRequest(string $method, string $uri, array  $body = null): Request {
+        $headers = [
+            'Content-type' => ['application/json'],
+            'Authorization' => ['Alma-Auth ' . $this->client->getConfig()->getApiKey()]
+        ];
+        return new Request($method, $uri, $headers, json_encode($body));
     }
 
     /**
-     * @param ClientContext $clientContext
-     * @return Request
+     * @throws RequestException
      */
-    public function setClientContext($clientContext)
-    {
-        $this->clientContext = $clientContext;
-        $this->logger = $clientContext->logger;
+    public function createGetRequest(string $uri, array  $queryParams = []): Request {
+        $queryString = http_build_query($queryParams);
+        if ($queryString) {
+            $uri .= '?' . $queryString;
+        }
+        return $this->createRequest('GET', $uri);
+    }
+
+    /**
+     * @throws RequestException
+     */
+    public function createPostRequest(string $uri, array $body = null): Request {
+        return $this->createRequest('POST', $uri, $body);
+    }
+
+    /**
+     * @throws RequestException
+     */
+    public function createPutRequest(string $uri, array $body = null): Request {
+        return $this->createRequest('PUT', $uri, $body);
+    }
+
+    /**
+     * @throws RequestException
+     */
+    public function createDeleteRequest(string $uri): Request {
+        return $this->createRequest('DELETE', $uri);
     }
 }

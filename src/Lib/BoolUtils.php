@@ -14,7 +14,7 @@ class BoolUtils
      * @param $boolToCheck
      * @return bool
      */
-    public static function isStrictlyBoolOrNull($boolToCheck)
+    public static function isStrictlyBoolOrNull($boolToCheck): bool
     {
         return is_bool($boolToCheck) || $boolToCheck === null;
     }
