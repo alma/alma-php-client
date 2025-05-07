@@ -3,13 +3,12 @@
 namespace Alma\API\Tests\Integration\Endpoints;
 
 use Alma\API\Entities\Order;
-use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Tests\Integration\TestHelpers\ClientTestHelper;
 use Alma\API\Tests\Integration\TestHelpers\PaymentTestHelper;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class OrdersTest extends TestCase
+class OrdersTest extends MockeryTestCase
 {
     protected static $almaClient;
     protected static $payment;

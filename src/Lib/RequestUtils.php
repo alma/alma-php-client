@@ -12,11 +12,8 @@ class RequestUtils
      * @param string $signature
      * @return bool
      */
-    public static function isHmacValidated($data, $apiKey,  $signature)
+    public static function isHmacValidated(string $data, string $apiKey, string $signature): bool
     {
-        return is_string($data) &&
-            is_string($apiKey) &&
-            hash_hmac('sha256', $data, $apiKey) === $signature;
+        return hash_hmac('sha256', $data, $apiKey) === $signature;
     }
-
 }

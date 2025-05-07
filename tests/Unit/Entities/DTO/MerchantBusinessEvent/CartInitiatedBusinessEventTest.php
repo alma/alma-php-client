@@ -4,9 +4,10 @@ namespace Alma\API\Tests\Unit\Entities\DTO\MerchantBusinessEvent;
 
 use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
 use Alma\API\Exceptions\ParametersException;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use stdClass;
 
-class CartInitiatedBusinessEventTest extends TestCase
+class CartInitiatedBusinessEventTest extends MockeryTestCase
 {
 
     public function testCartInitiatedBusinessEventData()
@@ -15,28 +16,4 @@ class CartInitiatedBusinessEventTest extends TestCase
         $this->assertEquals('cart_initiated', $event->getEventType());
         $this->assertEquals('54', $event->getCartId());
     }
-
-    /**
-     * @dataProvider invalidDataForBusinessEventDataProvider
-     * @param $cartId
-     */
-    public function testInvalidDataForBusinessEvent($cartId)
-    {
-        $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('CartId must be a string');
-        new CartInitiatedBusinessEvent($cartId);
-    }
-    public static function invalidDataForBusinessEventDataProvider()
-    {
-        return [
-            "cartId is an empty string" => [''],
-            "cartId is an int" => [1],
-            "cartId is a float" => [1.1],
-            "cartId is an array" => [[]],
-            "cartId is an object" => [new \stdClass()],
-            "cartId is a boolean" => [true],
-            "cartId is null" => [null],
-        ];
-    }
-
 }

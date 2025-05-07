@@ -3,9 +3,9 @@
 namespace Unit\Lib;
 
 use Alma\API\Lib\IntegrationsConfigurationsUtils;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class IntegrationsConfigurationsUtilsTest extends TestCase
+class IntegrationsConfigurationsUtilsTest extends MockeryTestCase
 {
 
     public function testNewSendIsNotNecessary()
@@ -15,7 +15,7 @@ class IntegrationsConfigurationsUtilsTest extends TestCase
     }
     public function testNewSendIsNecessary()
     {
-        $oneMonthInSecondsMoreTen = 30 * 24 * 60 * 60 + 10; // 30 jours en secondes +10 sec
+        $oneMonthInSecondsMoreTen = 30 * 24 * 60 * 60 + 10; // 30 days in seconds +10 sec
         $timestamp = time() - $oneMonthInSecondsMoreTen;
         $this->assertTrue(IntegrationsConfigurationsUtils::isUrlRefreshRequired($timestamp));
     }

@@ -37,20 +37,20 @@ class Instalment extends Base
     public $state;
 
     /** @var int */
-    public $purchase_amount;
+    public $purchaseAmount;
 
     /** @var int */
-    public $original_purchase_amount;
+    public $originalPurchaseAmount;
 
     /** @var int */
-    public $due_date;
+    public $dueDate;
 
     /** @var int */
-    public $customer_fee;
+    public $customerFee;
 
 	/** @var int */
-    public $customer_interest;
+    public $customerInterest;
 
 	/** @var int */
-    public $total_amount;
+    public $totalAmount;
 }

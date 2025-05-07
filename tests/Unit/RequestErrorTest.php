@@ -2,15 +2,16 @@
 
 namespace Alma\API\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Request;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Alma\API\Response;
-use Alma\API\RequestError;
 use Mockery;
 
 /**
  * Class RequestErrorTest
  */
-class RequestErrorTest extends TestCase
+class RequestErrorTest extends MockeryTestCase
 {
 	const ERROR_MESSAGE = 'error message hidden in response';
 
@@ -18,7 +19,7 @@ class RequestErrorTest extends TestCase
      * Return faulty options to test ClientOptionsValidator::validateOptions
      * @return array
      */
-    public static function getErrorMessageProvider()
+    public static function getErrorMessageProvider(): array
     {
         $validExpected = 'some error message';
         $validResponse = Mockery::mock(Response::class);
@@ -37,10 +38,10 @@ class RequestErrorTest extends TestCase
 
         return [
             'valid example' => [
-                "valid example", $validResponse, $validExpected,
+                null, $validResponse, $validExpected,
             ],
             self::ERROR_MESSAGE => [
-				self::ERROR_MESSAGE, $noMessageResponse, $noMessageExpected,
+				null, $noMessageResponse, $noMessageExpected,
             ]
         ];
     }
@@ -48,11 +49,10 @@ class RequestErrorTest extends TestCase
     /**
      * @dataProvider getErrorMessageProvider
      * @return void
-     * @throws ParamsError
      */
-    public function testGetErrorMessage($req, $res, $expected)
+    public function testGetErrorMessage(?Request $req, Response $res, $expected)
     {
-        $requestError = new RequestError($res->errorMessage, $req, $res);
+        $requestError = new RequestException($res->errorMessage, $req, $res);
 
         $this->assertEquals($expected, $requestError->getErrorMessage());
     }

@@ -3,18 +3,18 @@
 namespace Alma\API\Tests\Unit;
 
 use Alma\API\Lib\ArrayUtils;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
  * Class ArrayUtils
  */
-class ArrayUtilsTest extends TestCase
+class ArrayUtilsTest extends MockeryTestCase
 {
     /**
      * Return options to test ArrayUtils::isAssocArray
      * @return array[]
      */
-    public static function getTestArrays()
+    public static function getTestArrays(): array
     {
         return [
             [['a', 'b', 'c'], false],

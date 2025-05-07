@@ -34,53 +34,53 @@ class Eligibility implements PaymentPlanInterface
     /**
      * @var bool
      */
-    public $isEligible;
+    public bool $isEligible;
     /**
      * @var array
      */
-    public $reasons;
+    public array $reasons;
     /**
      * @var array
      */
-    public $constraints;
+    public array $constraints;
     /**
      * @var array
      */
-    public $paymentPlan;
+    public array $paymentPlan;
     /**
      * @var int
      */
-    public $installmentsCount;
+    public int $installmentsCount;
     /**
      *  @var int
      */
-    public $deferredDays;
+    public int $deferredDays;
     /**
      * @var int
      */
-    public $deferredMonths;
+    public int $deferredMonths;
     /**
      * @var int
      */
-    public $customerTotalCostAmount;
+    public int $customerTotalCostAmount;
     /**
      * @var int
      */
-    public $customerTotalCostBps;
+    public int $customerTotalCostBps;
     /**
-     * @var int Percentage of fees + credit in bps paid for by the customer (100bps = 1%)
+     * @var int|null Percentage of fees + credit in bps paid for by the customer (100bps = 1%)
      *
      * if value is null, that's mean the API does not return this property
      */
-    public $annualInterestRate = null;
+    public ?int $annualInterestRate = null;
 
     /**
      * Eligibility constructor.
      *
      * @param array    $data
-     * @param null|int $responseCode
+     * @param int|null $responseCode
      */
-    public function __construct($data = [], $responseCode = null)
+    public function __construct(array $data = [], int $responseCode = null)
     {
         // Supporting some legacy behaviour where the eligibility check would return a 406 error if not eligible,
         // instead of 200 OK + {"eligible": false}
@@ -132,7 +132,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return string
      */
-    public function getKind()
+    public function getKind(): string
     {
         return FeePlan::KIND_GENERAL;
     }
@@ -142,7 +142,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return bool
      */
-    public function isEligible()
+    public function isEligible(): bool
     {
         return $this->isEligible;
     }
@@ -152,7 +152,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return array
      */
-    public function getReasons()
+    public function getReasons(): array
     {
         return $this->reasons;
     }
@@ -162,7 +162,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return array
      */
-    public function getConstraints()
+    public function getConstraints(): array
     {
         return $this->constraints;
     }
@@ -172,7 +172,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return array
      */
-    public function getPaymentPlan()
+    public function getPaymentPlan(): array
     {
         return $this->paymentPlan;
     }
@@ -182,7 +182,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return int
      */
-    public function getInstallmentsCount()
+    public function getInstallmentsCount(): int
     {
         return $this->installmentsCount;
     }
@@ -192,7 +192,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @param bool $isEligible
      */
-    public function setIsEligible($isEligible)
+    public function setIsEligible(bool $isEligible)
     {
         $this->isEligible = $isEligible;
     }
@@ -202,7 +202,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @param array $reasons
      */
-    public function setReasons($reasons)
+    public function setReasons(array $reasons)
     {
         $this->reasons = $reasons;
     }
@@ -212,7 +212,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @param array $constraints
      */
-    public function setConstraints($constraints)
+    public function setConstraints(array $constraints)
     {
         $this->constraints = $constraints;
     }
@@ -222,7 +222,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @param array $paymentPlan
      */
-    public function setPaymentPlan($paymentPlan)
+    public function setPaymentPlan(array $paymentPlan)
     {
         $this->paymentPlan = $paymentPlan;
     }
@@ -232,7 +232,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @param int $installmentsCount
      */
-    public function setInstallmentsCount($installmentsCount)
+    public function setInstallmentsCount(int $installmentsCount)
     {
         $this->installmentsCount = $installmentsCount;
     }
@@ -242,7 +242,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return int
      */
-    public function getDeferredMonths()
+    public function getDeferredMonths(): int
     {
         return $this->deferredMonths;
     }
@@ -252,7 +252,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @param mixed $deferredMonths
      */
-    public function setDeferredMonths($deferredMonths)
+    public function setDeferredMonths($deferredMonths): Eligibility
     {
         $this->deferredMonths = $deferredMonths;
 
@@ -264,7 +264,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return int
      */
-    public function getDeferredDays()
+    public function getDeferredDays(): int
     {
         return $this->deferredDays;
     }
@@ -274,7 +274,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @param mixed $deferredDays
      */
-    public function setDeferredDays($deferredDays)
+    public function setDeferredDays($deferredDays): Eligibility
     {
         $this->deferredDays = $deferredDays;
 
@@ -286,7 +286,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return int
      */
-    public function getCustomerTotalCostAmount()
+    public function getCustomerTotalCostAmount(): int
     {
         return $this->customerTotalCostAmount;
     }
@@ -298,7 +298,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return self
      */
-    public function setCustomerTotalCostAmount($customerTotalCostAmount)
+    public function setCustomerTotalCostAmount(int $customerTotalCostAmount): Eligibility
     {
         $this->customerTotalCostAmount = $customerTotalCostAmount;
 
@@ -310,7 +310,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return int
      */
-    public function getCustomerTotalCostBps()
+    public function getCustomerTotalCostBps(): int
     {
         return $this->customerTotalCostBps;
     }
@@ -322,7 +322,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return self
      */
-    public function setCustomerTotalCostBps($customerTotalCostBps)
+    public function setCustomerTotalCostBps(int $customerTotalCostBps): Eligibility
     {
         $this->customerTotalCostBps = $customerTotalCostBps;
 
@@ -335,7 +335,7 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return int|null
      */
-    public function getAnnualInterestRate()
+    public function getAnnualInterestRate(): ?int
     {
         return $this->annualInterestRate;
     }
@@ -347,11 +347,10 @@ class Eligibility implements PaymentPlanInterface
      *
      * @return self
      */
-    private function setAnnualInterestRate($annualInterestRate)
+    private function setAnnualInterestRate(int $annualInterestRate): Eligibility
     {
         $this->annualInterestRate = $annualInterestRate;
 
         return $this;
     }
-
 }

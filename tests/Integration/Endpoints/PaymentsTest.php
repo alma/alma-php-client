@@ -2,30 +2,21 @@
 
 namespace Alma\API\Tests\Integration\Endpoints;
 
-use Alma\API\Entities\Payment;
-use Alma\API\ParamsError;
-use Alma\API\RequestError;
 use Alma\API\Tests\Integration\TestHelpers\ClientTestHelper;
 use Alma\API\Tests\Integration\TestHelpers\PaymentTestHelper;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-final class PaymentsTest extends TestCase
+final class PaymentsTest extends MockeryTestCase
 {
     protected static $payment;
     protected static $almaClient;
-    /**
-     * @throws ParamsError
-     * @throws RequestError
-     */
+
     public static function setUpBeforeClass(): void
     {
         PaymentsTest::$payment = PaymentTestHelper::createPayment(26500, 3);
         PaymentsTest::$almaClient = ClientTestHelper::getAlmaClient();
     }
 
-    /**
-     * @throws RequestError
-     */
     private function checkEligibility($amount, $eligible)
     {
         $eligibilityPayload = [
@@ -49,9 +40,6 @@ final class PaymentsTest extends TestCase
         }
     }
 
-    /**
-     * @throws RequestError
-     */
     public function testCanCheckEligibility()
     {
         $this->checkEligibility(1, false);
@@ -59,18 +47,12 @@ final class PaymentsTest extends TestCase
         $this->checkEligibility(500000, false);
     }
 
-    /**
-     * @throws RequestError
-     */
     public function testCanCreateAPayment()
     {
         $payment = PaymentsTest::$payment;
         $this->assertEquals(26500, $payment->purchase_amount);
     }
 
-    /**
-     * @throws RequestError
-     */
     public function testCanFetchAPayment()
     {
         $p1 = PaymentsTest::$payment;

@@ -46,7 +46,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
      * @param string | null $almaPaymentId
      * @throws ParametersException
      */
-    public function __construct($isAlmaP1X, $isAlmaBNPL, $wasBNPLEligible, $orderId, $cartId, $almaPaymentId = null)
+    public function __construct(bool $isAlmaP1X, bool $isAlmaBNPL, bool $wasBNPLEligible, string $orderId, string $cartId, string $almaPaymentId = null)
     {
         $this->eventType = 'order_confirmed';
         $this->almaP1XStatus = $isAlmaP1X;
@@ -61,7 +61,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     /**
      * @return bool
      */
-    public function isAlmaP1X()
+    public function isAlmaP1X(): bool
     {
         return $this->almaP1XStatus;
     }
@@ -69,7 +69,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     /**
      * @return bool
      */
-    public function isAlmaBNPL()
+    public function isAlmaBNPL(): bool
     {
         return $this->almaBNPLStatus;
     }
@@ -79,7 +79,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
      *
      * @return bool
      */
-    public function wasBNPLEligible()
+    public function wasBNPLEligible(): bool
     {
         return $this->wasBNPLEligible;
     }
@@ -87,7 +87,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     /**
      * @return string
      */
-    public function getOrderId()
+    public function getOrderId(): string
     {
         return $this->orderId;
     }
@@ -95,7 +95,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     /**
      * @return string
      */
-    public function getCartId()
+    public function getCartId(): string
     {
         return $this->cartId;
     }
@@ -103,7 +103,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
     /**
      * @return string | null
      */
-    public function getAlmaPaymentId()
+    public function getAlmaPaymentId(): ?string
     {
         return $this->almaPaymentId;
     }
@@ -113,7 +113,7 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
      *
      * @return bool
      */
-    public function isAlmaPayment()
+    public function isAlmaPayment(): bool
     {
         return $this->almaP1XStatus || $this->almaBNPLStatus;
     }
@@ -124,21 +124,17 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
      */
     protected function validateData()
     {
-        if(
-            !is_bool($this->almaP1XStatus) ||
-            !is_bool($this->almaBNPLStatus) ||
-            !is_bool($this->wasBNPLEligible) ||
-            (!is_string($this->orderId) || empty($this->orderId)) ||
-            (!is_string($this->cartId) || empty($this->cartId)) ||
+        if (
+            (empty($this->orderId)) ||
+            (empty($this->cartId)) ||
             // Alma payment id should be absent for non Alma payments
             (!$this->isAlmaPayment() && !is_null($this->almaPaymentId))
         )
         {
             throw new ParametersException('Invalid data type in OrderConfirmedBusinessEvent constructor');
         }
-
         //Alma payment id for Alma payment, Must be a string
-        if(
+        if (
             $this->isAlmaPayment() &&
             (!is_string($this->almaPaymentId) || empty($this->almaPaymentId))
         )
@@ -146,6 +142,4 @@ class OrderConfirmedBusinessEvent extends AbstractBusinessEvent
             throw new ParametersException('Alma payment id is mandatory for Alma payment');
         }
     }
-
-
 }

@@ -25,45 +25,135 @@
 
 namespace Alma\API;
 
-class Response
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+
+class Response implements ResponseInterface
 {
-    public $responseCode;
-    public $json;
-    public $responseFile;
-    public $errorMessage;
+    private int $statusCode;
+    private array $headers;
+    private string $body;
+    private string $protocolVersion = '1.1';
+    private array $reasonPhrases = [
+        100 => 'Continue',
+        // ... (codes de statut HTTP)
+        200 => 'OK',
+        // ...
+        302 => 'Found',
+        400 => 'Bad Request',
+        // ...
+        500 => 'Internal Server Error',
+    ];
 
-    public function __construct($curlHandle, $curlResult)
+    public function __construct(int $statusCode, array $headers = [], $body = null, string $protocolVersion = '1.1')
     {
-        $this->responseCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
-
-        if ('application/json' === curl_getinfo($curlHandle, CURLINFO_CONTENT_TYPE)) {
-            $this->json = json_decode($curlResult, true);
-        } else {
-            $this->json = null;
-            $this->responseFile = $curlResult;
-        }
-
-        if ($this->isError()) {
-            if ($this->json && array_key_exists('message', $this->json)) {
-                $this->errorMessage = $this->json['message'];
-            } else {
-                $this->errorMessage = curl_error($curlHandle);
-            }
-        }
+        $this->statusCode = $statusCode;
+        $this->headers = $headers;
+        $this->body = $body;
+        $this->protocolVersion = $protocolVersion;
     }
 
-    public function isError()
+    public function getStatusCode(): int
     {
-        return $this->responseCode >= 400 && $this->responseCode < 600;
+        return $this->statusCode;
     }
-}
 
-class EmptyResponse extends Response
-{
-    public function __construct()
+    public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
     {
-        $this->errorMessage = null;
-        $this->json = [];
-        $this->responseCode = null;
+        $this->statusCode = $code;
+        return $this;
+    }
+
+    public function getReasonPhrase(): string
+    {
+        return $this->reasonPhrases[$this->statusCode] ?? '';
+    }
+
+    public function getProtocolVersion(): string
+    {
+        return $this->protocolVersion;
+    }
+
+    public function withProtocolVersion(string $version): ResponseInterface
+    {
+        $this->protocolVersion = $version;
+        return $this;
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function hasHeader(string $name): bool
+    {
+        $name = strtolower($name);
+        return isset($this->headers[$name]);
+    }
+
+    public function getHeader(string $name): array
+    {
+        $name = strtolower($name);
+        return $this->hasHeader($name) ? $this->headers[$name] : [];
+    }
+
+    public function getHeaderLine(string $name): string
+    {
+        return implode(', ', $this->getHeader($name));
+    }
+
+    public function withHeader(string $name, $value): ResponseInterface
+    {
+        $name = strtolower($name);
+        $this->headers[$name] = is_array($value) ? $value : [$value];
+        return $this;
+    }
+
+    public function withAddedHeader(string $name, $value): ResponseInterface
+    {
+        $name = strtolower($name);
+        if (!$this->hasHeader($name)) {
+            $this->headers[$name] = [];
+        }
+        $this->headers[$name] = array_merge($this->headers[$name], is_array($value) ? $value : [$value]);
+        return $this;
+    }
+
+    public function withoutHeader(string $name): ResponseInterface
+    {
+        $name = strtolower($name);
+        unset($this->headers[$name]);
+        return $this;
+    }
+
+    public function getBody(): StreamInterface
+    {
+        return $this->body;
+    }
+
+    public function withBody(StreamInterface $body): ResponseInterface
+    {
+        $this->body = $body;
+        return $this;
+    }
+
+    public function getJson(): ?array
+    {
+        $data = json_decode($this->body, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // Gérer l'erreur de décodage JSON (throw new \Exception, par exemple)
+            return null;
+        }
+        return $data;
+    }
+
+    public function getFile()
+    {
+        return $this->body;
+    }
+
+    public function isError(): bool
+    {
+        return $this->statusCode >= 400 && $this->statusCode < 600;
     }
 }

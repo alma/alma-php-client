@@ -23,28 +23,13 @@
  *
  */
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Exceptions;
 
-use Alma\API\Exceptions\RequestException;
-use Alma\API\RequestError;
-
-class Configuration extends Base
+/**
+ * Class DependenciesException
+ * @package Alma\API
+ */
+class DependenciesException extends AlmaException
 {
-    const CONFIGURATION_PATH = '/v1/integration-configuration';
 
-    /**
-     * @param string $url The URL to send to Alma for integrations configuration
-     * @throws RequestException
-     * @throws RequestError
-     */
-    public function sendIntegrationsConfigurationsUrl($url)
-    {
-        $res = $this->request(self::CONFIGURATION_PATH . "/api")->setRequestBody(array(
-            "collect_data_url" => $url
-        ))->put();
-
-        if ($res->isError()) {
-            throw new RequestException($res->errorMessage, null, $res);
-        }
-    }
 }

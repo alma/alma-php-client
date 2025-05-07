@@ -25,254 +25,160 @@
 
 namespace Alma\API;
 
-// In older versions of PHP (<= 5.5.19), those constants aren't defined – we do need them though
-if (!defined('CURL_SSLVERSION_TLSv1_0')) {
-    define('CURL_SSLVERSION_TLSv1_0', 4);
-}
+use Alma\API\Exceptions\RequestException;
+use InvalidArgumentException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Stream;
 
-if (!defined('CURL_SSLVERSION_TLSv1_1')) {
-    define('CURL_SSLVERSION_TLSv1_1', 5);
-}
-
-if (!defined('CURL_SSLVERSION_TLSv1_2')) {
-    define('CURL_SSLVERSION_TLSv1_2', 6);
-}
-
-class Request
+class Request implements RequestInterface
 {
-    private $context;
-    private $url;
-    private $curlHandle;
-    private $queryParams = array();
-    private $headers = array();
-    private $hasData;
+    private string $method;
+    private UriInterface $uri;
+    private array $headers;
+    private StreamInterface $body;
+    private string $protocolVersion = '1.1';
 
     /**
-     * @param $context ClientContext    The current client context
-     * @param $url     string           The URL to build a request for
-     * @return Request
+     * @throws RequestException
      */
-    public static function build($context, $url)
+    public function __construct(string $method, $uri, array $headers = [], $body = null)
     {
-        return new self($context, $url);
+        $this->method = strtoupper($method);
+        $this->uri = ($uri instanceof UriInterface) ? $uri : new Uri($uri);
+        $this->headers = $headers;
+        $this->body = $this->createStream($body);
     }
 
     /**
-     * HTTP request constructor.
-     *
-     * @param $context ClientContext    The current client context
-     * @param $url  string  The URL to build a request for
+     * @throws RequestException
      */
-    public function __construct($context, $url)
+    private function createStream($body = null): StreamInterface
     {
-        $this->context = $context;
-        $this->url = $url;
-        $this->hasData = false;
-        $this->initCurl();
-    }
-
-    /**
-     * @param string $customerSessionId
-     * @return void
-     */
-    public function addCustomerSessionIdToHeader($customerSessionId)
-	{
-		$this->headers[] = 'X-Customer-Session-Id: ' . $customerSessionId;
-	}
-
-    /**
-     * @param string $cartId
-     * @return void
-     */
-    public function addCartIdToHeader($cartId)
-	{
-		$this->headers[] = 'X-Customer-Cart-Id: ' . $cartId;
-	}
-
-    private function initCurl()
-    {
-        $this->curlHandle = curl_init();
-
-        $this->headers = array(
-            'User-Agent: ' . $this->context->getUserAgentString(),
-            'Authorization: Alma-Auth ' . $this->context->apiKey,
-            'Accept: application/json',
-        );
-
-        // Never *print out* request results
-        curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->curlHandle, CURLOPT_FAILONERROR, false);
-
-        if ($forced_tls = $this->context->forcedTLSVersion()) {
-            $tls_version = CURL_SSLVERSION_TLSv1_2;
-            switch ($forced_tls) {
-                case 0:
-                    $tls_version = CURL_SSLVERSION_TLSv1_0;
-                    break;
-                case 1:
-                    $tls_version = CURL_SSLVERSION_TLSv1_1;
+        if (is_resource($body)) {
+            $stream = new Stream($body);
+        } elseif (is_string($body)) {
+            $stream = fopen('php://temp', 'r+');
+            if ($stream === false) {
+                throw new RequestException('Failed to open temp stream');
             }
-
-            curl_setopt($this->curlHandle, CURLOPT_SSLVERSION, $tls_version);
+            fwrite($stream, $body);
+            rewind($stream);
+            $stream = new Stream($stream);
+        } elseif ($body === null) {
+            $stream =  new Stream(fopen('php://temp', 'r+')); // Retourne un stream vide
+        } elseif ($body instanceof StreamInterface) {
+            $stream =  $body;
+        } else {
+            throw new InvalidArgumentException('Invalid body type');
         }
+        return $stream;
     }
 
-    private function buildURL()
+    public function getRequestTarget(): string
     {
-        $params = http_build_query($this->queryParams);
-        $parsed_url = parse_url($this->url);
-
-        $url = $parsed_url["scheme"] . '://';
-
-        if (array_key_exists("user", $parsed_url)) {
-            $url .= $parsed_url["user"];
-            if ($parsed_url["pass"]) {
-                $url .= ':' . $parsed_url["pass"];
-            }
-            $url .= '@';
+        $target = $this->uri->getPath();
+        if ($this->uri->getQuery()) {
+            $target .= '?' . $this->uri->getQuery();
         }
-
-        $url .= $parsed_url["host"];
-
-        if (array_key_exists("port", $parsed_url)) {
-            $url .= ":" . $parsed_url["port"];
-        }
-
-        $url .= $parsed_url["path"];
-
-        if (array_key_exists("query", $parsed_url)) {
-            $params = $parsed_url["query"] . '&' . $params;
-        }
-
-        if ($params) {
-            $url .= '?' . $params;
-        }
-
-        if (array_key_exists("fragment", $parsed_url)) {
-            $url .= '#' . $parsed_url["fragment"];
-        }
-
-        return $url;
+        return $target ?: '/';
     }
 
-    /**
-     * @throws RequestError
-     */
-    private function exec()
+    public function withRequestTarget(string $requestTarget): RequestInterface
     {
-        $url = $this->buildURL();
-
-        if (($port = parse_url($url, PHP_URL_PORT))) {
-            curl_setopt($this->curlHandle, CURLOPT_PORT, $port);
-        }
-        curl_setopt($this->curlHandle, CURLOPT_URL, $url);
-        curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $this->headers);
-
-        $curl_res = curl_exec($this->curlHandle);
-
-        // Throw exception *only* if HTTP code is `0`, which seems to mean an actual failure
-        if ($curl_res === false && curl_getinfo($this->curlHandle, CURLINFO_HTTP_CODE) == 0) {
-            throw new RequestError(curl_error($this->curlHandle), $this);
-        }
-
-        $response = new Response($this->curlHandle, $curl_res);
-        curl_close($this->curlHandle);
-        return $response;
-    }
-
-    public function setRequestBody($data = array())
-    {
-        $body = $data ? json_encode($data) : '';
-
-        curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, $body);
-
-        if ($body) {
-            $this->headers[] = 'Content-type: application/json';
-            $this->hasData = true;
-        }
-
+        // Gestion complexe, à adapter selon tes besoins
         return $this;
     }
 
-    public function setQueryParams($params = array())
+    public function getMethod(): string
     {
-        if ($params == null) {
-            $params = array();
-        }
+        return $this->method;
+    }
 
-        $this->queryParams = $params;
+    public function withMethod(string $method): RequestInterface
+    {
+        $this->method = strtoupper($method);
         return $this;
     }
 
-    /**
-     * @return Response
-     * @throws RequestError
-     */
-    public function get()
+    public function getUri(): UriInterface
     {
-        curl_setopt_array($this->curlHandle, array(
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_POST => false,
-            CURLOPT_HTTPGET => true,
-        ));
-
-        return $this->exec();
+        return $this->uri;
     }
 
-    /**
-     * @return Response
-     * @throws RequestError
-     */
-    public function post()
+    public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
     {
-        // If no data was set, force an empty body to make sure we don't get a 411 error from some servers
-        if (!$this->hasData) {
-            $this->setRequestBody(null);
+        $this->uri = $uri;
+        return $this;
+    }
+
+    public function getProtocolVersion(): string
+    {
+        return $this->protocolVersion;
+    }
+
+    public function withProtocolVersion(string $version): RequestInterface
+    {
+        $this->protocolVersion = $version;
+        return $this;
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function hasHeader(string $name): bool
+    {
+        $name = strtolower($name);
+        return isset($this->headers[$name]);
+    }
+
+    public function getHeader(string $name): array
+    {
+        $name = strtolower($name);
+        return $this->hasHeader($name) ? $this->headers[$name] : [];
+    }
+
+    public function getHeaderLine(string $name): string
+    {
+        return implode(', ', $this->getHeader($name));
+    }
+
+    public function withHeader(string $name, $value): RequestInterface
+    {
+        $name = strtolower($name);
+        $this->headers[$name] = is_array($value) ? $value : [$value];
+        return $this;
+    }
+
+    public function withAddedHeader(string $name, $value): RequestInterface
+    {
+        $name = strtolower($name);
+        if (!$this->hasHeader($name)) {
+            $this->headers[$name] = [];
         }
-
-        curl_setopt_array($this->curlHandle, array(
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_HTTPGET => false,
-            CURLOPT_POST => true,
-        ));
-
-        return $this->exec();
+        $this->headers[$name] = array_merge($this->headers[$name], is_array($value) ? $value : [$value]);
+        return $this;
     }
 
-    /**
-     * @return Response
-     * @throws RequestError
-     */
-    public function put()
+    public function withoutHeader(string $name): RequestInterface
     {
-        // If no data was set, force an empty body to make sure we don't get a 411 error from some servers
-        if (!$this->hasData) {
-            $this->setRequestBody(null);
-        }
-
-        curl_setopt_array($this->curlHandle, array(
-            CURLOPT_CUSTOMREQUEST => 'PUT',
-            CURLOPT_HTTPGET => false,
-            CURLOPT_POST => true,
-        ));
-
-        return $this->exec();
+        $name = strtolower($name);
+        unset($this->headers[$name]);
+        return $this;
     }
 
-    /**
-     * @return Response
-     * @throws RequestError
-     */
-    public function delete()
+    public function getBody(): StreamInterface
     {
-        $this->setRequestBody(null);
+        return $this->body;
+    }
 
-        curl_setopt_array($this->curlHandle, array(
-            CURLOPT_CUSTOMREQUEST => 'DELETE',
-            CURLOPT_HTTPGET => false,
-            CURLOPT_POST => false,
-        ));
-
-        return $this->exec();
+    public function withBody(StreamInterface $body): RequestInterface
+    {
+        $this->body = $body;
+        return $this;
     }
 }

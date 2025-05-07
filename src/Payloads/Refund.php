@@ -29,33 +29,37 @@ use Alma\API\Exceptions\ParametersException;
 
 class Refund
 {
-    /* @param string */
-    private $id;
+    /* @var string */
+    private string $id;
 
-    /* @param int|null */
-    private $amount = 0;
+    /* @var int|null */
+    private ?int $amount = null;
 
-    /* @param string */
-    private $merchantReference = '';
+    /* @var string */
+    private string $merchantReference = '';
 
-    /* @param string */
-    private $comment = '';
+    /* @var string */
+    private string $comment = '';
 
     /**
      * The Refund object create a payload to give to the refund endpoint
      *
      * @param string $id payment_id
-     * @param int $amount the amount to refund, 0 means all
+     * @param int|null $amount the amount to refund, null means all
      * @param string $merchantReference a reference for the merchant
      * @param string $comment
      * @return Refund
      *
      * @throws ParametersException
      */
-    public static function create($id, $amount = 0, $merchantReference = "", $comment = "")
+    public static function create(string $id, ?int $amount = 0, string $merchantReference = "", string $comment = ""): Refund
     {
         if ($id === '') {
             throw new ParametersException('Refund Error. Payment Id can\'t be empty.');
+        }
+
+        if ($amount === 0) {
+            throw new ParametersException('Refund warning, the refund is zero');
         }
 
         if ($amount < 0) {
@@ -63,7 +67,7 @@ class Refund
         }
 
         $refundPayload = new self($id);
-        if ($amount !== 0) {
+        if (!is_null($amount)) {
             $refundPayload->setAmount($amount);
         }
         $refundPayload->setMerchantReference($merchantReference);
@@ -73,86 +77,83 @@ class Refund
     }
 
     /**
-     * @param string
+     * @param string $id
      */
-    public function __construct($id) {
+    public function __construct(string $id) {
         $this->setId($id);
     }
 
     /**
      * @return string
      */
-    public function getId() {
+    public function getId(): string
+    {
         return $this->id;
     }
 
     /**
      * @param string $id
      */
-    public function setId($id) {
+    public function setId(string $id) {
         $this->id = $id;
     }
 
     /**
      * @return int
      */
-    public function getAmount() {
+    public function getAmount(): ?int
+    {
         return $this->amount;
     }
 
     /**
-     * @param int $amount
+     * @param int|null $amount
      */
-    public function setAmount($amount) {
+    public function setAmount(?int $amount) {
         $this->amount = $amount;
     }
 
     /**
      * @return string
      */
-    public function getMerchantReference() {
+    public function getMerchantReference(): string
+    {
         return $this->merchantReference;
     }
 
     /**
      * @param string $merchantReference
      */
-    public function setMerchantReference($merchantReference) {
+    public function setMerchantReference(string $merchantReference) {
         $this->merchantReference = $merchantReference;
     }
 
     /**
      * @return string
      */
-    public function getComment() {
+    public function getComment(): string
+    {
         return $this->comment;
     }
 
     /**
      * @param string $comment
      */
-    public function setComment($comment) {
+    public function setComment(string $comment) {
         $this->comment = $comment;
     }
 
     /**
      * @return array
-     * @throws ParametersException
      */
-    public function getRequestBody() {
-        if ($this->getAmount() === 0) {
-            throw new ParametersException('Refund warning, the refund is zero');
-        }
-
+    public function getRequestBody(): array
+    {
         $requestBody = [
             "merchant_reference" => $this->getMerchantReference(),
             "comment" => $this->getComment(),
         ];
 
-        if (
-            $this->getAmount() !== null &&
-            $this->getAmount() > 0
-        ) {
+        if ($this->getAmount() !== null && $this->getAmount() > 0) {
             $requestBody["amount"] = $this->getAmount();
         }
 

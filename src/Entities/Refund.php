@@ -34,5 +34,5 @@ class Refund extends Base
   public $amount;
 
   /** @var string Reference for that refund, provided by the merchant */
-  public $merchant_reference;
+  public $merchantReference;
 }

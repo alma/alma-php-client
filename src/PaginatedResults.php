@@ -25,6 +25,7 @@
 namespace Alma\API;
 
 use Iterator;
+use Psr\Http\Message\ResponseInterface;
 
 class PaginatedResults implements Iterator
 {
@@ -42,10 +43,10 @@ class PaginatedResults implements Iterator
      * @param Response $response
      * @param callable $nextPageCb
      */
-    public function __construct($response, $nextPageCb)
+    public function __construct(ResponseInterface $response, callable $nextPageCb)
     {
         $this->response = $response;
-        $this->entities = isset($response->json['data']) ? $response->json['data'] : [];
+        $this->entities = $response->json['data'] ?? [];
         $this->nextPageCb = $nextPageCb;
     }
 
@@ -69,7 +70,7 @@ class PaginatedResults implements Iterator
         ++$this->position;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->entities[$this->position]);
     }

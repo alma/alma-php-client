@@ -3,10 +3,14 @@
 namespace Alma\API\Tests\Integration\TestHelpers;
 
 use Alma\API\Client;
+use Alma\API\Exceptions\ParametersException;
 
 class ClientTestHelper
 {
-    public static function getAlmaClient()
+    /**
+     * @throws ParametersException
+     */
+    public static function getAlmaClient(): Client
     {
         return new Client(
             $_ENV['ALMA_API_KEY'],

@@ -58,25 +58,25 @@ class CmsInfo
      * CmsInfo constructor.
      * @param array $cmsInfoDataArray
      */
-    public function __construct($cmsInfoDataArray)
+    public function __construct(array $cmsInfoDataArray)
     {
         // Initialize values or set them to null if not available
-        $this->cmsName = isset($cmsInfoDataArray['cms_name']) ? $cmsInfoDataArray['cms_name'] : '';
-        $this->cmsVersion = isset($cmsInfoDataArray['cms_version']) ? $cmsInfoDataArray['cms_version'] : '';
-        $this->thirdPartiesPlugins = isset($cmsInfoDataArray['third_parties_plugins']) ? $cmsInfoDataArray['third_parties_plugins'] : null;
-        $this->themeName = isset($cmsInfoDataArray['theme_name']) ? $cmsInfoDataArray['theme_name'] : '';
-        $this->themeVersion = isset($cmsInfoDataArray['theme_version']) ? $cmsInfoDataArray['theme_version'] : '';
-        $this->languageName = isset($cmsInfoDataArray['language_name']) ? $cmsInfoDataArray['language_name'] : '';
-        $this->languageVersion = isset($cmsInfoDataArray['language_version']) ? $cmsInfoDataArray['language_version'] : '';
-        $this->almaPluginVersion = isset($cmsInfoDataArray['alma_plugin_version']) ? $cmsInfoDataArray['alma_plugin_version'] : '';
-        $this->almaSdkVersion = isset($cmsInfoDataArray['alma_sdk_version']) ? $cmsInfoDataArray['alma_sdk_version'] : '';
-        $this->almaSdkName = isset($cmsInfoDataArray['alma_sdk_name']) ? $cmsInfoDataArray['alma_sdk_name'] : '';
+        $this->cmsName = $cmsInfoDataArray['cms_name'] ?? '';
+        $this->cmsVersion = $cmsInfoDataArray['cms_version'] ?? '';
+        $this->thirdPartiesPlugins = $cmsInfoDataArray['third_parties_plugins'] ?? null;
+        $this->themeName = $cmsInfoDataArray['theme_name'] ?? '';
+        $this->themeVersion = $cmsInfoDataArray['theme_version'] ?? '';
+        $this->languageName = $cmsInfoDataArray['language_name'] ?? '';
+        $this->languageVersion = $cmsInfoDataArray['language_version'] ?? '';
+        $this->almaPluginVersion = $cmsInfoDataArray['alma_plugin_version'] ?? '';
+        $this->almaSdkVersion = $cmsInfoDataArray['alma_sdk_version'] ?? '';
+        $this->almaSdkName = $cmsInfoDataArray['alma_sdk_name'] ?? '';
     }
 
     /**
      * @return array
      */
-    public function getProperties()
+    public function getProperties(): array
     {
         // Use array_filter with ARRAY_FILTER_USE_BOTH to remove null or empty values
         return array_filter([

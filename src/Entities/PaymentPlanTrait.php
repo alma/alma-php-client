@@ -13,7 +13,7 @@ trait PaymentPlanTrait
     /**
      * @return string
      */
-    public function getPlanKey()
+    public function getPlanKey(): string
     {
         return sprintf(
             '%s_%s_%s_%s',
@@ -30,7 +30,7 @@ trait PaymentPlanTrait
      *
      * @return bool
      */
-    public function isPayLaterOnly()
+    public function isPayLaterOnly(): bool
     {
         return 1 === $this->getInstallmentsCount() && ($this->getDeferredDays() || $this->getDeferredMonths());
     }
@@ -41,7 +41,7 @@ trait PaymentPlanTrait
      *
      * @return bool
      */
-    public function isPnXOnly()
+    public function isPnXOnly(): bool
     {
         return $this->getInstallmentsCount() > 1 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
     }
@@ -51,7 +51,7 @@ trait PaymentPlanTrait
      *
      * @return bool
      */
-    public function isBothPnxAndPayLater()
+    public function isBothPnxAndPayLater(): bool
     {
         return $this->getInstallmentsCount() > 1 && ($this->getDeferredDays() || $this->getDeferredMonths());
     }
@@ -61,7 +61,7 @@ trait PaymentPlanTrait
      *
      * @return bool
      */
-    public function isPayNow()
+    public function isPayNow(): bool
     {
         return $this->getInstallmentsCount() === 1 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
     }

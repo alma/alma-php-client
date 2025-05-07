@@ -26,7 +26,8 @@
 namespace Alma\API\Lib;
 
 use Alma\API\Client;
-use Alma\API\ParamsError;
+use Alma\API\Configuration;
+use Alma\API\Exceptions\ParametersException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -51,17 +52,17 @@ class ClientOptionsValidator
      *              - logger                Psr\Log\LoggerInterface The logger instance to use for errors/warnings
      *              - user_agent_component  array[user_agent => version] user_agent and version should be string
      *
-     * @throws ParamsError
+     * @throws ParametersException
      */
-    public static function validateOptions(array $options = array())
+    public static function validateOptions(array $options = array()): array
     {
         $config = [
             'api_root' => [
-                Client::TEST_MODE => isset($_ENV['ALMA_TEST_API_ROOT']) ? $_ENV['ALMA_TEST_API_ROOT'] : Client::SANDBOX_API_URL,
-                Client::LIVE_MODE => isset($_ENV['ALMA_LIVE_API_ROOT']) ? $_ENV['ALMA_LIVE_API_ROOT'] : Client::LIVE_API_URL
+                Configuration::TEST_MODE => $_ENV['ALMA_TEST_API_ROOT'] ?? Configuration::SANDBOX_API_URL,
+                Configuration::LIVE_MODE => $_ENV['ALMA_LIVE_API_ROOT'] ?? Configuration::LIVE_API_URL
             ],
             'force_tls' => 2,
-            'mode' => Client::LIVE_MODE,
+            'mode' => Configuration::LIVE_MODE,
             'logger' => new NullLogger(),
         ];
 
@@ -91,30 +92,30 @@ class ClientOptionsValidator
      * @param string|string[] $api_root
      *
      * @return string[]
-     * @throws ParamsError
+     * @throws ParametersException
      */
-    public static function validateApiRootOption($api_root)
+    public static function validateApiRootOption($api_root): array
     {
         if (is_string($api_root)) {
             return [
-                Client::TEST_MODE => $api_root,
-                Client::LIVE_MODE => $api_root
+                Configuration::TEST_MODE => $api_root,
+                Configuration::LIVE_MODE => $api_root
             ];
         }
-        if (is_array($api_root) && isset($api_root[Client::TEST_MODE]) && isset($api_root[Client::LIVE_MODE])) {
+        if (is_array($api_root) && isset($api_root[Configuration::TEST_MODE]) && isset($api_root[Configuration::LIVE_MODE])) {
             return [
-                Client::TEST_MODE => $api_root[Client::TEST_MODE],
-                Client::LIVE_MODE => $api_root[Client::LIVE_MODE]
+                Configuration::TEST_MODE => $api_root[Configuration::TEST_MODE],
+                Configuration::LIVE_MODE => $api_root[Configuration::LIVE_MODE]
             ];
         }
-        throw new ParamsError('option \'api_root\' is not configured properly');
+        throw new ParametersException('option \'api_root\' is not configured properly');
     }
 
     /**
      * @param bool|int $force_tls
      *
      * @return bool|int
-     * @throws ParamsError
+     * @throws ParametersException
      */
     public static function validateForceTLSOption($force_tls)
     {
@@ -124,48 +125,43 @@ class ClientOptionsValidator
         if (in_array($force_tls, [0, 1, false])) {
             return $force_tls;
         }
-        throw new ParamsError('option \'force_tls\' is not configured properly');
+        throw new ParametersException('option \'force_tls\' is not configured properly');
     }
 
     /**
      * @param string $mode
      *
      * @return string
-     * @throws ParamsError
+     * @throws ParametersException
      */
-    public static function validateModeOption($mode)
+    public static function validateModeOption(string $mode): string
     {
-        if (in_array($mode, [Client::TEST_MODE, Client::LIVE_MODE])) {
+        if (in_array($mode, [Configuration::TEST_MODE, Configuration::LIVE_MODE])) {
             return $mode;
         }
-        throw new ParamsError('option \'mode\' is not configured properly');
+        throw new ParametersException('option \'mode\' is not configured properly');
     }
 
     /**
      * @param LoggerInterface $logger
      *
      * @return LoggerInterface
-     * @throws ParamsError
      */
-    public static function validateLoggerOption($logger)
+    public static function validateLoggerOption(LoggerInterface $logger): LoggerInterface
     {
-        if ($logger instanceof LoggerInterface) {
-            return $logger;
-        }
-        throw new ParamsError('option \'logger\' is not configured properly');
+        return $logger;
     }
 
     /**
-     * @param array $user_agent_components
-     *
+     * @param array $userAgentComponents
      * @return array
-     * @throws ParamsError
+     * @throws ParametersException
      */
-    public static function validateUserAgentComponentOption(array $userAgentComponents)
+    public static function validateUserAgentComponentOption(array $userAgentComponents): array
     {
-        if (is_array($userAgentComponents) && count($userAgentComponents) > 1) {
+        if (count($userAgentComponents) > 1) {
             return $userAgentComponents;
         }
-        throw new ParamsError('option \'user_agent_component\' is not configured properly');
+        throw new ParametersException('option \'user_agent_component\' is not configured properly');
     }
 }

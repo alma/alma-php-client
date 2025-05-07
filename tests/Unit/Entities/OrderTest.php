@@ -1,11 +1,11 @@
 <?php
 
-namespace Unit\Entities;
+namespace Alma\API\Tests\Unit\Entities;
 
 use Alma\API\Entities\Order;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class OrderTest extends TestCase
+class OrderTest extends MockeryTestCase
 {
 
     public function testOrderGetters()
@@ -13,18 +13,13 @@ class OrderTest extends TestCase
         $orderData = $this->orderDataFactory();
         $order = new Order($orderData);
 
-        $this->assertEquals($orderData['payment'], $order->payment);
         $this->assertEquals($orderData['payment'], $order->getPaymentId());
-        $this->assertEquals($orderData['merchant_reference'], $order->merchant_reference);
         $this->assertEquals($orderData['merchant_reference'], $order->getMerchantReference());
         $this->assertEquals($orderData['merchant_url'], $order->getMerchantUrl());
-        $this->assertEquals($orderData['merchant_url'], $order->merchant_url );
-        $this->assertEquals($orderData['data'], $order->data);
         $this->assertEquals($orderData['data'], $order->getOrderData());
         $this->assertEquals($orderData['comment'], $order->getComment());
         $this->assertEquals($orderData['created'], $order->getCreatedAt());
         $this->assertEquals($orderData['customer_url'], $order->getCustomerUrl());
-        $this->assertEquals($orderData['id'], $order->id);
         $this->assertEquals($orderData['id'], $order->getExternalId());
         $this->assertEquals($orderData['updated'], $order->getUpdatedAt());
     }
@@ -40,7 +35,7 @@ class OrderTest extends TestCase
         $merchant_url = 'https://merchant.url',
         $payment = 'payment_123456',
         $updated = 1715331845
-    )
+    ): array
     {
         return [
             'comment' => $comment,

@@ -1,11 +1,11 @@
 <?php
 
-namespace Unit\Entities;
+namespace Alma\API\Tests\Unit\Entities;
 
 use Alma\API\Entities\MerchantData\CmsFeatures;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class CmsFeaturesTest extends TestCase
+class CmsFeaturesTest extends MockeryTestCase
 {
 	public function testConstructorSetsValuesCorrectly()
 	{

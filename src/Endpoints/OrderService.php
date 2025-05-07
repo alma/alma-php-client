@@ -26,42 +26,41 @@
 namespace Alma\API\Endpoints;
 
 use Alma\API\Entities\Order;
-use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\MissingKeyException;
+use Alma\API\Exceptions\OrderServiceException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
-use Alma\API\RequestError;
 use Alma\API\PaginatedResults;
+use Psr\Http\Client\ClientExceptionInterface;
 
-class Orders extends Base
+class OrderService extends Base
 {
-    /**
-     * @var ArrayUtils
-     */
-    public $arrayUtils;
-
-    const ORDERS_PATH = '/v1/orders';
-    const ORDERS_PATH_V2 = '/v2/orders';
-
-    public function __construct($client_context)
-    {
-        parent::__construct($client_context);
-
-        $this->arrayUtils = new ArrayUtils();
-    }
+    const ORDERS_ENDPOINT_V1 = '/v1/orders';
+    const ORDERS_ENDPOINT = '/v2/orders';
 
     /**
      * @param string $orderId
      * @param array $orderData
      *
      * @return Order
-     * @throws RequestError
+     * @throws OrderServiceException
      */
-    public function update($orderId, $orderData)
+    public function update(string $orderId, array $orderData): Order
     {
-        $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->setRequestBody($orderData)->post();
-        return new Order($response->json);
+        try {
+            $request = null;
+            $request = $this->createPostRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId", $orderData);
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface|RequestException $e) {
+            throw new OrderServiceException($e->getMessage(), $request);
+        }
+
+        if ($response->isError()) {
+            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
+        }
+
+        return new Order($response->getJson());
     }
 
     /**
@@ -70,20 +69,26 @@ class Orders extends Base
      * @param string $trackingNumber
      * @param string|null $trackingUrl
      * @return void
-     * @throws AlmaException
+     * @throws OrderServiceException
      */
-    public function addTracking($orderId, $carrier, $trackingNumber, $trackingUrl = null)
+    public function addTracking(string $orderId, string $carrier, string $trackingNumber, ?string $trackingUrl = null)
     {
         $trackingData = [
             'carrier' => $carrier,
             'tracking_number' => $trackingNumber,
             'tracking_url' => $trackingUrl
         ];
-        $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderId}/shipment")
-            ->setRequestBody($trackingData)
-            ->post();
+
+        try {
+            $request = null;
+            $request = $this->createPostRequest(self::ORDERS_ENDPOINT . "/$orderId/shipment", $trackingData);
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface|RequestException $e) {
+            throw new OrderServiceException($e->getMessage(), $request);
+        }
+
         if ($response->isError()) {
-            throw new RequestException($response->errorMessage, null, $response);
+            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
         }
     }
 
@@ -93,9 +98,9 @@ class Orders extends Base
      * @param array $filters
      *
      * @return PaginatedResults
-     * @throws RequestError
+     * @throws OrderServiceException
      */
-    public function fetchAll($limit = 20, $startingAfter = null, $filters = array())
+    public function fetchAll(int $limit = 20, string $startingAfter = null, array $filters = array()): PaginatedResults
     {
         $args = array(
             'limit' => $limit,
@@ -111,7 +116,18 @@ class Orders extends Base
             }
         }
 
-        $response = $this->request(self::ORDERS_PATH)->setQueryParams($args)->get();
+        try {
+            $request = null;
+            $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1, $args);
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface|RequestException $e) {
+            throw new OrderServiceException($e->getMessage(), $request);
+        }
+
+        if ($response->isError()) {
+            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
+        }
+
         return new PaginatedResults(
             $response,
             function ($startingAfter) use ($limit, $filters) {
@@ -124,40 +140,23 @@ class Orders extends Base
      * @param string $orderId
      *
      * @return Order
-     * @throws RequestError
+     * @throws OrderServiceException
      */
-    public function fetch($orderId)
+    public function fetch(string $orderId): Order
     {
-        $response = $this->request(self::ORDERS_PATH . "/{$orderId}")->get();
-        return new Order($response->json);
-    }
-
-    /**
-     * @deprecated since version 2.5.0 - Use addOrderStatusByMerchantOrderReference() in Payments endpoint
-     * @param string $orderExternalId
-     * @param array $orderData
-     * @return void
-     * @throws ParametersException
-     * @throws RequestException
-     */
-    public function sendStatus($orderExternalId, $orderData = array())
-    {
-        $this->validateStatusData($orderData);
-        $label = $this->arrayUtils->slugify($orderData['status']);
-
         try {
-            $response = $this->request(self::ORDERS_PATH_V2 . "/{$orderExternalId}/status")->setRequestBody(array(
-                'status' => $label,
-                'is_shipped' => $orderData['is_shipped'],
-            ))->post();
-        } catch (AlmaException $e) {
-            $this->logger->error('Error sending status');
-            throw new RequestException('Error sending status', $e);
+            $request = null;
+            $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId");
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface|RequestException $e) {
+            throw new OrderServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new RequestException($response->errorMessage, null, $response);
+            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
         }
+
+        return new Order($response->getJson());
     }
 
     /**
@@ -165,14 +164,15 @@ class Orders extends Base
      * @return void
      * @throws ParametersException
      */
-    public function validateStatusData($orderData = array())
+    public function validateStatusData(array $orderData = array())
     {
-        if (count($orderData) == 0) {
+        if (empty($orderData)) {
             throw new ParametersException('Missing in the required parameters (status, is_shipped) when calling orders.sendStatus');
         }
 
         try {
-            $this->arrayUtils->checkMandatoryKeys(['status', 'is_shipped'], $orderData);
+            $arrayUtils = new ArrayUtils();
+            $arrayUtils->checkMandatoryKeys(['status', 'is_shipped'], $orderData);
         } catch (MissingKeyException $e) {
             throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus', 0, $e);
         }

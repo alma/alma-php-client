@@ -39,7 +39,7 @@ class DataExport extends Base
     public $id;
 
     /** @var bool */
-    public $include_child_accounts;
+    public $includeChildAccounts;
 
     /** @var string */
     public $merchant;
@@ -55,25 +55,17 @@ class DataExport extends Base
     public $updated;
 
     /** @var string */
-    public $url_csv;
+    public $csvUrl;
 
     /** @var string */
-    public $url_pdf;
+    public $pdfUrl;
 
     /** @var string */
-    public $url_xlsx;
+    public $xlsxUrl;
 
     /** @var string */
-    public $url_xml;
+    public $xmlUrl;
 
     /** @var string */
-    public $url_zip;
-
-    /**
-     * @param array $attributes
-     */
-    public function __construct($attributes)
-    {
-        parent::__construct($attributes);
-    }
+    public $zipUrl;
 }

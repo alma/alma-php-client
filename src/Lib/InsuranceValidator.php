@@ -33,9 +33,9 @@ class InsuranceValidator
      * @param int $productPrice
      * @throws ParametersException
      */
-    public function checkPriceFormat($productPrice)
+    public function checkPriceFormat(int $productPrice)
     {
-        $validationProductReferenceIdRegex =  '/^[0-9]+$/';
+        $validationProductReferenceIdRegex =  '/^\d+$/';
 
         if(!preg_match($validationProductReferenceIdRegex, $productPrice)) {
             throw new ParametersException(sprintf(
@@ -50,13 +50,12 @@ class InsuranceValidator
      * @param string $name
      * @throws ParametersException
      */
-    public function checkParamFormat($param, $name)
+    public function checkParamFormat(string $param, string $name)
     {
         $validationProductReferenceIdRegex =  '/^[a-zA-Z0-9-_ ]+$/';
 
         if(
-            !is_string($param)
-            || !preg_match($validationProductReferenceIdRegex, $param)
+            !preg_match($validationProductReferenceIdRegex, $param)
         ) {
             throw new ParametersException(sprintf(
                 'The "%s" field needs to be an integer has a wrong format : "%s"',
