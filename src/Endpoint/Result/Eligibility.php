@@ -22,7 +22,7 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Endpoints\Results;
+namespace Alma\API\Endpoint\Result;
 
 use Alma\API\Entities\FeePlan;
 use Alma\API\Entities\PaymentPlanInterface;
@@ -34,19 +34,19 @@ class Eligibility implements PaymentPlanInterface
     /**
      * @var bool
      */
-    public bool $isEligible;
+    public bool $isEligible = false;
     /**
      * @var array
      */
-    public array $reasons;
+    public array $reasons = [];
     /**
      * @var array
      */
-    public array $constraints;
+    public array $constraints = [];
     /**
      * @var array
      */
-    public array $paymentPlan;
+    public array $paymentPlan = [];
     /**
      * @var int
      */
@@ -62,11 +62,11 @@ class Eligibility implements PaymentPlanInterface
     /**
      * @var int
      */
-    public int $customerTotalCostAmount;
+    public int $customerTotalCostAmount = 0;
     /**
      * @var int
      */
-    public int $customerTotalCostBps;
+    public int $customerTotalCostBps = 0;
     /**
      * @var int|null Percentage of fees + credit in bps paid for by the customer (100bps = 1%)
      *
@@ -78,16 +78,11 @@ class Eligibility implements PaymentPlanInterface
      * Eligibility constructor.
      *
      * @param array    $data
-     * @param int|null $responseCode
      */
-    public function __construct(array $data = [], int $responseCode = null)
+    public function __construct(array $data = [])
     {
-        // Supporting some legacy behaviour where the eligibility check would return a 406 error if not eligible,
-        // instead of 200 OK + {"eligible": false}
         if (array_key_exists('eligible', $data)) {
             $this->setIsEligible($data['eligible']);
-        } else {
-            $this->setIsEligible(200 == $responseCode);
         }
 
         if (array_key_exists('reasons', $data)) {

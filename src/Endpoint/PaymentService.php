@@ -23,7 +23,7 @@
  *
  */
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Endpoint;
 
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
@@ -47,8 +47,8 @@ class PaymentService extends Base
     {
         PaymentValidator::checkPurchaseAmount($data);
 
+        $request  = null;
         try {
-            $request = null;
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {

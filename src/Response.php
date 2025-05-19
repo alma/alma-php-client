@@ -45,7 +45,7 @@ class Response implements ResponseInterface
         500 => 'Internal Server Error',
     ];
 
-    public function __construct(int $statusCode, array $headers = [], $body = null, string $protocolVersion = '1.1')
+    public function __construct(int $statusCode, array $headers = [], $body = '', string $protocolVersion = '1.1')
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;

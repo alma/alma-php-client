@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Endpoint;
 
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientInterface;

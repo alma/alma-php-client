@@ -23,9 +23,9 @@
  *
  */
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Endpoint;
 
-use Alma\API\Endpoints\Results\Eligibility;
+use Alma\API\Endpoint\Result\Eligibility;
 use Alma\API\Exceptions\EligibilityServiceException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
@@ -39,10 +39,10 @@ class EligibilityService extends Base
      * @param array $data Payment data to check the eligibility for – same data format as payment creation,
      *                              except that only payment.purchase_amount is mandatory and payment.installments_count
      *                              can be an array of integers, to test for multiple eligible plans at once.
-     * @return Eligibility|Eligibility[]
+     * @return Eligibility[]
      * @throws EligibilityServiceException
      */
-    public function eligibility(array $data)
+    public function eligibility(array $data): array
     {
         try {
             $request = null;
@@ -62,28 +62,23 @@ class EligibilityService extends Base
         $serverError = $response->getStatusCode() >= 500;
         if (!$serverError && is_array($jsonResponse)) {
             $result = [];
+            foreach ($jsonResponse as $jsonEligibility) {
+                $eligibility = new Eligibility($jsonEligibility, $response->getStatusCode());
+                $result[$eligibility->getPlanKey()] = $eligibility;
 
-            if (ArrayUtils::isAssocArray($jsonResponse)) {
-                $result = new Eligibility($jsonResponse, $response->getStatusCode());
-
-            } else {
-                foreach ($jsonResponse as $jsonEligibility) {
-                    $eligibility = new Eligibility($jsonEligibility, $response->getStatusCode());
-                    $result[$eligibility->getPlanKey()] = $eligibility;
-
-                    if (!$eligibility->isEligible()) {
-                        $this->logger->info(
-                            "Eligibility check failed for following reasons: " .
-                            var_export($eligibility->reasons, true)
-                        );
-                    }
+                if (!$eligibility->isEligible()) {
+                    $this->logger->info(
+                        "Eligibility check failed for following reasons: " .
+                        var_export($eligibility->reasons, true)
+                    );
                 }
             }
+
         } else {
             $this->logger->info(
                 "Unexpected value from eligibility: " . var_export($data, true)
             );
-            $result = new Eligibility(array("eligible" => false), $response->getStatusCode());
+            $result[] = new Eligibility(array("eligible" => false), $response->getStatusCode());
         }
 
         return $result;

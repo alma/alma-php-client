@@ -26,6 +26,7 @@
 namespace Alma\API;
 
 use Alma\API\Exceptions\AlmaException;
+use Alma\API\Exceptions\ClientException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Client\ClientInterface;
@@ -58,7 +59,7 @@ class Client implements ClientInterface
      *
      * @param RequestInterface $request The HTTP request to send.
      * @return ResponseInterface The HTTP response received.
-     * @throws AlmaException
+     * @throws ClientException
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
@@ -83,7 +84,7 @@ class Client implements ClientInterface
         if (curl_errno($curl)) {
             $error = curl_error($curl);
             curl_close($curl);
-            throw new AlmaException("cURL error: " . $error);
+            throw new ClientException("cURL error: " . $error);
         }
 
         // Getting the HTTP status code and headers

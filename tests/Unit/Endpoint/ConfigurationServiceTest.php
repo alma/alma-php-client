@@ -1,8 +1,8 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Endpoints;
+namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoints\ConfigurationService;
+use Alma\API\Endpoint\ConfigurationService;
 use Alma\API\Exceptions\ConfigurationServiceException;
 use Alma\API\Response;
 use Mockery;

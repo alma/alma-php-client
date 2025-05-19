@@ -23,7 +23,7 @@
  *
  */
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Endpoint;
 
 use Alma\API\Entities\DataExport;
 use Alma\API\Exceptions\DataExportServiceException;

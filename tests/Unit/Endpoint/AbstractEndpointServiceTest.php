@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Endpoints;
+namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Client;
 use Alma\API\Configuration;

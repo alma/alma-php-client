@@ -30,19 +30,17 @@ class RequestException extends AlmaException
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
-    public function getErrorMessage()
+    public function getErrorMessage(): string
     {
         $message = $this->getMessage();
-
-        if ($message) {
+        if (!empty($message)) {
             return $message;
         }
 
-        if (isset($this->response->json['errors'][0]['message'])
-        ) {
-            return $this->response->json['errors'][0]['message'];
+        if (!empty($this->response->getReasonPhrase())) {
+            return $this->response->getReasonPhrase();
         }
 
         return '';
