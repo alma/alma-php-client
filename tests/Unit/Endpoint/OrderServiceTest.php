@@ -1,8 +1,8 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Endpoints;
+namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoints\OrderService;
+use Alma\API\Endpoint\OrderService;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\OrderServiceException;
 use Alma\API\Exceptions\ParametersException;

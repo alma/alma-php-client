@@ -79,27 +79,18 @@ class ArrayUtils
     {
         // trim
         $text = trim($textToSlugify, '-');
-
         // replace non letter or digits by -
         $text = preg_replace('~[^\pL\d]+~u', '_', $text);
-
         // transliterate
         $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-
         // remove unwanted characters
         $text = preg_replace('~[^-\w]+~', '', $text);
-
-
         // remove duplicated - symbols
         $text = preg_replace('~-+~', '-', $text);
-
         // lowercase
         $text = strtolower($text);
 
-        if (
-            empty($text)
-            || '_' === $text
-        ) {
+        if (empty($text) || '_' === $text) {
             throw new ParametersException(sprintf('The slug is empty, status "%s"', $textToSlugify));
         }
 

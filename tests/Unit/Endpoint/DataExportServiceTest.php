@@ -1,8 +1,8 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Endpoints;
+namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoints\DataExportService;
+use Alma\API\Endpoint\DataExportService;
 use Alma\API\Entities\DataExport;
 use Alma\API\Exceptions\DataExportServiceException;
 use Alma\API\Exceptions\ParametersException;

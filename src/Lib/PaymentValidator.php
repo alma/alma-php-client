@@ -41,10 +41,10 @@ class PaymentValidator
      * Ensure that the purchase amount is an integer
      *
      * @param $data
-     * @return void
+     * @return true
      * @throws ParametersException
      */
-    public static function checkPurchaseAmount($data)
+    public static function checkPurchaseAmount($data): bool
     {
         if (
             !empty($data['payment']['purchase_amount'])
@@ -55,5 +55,6 @@ class PaymentValidator
                 gettype($data['payment']['purchase_amount'])
             ));
         }
+        return true;
     }
 }

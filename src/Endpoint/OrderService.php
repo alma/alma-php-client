@@ -23,9 +23,10 @@
  *
  */
 
-namespace Alma\API\Endpoints;
+namespace Alma\API\Endpoint;
 
 use Alma\API\Entities\Order;
+use Alma\API\Exceptions\AlmaException;
 use Alma\API\Exceptions\MissingKeyException;
 use Alma\API\Exceptions\OrderServiceException;
 use Alma\API\Exceptions\ParametersException;
@@ -157,6 +158,34 @@ class OrderService extends Base
         }
 
         return new Order($response->getJson());
+    }
+
+    /**
+     * @param string $orderExternalId
+     * @param array $orderData
+     * @return void
+     * @throws ParametersException
+          * @throws RequestException
+     *@deprecated since version 2.5.0 - Use addOrderStatusByMerchantOrderReference() in Payments endpoint
+     */
+    public function sendStatus(string $orderExternalId, array $orderData = array())
+    {
+        $this->validateStatusData($orderData);
+        $label = $this->arrayUtils->slugify($orderData['status']);
+
+        try {
+            $response = $this->request(self::ORDERS_ENDPOINT . "/{$orderExternalId}/status")->setRequestBody(array(
+                'status' => $label,
+                'is_shipped' => $orderData['is_shipped'],
+            ))->post();
+        } catch (AlmaException $e) {
+            $this->logger->error('Error sending status');
+            throw new RequestException('Error sending status', $e);
+        }
+
+        if ($response->isError()) {
+            throw new RequestException($response->errorMessage, null, $response);
+        }
     }
 
     /**

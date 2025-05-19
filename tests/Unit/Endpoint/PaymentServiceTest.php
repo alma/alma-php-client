@@ -1,13 +1,13 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Endpoints;
+namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\PaymentServiceException;
 use Alma\API\Response;
 use Mockery;
-use Alma\API\Endpoints\PaymentService;
+use Alma\API\Endpoint\PaymentService;
 
 /**
  * Class Payments
@@ -80,6 +80,13 @@ class PaymentServiceTest extends AbstractEndpointServiceTest
           }
        ]
     }';
+
+    public function testCreate()
+    {
+
+    }
+
+
 
     /**
      * Return input to test testPartialRefund
