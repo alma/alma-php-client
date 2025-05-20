@@ -8,7 +8,7 @@ use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
 
-class ConfigurationServiceTest extends AbstractEndpointServiceTest
+class ConfigurationServiceTest extends AbstractEndpointService
 {
 	const URL = "https://www.example.com/integrations/configurations";
 

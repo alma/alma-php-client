@@ -9,7 +9,7 @@ class CartInitiatedBusinessEvent extends AbstractBusinessEvent
     /**
      * @var string
      */
-    private $cartId;
+    private string $cartId;
 
     /**
      * @param string $cartId
@@ -19,7 +19,7 @@ class CartInitiatedBusinessEvent extends AbstractBusinessEvent
     {
         $this->eventType = 'cart_initiated';
         if(empty($cartId)) {
-            throw new ParametersException('CartId must be a string');
+            throw new ParametersException('CartId must be a string and cannot be empty');
         }
         $this->cartId = $cartId;
     }

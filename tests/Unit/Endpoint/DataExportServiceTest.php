@@ -11,8 +11,12 @@ use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class DataExportServiceTest extends AbstractEndpointServiceTest
+class DataExportServiceTest extends AbstractEndpointService
 {
+    const DEFAULT_JSON_RESPONSE = '{"json_key": "json_value"}';
+    const DEFAULT_ID = '12345';
+    const DEFAULT_STATUS = 'completed';
+
     /** @var DataExportService|Mock */
     private $dataExportsService;
 
@@ -38,7 +42,7 @@ class DataExportServiceTest extends AbstractEndpointServiceTest
     public function testCreateDataExportPostThrowDataExportServiceException()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class, [200, [], '{"json_key": "json_value"}'])
+        $responseMock = Mockery::mock(Response::class, [200, [], self::DEFAULT_JSON_RESPONSE])
             ->makePartial();
         $responseMock->shouldReceive('isError')->andReturn(true);
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
@@ -56,7 +60,7 @@ class DataExportServiceTest extends AbstractEndpointServiceTest
     public function testFetchDataExportGetThrowDataExportServiceException()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class, [200, [], '{"json_key": "json_value"}'])
+        $responseMock = Mockery::mock(Response::class, [200, [], self::DEFAULT_JSON_RESPONSE])
             ->makePartial();
         $responseMock->shouldReceive('isError')->andReturn(true);
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
@@ -74,7 +78,7 @@ class DataExportServiceTest extends AbstractEndpointServiceTest
     public function testDownloadDataExportGetThrowDataExportServiceException()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class, [200, [], '{"json_key": "json_value"}'])
+        $responseMock = Mockery::mock(Response::class, [200, [], self::DEFAULT_JSON_RESPONSE])
             ->makePartial();
         $responseMock->shouldReceive('isError')->andReturn(true);
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
@@ -106,7 +110,7 @@ class DataExportServiceTest extends AbstractEndpointServiceTest
         // Mocks
         $responseMock = Mockery::mock(Response::class);
         $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getJson')->andReturn(['id' => '12345', 'status' => 'completed']);
+        $responseMock->shouldReceive('getJson')->andReturn(['id' => self::DEFAULT_ID, 'status' => self::DEFAULT_STATUS]);
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
 
         // DataExportService
@@ -114,8 +118,8 @@ class DataExportServiceTest extends AbstractEndpointServiceTest
 
         // Assertions
         $this->assertInstanceOf(DataExport::class, $result);
-        $this->assertEquals('12345', $result->id);
-        $this->assertEquals('completed', $result->status);
+        $this->assertEquals(self::DEFAULT_ID, $result->id);
+        $this->assertEquals(self::DEFAULT_STATUS, $result->status);
     }
 
     /**
@@ -126,16 +130,16 @@ class DataExportServiceTest extends AbstractEndpointServiceTest
         // Mocks
         $responseMock = Mockery::mock(Response::class);
         $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getJson')->andReturn(['id' => '12345', 'status' => 'completed']);
+        $responseMock->shouldReceive('getJson')->andReturn(['id' => self::DEFAULT_ID, 'status' => self::DEFAULT_STATUS]);
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
 
         // Call
-        $result = $this->dataExportsService->fetch('12345');
+        $result = $this->dataExportsService->fetch(self::DEFAULT_ID);
 
         // Assertions
         $this->assertInstanceOf(DataExport::class, $result);
-        $this->assertEquals('12345', $result->id);
-        $this->assertEquals('completed', $result->status);
+        $this->assertEquals(self::DEFAULT_ID, $result->id);
+        $this->assertEquals(self::DEFAULT_STATUS, $result->status);
     }
 
     /**
@@ -151,7 +155,7 @@ class DataExportServiceTest extends AbstractEndpointServiceTest
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
 
         // Call
-        $result = $this->dataExportsService->download('12345', 'csv');
+        $result = $this->dataExportsService->download(self::DEFAULT_ID, 'csv');
 
         // Assertions
         $this->assertEquals('file_content', $result);

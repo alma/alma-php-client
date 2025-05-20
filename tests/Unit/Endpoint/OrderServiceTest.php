@@ -12,7 +12,7 @@ use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class OrderServiceTest extends AbstractEndpointServiceTest
+class OrderServiceTest extends AbstractEndpointService
 {
     /** @var OrderService|Mock */
     protected $orderService;

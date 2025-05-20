@@ -12,7 +12,7 @@ use Mockery;
 /**
  * Class Payments
  */
-class EligibilityServiceTest extends AbstractEndpointServiceTest
+class EligibilityServiceTest extends AbstractEndpointService
 {
     const MERCHANT_REF = "merchant_ref";
 

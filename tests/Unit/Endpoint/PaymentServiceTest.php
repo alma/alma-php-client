@@ -12,7 +12,7 @@ use Alma\API\Endpoint\PaymentService;
 /**
  * Class Payments
  */
-class PaymentServiceTest extends AbstractEndpointServiceTest
+class PaymentServiceTest extends AbstractEndpointService
 {
     const MERCHANT_REF = "merchant_ref";
 

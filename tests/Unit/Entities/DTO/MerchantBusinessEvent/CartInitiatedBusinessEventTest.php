@@ -16,4 +16,10 @@ class CartInitiatedBusinessEventTest extends MockeryTestCase
         $this->assertEquals('cart_initiated', $event->getEventType());
         $this->assertEquals('54', $event->getCartId());
     }
+
+    public function testCartInitiatedBusinessEventBadData()
+    {
+        $this->expectException(ParametersException::class);
+        new CartInitiatedBusinessEvent('');
+    }
 }
