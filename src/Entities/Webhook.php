@@ -31,9 +31,9 @@ class Webhook extends Base
     const TYPE_INTEGRATION_CAPABILITIES = "integration_capabilities";
 
     /** @var string */
-    public $type;
+    public string $type;
     /** @var string */
-    public $url;
+    public string $url;
 
     /**
      * Verifies that the provided signature is valid for the given params and secret.
@@ -63,10 +63,6 @@ class Webhook extends Base
 
         $computed_signature = rtrim(strtr(base64_encode(hash_hmac('sha256', implode("&", $data), $secret, true)), '+/', '-_'), '=');
 
-        if (is_callable('hash_equals')) {
-            return hash_equals($signature, $computed_signature);
-        } else {
-            return $signature === $computed_signature;
-        }
+        return hash_equals($signature, $computed_signature);
     }
 }

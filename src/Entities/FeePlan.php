@@ -33,43 +33,43 @@ class FeePlan extends Base implements PaymentPlanInterface
     const KIND_POS = 'pos';
 
     /** @var int Installments count this fee plan applies to*/
-    public $installmentsCount;
+    protected int $installmentsCount;
 
     /** @var string Kind of payments this fee plan applies to (see kinds above, most likely KIND_GENERAL) */
-    public $kind;
+    protected string $kind;
 
     /** @var int Number of deferred months this fee plan applies to */
-    public $deferredMonths;
+    protected int $deferredMonths;
 
     /** @var int Number of deferred days this fee plan applies to */
-    public $deferredDays;
+    protected int $deferredDays;
 
     /** @var int Number of deferred trigger limit days this fee plan applies to */
-    public $deferredTriggerLimitDays;
+    protected int $deferredTriggerLimitDays;
 
     /** @var int Maximum purchase amount allowed for this fee plan */
-    public $maxPurchaseAmount;
+    protected int $maxPurchaseAmount;
 
     /** @var int Minimum purchase amount allowed for this fee plan */
-    public $minPurchaseAmount;
+    protected int $minPurchaseAmount;
 
     /** @var int Is this fee plan allowed/enabled? */
-    public $allowed;
+    protected int $allowed;
 
     /** @var int Percentage of fees in bps paid for by the merchant (100bps = 1%) */
-    public $merchantFeeVariable;
+    protected int $merchantFeeVariable;
 
     /** @var int Fixed fees in cents paid for by the merchant */
-    public $merchantFeeFixed;
+    protected int $merchantFeeFixed;
 
     /** @var int Percentage of fees in bps paid for by the customer (100bps = 1%) */
-    public $customerFeeVariable;
+    protected int $customerFeeVariable;
 
     /** @var int Percentage of lending rate in bps used to calculate the fee plan interest paid by the customer (100bps = 1%) */
-    public $customerLendingRate;
+    protected int $customerLendingRate;
 
     /** @var int Fixed fees in cents paid for by the customer */
-    public $customerFeeFixed;
+    protected int $customerFeeFixed;
 
     public function getDeferredDays(): int
     {

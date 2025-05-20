@@ -11,7 +11,7 @@ use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class MerchantServiceTest extends AbstractEndpointServiceTest
+class MerchantServiceTest extends AbstractEndpointService
 {
     /** @var MerchantService|Mock */
     private $merchantService;

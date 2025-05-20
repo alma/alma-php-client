@@ -9,7 +9,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\Mock;
 
-abstract class AbstractEndpointServiceTest extends MockeryTestCase
+abstract class AbstractEndpointService extends MockeryTestCase
 {
     /** @var Client|Mock Default Client Mock  */
     protected $clientMock;
