@@ -5,6 +5,7 @@
         processIsolation="false"
         stopOnFailure="false"
         beStrictAboutTestsThatDoNotTestAnything="false">
+
   <testsuites>
     <testsuite name="Alma PHP Client Unit Test Suite">
       <directory>tests/Unit</directory>
@@ -13,11 +14,19 @@
       <directory>tests/Integration</directory>
     </testsuite>
   </testsuites>
-  <filter>
-    <whitelist processUncoveredFilesFromWhitelist="true">
-        <directory suffix=".php">./src/*</directory>
-    </whitelist>
-</filter>
+
+  <coverage includeUncoveredFiles="true"
+            pathCoverage="false"
+            ignoreDeprecatedCodeUnits="true"
+            disableCodeCoverageIgnore="false">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <report>
+      <html outputDirectory="./coverage-report"/>
+    </report>
+  </coverage>
+
   <php>
     <env name="ALMA_API_KEY" value="sk_test_*******"/>
     <env name="ALMA_API_ROOT" value="alma-api-url"/>

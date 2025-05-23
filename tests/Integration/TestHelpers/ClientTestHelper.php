@@ -2,20 +2,14 @@
 
 namespace Alma\API\Tests\Integration\TestHelpers;
 
-use Alma\API\Client;
-use Alma\API\Exceptions\ParametersException;
+use Alma\API\ClientConfiguration;
+use Alma\API\CurlClient;
 
 class ClientTestHelper
 {
-    /**
-     * @throws ParametersException
-     */
-    public static function getAlmaClient(): Client
+    public static function getAlmaClient(): CurlClient
     {
-        return new Client(
-            $_ENV['ALMA_API_KEY'],
-            ['mode' => 'test', 'api_root' => $_ENV['ALMA_API_ROOT'], 'force_tls' => false]
-        );
+        $config = new ClientConfiguration(['mode' => 'test', 'api_root' => $_ENV['ALMA_API_ROOT'], 'force_tls' => false]);
+        return new CurlClient($config);
     }
-
 }

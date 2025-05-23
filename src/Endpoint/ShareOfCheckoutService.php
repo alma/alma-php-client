@@ -4,9 +4,11 @@ namespace Alma\API\Endpoint;
 
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Exceptions\ShareOfCheckoutServiceException;
+use Alma\API\Response;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Log\LoggerInterface;
 
-class ShareOfCheckoutService extends Base
+class ShareOfCheckoutService extends AbstractService
 {
     const SHARE_OF_CHECKOUT_ENDPOINT = '/v1/share-of-checkout';
     const SHARE_OF_CHECKOUT_CONSENT_ENDPOINT = self::SHARE_OF_CHECKOUT_ENDPOINT . '/consent';
@@ -58,8 +60,9 @@ class ShareOfCheckoutService extends Base
     /**
      * Consent share of checkout
      * @throws ShareOfCheckoutServiceException
+     * @return bool
      */
-    public function addConsent()
+    public function addConsent(): bool
     {
         try {
             $request = null;
@@ -72,13 +75,16 @@ class ShareOfCheckoutService extends Base
         if ($response->isError()) {
             throw new ShareOfCheckoutServiceException($response->getReasonPhrase(), $request, $response);
         }
+
+        return true;
     }
 
     /**
      * Consent share of checkout
      * @throws ShareOfCheckoutServiceException
+     * @return bool
      */
-    public function removeConsent()
+    public function removeConsent(): bool
     {
         try {
             $request = null;
@@ -91,5 +97,7 @@ class ShareOfCheckoutService extends Base
         if ($response->isError()) {
             throw new ShareOfCheckoutServiceException($response->getReasonPhrase(), $request, $response);
         }
+
+        return true;
     }
 }

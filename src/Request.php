@@ -31,10 +31,11 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Psr7\Stream;
 
 class Request implements RequestInterface
 {
+    use StreamTrait;
+
     private string $method;
     private UriInterface $uri;
     private array $headers;
@@ -46,35 +47,10 @@ class Request implements RequestInterface
      */
     public function __construct(string $method, $uri, array $headers = [], $body = null)
     {
-        $this->method = strtoupper($method);
+        $this->method = $this->validateMethod($method);
         $this->uri = ($uri instanceof UriInterface) ? $uri : new Uri($uri);
         $this->headers = $headers;
         $this->body = $this->createStream($body);
-    }
-
-    /**
-     * @throws RequestException
-     */
-    private function createStream($body = null): StreamInterface
-    {
-        if (is_resource($body)) {
-            $stream = new Stream($body);
-        } elseif (is_string($body)) {
-            $stream = fopen('php://temp', 'r+');
-            if ($stream === false) {
-                throw new RequestException('Failed to open temp stream');
-            }
-            fwrite($stream, $body);
-            rewind($stream);
-            $stream = new Stream($stream);
-        } elseif ($body === null) {
-            $stream =  new Stream(fopen('php://temp', 'r+')); // Retourne un stream vide
-        } elseif ($body instanceof StreamInterface) {
-            $stream =  $body;
-        } else {
-            throw new InvalidArgumentException('Invalid body type');
-        }
-        return $stream;
     }
 
     public function getRequestTarget(): string
@@ -83,12 +59,12 @@ class Request implements RequestInterface
         if ($this->uri->getQuery()) {
             $target .= '?' . $this->uri->getQuery();
         }
-        return $target ?: '/';
+        return urldecode($target) ?: '/';
     }
 
     public function withRequestTarget(string $requestTarget): RequestInterface
     {
-        // Gestion complexe, à adapter selon tes besoins
+        $this->uri = $this->uri->withPath($requestTarget);
         return $this;
     }
 
@@ -99,8 +75,18 @@ class Request implements RequestInterface
 
     public function withMethod(string $method): RequestInterface
     {
-        $this->method = strtoupper($method);
+        $this->method = $this->validateMethod($method);
         return $this;
+    }
+
+    public function validateMethod(string $method): string
+    {
+        $method = strtoupper($method);
+        if (!in_array(strtoupper($method), ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])) {
+            throw new InvalidArgumentException('Invalid HTTP method: ' . $method);
+
+        }
+        return $method;
     }
 
     public function getUri(): UriInterface
@@ -121,8 +107,16 @@ class Request implements RequestInterface
 
     public function withProtocolVersion(string $version): RequestInterface
     {
-        $this->protocolVersion = $version;
+        $this->protocolVersion = $this->validateProtocolVersion($version);
         return $this;
+    }
+
+    public function validateProtocolVersion(string $version): string
+    {
+        if (!in_array($version, ['1.0', '1.1', '2.0'])) {
+            throw new InvalidArgumentException('Invalid HTTP protocol version: ' . $version);
+        }
+        return $version;
     }
 
     public function getHeaders(): array

@@ -25,7 +25,7 @@
 
 namespace Alma\API\Entities;
 
-class Instalment extends Base
+class Installment extends Base
 {
     const STATE_PAID = 'paid';
     const STATE_PENDING = "pending";

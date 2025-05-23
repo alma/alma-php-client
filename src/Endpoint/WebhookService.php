@@ -30,7 +30,7 @@ use Alma\API\Exceptions\RequestException;
 use Alma\API\Exceptions\WebhookServiceException;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class WebhookService extends Base
+class WebhookService extends AbstractService
 {
     const WEBHOOKS_ENDPOINT = '/v1/webhooks';
 
@@ -50,7 +50,7 @@ class WebhookService extends Base
             $request = $this->createPostRequest(self::WEBHOOKS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new WebhookServiceException($e->getErrorMessage(), $request);
+            throw new WebhookServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
@@ -73,7 +73,7 @@ class WebhookService extends Base
             $request = $this->createGetRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new WebhookServiceException($e->getErrorMessage(), $request);
+            throw new WebhookServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
@@ -98,7 +98,7 @@ class WebhookService extends Base
             $request = $this->createDeleteRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new WebhookServiceException($e->getErrorMessage(), $request);
+            throw new WebhookServiceException($e->getMessage(), $request);
         }
         if ($response->isError()) {
             throw new WebhookServiceException($response->getReasonPhrase(), $request, $response);

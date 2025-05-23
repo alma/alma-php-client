@@ -20,71 +20,72 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
 namespace Alma\API;
 
-class Configuration
+use Alma\API\Lib\StreamHelper;
+use Iterator;
+
+class PaginatedResult implements Iterator
 {
-    const LIVE_MODE = 'live';
-    const TEST_MODE = 'test';
+    /** @var int */
+    protected int $position = 0;
 
-    const LIVE_API_URL = 'https://api.getalma.eu';
-    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
+    /** @var ResponseInterface */
+    protected ResponseInterface $response;
 
-    private array $userAgentComponents;
-    private array $config;
+    /**
+     * @var callable
+     */
+    protected $nextPageCallback;
+    private $entities;
 
-    public function __construct(array $config = [])
+    /**
+     * PaginatedResults constructor.
+     *
+     * @param Response $response
+     * @param callable|null $nextPageCallback
+     */
+    public function __construct(ResponseInterface $response, ?callable $nextPageCallback)
     {
-        $this->config = array_merge([
-            'base_uri' => '',
-            'timeout'  => 30,
-            'headers'  => [],
-            'auth'     => null,
-            'verify'   => true,
-            'retries'  => 0,
-        ], $config);
+        $this->response         = $response;
+        $this->entities         = $response->getJson()['data'] ?? [];
+        $this->nextPageCallback = $nextPageCallback;
     }
 
-    public function all(): array
+    public function rewind(): void
     {
-        return $this->config;
+        $this->position = 0;
     }
 
-    public function getApiKey(): ?string
+    public function current()
     {
-        return $this->config['auth']['api_key'] ?? null;
+        return $this->entities[$this->position];
     }
 
-    public function getBaseUri(): string
+    public function key(): int
     {
-        return $this->config['base_uri'] ?? '';
+        return $this->position;
     }
 
-    public function getHeaders(): array
+    public function next(): void
     {
-        return $this->config['headers'] ?? [];
+        ++$this->position;
     }
 
-    public function getTimeout(): int
+    public function valid(): bool
     {
-        return $this->config['timeout'] ?? 30;
+        return isset($this->entities[$this->position]);
     }
 
-    public function getSslVerify(): bool
+    public function nextPage()
     {
-        return $this->config['verify'] ?? true;
-    }
+        $callback = $this->nextPageCallback;
+        if (!$callback || !array_key_exists('has_more', $this->response->getJson())) {
+            return new self(new Response(204), null);
+        }
 
-    public function addUserAgentComponent($component, $version)
-    {
-        $this->userAgentComponents[] = "$component/$version";
-    }
-
-    public function getUserAgentString(): string
-    {
-        return implode("; ", array_reverse($this->userAgentComponents));
+        return $callback(array_slice($this->entities, -1, 1)[0]['id']);
     }
 }

@@ -42,7 +42,7 @@ An example of using the API client. (check [API documentation](https://docs.geta
 ### 1. instanciate client in test mode
 
 ```php
-$alma = new Alma\API\Client($apiKey, ['mode' => Alma\API\Client::TEST_MODE]);
+$alma = new Alma\API\CurlClient($apiKey, ['mode' => Alma\API\CurlClient::TEST_MODE]);
 ```
 
 ### 2. check eligibility

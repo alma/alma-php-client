@@ -3,7 +3,7 @@
 namespace Alma\API\Exceptions;
 
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Alma\API\ResponseInterface;
 
 class RequestException extends AlmaException
 {

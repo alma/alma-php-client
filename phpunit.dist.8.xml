@@ -24,7 +24,7 @@
   <coverage includeUncoveredFiles="true"
             pathCoverage="false"
             ignoreDeprecatedCodeUnits="true"
-            disableCodeCoverageIgnore="true">
+            disableCodeCoverageIgnore="false">
     <report>
       <html outputDirectory="./coverage-report"/>
     </report>
@@ -32,7 +32,7 @@
 
   <source>
     <include>
-      <directory suffix=".php">./src/*</directory>
+      <directory suffix=".php">./src</directory>
     </include>
   </source>
 

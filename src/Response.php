@@ -25,32 +25,43 @@
 
 namespace Alma\API;
 
-use Psr\Http\Message\ResponseInterface;
+use Alma\API\Exceptions\RequestException;
+use GuzzleHttp\Psr7\Stream;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 class Response implements ResponseInterface
 {
+    use StreamTrait;
+
     private int $statusCode;
     private array $headers;
-    private string $body;
+    private StreamInterface $body;
     private string $protocolVersion = '1.1';
     private array $reasonPhrases = [
         100 => 'Continue',
-        // ... (codes de statut HTTP)
         200 => 'OK',
-        // ...
+        204 => 'No Content',
         302 => 'Found',
         400 => 'Bad Request',
-        // ...
+        406 => 'Not Acceptable',
         500 => 'Internal Server Error',
     ];
 
-    public function __construct(int $statusCode, array $headers = [], $body = '', string $protocolVersion = '1.1')
+    /**
+     * Create a Response
+     * @param int $statusCode
+     * @param StreamInterface $body
+     * @param array $headers
+     * @param string $protocolVersion
+     * @throws RequestException
+     */
+    public function __construct(int $statusCode, $body = '', array $headers = [], string $protocolVersion = '1.1')
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
-        $this->body = $body;
-        $this->protocolVersion = $protocolVersion;
+        $this->body = $this->createStream($body);
+        $this->protocolVersion = $this->validateProtocolVersion($protocolVersion);
     }
 
     public function getStatusCode(): int
@@ -76,8 +87,16 @@ class Response implements ResponseInterface
 
     public function withProtocolVersion(string $version): ResponseInterface
     {
-        $this->protocolVersion = $version;
+        $this->protocolVersion = $this->validateProtocolVersion($version);
         return $this;
+    }
+
+    public function validateProtocolVersion(string $version): string
+    {
+        if (!in_array($version, ['1.0', '1.1', '2.0'])) {
+            throw new InvalidArgumentException('Invalid HTTP protocol version: ' . $version);
+        }
+        return $version;
     }
 
     public function getHeaders(): array

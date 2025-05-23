@@ -29,7 +29,7 @@ use Alma\API\Exceptions\ConfigurationServiceException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class ConfigurationService extends Base
+class ConfigurationService extends AbstractService
 {
     const CONFIGURATION_API_ENDPOINT = '/v1/integration-configuration/api';
 
@@ -44,7 +44,7 @@ class ConfigurationService extends Base
             $request = $this->createPutRequest(self::CONFIGURATION_API_ENDPOINT, ["collect_data_url" => $url]);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new ConfigurationServiceException($e->getMessage(), null, $request);
+            throw new ConfigurationServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {

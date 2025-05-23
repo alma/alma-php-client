@@ -33,7 +33,7 @@ use Alma\API\Exceptions\MerchantServiceException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class MerchantService extends Base
+class MerchantService extends AbstractService
 {
     const ME_ENDPOINT = '/v1/me';
     const BUSINESS_EVENTS_ENDPOINT = self::ME_ENDPOINT . '/business-events';
@@ -42,7 +42,6 @@ class MerchantService extends Base
 
     /**
      * @return Merchant
-     * @throws RequestException
      * @throws MerchantServiceException
      */
     public function me(): Merchant
@@ -51,12 +50,12 @@ class MerchantService extends Base
             $request = null;
             $request = $this->createGetRequest(self::EXTENDED_DATA_ENDPOINT);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface $e) {
-            throw new MerchantServiceException($e->getErrorMessage(), $request);
+        } catch (ClientExceptionInterface|RequestException $e) {
+            throw new MerchantServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new RequestException($response->getReasonPhrase(), $request, $response);
+            throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Merchant($response->getJson());
@@ -91,7 +90,7 @@ class MerchantService extends Base
             $request = $this->createGetRequest(self::FEE_PLANS_ENDPOINT, $queryParams);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new MerchantServiceException($e->getErrorMessage(), $request);
+            throw new MerchantServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
@@ -154,7 +153,7 @@ class MerchantService extends Base
             $request = $this->createPostRequest(self::BUSINESS_EVENTS_ENDPOINT, $eventData);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new MerchantServiceException($e->getErrorMessage(), $request);
+            throw new MerchantServiceException($e->getMessage(), $request);
         }
         if ($response->isError()) {
             throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);

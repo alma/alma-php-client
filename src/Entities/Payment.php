@@ -40,82 +40,82 @@ class Payment extends Base
     const FRAUD_STATE_ERROR = 'state_error';
 
     /** @var int Creation UNIX timestamp */
-    public $created;
+    public int $created;
 
     /** @var string URL of that payment's page to which the customer should be redirected */
-    public $url;
+    public string $url;
 
     /** @var string State of the payment (see above STATE_PAID / STATE_IN_PROGRESS / ...) */
-    public $state;
+    public string $state;
 
     /** @var int Purchase amount, in cents */
-    public $purchaseAmount;
+    public int $purchaseAmount;
 
     /** @var int Fees to be paid by the customer, in cents */
-    public $customerFee;
+    public int $customerFee;
 
     /** @var int Interests to be paid by the customer, in cents */
-    public $customerInterest;
+    public int $customerInterest;
 
     /** @var int Fees paid by the merchant, in cents */
-    public $merchantTargetFee;
+    public int $merchantTargetFee;
 
     /** @var int Number of installments for this payment */
-    public $installmentsCount;
+    public int $installmentsCount;
 
     /** @var int Number of days the payment was deferred for */
-    public $deferredDays;
+    public int $deferredDays;
 
     /** @var int Number of months the payment was deferred for */
-    public $deferredMonths;
+    public int $deferredMonths;
 
     /**
-     * @var Instalment[] Array of installments, representing the payment plan for this payment.
+     * @var Installment[] Array of installments, representing the payment plan for this payment.
      * Might include more than $installments_count installments in some cases.
      */
-    public $paymentPlan;
+    public array $paymentPlan;
 
     /** @var string URL the customer is sent back to once the payment is complete */
-    public $returnUrl;
+    public string $returnUrl;
 
     /** @var array Custom data provided at creation time */
-    public $customData;
+    public array $customData;
 
     /** @var Order[] List of orders associated to that payment */
-    public $orders;
+    public array $orders;
 
     /** @var Refund[] List of refunds for that payment */
-    public $refunds;
+    public array $refunds;
 
     /** @var array Customer representation */
-    public $customer;
+    public array $customer;
 
     /** @var array Billing address representation */
-    public $billingAddress;
+    public array $billingAddress;
 
     /** @var bool If is a payment with trigger or not */
-    public $deferredTrigger;
+    public bool $deferredTrigger;
 
     /** @var string|null Description given at payment creation */
-    public $deferredTriggerDescription;
+    public ?string $deferredTriggerDescription;
 
     /** @var int|null Timestamp or NULL if not already applied */
-    public $deferredTriggerApplied;
+    public ?int $deferredTriggerApplied;
 
     /** @var int|null Timestamp or NULL if not expired */
-    public $expiredAt;
+    public ?int $expiredAt;
 
     /**
      * @param array $attributes
      */
     public function __construct($attributes)
     {
-        // Manually process `payment_plan` to create Instalment instances
+        // Manually process `payment_plan` to create Installment instances
         if (array_key_exists('payment_plan', $attributes)) {
             $this->paymentPlan = array();
 
-            foreach ($attributes['payment_plan'] as $instalment) {
-                $this->paymentPlan[] = new Instalment($instalment);
+            foreach ($attributes['payment_plan'] as $installment) {
+                $this->paymentPlan[] = new Installment($installment);
             }
 
             unset($attributes['payment_plan']);

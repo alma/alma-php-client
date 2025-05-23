@@ -5,14 +5,31 @@ namespace Alma\API\Tests\Unit\Endpoint;
 use Alma\API\Endpoint\MerchantService;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
+use Alma\API\Entities\FeePlan;
+use Alma\API\Entities\Merchant;
+use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\MerchantServiceException;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class MerchantServiceTest extends AbstractEndpointService
+class MerchantServiceTest extends AbstractServiceSetUp
 {
+    const DEFAULT_JSON_RESPONSE = '{"json_key": "json_value"}';
+
+    const FEE_PLAN_JSON_RESPONSE = '[
+        {
+            "installmentsCount": 3,
+            "kind": "general",
+            "deferredMonths": 0,
+            "deferredDays": 0,
+            "deferredTriggerLimitDays": 0,
+            "allowed": 1
+        }
+    ]';
+
     /** @var MerchantService|Mock */
     private $merchantService;
 
@@ -21,49 +38,179 @@ class MerchantServiceTest extends AbstractEndpointService
         parent::setUp();
 
         // Mocks
-        $this->merchantService = Mockery::mock(MerchantService::class, [$this->clientMock])->makePartial();
         $loggerMock = Mockery::mock(LoggerInterface::class);
         $loggerMock->shouldReceive('error');
+
         $this->responseMock = Mockery::mock(Response::class);
+        $this->responseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $this->responseMock->shouldReceive('isError')->andReturn(false);
+        $this->responseMock->shouldReceive('getBody')->andReturn(self::FEE_PLAN_JSON_RESPONSE);
+        $this->responseMock->shouldReceive('getJson')->andReturn(json_decode(self::FEE_PLAN_JSON_RESPONSE, true));
+
+        $this->badResponseMock = Mockery::mock(Response::class);
+        $this->badResponseMock->shouldReceive('getStatusCode')->andReturn(500);
+        $this->badResponseMock->shouldReceive('getReasonPhrase')->andReturn('Internal Server Error');
+        $this->badResponseMock->shouldReceive('isError')->andReturn(true);
+        $this->badResponseMock->shouldReceive('getBody')->andReturn(self::FEE_PLAN_JSON_RESPONSE);
+
+        $this->merchantService = Mockery::mock(MerchantService::class, [$this->clientMock])->makePartial();
     }
 
     /**
+     * Ensure we can create a DataExport
      * @throws MerchantServiceException
      */
-    public function testSendBusinessEventBadResponseMerchantServiceException()
+    public function testMe()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(true);
-        $responseMock->shouldReceive('getReasonPhrase')->andReturn('Request error');
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+
+        // MerchantService
+        $result = $this->merchantService->me();
+
+        // Assertions
+        $this->assertInstanceOf(Merchant::class, $result);
+    }
+
+    /**
+     * Ensure we can catch DataExportServiceException
+     * @throws MerchantServiceException
+     */
+    public function testMeMerchantServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
         $this->expectException(MerchantServiceException::class);
 
         // Call
-        $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEvent('42'));
+        $this->merchantService->me();
     }
 
     /**
+     * Ensure we can catch RequestException
+     * @return void
      * @throws MerchantServiceException
      */
-    public function testSendCartInitiatedEvent()
+    public function testMeRequestException()
+    {
+        // Mocks
+        $merchantServiceMock = Mockery::mock(MerchantService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $merchantServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(MerchantServiceException::class);
+        $merchantServiceMock->me();
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws MerchantServiceException
+     */
+    public function testMeClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(MerchantServiceException::class);
+        $this->merchantService->me();
+    }
+
+    /**
+     * Ensure we get fee plans
+     * @throws MerchantServiceException
+     */
+    public function testFeePlans()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->twice()->andReturn($this->responseMock);
+
+        // MerchantService
+        $result = $this->merchantService->feePlans();
+        $resultWithArray = $this->merchantService->feePlans(FeePlan::KIND_GENERAL, [3]);
+
+        // Assertions
+        foreach ($result as $feePlan) {
+            $this->assertInstanceOf(FeePlan::class, $feePlan);
+        }
+        foreach ($resultWithArray as $feePlan) {
+            $this->assertInstanceOf(FeePlan::class, $feePlan);
+        }
+    }
+
+    /**
+     * Ensure we can catch API errors
+     * @throws MerchantServiceException
+     */
+    public function testFeePlansMerchantServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
+
+        // Expectations
+        $this->expectException(MerchantServiceException::class);
+
+        // Call
+        $this->merchantService->feePlans();
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws MerchantServiceException
+     */
+    public function testFeePlansRequestException()
+    {
+        // Mocks
+        $merchantServiceMock = Mockery::mock(MerchantService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $merchantServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(MerchantServiceException::class);
+        $merchantServiceMock->feePlans();
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws MerchantServiceException
+     */
+    public function testFeePlansClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(MerchantServiceException::class);
+        $this->merchantService->feePlans();
+    }
+
+    /**
+     * Ensure we can send a business event for a cart initiated
+     * @throws MerchantServiceException
+     */
+    public function testSendCartInitiatedBusinessEvent()
     {
         // Params
         $cartInitiatedEvent = new CartInitiatedBusinessEvent('42');
 
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getReasonPhrase')->andReturn('Request error');
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
 
         // Call
         $this->merchantService->sendCartInitiatedBusinessEvent($cartInitiatedEvent);
     }
 
+
     /**
+     * Ensure we can send a business event for an order confirmed
      * @throws MerchantServiceException
      */
     public function testSendOrderConfirmedBusinessEventForNonAlmaPayment()
@@ -78,16 +225,14 @@ class MerchantServiceTest extends AbstractEndpointService
         );
 
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getReasonPhrase')->andReturn('oops');
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
 
         // Call
         $this->merchantService->sendOrderConfirmedBusinessEvent($orderConfirmedBusinessEvent);
     }
 
     /**
+     * Ensure we can send a business event for an order confirmed
      * @throws MerchantServiceException
      */
     public function testSendOrderConfirmedBusinessEventForAlmaPayment()
@@ -103,12 +248,58 @@ class MerchantServiceTest extends AbstractEndpointService
         );
 
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getReasonPhrase')->andReturn('oops');
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
 
         // Call
         $this->merchantService->sendOrderConfirmedBusinessEvent($orderConfirmedBusinessEvent);
+    }
+
+    /**
+     * Ensure we can catch API errors
+     * @throws MerchantServiceException
+     */
+    public function testSendBusinessEventMerchantServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
+
+        // Expectations
+        $this->expectException(MerchantServiceException::class);
+
+        // Call
+        $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEvent('42'));
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws MerchantServiceException
+     */
+    public function testSendBusinessEventRequestException()
+    {
+        // Mocks
+        $merchantServiceMock = Mockery::mock(MerchantService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $merchantServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(MerchantServiceException::class);
+        $merchantServiceMock->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEvent('42'));
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws MerchantServiceException
+     */
+    public function testSendBusinessEventClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(MerchantServiceException::class);
+        $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEvent('42'));
     }
 }
