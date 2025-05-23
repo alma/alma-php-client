@@ -6,7 +6,7 @@ use Alma\API\Exceptions\RequestException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Alma\API\ResponseInterface;
 
 class RequestExceptionTest extends TestCase
 {

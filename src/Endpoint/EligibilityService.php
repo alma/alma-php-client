@@ -31,11 +31,12 @@ use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class EligibilityService extends Base
+class EligibilityService extends AbstractService
 {
     const ELIGIBILITY_ENDPOINT = '/v2/payments/eligibility';
 
     /**
+     * Ask for Eligibility of a payment plan.
      * @param array $data Payment data to check the eligibility for – same data format as payment creation,
      *                              except that only payment.purchase_amount is mandatory and payment.installments_count
      *                              can be an array of integers, to test for multiple eligible plans at once.

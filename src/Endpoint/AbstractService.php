@@ -5,16 +5,16 @@ namespace Alma\API\Endpoint;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientInterface;
 use Alma\API\Request;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
-class Base
+abstract class AbstractService implements LoggerAwareInterface
 {
+    use loggerAwareTrait;
+
     /** @var ClientInterface */
     protected ClientInterface $client;
-
-    /** @var LoggerInterface */
-    protected LoggerInterface $logger;
 
     public function __construct(ClientInterface $client)
     {
@@ -22,17 +22,11 @@ class Base
         $this->logger = new NullLogger();
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     /**
      * @throws RequestException
      */
-    private function createRequest(string $method, string $uri, array  $body = null): Request {
+    private function createRequest(string $method, string $uri, array $body = null): Request {
         $headers = [
-            'Content-type' => ['application/json'],
             'Authorization' => ['Alma-Auth ' . $this->client->getConfig()->getApiKey()]
         ];
         return new Request($method, $uri, $headers, json_encode($body));
@@ -41,7 +35,7 @@ class Base
     /**
      * @throws RequestException
      */
-    public function createGetRequest(string $uri, array  $queryParams = []): Request {
+    public function createGetRequest(string $uri, array $queryParams = []): Request {
         $queryString = http_build_query($queryParams);
         if ($queryString) {
             $uri .= '?' . $queryString;

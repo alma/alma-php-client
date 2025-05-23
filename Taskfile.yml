@@ -8,30 +8,6 @@ env:
     sh: id -g
 
 includes:
-  "5.6":
-    taskfile: Taskfile.php.yml
-    vars:
-      PHP_VERSION: "5.6"
-      COMPOSE_SERVICE: php-legacy  # Dockerfile needs specific APT configuration
-      PHPUNIT_FILE: phpunit.dist.legacy.xml
-  "7.0":
-    taskfile: Taskfile.php.yml
-    vars:
-      PHP_VERSION: "7.0"
-      COMPOSE_SERVICE: php-legacy  # Dockerfile needs specific APT configuration
-  "7.1":
-    taskfile: Taskfile.php.yml
-    vars:
-      PHP_VERSION: "7.1"
-      COMPOSER_VERSION: "2.2"  # Composer >2.2 deprecated PHP 7.1
-  "7.2":
-    taskfile: Taskfile.php.yml
-    vars:
-      PHP_VERSION: "7.2"
-  "7.3":
-    taskfile: Taskfile.php.yml
-    vars:
-      PHP_VERSION: "7.3"
   "7.4":
     taskfile: Taskfile.php.yml
     vars:

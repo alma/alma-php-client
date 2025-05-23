@@ -2,9 +2,9 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\Configuration;
+use Alma\API\ClientConfiguration;
 use Alma\API\Exceptions\ParametersException;
-use Alma\API\Lib\ClientOptionsValidator;
+use Alma\API\Lib\ClientConfigurationValidator;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Psr\Log\NullLogger;
 
@@ -27,31 +27,31 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 [],
                 [
                     'api_root' => [
-                        Configuration::TEST_MODE => Configuration::SANDBOX_API_URL,
-                        Configuration::LIVE_MODE => Configuration::LIVE_API_URL
+                        ClientConfiguration::TEST_MODE => ClientConfiguration::SANDBOX_API_URL,
+                        ClientConfiguration::LIVE_MODE => ClientConfiguration::LIVE_API_URL
                     ],
                     'force_tls' => 2,
-                    'mode' => Configuration::LIVE_MODE,
+                    'mode' => ClientConfiguration::LIVE_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
             [
                 [
                     'api_root' => [
-                        Configuration::TEST_MODE => self::FAKE_API_URI,
-                        Configuration::LIVE_MODE => self::FAKE_API_URI
+                        ClientConfiguration::TEST_MODE => self::FAKE_API_URI,
+                        ClientConfiguration::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
-                    'mode' => Configuration::TEST_MODE,
+                    'mode' => ClientConfiguration::TEST_MODE,
                     'logger' => new NullLogger()
                 ],
                 [
                     'api_root' => [
-                        Configuration::TEST_MODE => self::FAKE_API_URI,
-                        Configuration::LIVE_MODE => self::FAKE_API_URI
+                        ClientConfiguration::TEST_MODE => self::FAKE_API_URI,
+                        ClientConfiguration::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
-                    'mode' => Configuration::TEST_MODE,
+                    'mode' => ClientConfiguration::TEST_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
@@ -63,11 +63,11 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 ],
                 [
                     'api_root' => [
-                        Configuration::TEST_MODE => self::FAKE_API_URI,
-                        Configuration::LIVE_MODE => self::FAKE_API_URI
+                        ClientConfiguration::TEST_MODE => self::FAKE_API_URI,
+                        ClientConfiguration::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 2,
-                    'mode' => Configuration::LIVE_MODE,
+                    'mode' => ClientConfiguration::LIVE_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
@@ -80,11 +80,11 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 ],
                 [
                     'api_root' => [
-                        Configuration::TEST_MODE => Configuration::SANDBOX_API_URL,
-                        Configuration::LIVE_MODE => Configuration::LIVE_API_URL
+                        ClientConfiguration::TEST_MODE => ClientConfiguration::SANDBOX_API_URL,
+                        ClientConfiguration::LIVE_MODE => ClientConfiguration::LIVE_API_URL
                     ],
                     'force_tls' => 2,
-                    'mode' => Configuration::LIVE_MODE,
+                    'mode' => ClientConfiguration::LIVE_MODE,
                     'logger' => new NullLogger(),
                     'user_agent_component' => [
                         'PrestaShop' => 2.3,
@@ -105,8 +105,8 @@ class ClientOptionsValidatorTest extends MockeryTestCase
 			'invalid api_root' => [
 				[
 					'api_root' => [
-						'something wrong' => Configuration::SANDBOX_API_URL,
-						'something wronger' => Configuration::LIVE_API_URL
+						'something wrong' => ClientConfiguration::SANDBOX_API_URL,
+						'something wronger' => ClientConfiguration::LIVE_API_URL
 					],
 				],
 			],
@@ -138,7 +138,7 @@ class ClientOptionsValidatorTest extends MockeryTestCase
     public function testClientOptionsValidator($options, $expectedResult)
     {
         /** @var mixed $validatedConfig */
-        $validatedConfig = ClientOptionsValidator::validateOptions($options);
+        $validatedConfig = ClientConfigurationValidator::validateOptions($options);
 
         $this->assertEquals($expectedResult, $validatedConfig);
     }
@@ -151,6 +151,6 @@ class ClientOptionsValidatorTest extends MockeryTestCase
     {
         $this->expectException(ParametersException::class);
 
-        ClientOptionsValidator::validateOptions($options);
+        ClientConfigurationValidator::validateOptions($options);
     }
 }

@@ -32,13 +32,21 @@ use Alma\API\Exceptions\OrderServiceException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
-use Alma\API\PaginatedResults;
+use Alma\API\PaginatedResult;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
 
-class OrderService extends Base
+class OrderService extends AbstractService
 {
     const ORDERS_ENDPOINT_V1 = '/v1/orders';
     const ORDERS_ENDPOINT = '/v2/orders';
+    private ArrayUtils $arrayUtils;
+
+    public function __construct(ClientInterface $client)
+    {
+        parent::__construct($client);
+        $this->arrayUtils = new ArrayUtils();
+    }
 
     /**
      * @param string $orderId
@@ -47,7 +55,7 @@ class OrderService extends Base
      * @return Order
      * @throws OrderServiceException
      */
-    public function update(string $orderId, array $orderData): Order
+    public function update(string $orderId, array $orderData = []): Order
     {
         try {
             $request = null;
@@ -61,7 +69,8 @@ class OrderService extends Base
             throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Order($response->getJson());
+        $json = $response->getJson();
+        return new Order(end($json));
     }
 
     /**
@@ -98,10 +107,10 @@ class OrderService extends Base
      * @param string|null $startingAfter
      * @param array $filters
      *
-     * @return PaginatedResults
+     * @return PaginatedResult
      * @throws OrderServiceException
      */
-    public function fetchAll(int $limit = 20, string $startingAfter = null, array $filters = array()): PaginatedResults
+    public function fetchAll(int $limit = 20, string $startingAfter = null, array $filters = array()): PaginatedResult
     {
         $args = array(
             'limit' => $limit,
@@ -129,7 +138,7 @@ class OrderService extends Base
             throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new PaginatedResults(
+        return new PaginatedResult(
             $response,
             function ($startingAfter) use ($limit, $filters) {
                 return $this->fetchAll($limit, $startingAfter, $filters);
@@ -157,35 +166,8 @@ class OrderService extends Base
             throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Order($response->getJson());
-    }
-
-    /**
-     * @param string $orderExternalId
-     * @param array $orderData
-     * @return void
-     * @throws ParametersException
-          * @throws RequestException
-     *@deprecated since version 2.5.0 - Use addOrderStatusByMerchantOrderReference() in Payments endpoint
-     */
-    public function sendStatus(string $orderExternalId, array $orderData = array())
-    {
-        $this->validateStatusData($orderData);
-        $label = $this->arrayUtils->slugify($orderData['status']);
-
-        try {
-            $response = $this->request(self::ORDERS_ENDPOINT . "/{$orderExternalId}/status")->setRequestBody(array(
-                'status' => $label,
-                'is_shipped' => $orderData['is_shipped'],
-            ))->post();
-        } catch (AlmaException $e) {
-            $this->logger->error('Error sending status');
-            throw new RequestException('Error sending status', $e);
-        }
-
-        if ($response->isError()) {
-            throw new RequestException($response->errorMessage, null, $response);
-        }
+        $json = $response->getJson();
+        return new Order($json);
     }
 
     /**

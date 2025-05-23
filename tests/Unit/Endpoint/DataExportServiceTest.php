@@ -4,18 +4,39 @@ namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\DataExportService;
 use Alma\API\Entities\DataExport;
+use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\DataExportServiceException;
 use Alma\API\Exceptions\ParametersException;
+use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\StreamHelper;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class DataExportServiceTest extends AbstractEndpointService
+class DataExportServiceTest extends AbstractServiceSetUp
 {
     const DEFAULT_JSON_RESPONSE = '{"json_key": "json_value"}';
-    const DEFAULT_ID = '12345';
-    const DEFAULT_STATUS = 'completed';
+
+    const DATA_EXPORT_JSON_RESPONSE = '{
+            "complete": false,
+            "created": 1747832865,
+            "end": 1747832865,
+            "id": "export_1213JjthYed5YYk5fQgQZNOzevlY5FvvU7",
+            "include_child_accounts": false,
+            "merchant": 126928,
+            "start": 1696197600,
+            "type": "payments",
+            "updated": 1747832865
+        }';
+
+    const DEFAULT_ID = 'export_1213JjthYed5YYk5fQgQZNOzevlY5FvvU7';
+
+    /** @var Response|Mock */
+    protected $responseMock;
+
+    /** @var Response|Mock */
+    protected $badResponseMock;
 
     /** @var DataExportService|Mock */
     private $dataExportsService;
@@ -27,7 +48,19 @@ class DataExportServiceTest extends AbstractEndpointService
         // Mocks
         $loggerMock = Mockery::mock(LoggerInterface::class);
         $loggerMock->shouldReceive('error');
+
         $this->responseMock = Mockery::mock(Response::class);
+        $this->responseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $this->responseMock->shouldReceive('isError')->andReturn(false);
+        $this->responseMock->shouldReceive('getBody')->andReturn(self::DATA_EXPORT_JSON_RESPONSE);
+        $this->responseMock->shouldReceive('getJson')->andReturn(json_decode(self::DATA_EXPORT_JSON_RESPONSE, true));
+
+        $this->badResponseMock = Mockery::mock(Response::class)
+            ->makePartial();
+        $this->badResponseMock->shouldReceive('getStatusCode')->andReturn(500);
+        $this->badResponseMock->shouldReceive('getReasonPhrase')->andReturn('Internal Server Error');
+        $this->badResponseMock->shouldReceive('isError')->andReturn(true);
+        $this->badResponseMock->shouldReceive('getBody')->andReturn(self::DEFAULT_JSON_RESPONSE);
 
         // DataExportService
         $this->dataExportsService = Mockery::mock(
@@ -37,33 +70,96 @@ class DataExportServiceTest extends AbstractEndpointService
     }
 
     /**
+     * Ensure we can create a DataExport
      * @throws DataExportServiceException
      */
-    public function testCreateDataExportPostThrowDataExportServiceException()
+    public function testCreateDataExport()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class, [200, [], self::DEFAULT_JSON_RESPONSE])
-            ->makePartial();
-        $responseMock->shouldReceive('isError')->andReturn(true);
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+
+        // DataExportService
+        $result = $this->dataExportsService->create('report');
+
+        // Assertions
+        $this->assertInstanceOf(DataExport::class, $result);
+        $this->assertEquals(self::DEFAULT_ID, $result->id);
+    }
+
+    /**
+     * Ensure we can catch DataExportServiceException
+     * @throws DataExportServiceException
+     */
+    public function testCreateDataExportDataExportServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
         $this->expectException(DataExportServiceException::class);
 
         // Call
-        $this->dataExportsService->create(['type' => 'payments', 'include_child_accounts' => false]);
+        $this->dataExportsService->create('payments');
     }
 
     /**
+     * Ensure we can catch RequestException
+     * @return void
      * @throws DataExportServiceException
      */
-    public function testFetchDataExportGetThrowDataExportServiceException()
+    public function testCreateDataExportRequestException()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class, [200, [], self::DEFAULT_JSON_RESPONSE])
+        $dataExportServiceMock = Mockery::mock(DataExportService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
             ->makePartial();
-        $responseMock->shouldReceive('isError')->andReturn(true);
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $dataExportServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(DataExportServiceException::class);
+        $dataExportServiceMock->create('payments');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws DataExportServiceException
+     */
+    public function testCreateDataExportClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(DataExportServiceException::class);
+        $this->dataExportsService->create('payments');
+    }
+
+    /**
+     * Ensure we can fetch a DataExport
+     * @throws DataExportServiceException
+     */
+    public function testFetchDataExport()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+
+        // Call
+        $result = $this->dataExportsService->fetch(self::DEFAULT_ID);
+
+        // Assertions
+        $this->assertInstanceOf(DataExport::class, $result);
+        $this->assertEquals(self::DEFAULT_ID, $result->id);
+    }
+
+    /**
+     * Ensure we can catch DataExportServiceException
+     * @throws DataExportServiceException
+     */
+    public function testFetchDataExportDataExportServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
         $this->expectException(DataExportServiceException::class);
@@ -73,15 +169,64 @@ class DataExportServiceTest extends AbstractEndpointService
     }
 
     /**
-     * @throws DataExportServiceException|ParametersException
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws DataExportServiceException
      */
-    public function testDownloadDataExportGetThrowDataExportServiceException()
+    public function testFetchDataExportRequestException()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class, [200, [], self::DEFAULT_JSON_RESPONSE])
+        $dataExportServiceMock = Mockery::mock(DataExportService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
             ->makePartial();
-        $responseMock->shouldReceive('isError')->andReturn(true);
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(DataExportServiceException::class);
+        $dataExportServiceMock->fetch(123);
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws DataExportServiceException
+     */
+    public function testFetchDataExportClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(DataExportServiceException::class);
+        $this->dataExportsService->create(123);
+    }
+
+    /**
+     * Ensure we can download a DataExport
+     * @throws DataExportServiceException|ParametersException
+     */
+    public function testDownloadDataExport()
+    {
+        // Mocks
+        $this->responseMock->shouldReceive('getFile')->andReturn('file_content');
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+
+        // Call
+        $result = $this->dataExportsService->download(self::DEFAULT_ID, 'csv');
+
+        // Assertions
+        $this->assertEquals('file_content', $result);
+    }
+
+
+    /**
+     * Ensure we can catch DataExportServiceException
+     * @throws DataExportServiceException|ParametersException
+     */
+    public function testDownloadDataExportDataExportServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
         $this->expectException(DataExportServiceException::class);
@@ -91,6 +236,7 @@ class DataExportServiceTest extends AbstractEndpointService
     }
 
     /**
+     * Ensure we can catch ParametersException
      * @throws DataExportServiceException|ParametersException
      */
     public function testDownloadDataExportInvalidFormat()
@@ -103,61 +249,36 @@ class DataExportServiceTest extends AbstractEndpointService
     }
 
     /**
+     * Ensure we can catch RequestException
+     * @return void
      * @throws DataExportServiceException
+     * @throws ParametersException
      */
-    public function testCreateSuccess()
+    public function testDownloadDataExportRequestException()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getJson')->andReturn(['id' => self::DEFAULT_ID, 'status' => self::DEFAULT_STATUS]);
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
-
-        // DataExportService
-        $result = $this->dataExportsService->create(['type' => 'report']);
-
-        // Assertions
-        $this->assertInstanceOf(DataExport::class, $result);
-        $this->assertEquals(self::DEFAULT_ID, $result->id);
-        $this->assertEquals(self::DEFAULT_STATUS, $result->status);
-    }
-
-    /**
-     * @throws DataExportServiceException
-     */
-    public function testFetchSuccess()
-    {
-        // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getJson')->andReturn(['id' => self::DEFAULT_ID, 'status' => self::DEFAULT_STATUS]);
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $dataExportServiceMock = Mockery::mock(DataExportService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $result = $this->dataExportsService->fetch(self::DEFAULT_ID);
-
-        // Assertions
-        $this->assertInstanceOf(DataExport::class, $result);
-        $this->assertEquals(self::DEFAULT_ID, $result->id);
-        $this->assertEquals(self::DEFAULT_STATUS, $result->status);
+        $this->expectException(DataExportServiceException::class);
+        $dataExportServiceMock->download(123, 'csv');
     }
 
     /**
+     * Ensure we can catch ClientException
+     * @return void
      * @throws DataExportServiceException|ParametersException
      */
-    public function testDownloadSuccess()
+    public function testDownloadDataExportClientException()
     {
         // Mocks
-        // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getFile')->andReturn('file_content');
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $result = $this->dataExportsService->download(self::DEFAULT_ID, 'csv');
-
-        // Assertions
-        $this->assertEquals('file_content', $result);
+        $this->expectException(DataExportServiceException::class);
+        $this->dataExportsService->download(123, 'csv');
     }
 }

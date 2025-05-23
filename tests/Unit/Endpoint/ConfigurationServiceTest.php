@@ -3,17 +3,19 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\ConfigurationService;
+use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\ConfigurationServiceException;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
 
-class ConfigurationServiceTest extends AbstractEndpointService
+class ConfigurationServiceTest extends AbstractServiceSetUp
 {
 	const URL = "https://www.example.com/integrations/configurations";
 
     /** @var ConfigurationService|Mock */
-    private $configurationService;
+    private $configurationServiceMock;
 
 	public function setUp(): void
 	{
@@ -23,15 +25,16 @@ class ConfigurationServiceTest extends AbstractEndpointService
         $this->responseMock = Mockery::mock(Response::class);
 
         // ConfigurationService
-		$this->configurationService = Mockery::mock(ConfigurationService::class, [$this->clientMock])
+		$this->configurationServiceMock = Mockery::mock(ConfigurationService::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
 	}
 
     /**
+     * Ensure we can send the integrations configurations URL
      * @throws ConfigurationServiceException
      */
-    public function testSendIntegrationsConfigurationsUrlIsOk()
+    public function testSendIntegrationsConfigurationsUrl()
     {
         // Mocks
         $responseMock = Mockery::mock(Response::class);
@@ -39,13 +42,14 @@ class ConfigurationServiceTest extends AbstractEndpointService
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
 
         // Call
-		$this->configurationService->sendIntegrationsConfigurationsUrl(self::URL);
+		$this->configurationServiceMock->sendIntegrationsConfigurationsUrl(self::URL);
 	}
 
     /**
+     * Ensure we throw a ConfigurationServiceException when the response is an error
      * @throws ConfigurationServiceException
      */
-    public function testSendIntegrationsConfigurationsUrlThrowConfigurationServiceException()
+    public function testSendIntegrationsConfigurationsUrlConfigurationServiceException()
     {
         // Mocks
         $responseMock = Mockery::mock(Response::class);
@@ -57,6 +61,40 @@ class ConfigurationServiceTest extends AbstractEndpointService
 		$this->expectException(ConfigurationServiceException::class);
 
         // Call
-		$this->configurationService->sendIntegrationsConfigurationsUrl(self::URL);
+		$this->configurationServiceMock->sendIntegrationsConfigurationsUrl(self::URL);
 	}
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws ConfigurationServiceException
+     */
+    public function testSendIntegrationsConfigurationsUrlRequestException()
+    {
+        // Mocks
+        $configurationServiceMock = Mockery::mock(ConfigurationService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $configurationServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(ConfigurationServiceException::class);
+        $configurationServiceMock->sendIntegrationsConfigurationsUrl('url');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws ConfigurationServiceException
+     */
+    public function testSendIntegrationsConfigurationsUrlClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(ConfigurationServiceException::class);
+        $this->configurationServiceMock->sendIntegrationsConfigurationsUrl('url');
+    }
+
 }

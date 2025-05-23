@@ -30,24 +30,23 @@ use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\PaymentServiceException;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\Lib\PaymentValidator;
 use Alma\API\Payloads\Refund;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class PaymentService extends Base
+class PaymentService extends AbstractService
 {
     const PAYMENTS_ENDPOINT = '/v1/payments';
 
     /**
-     * @param $data
+     * @param int $purchaseAmount Purchase amount in cents, the only required field
+     * @param array $data  Array containing the payment non required data
      * @return Payment
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentServiceException
      */
-    public function create($data): Payment
+    public function create(int $purchaseAmount, array $data = []): Payment
     {
-        PaymentValidator::checkPurchaseAmount($data);
-
-        $request  = null;
+        $data['payment']['purchase_amount'] = $purchaseAmount;
+        $request = null;
         try {
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
@@ -65,10 +64,10 @@ class PaymentService extends Base
     /**
      * @param string $id The ID of the payment to cancel
      *
-     * @return void
+     * @return true
      * @throws PaymentServiceException
      */
-    public function cancel(string $id)
+    public function cancel(string $id): bool
     {
         $request = null;
         try {
@@ -83,6 +82,8 @@ class PaymentService extends Base
             $this->logger->error(sprintf('An error occurred while canceling the payment %s', $id), [$response->getReasonPhrase()]);
             throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
         }
+
+        return true;
     }
 
     /**
@@ -115,7 +116,7 @@ class PaymentService extends Base
      * @return Payment
      * @throws PaymentServiceException
      */
-    public function edit(string $id, array $data): Payment
+    public function edit(string $id, array $data = []): Payment
     {
         $request = null;
         try {
@@ -144,7 +145,7 @@ class PaymentService extends Base
         $request = null;
         $data = null;
         if (!empty($reason)) {
-            $data = json_encode(array("reason" => $reason));
+            $data = array("reason" => $reason);
         }
 
         try {
@@ -256,7 +257,7 @@ class PaymentService extends Base
      *
      * @throws PaymentServiceException
      */
-    public function addOrder(string $id, array $orderData, bool $overwrite = false): Order
+    public function addOrder(string $id, array $orderData = [], bool $overwrite = false): Order
     {
         if ($overwrite) {
             return $this->overwriteOrder($id, $orderData);
@@ -275,6 +276,7 @@ class PaymentService extends Base
         }
 
         $json = $response->getJson();
+
         return new Order(end($json));
     }
 
@@ -288,7 +290,7 @@ class PaymentService extends Base
      *
      * @throws PaymentServiceException
      */
-    public function overwriteOrder(string $id, array $orderData): Order
+    public function overwriteOrder(string $id, array $orderData = []): Order
     {
         try {
             $request = null;
@@ -303,6 +305,7 @@ class PaymentService extends Base
         }
 
         $json = $response->getJson();
+
         return new Order(end($json));
     }
 
@@ -313,15 +316,15 @@ class PaymentService extends Base
      * @param string $merchantOrderReference
      * @param string $status
      * @param bool | null $isShipped
-     * @return void
+     * @return true
      * @throws PaymentServiceException
      */
     public function addOrderStatusByMerchantOrderReference(
         string $paymentId,
         string $merchantOrderReference,
         string $status,
-        bool $isShipped = null
-    )
+        ?bool  $isShipped = null
+    ): bool
     {
         try {
             $request = null;
@@ -337,6 +340,8 @@ class PaymentService extends Base
         if ($response->isError()) {
             throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
         }
+
+        return true;
     }
 
     /**

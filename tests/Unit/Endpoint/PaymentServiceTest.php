@@ -2,20 +2,25 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
+use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
+use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\PaymentServiceException;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\Response;
 use Mockery;
 use Alma\API\Endpoint\PaymentService;
+use Mockery\Mock;
 
 /**
  * Class Payments
  */
-class PaymentServiceTest extends AbstractEndpointService
+class PaymentServiceTest extends AbstractServiceSetUp
 {
     const MERCHANT_REF = "merchant_ref";
 
+    /** @var string Classical JSON response*/
     const SERVER_REQUEST_RESPONSE_JSON = '{
        "payment_plan":[
           {
@@ -54,16 +59,16 @@ class PaymentServiceTest extends AbstractEndpointService
        ],
        "orders":[
           {
-             "carrier":null,
-             "tracking_number":null,
-             "tracking_url":null,
-             "comment":null,
+             "carrier":"carrier",
+             "tracking_number":123,
+             "tracking_url":"url",
+             "comment":"comment",
              "created":1649672451,
-             "customer_url":null,
+             "customer_url":"customer_url",
              "data":{},
              "id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V",
              "merchant_reference":"00000206",
-             "merchant_url":null,
+             "merchant_url":"merchant_url",
              "payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx"
           }
        ],
@@ -81,12 +86,385 @@ class PaymentServiceTest extends AbstractEndpointService
        ]
     }';
 
-    public function testCreate()
-    {
+    /** @var string JSON response for add order*/
+    const SERVER_REQUEST_ORDER_RESPONSE_JSON = '[
+        {
+            "comment": "comment",
+            "created": 1747829359,
+            "customer_url": "customer_url",
+            "data": {},
+            "id": "order_1213IpL5UdjoOqjgdljmNPMB3MOJw5vtgd",
+            "merchant_reference": "C1-000027951",
+            "merchant_url": "merchant_url",
+            "payment": "payment_1213Ioh6xMAUYk7OTZ52VHNgGGwgT9B4ro",
+            "updated": 1747829359
+        }
+    ]';
 
+    /** @var Response|Mock */
+    protected $paymentResponseMock;
+
+    /** @var Response|Mock */
+    protected $badPaymentResponseMock;
+
+    /** @var Response|Mock */
+    protected $orderResponseMock;
+
+    /** @var Response|Mock */
+    protected $badOrderResponseMock;
+
+    /** @var PaymentService */
+    protected PaymentService $paymentService;
+
+    /**
+     * Set up the paymentService
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Mocks
+        $this->paymentResponseMock = Mockery::mock(Response::class);
+        $this->paymentResponseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $this->paymentResponseMock->shouldReceive('isError')->andReturn(false);
+        $this->paymentResponseMock->shouldReceive('getBody')->andReturn(self::SERVER_REQUEST_RESPONSE_JSON);
+        $this->paymentResponseMock->shouldReceive('getJson')->andReturn(json_decode(self::SERVER_REQUEST_RESPONSE_JSON, true));
+
+        $this->badPaymentResponseMock = Mockery::mock(Response::class);
+        $this->badPaymentResponseMock->shouldReceive('getStatusCode')->andReturn(500);
+        $this->badPaymentResponseMock->shouldReceive('getReasonPhrase')->andReturn('Internal Server Error');
+        $this->badPaymentResponseMock->shouldReceive('isError')->andReturn(true);
+        $this->badPaymentResponseMock->shouldReceive('getBody')->andReturn(self::SERVER_REQUEST_RESPONSE_JSON);
+
+        $this->orderResponseMock = Mockery::mock(Response::class);
+        $this->orderResponseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $this->orderResponseMock->shouldReceive('isError')->andReturn(false);
+        $this->orderResponseMock->shouldReceive('getBody')->andReturn(self::SERVER_REQUEST_ORDER_RESPONSE_JSON);
+        $this->orderResponseMock->shouldReceive('getJson')->andReturn(json_decode(self::SERVER_REQUEST_ORDER_RESPONSE_JSON, true));
+
+        $this->badOrderResponseMock = Mockery::mock(Response::class);
+        $this->badOrderResponseMock->shouldReceive('getStatusCode')->andReturn(500);
+        $this->badOrderResponseMock->shouldReceive('getReasonPhrase')->andReturn('Internal Server Error');
+        $this->badOrderResponseMock->shouldReceive('isError')->andReturn(true);
+        $this->badOrderResponseMock->shouldReceive('getBody')->andReturn(self::SERVER_REQUEST_ORDER_RESPONSE_JSON);
+
+        $this->paymentService = new PaymentService($this->clientMock);
     }
 
 
+    /**
+     * Ensure payment creation is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCreatePayment()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
+
+        // Assertions
+        $this->assertInstanceOf(Payment::class, $this->paymentService->create(1000));
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCreatePaymentRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->create(1000);
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCreatePaymentClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->create(1000);
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCreatePaymentPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->create(1000);
+    }
+
+    /**
+     * Ensure payment Cancellation is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCancelPayment()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
+
+        // Assertions
+        $this->assertTrue($this->paymentService->cancel('id_1234'));
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCancelPaymentRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->cancel('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCancelPaymentClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->cancel('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testCancelPaymentPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->cancel('id_1234');
+    }
+
+    /**
+     * Ensure payment fetching is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFetchPayment()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
+
+        // Assertions
+        $this->assertInstanceOf(Payment::class, $this->paymentService->fetch('id_1234'));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFetchPaymentRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->fetch('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFetchPaymentClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->fetch('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFetchPaymentPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->fetch('id_1234');
+    }
+
+    /**
+     * Ensure payment edition is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testEditPayment()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
+
+        // Assertions
+        $this->assertInstanceOf(Payment::class, $this->paymentService->edit('id_1234'));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testEditPaymentRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->edit('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testEditPaymentClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->edit('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testEditPaymentPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->edit('id_1234');
+    }
+
+    /**
+     * Ensure that flag a potential fraud is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFlagAsPotentialFraud()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
+
+        // Assertions
+        $this->assertTrue($this->paymentService->flagAsPotentialFraud('id_1234'));
+        $this->assertTrue($this->paymentService->flagAsPotentialFraud('id_1234', 'reason'));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFlagAsPotentialFraudRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->flagAsPotentialFraud('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFlagAsPotentialFraudClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->flagAsPotentialFraud('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testFlagAsPotentialFraudPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->flagAsPotentialFraud('id_1234');
+    }
 
     /**
      * Return input to test testPartialRefund
@@ -123,14 +501,9 @@ class PaymentServiceTest extends AbstractEndpointService
     public function testPartialRefund($data)
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
-        $responseMock->shouldReceive('getJson')
-            ->andReturn(json_decode(self::SERVER_REQUEST_RESPONSE_JSON, true));
         $this->clientMock->shouldReceive('sendRequest')
             ->once()
-            ->andReturn($responseMock);
+            ->andReturn($this->paymentResponseMock);
         $paymentService = Mockery::mock(PaymentService::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
@@ -185,6 +558,7 @@ class PaymentServiceTest extends AbstractEndpointService
     }
 
     /**
+     * Ensure we can do partial refunds
      * @param PaymentService $paymentService
      * @param $data
      * @return void
@@ -234,14 +608,9 @@ class PaymentServiceTest extends AbstractEndpointService
     public function testFullRefund($data)
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(false);
-        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
-        $responseMock->shouldReceive('getJson')
-            ->andReturn(json_decode(self::SERVER_REQUEST_RESPONSE_JSON, true));
         $this->clientMock->shouldReceive('sendRequest')
             ->once()
-            ->andReturn($responseMock);
+            ->andReturn($this->paymentResponseMock);
 
         // PaymentService
         $paymentService = Mockery::mock(PaymentService::class, [$this->clientMock])
@@ -307,6 +676,7 @@ class PaymentServiceTest extends AbstractEndpointService
     }
 
     /**
+     * Ensure we can catch API error
      * @throws PaymentServiceException|ParametersException
      */
     public function testFullRefundRequestError()
@@ -315,10 +685,7 @@ class PaymentServiceTest extends AbstractEndpointService
         $id = "some_id";
 
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(true);
-        $responseMock->shouldReceive('getReasonPhrase')->andReturn('oops');
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badPaymentResponseMock);
 
         // PaymentService
         $paymentService = Mockery::mock(PaymentService::class, [$this->clientMock])
@@ -332,108 +699,372 @@ class PaymentServiceTest extends AbstractEndpointService
         $paymentService->fullRefund($id);
     }
 
-    public static function addIOrderStatusThrowRequestExceptionForNon200ReturnProvider(): array
-    {
-        return [
-            'With is shipped false' => [
-                'paymentId' => 'payment_42',
-                'merchantOrderReference' => 'ref_3546',
-                'status' => 'in progress',
-                'isShipped' => false
-            ],
-        ];
-    }
-
     /**
-     * @dataProvider addIOrderStatusThrowRequestExceptionForNon200ReturnProvider
-     * @param $paymentId
-     * @param $merchantOrderReference
-     * @param $status
-     * @param null $isShipped
-     * @return void
-     * @throws PaymentServiceException
- */
-    public function testAddIOrderStatusThrowRequestExceptionForNon200Return($paymentId, $merchantOrderReference, $status, $isShipped)
+     * Ensure we can catch RequestException
+     * @throws ParametersException
+     */
+    public function testFullRefundRequestException()
     {
         // Mocks
-        $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('isError')->andReturn(true);
-        $responseMock->shouldReceive('getReasonPhrase')->andReturn('Error in request');
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
-
-        // PaymentService
-        $paymentService = Mockery::mock(PaymentService::class, [$this->clientMock])->makePartial();
-        $paymentService->shouldReceive('createPostRequest')
-            ->with(Mockery::on(function ($argument) use ($paymentId, $merchantOrderReference, $status, $isShipped) {
-                $urlIsSet = isset($argument['url']) && $argument['url'] === PaymentService::PAYMENTS_ENDPOINT . "/$paymentId/orders/$merchantOrderReference/status";
-                $bodyIsSet = isset($argument['body']) && $argument['body'] === json_encode([
-                        'status' => $status,
-                        'is_shipped' => $isShipped
-                    ]);
-                return $urlIsSet && $bodyIsSet;
-            }));
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Expectations
         $this->expectException(PaymentServiceException::class);
 
         // Call
-        $paymentService->addOrderStatusByMerchantOrderReference($paymentId, $merchantOrderReference, $status, $isShipped);
-    }
-
-    public static function addOrderStatusReturnVoidFor204returnProvider(): array
-    {
-        return [
-            'With is shipped null' => [
-                'paymentId' => 'payment_1234',
-                'merchantOrderReference' => 'merchant_order_123',
-                'status' => 'status_shipped'
-            ],
-            'With is shipped bool' => [
-                'paymentId' => 'payment_1234',
-                'merchantOrderReference' => 'merchant_order_123',
-                'status' => 'status_shipped',
-                'isShipped' => true
-            ]
-        ];
+        $paymentServiceMock->fullRefund('id_1234');
     }
 
     /**
-     * @dataProvider addOrderStatusReturnVoidFor204returnProvider
-     * @param $paymentId
-     * @param $merchantOrderReference
-     * @param $status
-     * @param null $isShipped
+     * Ensure we can catch ClientException
+     * @throws ParametersException
+     */
+    public function testFullRefundClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Expectations
+        $this->expectException(PaymentServiceException::class);
+
+        // Call
+        $this->paymentService->fullRefund('id_1234');
+    }
+
+    /**
+     * Ensure payment trigger is ok
      * @return void
      * @throws PaymentServiceException
      */
-    public function testAddOrderStatusReturnVoidFor204return(
-        $paymentId,
-        $merchantOrderReference,
-        $status,
-        $isShipped = null
-    )
+    public function testTriggerPayment()
     {
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
 
-        // PaymentService
-        $paymentService = Mockery::mock(PaymentService::class, [$this->clientMock])->makePartial();
-        $paymentService->shouldReceive('createPostRequest')
-            ->with(Mockery::on(function ($argument) use ($paymentId, $merchantOrderReference, $status, $isShipped) {
-                $urlIsSet = isset($argument['url']) && $argument['url'] === PaymentService::PAYMENTS_ENDPOINT . "/$paymentId/orders/$merchantOrderReference/status";
-                $bodyIsSet = isset($argument['body']) && $argument['body'] === json_encode([
-                    'status' => $status,
-                    'is_shipped' => $isShipped
-                ]);
-                return $urlIsSet && $bodyIsSet;
-            }));
+        // Assertions
+        $this->assertInstanceOf(Payment::class, $this->paymentService->trigger('id_1234'));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testTriggerPaymentRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $paymentService->addOrderStatusByMerchantOrderReference(
-            $paymentId,
-            $merchantOrderReference,
-            $status,
-            $isShipped
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->trigger('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testTriggerPaymentClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->trigger('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testTriggerPaymentPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->trigger('id_1234');
+    }
+
+    /**
+     * Ensure payment edition is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrder()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->orderResponseMock);
+
+        // Assertions
+        $this->assertInstanceOf(Order::class, $this->paymentService->addOrder('id_1234'));
+        $this->assertInstanceOf(Order::class, $this->paymentService->addOrder('id_1234', [], true));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrderRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->addOrder('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrderClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->addOrder('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrderPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badOrderResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->addOrder('id_1234');
+    }
+
+    /**
+     * Ensure order overwrite is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testOverwriteOrder()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->orderResponseMock);
+
+        // Assertions
+        $this->assertInstanceOf(Order::class, $this->paymentService->overwriteOrder('id_1234'));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testOverwriteOrderRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->overwriteOrder('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testOverwriteOrderClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->overwriteOrder('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testOverwriteOrderPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badOrderResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->overwriteOrder('id_1234');
+    }
+
+
+    /**
+     * Ensure payment edition is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrderStatusByMerchantOrderReference()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->orderResponseMock);
+
+        // Assertions
+        $this->assertTrue($this->paymentService->addOrderStatusByMerchantOrderReference(
+            'payment_id',
+            'merchant_order_reference',
+            'status'
+        ));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrderStatusByMerchantOrderReferenceRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->addOrderStatusByMerchantOrderReference(
+            'payment_id',
+            'merchant_order_reference',
+            'status'
         );
     }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrderStatusByMerchantOrderReferenceClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->addOrderStatusByMerchantOrderReference(
+            'payment_id',
+            'merchant_order_reference',
+            'status'
+        );
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testAddOrderStatusByMerchantOrderReferencePaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->addOrderStatusByMerchantOrderReference(
+            'payment_id',
+            'merchant_order_reference',
+            'status'
+        );
+    }
+
+    /**
+     * Ensure payment edition is ok
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testSendSms()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
+
+        // Assertions
+        $this->assertTrue($this->paymentService->sendSms('id_1234'));
+
+    }
+
+    /**
+     * Ensure we can catch RequestException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testSendSmsRequestException()
+    {
+        // Mocks
+        $paymentServiceMock = Mockery::mock(PaymentService::class, [$this->clientMock])
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $paymentServiceMock->sendSms('id_1234');
+    }
+
+    /**
+     * Ensure we can catch ClientException
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testSendSmsClientException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->sendSms('id_1234');
+    }
+
+    /**
+     * Ensure we can catch API error
+     * @return void
+     * @throws PaymentServiceException
+     */
+    public function testSensSmsPaymentServiceException()
+    {
+        // Mocks
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
+
+        // Call
+        $this->expectException(PaymentServiceException::class);
+        $this->paymentService->sendSms('id_1234');
+    }
+
 }

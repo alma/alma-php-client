@@ -31,69 +31,74 @@ use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class DataExportService extends Base
+class DataExportService extends AbstractService
 {
     const DATA_EXPORTS_ENDPOINT = '/v1/data-exports';
     const ACCEPTED_FORMAT = ['csv', 'xlsx'];
 
     /**
-     * @param $data
+     * @param string $type Type of data export
+     * @param array $data Additional data
      *
      * @return DataExport
      *
      * @throws DataExportServiceException
      */
-    public function create($data): DataExport
+    public function create(string $type, array $data = []): DataExport
     {
+        $data['type'] = $type;
         try {
             $request = null;
             $request = $this->createPostRequest(self::DATA_EXPORTS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new DataExportServiceException($e->getErrorMessage(), $request);
+            throw new DataExportServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
             throw new DataExportServiceException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new DataExport($response->getJson());
+        $json = $response->getJson();
+        return new DataExport($json);
     }
 
     /**
-     * @param $reportId
+     * @param string $reportId
      *
      * @return DataExport
      *
      * @throws DataExportServiceException
      */
-    public function fetch($reportId): DataExport
+    public function fetch(string $reportId): DataExport
     {
         try {
             $request = null;
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . '/' . $reportId);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new DataExportServiceException($e->getErrorMessage(), $request);
+            throw new DataExportServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
             throw new DataExportServiceException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new DataExport($response->getJson());
+        $json = $response->getJson();
+        return new DataExport($json);
     }
 
     /**
-     * @param $reportId
+     * @param string $reportId
      *
      * @param string $format only csv or xlsx
      *
      * @return mixed
      *
-     * @throws DataExportServiceException|ParametersException
+     * @throws DataExportServiceException
+     * @throws ParametersException
      */
-    public function download($reportId, string $format)
+    public function download(string $reportId, string $format)
     {
         if (!in_array($format, self::ACCEPTED_FORMAT)) {
             throw new ParametersException("Invalid format: $format. Accepted format are: " . implode(', ', self::ACCEPTED_FORMAT));
@@ -104,7 +109,7 @@ class DataExportService extends Base
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . sprintf('/%s', $reportId), ['format' => $format]);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new DataExportServiceException($e->getErrorMessage(), $request);
+            throw new DataExportServiceException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
