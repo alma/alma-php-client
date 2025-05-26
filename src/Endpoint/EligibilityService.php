@@ -64,7 +64,7 @@ class EligibilityService extends AbstractService
         if (!$serverError && is_array($jsonResponse)) {
             $result = [];
             foreach ($jsonResponse as $jsonEligibility) {
-                $eligibility = new Eligibility($jsonEligibility, $response->getStatusCode());
+                $eligibility = new Eligibility($jsonEligibility);
                 $result[$eligibility->getPlanKey()] = $eligibility;
 
                 if (!$eligibility->isEligible()) {
@@ -79,7 +79,7 @@ class EligibilityService extends AbstractService
             $this->logger->info(
                 "Unexpected value from eligibility: " . var_export($data, true)
             );
-            $result[] = new Eligibility(array("eligible" => false), $response->getStatusCode());
+            $result[] = new Eligibility(array("eligible" => false));
         }
 
         return $result;

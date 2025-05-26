@@ -81,4 +81,14 @@ class RequestTest extends TestCase
         $request->withoutHeader('my-header');
         $this->assertFalse($request->hasHeader('my-header'));
     }
+
+    public function testValidateProtocolVersion()
+    {
+        // Expectation
+        $this->expectException(\InvalidArgumentException::class);
+
+        // Response
+        $request = new Request("GET", "https://example.com", [], 'the body');
+        $request->validateProtocolVersion('0.1');
+    }
 }
