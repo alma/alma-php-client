@@ -33,7 +33,7 @@ use Alma\API\Exceptions\RequestException;
 use Alma\API\Payloads\Refund;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class PaymentService extends AbstractService
+class PaymentEndpoint extends AbstractEndpoint
 {
     const PAYMENTS_ENDPOINT = '/v1/payments';
 

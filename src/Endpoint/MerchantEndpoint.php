@@ -33,7 +33,7 @@ use Alma\API\Exceptions\MerchantServiceException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class MerchantService extends AbstractService
+class MerchantEndpoint extends AbstractEndpoint
 {
     const ME_ENDPOINT = '/v1/me';
     const BUSINESS_EVENTS_ENDPOINT = self::ME_ENDPOINT . '/business-events';

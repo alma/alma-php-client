@@ -8,7 +8,7 @@ use Alma\API\Response;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Log\LoggerInterface;
 
-class ShareOfCheckoutService extends AbstractService
+class ShareOfCheckoutEndpoint extends AbstractEndpoint
 {
     const SHARE_OF_CHECKOUT_ENDPOINT = '/v1/share-of-checkout';
     const SHARE_OF_CHECKOUT_CONSENT_ENDPOINT = self::SHARE_OF_CHECKOUT_ENDPOINT . '/consent';

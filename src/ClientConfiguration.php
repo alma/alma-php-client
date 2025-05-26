@@ -32,38 +32,50 @@ class ClientConfiguration
 {
     const LIVE_MODE = 'live';
     const TEST_MODE = 'test';
+    // Custom mode is used for testing purposes, allowing to set a custom API URL
+    const CUSTOM_MODE = 'custom';
 
     const LIVE_API_URL = 'https://api.getalma.eu';
     const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
 
-    private string $baseUri;
+    private string $mode;
 
     private string $apiKey;
 
     private array $userAgentComponents;
     private array $config;
-
-    private string $protocolVersion;
+    private string $baseUri = self::LIVE_API_URL;
 
     /**
      * ClientConfiguration constructor.
      *
-     * @param string $baseUri
      * @param string $apiKey
+     * @param string $mode
      * @param array $options
      * @throws ClientConfigurationException
      */
-    public function __construct(string $baseUri, string $apiKey, array $options = [])
+    public function __construct(string $apiKey, string $mode = self::LIVE_MODE, array $options = [])
     {
         try {
             // Check if the base URI is valid
-            $this->baseUri = $this->validateBaseUri($baseUri);
+            $this->mode = $this->validateMode($mode);
 
             // Check if the auth is valid
             $this->apiKey = $this->validateApiKey($apiKey);
 
             // Check if the config is valid
             $this->config = $this->validateConfiguration($options);
+
+
+            // Define Base URI based on the mode
+            if ($this->mode === self::LIVE_MODE) {
+                $this->baseUri = self::LIVE_API_URL;
+            } elseif ($this->mode === self::TEST_MODE) {
+                $this->baseUri = self::SANDBOX_API_URL;
+            } else {
+                throw new ClientConfigurationException("Invalid mode: $mode");
+            }
+            
         } catch (InvalidArgumentException $e) {
             throw new ClientConfigurationException("Invalid configuration: " . $e->getMessage());
         }
@@ -85,6 +97,11 @@ class ClientConfiguration
         $options["protocol_version"] = $this->validateProtocolVersion($options["protocol_version"] ?? null);
 
         return $options;
+    }
+
+    public function getMode(): string
+    {
+        return $this->mode;
     }
 
     public function getApiKey(): string
@@ -125,21 +142,6 @@ class ClientConfiguration
     public function getUserAgentString(): string
     {
         return implode("; ", array_reverse($this->userAgentComponents));
-    }
-
-    /**
-     * @param string $baseUri
-     * @return string
-     * @throws InvalidArgumentException
-     */
-    public function validateBaseUri(string $baseUri): string
-    {
-        $baseUri = filter_var($baseUri, FILTER_VALIDATE_URL, [FILTER_NULL_ON_FAILURE]);
-        if (is_null($baseUri) || $baseUri === false) {
-            throw new InvalidArgumentException("Invalid base uri: $baseUri");
-        }
-
-        return $baseUri;
     }
 
     /**
@@ -224,5 +226,17 @@ class ClientConfiguration
             $version = $defaultVersion;
         }
         return $version;
+    }
+
+    /**
+     * @param string $mode
+     * @return string
+     */
+    public function validateMode(string $mode): string
+    {
+        if (in_array($mode, [self::LIVE_MODE, self::TEST_MODE, self::CUSTOM_MODE])) {
+            return $mode;
+        }
+        return self::LIVE_MODE; // Default to live mode if invalid
     }
 }

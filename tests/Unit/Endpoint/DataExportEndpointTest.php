@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoint\DataExportService;
+use Alma\API\Endpoint\DataExportEndpoint;
 use Alma\API\Entities\DataExport;
 use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\DataExportServiceException;
@@ -14,7 +14,7 @@ use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class DataExportServiceTest extends AbstractServiceSetUp
+class DataExportEndpointTest extends AbstractEndpointSetUp
 {
     const DEFAULT_JSON_RESPONSE = '{"json_key": "json_value"}';
 
@@ -38,7 +38,7 @@ class DataExportServiceTest extends AbstractServiceSetUp
     /** @var Response|Mock */
     protected $badResponseMock;
 
-    /** @var DataExportService|Mock */
+    /** @var DataExportEndpoint|Mock */
     private $dataExportsService;
 
     public function setUp(): void
@@ -64,7 +64,7 @@ class DataExportServiceTest extends AbstractServiceSetUp
 
         // DataExportService
         $this->dataExportsService = Mockery::mock(
-            DataExportService::class,
+            DataExportEndpoint::class,
             [$this->clientMock]
         )->makePartial();
     }
@@ -110,7 +110,7 @@ class DataExportServiceTest extends AbstractServiceSetUp
     public function testCreateDataExportRequestException()
     {
         // Mocks
-        $dataExportServiceMock = Mockery::mock(DataExportService::class, [$this->clientMock])
+        $dataExportServiceMock = Mockery::mock(DataExportEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $dataExportServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
@@ -176,7 +176,7 @@ class DataExportServiceTest extends AbstractServiceSetUp
     public function testFetchDataExportRequestException()
     {
         // Mocks
-        $dataExportServiceMock = Mockery::mock(DataExportService::class, [$this->clientMock])
+        $dataExportServiceMock = Mockery::mock(DataExportEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
@@ -257,7 +257,7 @@ class DataExportServiceTest extends AbstractServiceSetUp
     public function testDownloadDataExportRequestException()
     {
         // Mocks
-        $dataExportServiceMock = Mockery::mock(DataExportService::class, [$this->clientMock])
+        $dataExportServiceMock = Mockery::mock(DataExportEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));

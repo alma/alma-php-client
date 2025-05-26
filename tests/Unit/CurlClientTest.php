@@ -46,13 +46,12 @@ EOF;
         parent::setUp();
 
         $this->clientConfiguration = new ClientConfiguration(
-            'https://api.example.com',
             'sk_test_xxxxxxxxxxxx'
         );
 
         // Mocks
         $this->requestMock = Mockery::mock(Request::class);
-        $this->requestMock->shouldReceive('getUri')->andReturn(new Uri('https://api.example.com'));
+        $this->requestMock->shouldReceive('getUri')->andReturn(new Uri('https://api.getalma.eu'));
         $this->requestMock->shouldReceive('getMethod')->andReturn('GET');
         $this->requestMock->shouldReceive('getHeaders')->andReturn([]);
         $this->requestMock->shouldReceive('getBody')->andReturn($this->stringToStream('The content'));
@@ -97,7 +96,7 @@ EOF;
     {
         $client = new CurlClient($this->clientConfiguration);
         $config = $client->getConfig();
-        $this->assertEquals('https://api.example.com', $config->getBaseUri());
+        $this->assertEquals('https://api.getalma.eu', $config->getBaseUri());
         $this->assertEquals(30, $config->getTimeout());
         $this->assertEquals(['Content-Type' => ['application/json']], $config->getHeaders());
         $this->assertTrue($config->getSslVerify());

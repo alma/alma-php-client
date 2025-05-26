@@ -9,7 +9,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\Mock;
 
-abstract class AbstractServiceSetUp extends MockeryTestCase
+abstract class AbstractEndpointSetUp extends MockeryTestCase
 {
     /** @var CurlClient|Mock Default Client Mock  */
     protected $clientMock;
@@ -26,7 +26,6 @@ abstract class AbstractServiceSetUp extends MockeryTestCase
 
         // Params
         $configuration = new ClientConfiguration(
-            'https://api.mockery.getalma.eu',
             'sk_test_xxxxxxxxxxxx'
         );
 

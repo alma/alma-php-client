@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoint\MerchantService;
+use Alma\API\Endpoint\MerchantEndpoint;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
 use Alma\API\Entities\FeePlan;
@@ -15,7 +15,7 @@ use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class MerchantServiceTest extends AbstractServiceSetUp
+class MerchantEndpointTest extends AbstractEndpointSetUp
 {
     const DEFAULT_JSON_RESPONSE = '{"json_key": "json_value"}';
 
@@ -30,7 +30,7 @@ class MerchantServiceTest extends AbstractServiceSetUp
         }
     ]';
 
-    /** @var MerchantService|Mock */
+    /** @var MerchantEndpoint|Mock */
     private $merchantService;
 
     public function setUp(): void
@@ -53,7 +53,7 @@ class MerchantServiceTest extends AbstractServiceSetUp
         $this->badResponseMock->shouldReceive('isError')->andReturn(true);
         $this->badResponseMock->shouldReceive('getBody')->andReturn(self::FEE_PLAN_JSON_RESPONSE);
 
-        $this->merchantService = Mockery::mock(MerchantService::class, [$this->clientMock])->makePartial();
+        $this->merchantService = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])->makePartial();
     }
 
     /**
@@ -96,7 +96,7 @@ class MerchantServiceTest extends AbstractServiceSetUp
     public function testMeRequestException()
     {
         // Mocks
-        $merchantServiceMock = Mockery::mock(MerchantService::class, [$this->clientMock])
+        $merchantServiceMock = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $merchantServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
@@ -167,7 +167,7 @@ class MerchantServiceTest extends AbstractServiceSetUp
     public function testFeePlansRequestException()
     {
         // Mocks
-        $merchantServiceMock = Mockery::mock(MerchantService::class, [$this->clientMock])
+        $merchantServiceMock = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $merchantServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
@@ -278,7 +278,7 @@ class MerchantServiceTest extends AbstractServiceSetUp
     public function testSendBusinessEventRequestException()
     {
         // Mocks
-        $merchantServiceMock = Mockery::mock(MerchantService::class, [$this->clientMock])
+        $merchantServiceMock = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $merchantServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
