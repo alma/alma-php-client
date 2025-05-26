@@ -23,7 +23,7 @@
       <directory suffix=".php">./src</directory>
     </include>
     <report>
-      <html outputDirectory="./coverage-report"/>
+      <html outputDirectory="./.coverage-report"/>
     </report>
   </coverage>
 

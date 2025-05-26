@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoint\OrderService;
+use Alma\API\Endpoint\OrderEndpoint;
 use Alma\API\Entities\Order;
 use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\OrderServiceException;
@@ -15,7 +15,7 @@ use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;
 
-class OrderServiceTest extends AbstractServiceSetUp
+class OrderEndpointTest extends AbstractEndpointSetUp
 {
     const DEFAULT_JSON_RESPONSE = '{"json_key": "json_value"}';
 
@@ -74,7 +74,7 @@ class OrderServiceTest extends AbstractServiceSetUp
             "updated": 1747829359
         }';
 
-    /** @var OrderService|Mock */
+    /** @var OrderEndpoint|Mock */
     protected $orderServiceMock;
 
     /** @var ArrayUtils|Mock */
@@ -128,7 +128,7 @@ class OrderServiceTest extends AbstractServiceSetUp
         $this->badFetchResponseMock->shouldReceive('getBody')->andReturn(self::FETCH_ORDER_RESPONSE_JSON);
 
         // OrderService
-        $this->orderServiceMock = Mockery::mock(OrderService::class, [$this->clientMock])->makePartial();
+        $this->orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])->makePartial();
     }
 
     /**
@@ -171,7 +171,7 @@ class OrderServiceTest extends AbstractServiceSetUp
     public function testUpdateOrderRequestException()
     {
         // Mocks
-        $orderServiceMock = Mockery::mock(OrderService::class, [$this->clientMock])
+        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $orderServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
@@ -248,7 +248,7 @@ class OrderServiceTest extends AbstractServiceSetUp
     public function testAddTrackingRequestException()
     {
         // Mocks
-        $orderServiceMock = Mockery::mock(OrderService::class, [$this->clientMock])
+        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $orderServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
@@ -325,7 +325,7 @@ class OrderServiceTest extends AbstractServiceSetUp
     public function testFetchAllOrdersRequestException()
     {
         // Mocks
-        $orderServiceMock = Mockery::mock(OrderService::class, [$this->clientMock])
+        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $orderServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
@@ -390,7 +390,7 @@ class OrderServiceTest extends AbstractServiceSetUp
     public function testFetchOrderRequestException()
     {
         // Mocks
-        $orderServiceMock = Mockery::mock(OrderService::class, [$this->clientMock])
+        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $orderServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
@@ -420,7 +420,7 @@ class OrderServiceTest extends AbstractServiceSetUp
     public function testValidateStatusDataMissingKeyException()
     {
         // OrderService
-        $orderService = Mockery::mock(OrderService::class)->makePartial();
+        $orderService = Mockery::mock(OrderEndpoint::class)->makePartial();
 
         // Expectations
         $this->expectException(ParametersException::class);
@@ -433,7 +433,7 @@ class OrderServiceTest extends AbstractServiceSetUp
     public function testValidateStatusDataIsShippedNotBool()
     {
         // OrderService
-        $orderService = Mockery::mock(OrderService::class)->makePartial();
+        $orderService = Mockery::mock(OrderEndpoint::class)->makePartial();
 
         // Expectations
         $this->expectException(ParametersException::class);
@@ -449,7 +449,7 @@ class OrderServiceTest extends AbstractServiceSetUp
     public function testValidateStatusDataStatusIsEmpty()
     {
         // OrderService
-        $orderService = Mockery::mock(OrderService::class)->makePartial();
+        $orderService = Mockery::mock(OrderEndpoint::class)->makePartial();
 
         // Expectations
         $this->expectException(ParametersException::class);

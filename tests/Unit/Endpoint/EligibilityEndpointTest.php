@@ -2,19 +2,20 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoint\EligibilityService;
-use Alma\API\Endpoint\ShareOfCheckoutService;
+use Alma\API\Endpoint\EligibilityEndpoint;
+use Alma\API\Endpoint\ShareOfCheckoutEndpoint;
 use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\EligibilityServiceException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Response;
 use Mockery;
+use Mockery\Mock;
 use Psr\Log\NullLogger;
 
 /**
  * Class Payments
  */
-class EligibilityServiceTest extends AbstractServiceSetUp
+class EligibilityEndpointTest extends AbstractEndpointSetUp
 {
     const MERCHANT_REF = "merchant_ref";
 
@@ -74,11 +75,6 @@ class EligibilityServiceTest extends AbstractServiceSetUp
         }
     ]';
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
      * Return input to test eligibility
      * @return array[]
@@ -99,6 +95,7 @@ class EligibilityServiceTest extends AbstractServiceSetUp
                     ],
                 ],
                 'response_code' => 200,
+                'is_error' => false,
                 'eligibility' => true
             ]],
             [[
@@ -114,11 +111,12 @@ class EligibilityServiceTest extends AbstractServiceSetUp
                     ],
                 ],
                 'response_code' => 200,
+                'is_error' => false,
                 'eligibility' => false
             ]],
             [[
                 'params' => [
-                    'purchase_amount' => 1500,
+                    'purchase_amount' => 15000,
                     'queries'         => [
                         [
                             'deferred_days'      => 0,
@@ -126,9 +124,16 @@ class EligibilityServiceTest extends AbstractServiceSetUp
                             'deferred_trigger'   => false,
                             'installments_count' => 3,
                         ],
+                        [
+                            'deferred_days'      => 0,
+                            'deferred_months'    => 0,
+                            'deferred_trigger'   => false,
+                            'installments_count' => 4,
+                        ],
                     ],
                 ],
-                'response_code' => 503,
+                'response_code' => 200,
+                'is_error' => false,
                 'eligibility' => false
             ]],
         ];
@@ -148,20 +153,21 @@ class EligibilityServiceTest extends AbstractServiceSetUp
             $jsonResponse = self::SERVER_REQUEST_NO_ELIGIBILITY_RESPONSE_JSON;
         }
         $responseMock = Mockery::mock(Response::class);
-        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
-        $responseMock->shouldReceive('isError')->andReturn(false);
+        $responseMock->shouldReceive('getStatusCode')->andReturn($data['response_code']);
+        $responseMock->shouldReceive('isError')->andReturn($data['is_error']);
+        $responseMock->shouldReceive('getReasonPhrase')->andReturn('my_error');
         $responseMock->shouldReceive('getBody')->andReturn($jsonResponse);
         $responseMock->shouldReceive('getJson')->andReturn(json_decode($jsonResponse, true));
         $this->clientMock->shouldReceive('sendRequest')->andReturn($responseMock);
 
         // EligibilityService
-        $eligibilityServiceMock = Mockery::mock(EligibilityService::class, [$this->clientMock])
+        $eligibilityServiceMock = Mockery::mock(EligibilityEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityService::ELIGIBILITY_ENDPOINT, $data['params'])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, $data['params'])
             ->once();
-        
+
         // Call
         $response = $eligibilityServiceMock->eligibility($data['params']);
         foreach ($response as $eligibility) {
@@ -178,7 +184,6 @@ class EligibilityServiceTest extends AbstractServiceSetUp
     public function testEligibilityServiceException()
     {
         // Mocks
-        // Mocks
         $badResponseMock = Mockery::mock(Response::class);
         $badResponseMock->shouldReceive('getStatusCode')->andReturn(500);
         $badResponseMock->shouldReceive('getReasonPhrase')->andReturn('Internal Server Error');
@@ -187,11 +192,11 @@ class EligibilityServiceTest extends AbstractServiceSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($badResponseMock);
 
         // EligibilityService
-        $eligibilityServiceMock = Mockery::mock(EligibilityService::class, [$this->clientMock])
+        $eligibilityServiceMock = Mockery::mock(EligibilityEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityService::ELIGIBILITY_ENDPOINT, [])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, [])
             ->once();
 
         // Call
@@ -211,11 +216,11 @@ class EligibilityServiceTest extends AbstractServiceSetUp
             ->andThrow(ClientException::class);
 
         // EligibilityService
-        $eligibilityServiceMock = Mockery::mock(EligibilityService::class, [$this->clientMock])
+        $eligibilityServiceMock = Mockery::mock(EligibilityEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityService::ELIGIBILITY_ENDPOINT, [])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, [])
             ->once();
 
         // Call
@@ -235,11 +240,11 @@ class EligibilityServiceTest extends AbstractServiceSetUp
             ->andThrow(new RequestException('Request exception'));
 
         // EligibilityService
-        $eligibilityServiceMock = Mockery::mock(EligibilityService::class, [$this->clientMock])
+        $eligibilityServiceMock = Mockery::mock(EligibilityEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityService::ELIGIBILITY_ENDPOINT, [])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, [])
             ->once();
 
         // Call

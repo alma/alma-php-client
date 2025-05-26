@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoint\ConfigurationService;
+use Alma\API\Endpoint\ConfigurationEndpoint;
 use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\ConfigurationServiceException;
 use Alma\API\Exceptions\RequestException;
@@ -10,11 +10,11 @@ use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
 
-class ConfigurationServiceTest extends AbstractServiceSetUp
+class ConfigurationEndpointTest extends AbstractEndpointSetUp
 {
 	const URL = "https://www.example.com/integrations/configurations";
 
-    /** @var ConfigurationService|Mock */
+    /** @var ConfigurationEndpoint|Mock */
     private $configurationServiceMock;
 
 	public function setUp(): void
@@ -25,7 +25,7 @@ class ConfigurationServiceTest extends AbstractServiceSetUp
         $this->responseMock = Mockery::mock(Response::class);
 
         // ConfigurationService
-		$this->configurationServiceMock = Mockery::mock(ConfigurationService::class, [$this->clientMock])
+		$this->configurationServiceMock = Mockery::mock(ConfigurationEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
 	}
@@ -72,7 +72,7 @@ class ConfigurationServiceTest extends AbstractServiceSetUp
     public function testSendIntegrationsConfigurationsUrlRequestException()
     {
         // Mocks
-        $configurationServiceMock = Mockery::mock(ConfigurationService::class, [$this->clientMock])
+        $configurationServiceMock = Mockery::mock(ConfigurationEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $configurationServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));

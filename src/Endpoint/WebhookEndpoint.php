@@ -30,7 +30,7 @@ use Alma\API\Exceptions\RequestException;
 use Alma\API\Exceptions\WebhookServiceException;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class WebhookService extends AbstractService
+class WebhookEndpoint extends AbstractEndpoint
 {
     const WEBHOOKS_ENDPOINT = '/v1/webhooks';
 

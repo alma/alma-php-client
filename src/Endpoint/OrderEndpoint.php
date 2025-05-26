@@ -36,7 +36,7 @@ use Alma\API\PaginatedResult;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 
-class OrderService extends AbstractService
+class OrderEndpoint extends AbstractEndpoint
 {
     const ORDERS_ENDPOINT_V1 = '/v1/orders';
     const ORDERS_ENDPOINT = '/v2/orders';

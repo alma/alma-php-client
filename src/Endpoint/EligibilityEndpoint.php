@@ -25,30 +25,53 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Exceptions\ConfigurationServiceException;
+use Alma\API\Endpoint\Result\Eligibility;
+use Alma\API\Exceptions\EligibilityServiceException;
 use Alma\API\Exceptions\RequestException;
+use Alma\API\Lib\ArrayUtils;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class ConfigurationService extends AbstractService
+class EligibilityEndpoint extends AbstractEndpoint
 {
-    const CONFIGURATION_API_ENDPOINT = '/v1/integration-configuration/api';
+    const ELIGIBILITY_ENDPOINT = '/v2/payments/eligibility';
 
     /**
-     * @param string $url The URL to send to Alma for integrations configuration
-     * @throws ConfigurationServiceException
+     * Ask for Eligibility of a payment plan.
+     * @param array $data Payment data to check the eligibility for – same data format as payment creation,
+     *                              except that only payment.purchase_amount is mandatory and payment.installments_count
+     *                              can be an array of integers, to test for multiple eligible plans at once.
+     * @return Eligibility[]
+     * @throws EligibilityServiceException
      */
-    public function sendIntegrationsConfigurationsUrl(string $url)
+    public function eligibility(array $data): array
     {
         try {
             $request = null;
-            $request = $this->createPutRequest(self::CONFIGURATION_API_ENDPOINT, ["collect_data_url" => $url]);
+            $request = $this->createPostRequest(self::ELIGIBILITY_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
-            throw new ConfigurationServiceException($e->getMessage(), $request);
+        } catch (ClientExceptionInterface $e) {
+            throw new EligibilityServiceException($e->getMessage(), $request);
+        } catch (RequestException $e) {
+            throw new EligibilityServiceException($e->getMessage());
         }
 
         if ($response->isError()) {
-            throw new ConfigurationServiceException($response->getReasonPhrase(), $request, $response);
+            throw new EligibilityServiceException($response->getReasonPhrase(), $request, $response);
         }
+
+		$result = [];
+		foreach ($response->getJson() as $jsonEligibility) {
+			$eligibility = new Eligibility($jsonEligibility);
+			$result[$eligibility->getPlanKey()] = $eligibility;
+
+			if (!$eligibility->isEligible()) {
+				$this->logger->info(
+					"Eligibility check failed for following reasons: " .
+					var_export($eligibility->reasons, true)
+				);
+			}
+		}
+
+        return $result;
     }
 }

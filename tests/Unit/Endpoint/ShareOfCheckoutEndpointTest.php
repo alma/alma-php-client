@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoint\ShareOfCheckoutService;
+use Alma\API\Endpoint\ShareOfCheckoutEndpoint;
 use Alma\API\Exceptions\ClientException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Exceptions\ShareOfCheckoutServiceException;
@@ -10,7 +10,7 @@ use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
 
-class ShareOfCheckoutServiceTest extends AbstractServiceSetUp
+class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 {
     const SHARE_OF_CHECKOUT_RESPONSE_JSON = '{
             "merchant_id": "merchant_11xYpTY1GTkww5uWFKFdOllK82S1r7j5v5",
@@ -18,7 +18,7 @@ class ShareOfCheckoutServiceTest extends AbstractServiceSetUp
             "end_time": 1739343778
         }';
 
-    /** @var ShareOfCheckoutService|Mock */
+    /** @var ShareOfCheckoutEndpoint|Mock */
     protected $shareOfCheckoutServiceMock;
 
     /** @var Response|Mock */
@@ -45,7 +45,7 @@ class ShareOfCheckoutServiceTest extends AbstractServiceSetUp
         $this->badResponseMock->shouldReceive('getBody')->andReturn(self::SHARE_OF_CHECKOUT_RESPONSE_JSON);
 
         // ShareOfCheckoutService
-        $this->shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutService::class, [$this->clientMock])
+        $this->shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
             ->makePartial();
     }
 
@@ -90,7 +90,7 @@ class ShareOfCheckoutServiceTest extends AbstractServiceSetUp
     public function testShareRequestException(): void
     {
         // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutService::class, [$this->clientMock])
+        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $shareOfCheckoutServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
@@ -159,7 +159,7 @@ class ShareOfCheckoutServiceTest extends AbstractServiceSetUp
     public function testGetLastUpdateDatesRequestException(): void
     {
         // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutService::class, [$this->clientMock])
+        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $shareOfCheckoutServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
@@ -225,7 +225,7 @@ class ShareOfCheckoutServiceTest extends AbstractServiceSetUp
     public function testAddConsentRequestException(): void
     {
         // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutService::class, [$this->clientMock])
+        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $shareOfCheckoutServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
@@ -291,7 +291,7 @@ class ShareOfCheckoutServiceTest extends AbstractServiceSetUp
     public function testRemoveConsentRequestException(): void
     {
         // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutService::class, [$this->clientMock])
+        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $shareOfCheckoutServiceMock->shouldReceive('createDeleteRequest')->andThrow(new RequestException("request error"));

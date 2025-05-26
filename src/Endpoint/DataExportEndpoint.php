@@ -31,7 +31,7 @@ use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class DataExportService extends AbstractService
+class DataExportEndpoint extends AbstractEndpoint
 {
     const DATA_EXPORTS_ENDPOINT = '/v1/data-exports';
     const ACCEPTED_FORMAT = ['csv', 'xlsx'];

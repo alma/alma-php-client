@@ -26,7 +26,7 @@
             ignoreDeprecatedCodeUnits="true"
             disableCodeCoverageIgnore="false">
     <report>
-      <html outputDirectory="./coverage-report"/>
+      <html outputDirectory="./.coverage-report"/>
     </report>
   </coverage>
 
