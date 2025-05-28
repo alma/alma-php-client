@@ -3,16 +3,8 @@
 namespace Alma\API\Tests\Unit;
 
 use Alma\API\ClientConfiguration;
-use Alma\API\CurlClient;
 use Alma\API\Exceptions\ClientConfigurationException;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Request;
-use Alma\API\Response;
-use GuzzleHttp\Psr7\Stream;
-use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
-use Mockery;
-use Mockery\Mock;
 use PHPUnit\Framework\TestCase;
 
 class ClientConfigurationTest extends TestCase
