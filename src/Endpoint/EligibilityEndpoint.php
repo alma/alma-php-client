@@ -25,11 +25,13 @@
 
 namespace Alma\API\Endpoint;
 
+use Alma\API\ClientConfiguration;
 use Alma\API\Endpoint\Result\Eligibility;
 use Alma\API\Exceptions\EligibilityServiceException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
 
 class EligibilityEndpoint extends AbstractEndpoint
 {
