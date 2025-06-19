@@ -25,7 +25,7 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Exceptions\ConfigurationServiceException;
+use Alma\API\Exceptions\Endpoint\ConfigurationEndpointException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
@@ -35,7 +35,7 @@ class ConfigurationEndpoint extends AbstractEndpoint
 
     /**
      * @param string $url The URL to send to Alma for integrations configuration
-     * @throws ConfigurationServiceException
+     * @throws ConfigurationEndpointException
      */
     public function sendIntegrationsConfigurationsUrl(string $url)
     {
@@ -44,11 +44,11 @@ class ConfigurationEndpoint extends AbstractEndpoint
             $request = $this->createPutRequest(self::CONFIGURATION_API_ENDPOINT, ["collect_data_url" => $url]);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new ConfigurationServiceException($e->getMessage(), $request);
+            throw new ConfigurationEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new ConfigurationServiceException($response->getReasonPhrase(), $request, $response);
+            throw new ConfigurationEndpointException($response->getReasonPhrase(), $request, $response);
         }
     }
 }

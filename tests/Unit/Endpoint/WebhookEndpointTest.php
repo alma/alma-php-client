@@ -6,8 +6,8 @@ namespace Alma\API\Tests\Unit\Endpoint;
 use Alma\API\Endpoint\WebhookEndpoint;
 use Alma\API\Entities\Webhook;
 use Alma\API\Exceptions\ClientException;
+use Alma\API\Exceptions\Endpoint\WebhookEndpointException;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\Exceptions\WebhookServiceException;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
@@ -52,7 +52,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can create a webhook
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testCreateWebhook(): void
     {
@@ -68,7 +68,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch WebhookServiceException
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testCreateWebhookWebhookServiceException(): void
     {
@@ -76,7 +76,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
 
         // Call
         $this->webhookServiceMock->create("ecommerce_report", "https://api-sandbox.example-services.io");
@@ -85,7 +85,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testCreateWebhookRequestException(): void
     {
@@ -96,14 +96,14 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $webhookServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
         $webhookServiceMock->create("ecommerce_report", "https://api-sandbox.example-services.io");
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testCreateWebhookClientException(): void
     {
@@ -111,13 +111,13 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
         $this->webhookServiceMock->create("ecommerce_report", "https://api-sandbox.example-services.io");
     }
 
     /**
      * Ensure we can fetch a webhook
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testFetchWebhook(): void
     {
@@ -133,7 +133,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch WebhookServiceException
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testFetchWebhookWebhookServiceException(): void
     {
@@ -141,7 +141,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
 
         // Call
         $this->webhookServiceMock->fetch("webhook_1213KqH5XRTfCB2w3ZK1qkZRahPy22Ex4J");
@@ -150,7 +150,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testFetchWebhookRequestException(): void
     {
@@ -161,14 +161,14 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $webhookServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
         $webhookServiceMock->fetch("webhook_1213KqH5XRTfCB2w3ZK1qkZRahPy22Ex4J");
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testFetchWebhookClientException(): void
     {
@@ -176,13 +176,13 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
         $this->webhookServiceMock->fetch("webhook_1213KqH5XRTfCB2w3ZK1qkZRahPy22Ex4J");
     }
 
     /**
      * Ensure we can delete a webhook
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testDeleteWebhook(): void
     {
@@ -198,7 +198,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch WebhookServiceException
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testDeleteWebhookWebhookServiceException(): void
     {
@@ -206,7 +206,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
 
         // Call
         $this->webhookServiceMock->delete("webhook_1213KqH5XRTfCB2w3ZK1qkZRahPy22Ex4J");
@@ -215,7 +215,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testDeleteWebhookRequestException(): void
     {
@@ -226,14 +226,14 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $webhookServiceMock->shouldReceive('createDeleteRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
         $webhookServiceMock->delete("webhook_1213KqH5XRTfCB2w3ZK1qkZRahPy22Ex4J");
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function testDeleteWebhookClientException(): void
     {
@@ -241,7 +241,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(WebhookServiceException::class);
+        $this->expectException(WebhookEndpointException::class);
         $this->webhookServiceMock->delete("webhook_1213KqH5XRTfCB2w3ZK1qkZRahPy22Ex4J");
     }
 }

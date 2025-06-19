@@ -30,7 +30,7 @@ use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
 use Alma\API\Entities\FeePlan;
 use Alma\API\Entities\FeePlanList;
 use Alma\API\Entities\Merchant;
-use Alma\API\Exceptions\MerchantServiceException;
+use Alma\API\Exceptions\Endpoint\MerchantEndpointException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
@@ -43,7 +43,7 @@ class MerchantEndpoint extends AbstractEndpoint
 
     /**
      * @return Merchant
-     * @throws MerchantServiceException
+     * @throws MerchantEndpointException
      */
     public function me(): Merchant
     {
@@ -52,11 +52,11 @@ class MerchantEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::EXTENDED_DATA_ENDPOINT);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new MerchantServiceException($e->getMessage(), $request);
+            throw new MerchantEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);
+            throw new MerchantEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Merchant($response->getJson());
@@ -71,7 +71,7 @@ class MerchantEndpoint extends AbstractEndpoint
      * @param bool $includeDeferred Include deferred fee plans (i.e. Pay Later plans) in the response
      * @return FeePlanList A list of available fee plans (some might be disabled, check FeePlan->allowed for each)
      *
-     * @throws MerchantServiceException
+     * @throws MerchantEndpointException
      */
     public function getFeePlanList(string $kind = FeePlan::KIND_GENERAL, $installmentsCounts = "all", bool $includeDeferred = false): FeePlanList
     {
@@ -91,11 +91,11 @@ class MerchantEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::FEE_PLANS_ENDPOINT, $queryParams);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new MerchantServiceException($e->getMessage(), $request);
+            throw new MerchantEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);
+            throw new MerchantEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $feePlanList = new FeePlanList();
@@ -112,7 +112,7 @@ class MerchantEndpoint extends AbstractEndpoint
      *
      * @param CartInitiatedBusinessEvent $cartEventData
      * @return void
-     * @throws MerchantServiceException
+     * @throws MerchantEndpointException
      */
     public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEvent $cartEventData)
     {
@@ -128,7 +128,7 @@ class MerchantEndpoint extends AbstractEndpoint
      *
      * @param OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent
      * @return void
-     * @throws MerchantServiceException
+     * @throws MerchantEndpointException
      */
     public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent)
     {
@@ -149,7 +149,7 @@ class MerchantEndpoint extends AbstractEndpoint
      *
      * @param array $eventData
      * @return void
-     * @throws MerchantServiceException
+     * @throws MerchantEndpointException
      */
     private function sendBusinessEvent(array $eventData)
     {
@@ -158,10 +158,10 @@ class MerchantEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::BUSINESS_EVENTS_ENDPOINT, $eventData);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new MerchantServiceException($e->getMessage(), $request);
+            throw new MerchantEndpointException($e->getMessage(), $request);
         }
         if ($response->isError()) {
-            throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);
+            throw new MerchantEndpointException($response->getReasonPhrase(), $request, $response);
         }
     }
 }

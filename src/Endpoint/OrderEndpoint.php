@@ -26,9 +26,8 @@
 namespace Alma\API\Endpoint;
 
 use Alma\API\Entities\Order;
-use Alma\API\Exceptions\AlmaException;
+use Alma\API\Exceptions\Endpoint\OrderEndpointException;
 use Alma\API\Exceptions\MissingKeyException;
-use Alma\API\Exceptions\OrderServiceException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
@@ -53,7 +52,7 @@ class OrderEndpoint extends AbstractEndpoint
      * @param array $orderData
      *
      * @return Order
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function update(string $orderId, array $orderData = []): Order
     {
@@ -62,11 +61,11 @@ class OrderEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId", $orderData);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new OrderServiceException($e->getMessage(), $request);
+            throw new OrderEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
+            throw new OrderEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $json = $response->getJson();
@@ -79,7 +78,7 @@ class OrderEndpoint extends AbstractEndpoint
      * @param string $trackingNumber
      * @param string|null $trackingUrl
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function addTracking(string $orderId, string $carrier, string $trackingNumber, ?string $trackingUrl = null)
     {
@@ -94,11 +93,11 @@ class OrderEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::ORDERS_ENDPOINT . "/$orderId/shipment", $trackingData);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new OrderServiceException($e->getMessage(), $request);
+            throw new OrderEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
+            throw new OrderEndpointException($response->getReasonPhrase(), $request, $response);
         }
     }
 
@@ -108,7 +107,7 @@ class OrderEndpoint extends AbstractEndpoint
      * @param array $filters
      *
      * @return PaginatedResult
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function fetchAll(int $limit = 20, string $startingAfter = null, array $filters = array()): PaginatedResult
     {
@@ -131,11 +130,11 @@ class OrderEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1, $args);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new OrderServiceException($e->getMessage(), $request);
+            throw new OrderEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
+            throw new OrderEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new PaginatedResult(
@@ -150,7 +149,7 @@ class OrderEndpoint extends AbstractEndpoint
      * @param string $orderId
      *
      * @return Order
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function fetch(string $orderId): Order
     {
@@ -159,11 +158,11 @@ class OrderEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId");
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new OrderServiceException($e->getMessage(), $request);
+            throw new OrderEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new OrderServiceException($response->getReasonPhrase(), $request, $response);
+            throw new OrderEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $json = $response->getJson();

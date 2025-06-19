@@ -59,15 +59,16 @@ class PaymentDtoTest extends TestCase
             ]
         ];
 
-        $cartItemDto = (new CartItemDto())
+        $cartItemDto = (new CartItemDto(
+            $data['cart']['items'][0]['quantity'],
+            $data['cart']['items'][0]['line_price'],
+            $data['cart']['items'][0]['picture_url'])
+        )
             ->setSku($data['cart']['items'][0]['sku'])
             ->setTitle($data['cart']['items'][0]['title'])
-            ->setQuantity($data['cart']['items'][0]['quantity'])
             ->setUnitPrice($data['cart']['items'][0]['unit_price'])
-            ->setLinePrice($data['cart']['items'][0]['line_price'])
             ->setCategories($data['cart']['items'][0]['categories'])
             ->setUrl($data['cart']['items'][0]['url'])
-            ->setPictureUrl($data['cart']['items'][0]['picture_url'])
             ->setRequiresShipping($data['cart']['items'][0]['requires_shipping']);
         $cartDto = (new CartDto())->addItem($cartItemDto);
         $shippingAddressDto = (new AddressDto())

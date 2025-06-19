@@ -4,8 +4,8 @@ namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\ShareOfCheckoutEndpoint;
 use Alma\API\Exceptions\ClientException;
+use Alma\API\Exceptions\Endpoint\ShareOfCheckoutEndpointException;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\Exceptions\ShareOfCheckoutServiceException;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
@@ -51,7 +51,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can send the share of checkout
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testShare(): void
     {
@@ -67,7 +67,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch ShareOfCheckoutServiceException
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testShareShareOfCheckoutServiceException(): void
     {
@@ -76,7 +76,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->share(['data' => 'test']);
@@ -85,7 +85,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testShareRequestException(): void
     {
@@ -96,7 +96,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $shareOfCheckoutServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $shareOfCheckoutServiceMock->share(['data' => 'test']);
@@ -105,7 +105,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testShareClientException(): void
     {
@@ -113,7 +113,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->share(['data' => 'test']);
@@ -121,7 +121,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can get the latest share of checkout
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testGetLastUpdateDates(): void
     {
@@ -137,7 +137,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch ShareOfCheckoutServiceException
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testGetLastUpdateDatesShareOfCheckoutServiceException(): void
     {
@@ -145,7 +145,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->getLastUpdateDates();
@@ -154,7 +154,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testGetLastUpdateDatesRequestException(): void
     {
@@ -165,7 +165,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $shareOfCheckoutServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $shareOfCheckoutServiceMock->getLastUpdateDates();
@@ -174,7 +174,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testGetLastUpdateDatesClientException(): void
     {
@@ -182,7 +182,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->getLastUpdateDates();
@@ -190,7 +190,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can add consent to share of checkout
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testAddConsent(): void
     {
@@ -203,7 +203,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch ShareOfCheckoutServiceException
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testAddConsentShareOfCheckoutServiceException(): void
     {
@@ -211,7 +211,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->addConsent();
@@ -220,7 +220,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testAddConsentRequestException(): void
     {
@@ -231,7 +231,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $shareOfCheckoutServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $shareOfCheckoutServiceMock->addConsent();
@@ -240,7 +240,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testAddConsentClientException(): void
     {
@@ -248,7 +248,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->addConsent();
@@ -256,7 +256,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can remove consent to share of checkout
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testRemoveConsent(): void
     {
@@ -269,7 +269,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch ShareOfCheckoutServiceException
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testRemoveConsentShareOfCheckoutServiceException(): void
     {
@@ -277,7 +277,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->removeConsent();
@@ -286,7 +286,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testRemoveConsentRequestException(): void
     {
@@ -297,7 +297,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $shareOfCheckoutServiceMock->shouldReceive('createDeleteRequest')->andThrow(new RequestException("request error"));
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $shareOfCheckoutServiceMock->removeConsent();
@@ -306,7 +306,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function testRemoveConsentClientException(): void
     {
@@ -314,7 +314,7 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Expectations
-        $this->expectException(ShareOfCheckoutServiceException::class);
+        $this->expectException(ShareOfCheckoutEndpointException::class);
 
         // Call
         $this->shareOfCheckoutServiceMock->removeConsent();

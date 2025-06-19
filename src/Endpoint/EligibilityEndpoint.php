@@ -27,7 +27,7 @@ namespace Alma\API\Endpoint;
 
 use Alma\API\Entities\Eligibility;
 use Alma\API\Entities\EligibilityList;
-use Alma\API\Exceptions\EligibilityServiceException;
+use Alma\API\Exceptions\Endpoint\EligibilityEndpointException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
@@ -42,7 +42,7 @@ class EligibilityEndpoint extends AbstractEndpoint
      *                              except that only payment.purchase_amount is mandatory and payment.installments_count
      *                              can be an array of integers, to test for multiple eligible plans at once.
      * @return EligibilityList A list of Eligibility objects, one for each payment plan.
-     * @throws EligibilityServiceException
+     * @throws EligibilityEndpointException
      */
     public function getEligibilityList(array $data = []): EligibilityList
     {
@@ -51,13 +51,13 @@ class EligibilityEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::ELIGIBILITY_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
-            throw new EligibilityServiceException($e->getMessage(), $request);
+            throw new EligibilityEndpointException($e->getMessage(), $request);
         } catch (RequestException $e) {
-            throw new EligibilityServiceException($e->getMessage());
+            throw new EligibilityEndpointException($e->getMessage());
         }
 
         if ($response->isError()) {
-            throw new EligibilityServiceException($response->getReasonPhrase(), $request, $response);
+            throw new EligibilityEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $eligibilityList = new EligibilityList();

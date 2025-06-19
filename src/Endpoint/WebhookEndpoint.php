@@ -26,8 +26,8 @@
 namespace Alma\API\Endpoint;
 
 use Alma\API\Entities\Webhook;
+use Alma\API\Exceptions\Endpoint\WebhookEndpointException;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\Exceptions\WebhookServiceException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class WebhookEndpoint extends AbstractEndpoint
@@ -39,7 +39,7 @@ class WebhookEndpoint extends AbstractEndpoint
      * @param string $url The URL to be called for that webhook
      *
      * @return Webhook
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function create(string $type, string $url): Webhook
     {
@@ -50,11 +50,11 @@ class WebhookEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::WEBHOOKS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new WebhookServiceException($e->getMessage(), $request);
+            throw new WebhookEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new WebhookServiceException($response->getReasonPhrase(), $request, $response);
+            throw new WebhookEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Webhook($response->getJson());
@@ -64,7 +64,7 @@ class WebhookEndpoint extends AbstractEndpoint
      * @param string $id The external ID for the payment to fetch
      *
      * @return Webhook
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function fetch(string $id): Webhook
     {
@@ -73,11 +73,11 @@ class WebhookEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new WebhookServiceException($e->getMessage(), $request);
+            throw new WebhookEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new WebhookServiceException($response->getReasonPhrase(), $request, $response);
+            throw new WebhookEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Webhook($response->getJson());
@@ -89,7 +89,7 @@ class WebhookEndpoint extends AbstractEndpoint
      * @param string $id The ID of the Webhook to delete
      *
      * @return true True if the deletion call worked (throws otherwise)
-     * @throws WebhookServiceException
+     * @throws WebhookEndpointException
      */
     public function delete(string $id): bool
     {
@@ -98,10 +98,10 @@ class WebhookEndpoint extends AbstractEndpoint
             $request = $this->createDeleteRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new WebhookServiceException($e->getMessage(), $request);
+            throw new WebhookEndpointException($e->getMessage(), $request);
         }
         if ($response->isError()) {
-            throw new WebhookServiceException($response->getReasonPhrase(), $request, $response);
+            throw new WebhookEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return true;

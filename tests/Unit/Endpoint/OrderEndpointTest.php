@@ -5,7 +5,7 @@ namespace Alma\API\Tests\Unit\Endpoint;
 use Alma\API\Endpoint\OrderEndpoint;
 use Alma\API\Entities\Order;
 use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\OrderServiceException;
+use Alma\API\Exceptions\Endpoint\OrderEndpointException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\ArrayUtils;
@@ -133,7 +133,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can create a DataExport
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testUpdateOrder()
     {
@@ -149,7 +149,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch DataExportServiceException
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testUpdateOrderOrderServiceException()
     {
@@ -157,7 +157,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);// self::DEFAULT_JSON_RESPONSE
 
         // Expectations
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
 
         // Call
         $this->orderServiceMock->update('order_id');
@@ -166,7 +166,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testUpdateOrderRequestException()
     {
@@ -177,14 +177,14 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $orderServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $orderServiceMock->update('order_id');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testUpdateOrderClientException()
     {
@@ -192,13 +192,13 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $this->orderServiceMock->update('order_id');
     }
 
     /**
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testAddTracking()
     {
@@ -224,7 +224,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testAddTrackingOrderServiceException()
     {
@@ -234,7 +234,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
             ->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
 
         // Call
         $this->orderServiceMock->addTracking('123', 'ups', '123456', 'myUrl');
@@ -243,7 +243,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testAddTrackingRequestException()
     {
@@ -254,14 +254,14 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $orderServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $orderServiceMock->addTracking('order_id', 'carrier', 'tracking_number', 'tracking_url');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testAddTrackingClientException()
     {
@@ -269,7 +269,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $this->orderServiceMock->addTracking('order_id', 'carrier', 'tracking_number', 'tracking_url');
     }
 
@@ -285,7 +285,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can create a DataExport
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchAllOrders()
     {
@@ -301,7 +301,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch DataExportServiceException
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchAllOrdersOrderServiceException()
     {
@@ -311,7 +311,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badFetchAllResponseMock);
 
         // Expectations
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
 
         // Call
         $this->orderServiceMock->fetchAll();
@@ -320,7 +320,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchAllOrdersRequestException()
     {
@@ -331,14 +331,14 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $orderServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $orderServiceMock->fetchAll();
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchAllOrdersClientException()
     {
@@ -346,13 +346,13 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $this->orderServiceMock->fetchAll();
     }
 
     /**
      * Ensure we can create a DataExport
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchOrder()
     {
@@ -368,7 +368,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch DataExportServiceException
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchOrderOrderServiceException()
     {
@@ -376,7 +376,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badFetchResponseMock);
 
         // Expectations
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
 
         // Call
         $this->orderServiceMock->fetch('order_id');
@@ -385,7 +385,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchOrderRequestException()
     {
@@ -396,14 +396,14 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $orderServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $orderServiceMock->fetch('order_id');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws OrderServiceException
+     * @throws OrderEndpointException
      */
     public function testFetchOrderClientException()
     {
@@ -411,7 +411,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(OrderServiceException::class);
+        $this->expectException(OrderEndpointException::class);
         $this->orderServiceMock->fetch('order_id');
     }
 
