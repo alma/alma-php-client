@@ -28,6 +28,7 @@ namespace Alma\API\Endpoint;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
 use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
 use Alma\API\Entities\FeePlan;
+use Alma\API\Entities\FeePlanList;
 use Alma\API\Entities\Merchant;
 use Alma\API\Exceptions\MerchantServiceException;
 use Alma\API\Exceptions\RequestException;
@@ -68,11 +69,11 @@ class MerchantEndpoint extends AbstractEndpoint
      * @param string|int[] $installmentsCounts Only include fee plans that match the given installments counts, or use
      *                                         the string "all" (default) to get all available fee plans
      * @param bool $includeDeferred Include deferred fee plans (i.e. Pay Later plans) in the response
-     * @return FeePlan[] An array of available fee plans (some might be disabled, check FeePlan->allowed for each)
+     * @return FeePlanList A list of available fee plans (some might be disabled, check FeePlan->allowed for each)
      *
      * @throws MerchantServiceException
      */
-    public function feePlans(string $kind = FeePlan::KIND_GENERAL, $installmentsCounts = "all", bool $includeDeferred = false): array
+    public function getFeePlanList(string $kind = FeePlan::KIND_GENERAL, $installmentsCounts = "all", bool $includeDeferred = false): FeePlanList
     {
         if (is_array($installmentsCounts)) {
             $only = implode(",", $installmentsCounts);
@@ -97,9 +98,13 @@ class MerchantEndpoint extends AbstractEndpoint
             throw new MerchantServiceException($response->getReasonPhrase(), $request, $response);
         }
 
-        return array_map(function ($val) {
-            return new FeePlan($val);
-        }, $response->getJson());
+        $feePlanList = new FeePlanList();
+        foreach ($response->getJson() as $jsonFeePlan) {
+            $feePlan = new FeePlan($jsonFeePlan);
+            $feePlanList->Add($feePlan);
+        }
+
+        return $feePlanList;
     }
 
     /**

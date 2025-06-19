@@ -43,7 +43,7 @@ trait PaymentPlanTrait
      */
     public function isPnXOnly(): bool
     {
-        return $this->getInstallmentsCount() > 1 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
+        return $this->getInstallmentsCount() > 1 && $this->getInstallmentsCount() <= 4 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
     }
 
     /**
@@ -64,5 +64,15 @@ trait PaymentPlanTrait
     public function isPayNow(): bool
     {
         return $this->getInstallmentsCount() === 1 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
+    }
+
+    /**
+     * Check if a payment plan is "Credit" compliant
+     *
+     * @return bool
+     */
+    public function isCredit(): bool
+    {
+        return $this->getInstallmentsCount() > 4;
     }
 }

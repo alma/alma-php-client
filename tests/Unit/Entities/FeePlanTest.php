@@ -9,18 +9,19 @@ class FeePlanTest extends TestCase
 {
     public function testConstructorSetsValuesCorrectly()
     {
-        $feePlan = new FeePlan([
-            'deferredDays' => 0,
-            'deferredMonths' => 3,
-            'deferredTriggerLimitDays' => 0,
-            'installmentsCount' => 0,
-            'kind' => 'general',
-        ]);
+        $feePlan = (new FeePlan([
+            'deferred_trigger_limit_days' => 0,
+            'kind'                        => 'general',
+            'max_purchase_amount'         => 1000,
+        ]))->setDeferredMonths(5)
+           ->setDeferredDays(3)
+           ->setInstallmentsCount(4);
 
         $this->assertEquals('general', $feePlan->getKind());
-        $this->assertEquals(0, $feePlan->getInstallmentsCount());
-        $this->assertEquals(0, $feePlan->getDeferredDays());
-        $this->assertEquals(3, $feePlan->getDeferredMonths());
+        $this->assertEquals(4, $feePlan->getInstallmentsCount());
+        $this->assertEquals(3, $feePlan->getDeferredDays());
+        $this->assertEquals(5, $feePlan->getDeferredMonths());
         $this->assertEquals(0, $feePlan->getDeferredTriggerLimitDays());
+        $this->assertEquals(1000, $feePlan->getMaxPurchaseAmount());
     }
 }

@@ -169,7 +169,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->once();
 
         // Call
-        $response = $eligibilityServiceMock->eligibility($data['params']);
+        $response = $eligibilityServiceMock->getEligibilityList($data['params']);
         foreach ($response as $eligibility) {
             // Assertions
             $this->assertEquals($data['eligibility'], $eligibility->isEligible());
@@ -201,7 +201,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(EligibilityServiceException::class);
-        $eligibilityServiceMock->eligibility([]);
+        $eligibilityServiceMock->getEligibilityList([]);
     }
 
     /**
@@ -225,7 +225,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(EligibilityServiceException::class);
-        $eligibilityServiceMock->eligibility([]);
+        $eligibilityServiceMock->getEligibilityList([]);
     }
 
     /**
@@ -249,6 +249,6 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(EligibilityServiceException::class);
-        $eligibilityServiceMock->eligibility([]);
+        $eligibilityServiceMock->getEligibilityList([]);
     }
 }

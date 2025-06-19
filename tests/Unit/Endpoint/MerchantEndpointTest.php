@@ -131,8 +131,8 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->twice()->andReturn($this->responseMock);
 
         // MerchantService
-        $result = $this->merchantService->feePlans();
-        $resultWithArray = $this->merchantService->feePlans(FeePlan::KIND_GENERAL, [3]);
+        $result = $this->merchantService->getFeePlanList();
+        $resultWithArray = $this->merchantService->getFeePlanList(FeePlan::KIND_GENERAL, [3]);
 
         // Assertions
         foreach ($result as $feePlan) {
@@ -156,7 +156,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         $this->expectException(MerchantServiceException::class);
 
         // Call
-        $this->merchantService->feePlans();
+        $this->merchantService->getFeePlanList();
     }
 
     /**
@@ -174,7 +174,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(MerchantServiceException::class);
-        $merchantServiceMock->feePlans();
+        $merchantServiceMock->getFeePlanList();
     }
 
     /**
@@ -189,7 +189,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(MerchantServiceException::class);
-        $this->merchantService->feePlans();
+        $this->merchantService->getFeePlanList();
     }
 
     /**

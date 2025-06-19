@@ -2,8 +2,8 @@
 
 namespace Alma\API\Endpoint;
 
+use Alma\API\CurlClient;
 use Alma\API\Exceptions\RequestException;
-use Psr\Http\Client\ClientInterface;
 use Alma\API\Request;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -13,10 +13,10 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
 {
     use loggerAwareTrait;
 
-    /** @var ClientInterface */
-    protected ClientInterface $client;
+    /** @var CurlClient */
+    protected CurlClient $client;
 
-    public function __construct(ClientInterface $client)
+    public function __construct(CurlClient $client)
     {
         $this->client = $client;
         $this->logger = new NullLogger();
