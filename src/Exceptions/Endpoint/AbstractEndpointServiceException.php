@@ -1,9 +1,10 @@
 <?php
 
-namespace Alma\API\Exceptions;
+namespace Alma\API\Exceptions\Endpoint;
 
-use Psr\Http\Message\RequestInterface;
+use Alma\API\Exceptions\AlmaException;
 use Alma\API\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
 
 abstract class AbstractEndpointServiceException extends AlmaException
 {

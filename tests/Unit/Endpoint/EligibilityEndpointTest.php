@@ -3,14 +3,11 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\EligibilityEndpoint;
-use Alma\API\Endpoint\ShareOfCheckoutEndpoint;
 use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\EligibilityServiceException;
+use Alma\API\Exceptions\Endpoint\EligibilityEndpointException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Response;
 use Mockery;
-use Mockery\Mock;
-use Psr\Log\NullLogger;
 
 /**
  * Class Payments
@@ -143,7 +140,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
      * @dataProvider eligibilityProvider
      * @param array $data
      * @return void
-     * @throws EligibilityServiceException
+     * @throws EligibilityEndpointException
      */
     public function testEligibility(array $data)
     {
@@ -179,7 +176,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch EligibilityServiceException
      * @return void
-     * @throws EligibilityServiceException
+     * @throws EligibilityEndpointException
      */
     public function testEligibilityServiceException()
     {
@@ -200,14 +197,14 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->once();
 
         // Call
-        $this->expectException(EligibilityServiceException::class);
+        $this->expectException(EligibilityEndpointException::class);
         $eligibilityServiceMock->getEligibilityList([]);
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws EligibilityServiceException
+     * @throws EligibilityEndpointException
      */
     public function testEligibilityClientExceptionInterface()
     {
@@ -224,14 +221,14 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->once();
 
         // Call
-        $this->expectException(EligibilityServiceException::class);
+        $this->expectException(EligibilityEndpointException::class);
         $eligibilityServiceMock->getEligibilityList([]);
     }
 
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws EligibilityServiceException
+     * @throws EligibilityEndpointException
      */
     public function testEligibilityRequestException()
     {
@@ -248,7 +245,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->once();
 
         // Call
-        $this->expectException(EligibilityServiceException::class);
+        $this->expectException(EligibilityEndpointException::class);
         $eligibilityServiceMock->getEligibilityList([]);
     }
 }

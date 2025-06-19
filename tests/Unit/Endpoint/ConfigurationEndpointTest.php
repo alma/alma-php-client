@@ -4,7 +4,7 @@ namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\ConfigurationEndpoint;
 use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\ConfigurationServiceException;
+use Alma\API\Exceptions\Endpoint\ConfigurationEndpointException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Response;
 use Mockery;
@@ -32,7 +32,7 @@ class ConfigurationEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can send the integrations configurations URL
-     * @throws ConfigurationServiceException
+     * @throws ConfigurationEndpointException
      */
     public function testSendIntegrationsConfigurationsUrl()
     {
@@ -47,7 +47,7 @@ class ConfigurationEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we throw a ConfigurationServiceException when the response is an error
-     * @throws ConfigurationServiceException
+     * @throws ConfigurationEndpointException
      */
     public function testSendIntegrationsConfigurationsUrlConfigurationServiceException()
     {
@@ -58,7 +58,7 @@ class ConfigurationEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
 
         // Expectations
-		$this->expectException(ConfigurationServiceException::class);
+		$this->expectException(ConfigurationEndpointException::class);
 
         // Call
 		$this->configurationServiceMock->sendIntegrationsConfigurationsUrl(self::URL);
@@ -67,7 +67,7 @@ class ConfigurationEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws ConfigurationServiceException
+     * @throws ConfigurationEndpointException
      */
     public function testSendIntegrationsConfigurationsUrlRequestException()
     {
@@ -78,14 +78,14 @@ class ConfigurationEndpointTest extends AbstractEndpointSetUp
         $configurationServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(ConfigurationServiceException::class);
+        $this->expectException(ConfigurationEndpointException::class);
         $configurationServiceMock->sendIntegrationsConfigurationsUrl('url');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws ConfigurationServiceException
+     * @throws ConfigurationEndpointException
      */
     public function testSendIntegrationsConfigurationsUrlClientException()
     {
@@ -93,7 +93,7 @@ class ConfigurationEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(ConfigurationServiceException::class);
+        $this->expectException(ConfigurationEndpointException::class);
         $this->configurationServiceMock->sendIntegrationsConfigurationsUrl('url');
     }
 

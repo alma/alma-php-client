@@ -2,18 +2,18 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
+use Alma\API\Endpoint\PaymentEndpoint;
 use Alma\API\Entities\DTO\CustomerDto;
 use Alma\API\Entities\DTO\OrderDto;
 use Alma\API\Entities\DTO\PaymentDto;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\ClientException;
+use Alma\API\Exceptions\Endpoint\PaymentEndpointException;
 use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\PaymentServiceException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Response;
 use Mockery;
-use Alma\API\Endpoint\PaymentEndpoint;
 use Mockery\Mock;
 
 /**
@@ -158,7 +158,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure payment creation is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCreatePayment()
     {
@@ -179,7 +179,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCreatePaymentRequestException()
     {
@@ -190,7 +190,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->create(
             new PaymentDto(1000),
             new OrderDto(),
@@ -201,7 +201,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCreatePaymentClientException()
     {
@@ -209,7 +209,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->create(
             new PaymentDto(1000),
             new OrderDto(),
@@ -220,7 +220,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCreatePaymentPaymentServiceException()
     {
@@ -228,7 +228,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->create(
             new PaymentDto(1000),
             new OrderDto(),
@@ -239,7 +239,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure payment Cancellation is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCancelPayment()
     {
@@ -253,7 +253,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCancelPaymentRequestException()
     {
@@ -264,14 +264,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->cancel('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCancelPaymentClientException()
     {
@@ -279,14 +279,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->cancel('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testCancelPaymentPaymentServiceException()
     {
@@ -294,14 +294,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->cancel('id_1234');
     }
 
     /**
      * Ensure payment fetching is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFetchPayment()
     {
@@ -316,7 +316,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFetchPaymentRequestException()
     {
@@ -327,14 +327,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->fetch('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFetchPaymentClientException()
     {
@@ -342,14 +342,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->fetch('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFetchPaymentPaymentServiceException()
     {
@@ -357,14 +357,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->fetch('id_1234');
     }
 
     /**
      * Ensure payment edition is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testEditPayment()
     {
@@ -379,7 +379,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testEditPaymentRequestException()
     {
@@ -390,14 +390,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->edit('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testEditPaymentClientException()
     {
@@ -405,14 +405,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->edit('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testEditPaymentPaymentServiceException()
     {
@@ -420,14 +420,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->edit('id_1234');
     }
 
     /**
      * Ensure that flag a potential fraud is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFlagAsPotentialFraud()
     {
@@ -443,7 +443,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFlagAsPotentialFraudRequestException()
     {
@@ -454,14 +454,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->flagAsPotentialFraud('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFlagAsPotentialFraudClientException()
     {
@@ -469,14 +469,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->flagAsPotentialFraud('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testFlagAsPotentialFraudPaymentServiceException()
     {
@@ -484,7 +484,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->flagAsPotentialFraud('id_1234');
     }
 
@@ -518,7 +518,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
      * @dataProvider partialRefundProvider
      * @param $data
      * @return void
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentEndpointException|ParametersException
      */
     public function testPartialRefund($data)
     {
@@ -563,7 +563,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
      * @param $data
      * @param $expectedException
      * @return void
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentEndpointException|ParametersException
      */
     public function testInvalidPartialRefund($data, $expectedException)
     {
@@ -584,7 +584,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
      * @param PaymentEndpoint $paymentService
      * @param $data
      * @return void
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentEndpointException|ParametersException
      */
     private function callPartialRefund(PaymentEndpoint $paymentService, $data)
     {
@@ -625,7 +625,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
      * Test the fullRefund method with valid data
      * @dataProvider fullRefundProvider
      * @return void
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentEndpointException|ParametersException
      */
     public function testFullRefund($data)
     {
@@ -648,7 +648,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentEndpointException|ParametersException
      */
     private function callFullRefund(PaymentEndpoint $paymentService, $data): Payment
     {
@@ -681,7 +681,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
      * Test the fullRefund method with invalid data
      * @dataProvider fullRefundInvalidProvider
      * @return void
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentEndpointException|ParametersException
  */
     public function testInvalidFullRefund($data, $expectedException)
     {
@@ -699,7 +699,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch API error
-     * @throws PaymentServiceException|ParametersException
+     * @throws PaymentEndpointException|ParametersException
      */
     public function testFullRefundRequestError()
     {
@@ -715,7 +715,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
             ->makePartial();
 
         // Expectations
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
 
         // Call
         $paymentService->fullRefund($id);
@@ -734,7 +734,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Expectations
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
 
         // Call
         $paymentServiceMock->fullRefund('id_1234');
@@ -750,7 +750,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Expectations
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
 
         // Call
         $this->paymentService->fullRefund('id_1234');
@@ -759,7 +759,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure payment trigger is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testTriggerPayment()
     {
@@ -774,7 +774,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testTriggerPaymentRequestException()
     {
@@ -785,14 +785,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->trigger('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testTriggerPaymentClientException()
     {
@@ -800,14 +800,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->trigger('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testTriggerPaymentPaymentServiceException()
     {
@@ -815,14 +815,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->trigger('id_1234');
     }
 
     /**
      * Ensure payment edition is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrder()
     {
@@ -838,7 +838,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrderRequestException()
     {
@@ -849,14 +849,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->addOrder('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrderClientException()
     {
@@ -864,14 +864,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->addOrder('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrderPaymentServiceException()
     {
@@ -879,14 +879,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badOrderResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->addOrder('id_1234');
     }
 
     /**
      * Ensure order overwrite is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testOverwriteOrder()
     {
@@ -901,7 +901,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testOverwriteOrderRequestException()
     {
@@ -912,14 +912,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->overwriteOrder('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testOverwriteOrderClientException()
     {
@@ -927,14 +927,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->overwriteOrder('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testOverwriteOrderPaymentServiceException()
     {
@@ -942,7 +942,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badOrderResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->overwriteOrder('id_1234');
     }
 
@@ -950,7 +950,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure payment edition is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrderStatusByMerchantOrderReference()
     {
@@ -969,7 +969,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrderStatusByMerchantOrderReferenceRequestException()
     {
@@ -980,7 +980,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->addOrderStatusByMerchantOrderReference(
             'payment_id',
             'merchant_order_reference',
@@ -991,7 +991,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrderStatusByMerchantOrderReferenceClientException()
     {
@@ -999,7 +999,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->addOrderStatusByMerchantOrderReference(
             'payment_id',
             'merchant_order_reference',
@@ -1010,7 +1010,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testAddOrderStatusByMerchantOrderReferencePaymentServiceException()
     {
@@ -1018,7 +1018,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->addOrderStatusByMerchantOrderReference(
             'payment_id',
             'merchant_order_reference',
@@ -1029,7 +1029,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure payment edition is ok
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testSendSms()
     {
@@ -1044,7 +1044,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testSendSmsRequestException()
     {
@@ -1055,14 +1055,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $paymentServiceMock->sendSms('id_1234');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testSendSmsClientException()
     {
@@ -1070,14 +1070,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->sendSms('id_1234');
     }
 
     /**
      * Ensure we can catch API error
      * @return void
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function testSensSmsPaymentServiceException()
     {
@@ -1085,7 +1085,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
 
         // Call
-        $this->expectException(PaymentServiceException::class);
+        $this->expectException(PaymentEndpointException::class);
         $this->paymentService->sendSms('id_1234');
     }
 }

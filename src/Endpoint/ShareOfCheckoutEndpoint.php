@@ -2,11 +2,9 @@
 
 namespace Alma\API\Endpoint;
 
+use Alma\API\Exceptions\Endpoint\ShareOfCheckoutEndpointException;
 use Alma\API\Exceptions\RequestException;
-use Alma\API\Exceptions\ShareOfCheckoutServiceException;
-use Alma\API\Response;
 use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Log\LoggerInterface;
 
 class ShareOfCheckoutEndpoint extends AbstractEndpoint
 {
@@ -17,7 +15,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
      * @param array $data
      *
      * @return array
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function share(array $data): array
     {
@@ -26,11 +24,11 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = $this->createPutRequest(self::SHARE_OF_CHECKOUT_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new ShareOfCheckoutServiceException($e->getMessage(), $request);
+            throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new ShareOfCheckoutServiceException($response->getReasonPhrase(), $request, $response);
+            throw new ShareOfCheckoutEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return $response->getJson();
@@ -39,7 +37,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
     /**
      *
      * @return array
-     * @throws ShareOfCheckoutServiceException
+     * @throws ShareOfCheckoutEndpointException
      */
     public function getLastUpdateDates(): array
     {
@@ -48,19 +46,19 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::SHARE_OF_CHECKOUT_ENDPOINT);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new ShareOfCheckoutServiceException($e->getMessage(), $request);
+            throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new ShareOfCheckoutServiceException($response->getReasonPhrase(), $request, $response);
+            throw new ShareOfCheckoutEndpointException($response->getReasonPhrase(), $request, $response);
         }
         return $response->getJson();
     }
 
     /**
      * Consent share of checkout
-     * @throws ShareOfCheckoutServiceException
      * @return bool
+     * @throws ShareOfCheckoutEndpointException
      */
     public function addConsent(): bool
     {
@@ -69,11 +67,11 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::SHARE_OF_CHECKOUT_CONSENT_ENDPOINT);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new ShareOfCheckoutServiceException($e->getMessage(), $request);
+            throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new ShareOfCheckoutServiceException($response->getReasonPhrase(), $request, $response);
+            throw new ShareOfCheckoutEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return true;
@@ -81,8 +79,8 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
 
     /**
      * Consent share of checkout
-     * @throws ShareOfCheckoutServiceException
      * @return bool
+     * @throws ShareOfCheckoutEndpointException
      */
     public function removeConsent(): bool
     {
@@ -91,11 +89,11 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = $this->createDeleteRequest(self::SHARE_OF_CHECKOUT_CONSENT_ENDPOINT);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new ShareOfCheckoutServiceException($e->getMessage(), $request);
+            throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new ShareOfCheckoutServiceException($response->getReasonPhrase(), $request, $response);
+            throw new ShareOfCheckoutEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return true;

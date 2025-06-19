@@ -26,7 +26,7 @@
 namespace Alma\API\Endpoint;
 
 use Alma\API\Entities\DataExport;
-use Alma\API\Exceptions\DataExportServiceException;
+use Alma\API\Exceptions\Endpoint\DataExportEndpointException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -42,7 +42,7 @@ class DataExportEndpoint extends AbstractEndpoint
      *
      * @return DataExport
      *
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function create(string $type, array $data = []): DataExport
     {
@@ -52,11 +52,11 @@ class DataExportEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::DATA_EXPORTS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new DataExportServiceException($e->getMessage(), $request);
+            throw new DataExportEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new DataExportServiceException($response->getReasonPhrase(), $request, $response);
+            throw new DataExportEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $json = $response->getJson();
@@ -68,7 +68,7 @@ class DataExportEndpoint extends AbstractEndpoint
      *
      * @return DataExport
      *
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function fetch(string $reportId): DataExport
     {
@@ -77,11 +77,11 @@ class DataExportEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . '/' . $reportId);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new DataExportServiceException($e->getMessage(), $request);
+            throw new DataExportEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new DataExportServiceException($response->getReasonPhrase(), $request, $response);
+            throw new DataExportEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $json = $response->getJson();
@@ -95,7 +95,7 @@ class DataExportEndpoint extends AbstractEndpoint
      *
      * @return mixed
      *
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      * @throws ParametersException
      */
     public function download(string $reportId, string $format)
@@ -109,11 +109,11 @@ class DataExportEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . sprintf('/%s', $reportId), ['format' => $format]);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
-            throw new DataExportServiceException($e->getMessage(), $request);
+            throw new DataExportEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new DataExportServiceException($response->getReasonPhrase(), $request, $response);
+            throw new DataExportEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return $response->getFile();

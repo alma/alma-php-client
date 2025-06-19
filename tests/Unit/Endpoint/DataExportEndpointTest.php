@@ -5,7 +5,7 @@ namespace Alma\API\Tests\Unit\Endpoint;
 use Alma\API\Endpoint\DataExportEndpoint;
 use Alma\API\Entities\DataExport;
 use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\DataExportServiceException;
+use Alma\API\Exceptions\Endpoint\DataExportEndpointException;
 use Alma\API\Exceptions\ParametersException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Lib\StreamHelper;
@@ -71,7 +71,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can create a DataExport
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testCreateDataExport()
     {
@@ -88,7 +88,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch DataExportServiceException
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testCreateDataExportDataExportServiceException()
     {
@@ -96,7 +96,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
 
         // Call
         $this->dataExportsService->create('payments');
@@ -105,7 +105,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testCreateDataExportRequestException()
     {
@@ -116,14 +116,14 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $dataExportServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
         $dataExportServiceMock->create('payments');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testCreateDataExportClientException()
     {
@@ -131,13 +131,13 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
         $this->dataExportsService->create('payments');
     }
 
     /**
      * Ensure we can fetch a DataExport
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testFetchDataExport()
     {
@@ -154,7 +154,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch DataExportServiceException
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testFetchDataExportDataExportServiceException()
     {
@@ -162,7 +162,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
 
         // Call
         $this->dataExportsService->fetch(123);
@@ -171,7 +171,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testFetchDataExportRequestException()
     {
@@ -182,14 +182,14 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
         $dataExportServiceMock->fetch(123);
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      */
     public function testFetchDataExportClientException()
     {
@@ -197,13 +197,13 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
         $this->dataExportsService->create(123);
     }
 
     /**
      * Ensure we can download a DataExport
-     * @throws DataExportServiceException|ParametersException
+     * @throws DataExportEndpointException|ParametersException
      */
     public function testDownloadDataExport()
     {
@@ -221,7 +221,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch DataExportServiceException
-     * @throws DataExportServiceException|ParametersException
+     * @throws DataExportEndpointException|ParametersException
      */
     public function testDownloadDataExportDataExportServiceException()
     {
@@ -229,7 +229,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badResponseMock);
 
         // Expectations
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
 
         // Call
         $this->dataExportsService->download(123, 'csv');
@@ -237,7 +237,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch ParametersException
-     * @throws DataExportServiceException|ParametersException
+     * @throws DataExportEndpointException|ParametersException
      */
     public function testDownloadDataExportInvalidFormat()
     {
@@ -251,7 +251,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws DataExportServiceException
+     * @throws DataExportEndpointException
      * @throws ParametersException
      */
     public function testDownloadDataExportRequestException()
@@ -263,14 +263,14 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
 
         // Call
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
         $dataExportServiceMock->download(123, 'csv');
     }
 
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws DataExportServiceException|ParametersException
+     * @throws DataExportEndpointException|ParametersException
      */
     public function testDownloadDataExportClientException()
     {
@@ -278,7 +278,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
 
         // Call
-        $this->expectException(DataExportServiceException::class);
+        $this->expectException(DataExportEndpointException::class);
         $this->dataExportsService->download(123, 'csv');
     }
 }

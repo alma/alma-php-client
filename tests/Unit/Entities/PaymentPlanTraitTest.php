@@ -3,8 +3,7 @@
 namespace Alma\API\Tests\Unit\Entities;
 
 use Alma\API\Entities\PaymentPlanTrait;
-use Alma\API\Exceptions\EligibilityServiceException;
-use Mockery;
+use Alma\API\Exceptions\Endpoint\EligibilityEndpointException;
 use PHPUnit\Framework\TestCase;
 
 class PaymentPlanTraitTest extends TestCase
@@ -95,7 +94,7 @@ class PaymentPlanTraitTest extends TestCase
      * @param array $params
      * @param array $expected
      * @return void
-     * @throws EligibilityServiceException
+     * @throws EligibilityEndpointException
      */
     public function testPaymentPlanTrait(array $params, array $expected): void
     {

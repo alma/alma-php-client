@@ -30,8 +30,8 @@ use Alma\API\Entities\DTO\OrderDto;
 use Alma\API\Entities\DTO\PaymentDto;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
+use Alma\API\Exceptions\Endpoint\PaymentEndpointException;
 use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\PaymentServiceException;
 use Alma\API\Exceptions\RequestException;
 use Alma\API\Payloads\Refund;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -45,7 +45,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param OrderDto $order_dto
      * @param CustomerDto $customer_dto
      * @return Payment
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function create(
         PaymentDto $payment_dto,
@@ -63,11 +63,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Payment($response->getJson());
@@ -77,7 +77,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param string $id The ID of the payment to cancel
      *
      * @return true
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function cancel(string $id): bool
     {
@@ -87,12 +87,12 @@ class PaymentEndpoint extends AbstractEndpoint
 
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
             $this->logger->error(sprintf('An error occurred while canceling the payment %s', $id), [$response->getReasonPhrase()]);
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return true;
@@ -102,7 +102,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param string $id The external ID for the payment to fetch
      *
      * @return Payment
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function fetch(string $id): Payment
     {
@@ -111,11 +111,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createGetRequest(self::PAYMENTS_ENDPOINT . "/$id");
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Payment($response->getJson());
@@ -126,7 +126,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param array $data
      *
      * @return Payment
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function edit(string $id, array $data = []): Payment
     {
@@ -135,11 +135,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id", $data);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Payment($response->getJson());
@@ -150,7 +150,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param string|null $reason An optional message indicating why this payment is being flagged
      *
      * @return bool
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function flagAsPotentialFraud(string $id, string $reason = null): bool
     {
@@ -164,11 +164,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/potential-fraud", $data);
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return true;
@@ -184,7 +184,7 @@ class PaymentEndpoint extends AbstractEndpoint
      *
      * @return Payment
      * @throws ParametersException
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function partialRefund(string $id, int $amount, string $merchantReference = "", string $comment = ""): Payment
     {
@@ -201,7 +201,7 @@ class PaymentEndpoint extends AbstractEndpoint
      *
      * @return Payment
      * @throws ParametersException
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function fullRefund(string $id, string $merchantReference = "", string $comment = ""): Payment
     {
@@ -215,7 +215,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param Refund $refundPayload contains all the refund info
      *
      * @return Payment
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     private function doRefund(Refund $refundPayload): Payment
     {
@@ -225,11 +225,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/refund", $refundPayload->getRequestBody());
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Payment($response->getJson());
@@ -239,7 +239,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param string $id ID of the payment to be triggered
      *
      * @return Payment
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function trigger(string $id): Payment
     {
@@ -248,11 +248,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/trigger");
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return new Payment($response->getJson());
@@ -267,7 +267,7 @@ class PaymentEndpoint extends AbstractEndpoint
      *
      * @return Order
      *
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function addOrder(string $id, array $orderData = [], bool $overwrite = false): Order
     {
@@ -279,12 +279,12 @@ class PaymentEndpoint extends AbstractEndpoint
                 $request = $this->createPutRequest(self::PAYMENTS_ENDPOINT . "/$id/orders", array("order" => $orderData));
                 $response = $this->client->sendRequest($request);
             } catch (RequestException|ClientExceptionInterface $e) {
-                throw new PaymentServiceException($e->getMessage(), $request);
+                throw new PaymentEndpointException($e->getMessage(), $request);
             }
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $json = $response->getJson();
@@ -300,7 +300,7 @@ class PaymentEndpoint extends AbstractEndpoint
      *
      * @return Order
      *
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function overwriteOrder(string $id, array $orderData = []): Order
     {
@@ -309,11 +309,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/orders", array("order" => $orderData));
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         $json = $response->getJson();
@@ -329,7 +329,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param string $status
      * @param bool | null $isShipped
      * @return true
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function addOrderStatusByMerchantOrderReference(
         string $paymentId,
@@ -346,11 +346,11 @@ class PaymentEndpoint extends AbstractEndpoint
             );
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return true;
@@ -364,7 +364,7 @@ class PaymentEndpoint extends AbstractEndpoint
      *
      * @return bool
      *
-     * @throws PaymentServiceException
+     * @throws PaymentEndpointException
      */
     public function sendSms(string $id): bool
     {
@@ -373,11 +373,11 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/send-sms");
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
-            throw new PaymentServiceException($e->getMessage(), $request);
+            throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
         if ($response->isError()) {
-            throw new PaymentServiceException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
         return true;
