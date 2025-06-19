@@ -25,6 +25,9 @@
 
 namespace Alma\API\Endpoint;
 
+use Alma\API\Entities\DTO\CustomerDto;
+use Alma\API\Entities\DTO\OrderDto;
+use Alma\API\Entities\DTO\PaymentDto;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\ParametersException;
@@ -38,14 +41,23 @@ class PaymentEndpoint extends AbstractEndpoint
     const PAYMENTS_ENDPOINT = '/v1/payments';
 
     /**
-     * @param int $purchaseAmount Purchase amount in cents, the only required field
-     * @param array $data  Array containing the payment non required data
+     * @param PaymentDto $payment_dto
+     * @param OrderDto $order_dto
+     * @param CustomerDto $customer_dto
      * @return Payment
      * @throws PaymentServiceException
      */
-    public function create(int $purchaseAmount, array $data = []): Payment
+    public function create(
+        PaymentDto $payment_dto,
+        OrderDto $order_dto,
+        CustomerDto $customer_dto
+    ): Payment
     {
-        $data['payment']['purchase_amount'] = $purchaseAmount;
+        $data = array(
+            'payment' => $payment_dto->toArray(),
+            'order' => $order_dto->toArray(),
+            'customer' => $customer_dto->toArray(),
+        );
         $request = null;
         try {
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT, $data);

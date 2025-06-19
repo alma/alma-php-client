@@ -1,12 +1,41 @@
 <?php
 
-namespace Alma\API\Tests\Endpoint\Result;
+namespace Alma\API\Tests\Unit\Entities;
 
-use Alma\API\Endpoint\Result\Eligibility;
+use Alma\API\Entities\Eligibility;
+use Alma\API\Entities\FeePlan;
 use PHPUnit\Framework\TestCase;
 
 class EligibilityTest extends TestCase
 {
+    public function testCommonCase()
+    {
+        $eligibility = new Eligibility([
+            'eligible' => true,
+            'reasons' => ['reason1', 'reason2'],
+            'constraints' => ['constraint1'],
+            'payment_plan' => ['plan1'],
+            'installments_count' => 3,
+            'deferred_days' => 0,
+            'deferred_months' => 2,
+            'customer_total_cost_amount' => 500,
+            'customer_total_cost_bps' => 500,
+            'annual_interest_rate' => 500
+        ]);
+
+        $this->assertTrue($eligibility->isEligible());
+        $this->assertSame(['reason1', 'reason2'], $eligibility->getReasons());
+        $this->assertSame(['constraint1'], $eligibility->getConstraints());
+        $this->assertSame(['plan1'], $eligibility->getPaymentPlan());
+        $this->assertSame(3, $eligibility->getInstallmentsCount());
+        $this->assertSame(0, $eligibility->getDeferredDays());
+        $this->assertSame(2, $eligibility->getDeferredMonths());
+        $this->assertSame(500, $eligibility->getCustomerTotalCostAmount());
+        $this->assertSame(500, $eligibility->getCustomerTotalCostBps());
+        $this->assertSame(500, $eligibility->getAnnualInterestRate());
+        $this->assertSame('general_3_0_2', $eligibility->getFeePlanKey());
+    }
+
     public static function eligibilityConstructorHandlesScenariosProvider(): array
     {
         return [
@@ -18,7 +47,7 @@ class EligibilityTest extends TestCase
                 ['constraint1']
             ],
             'eligible_with_payment_plan' => [
-                ['eligible' => true, 'payment_plan' => ['plan1'], 'installments_count' => 3],
+                ['eligible' => true, 'payment_plan' => ['plan1'], 'installments_count' => 3, 'deferred_days' => 30, 'deferred_months' => 2],
                 200,
                 true,
                 [],
@@ -50,11 +79,12 @@ class EligibilityTest extends TestCase
         ?array $expectedPaymentPlan = null,
         ?int $expectedInstallmentsCount = null
     ) {
-        $eligibility = new Eligibility($data, $responseCode);
+        $eligibility = new Eligibility($data);
 
         $this->assertSame($expectedIsEligible, $eligibility->isEligible());
         $this->assertSame($expectedReasons, $eligibility->getReasons());
         $this->assertSame($expectedConstraints, $eligibility->getConstraints());
+        $this->assertSame(FeePlan::KIND_GENERAL, $eligibility->getKind());
 
         if ($expectedPaymentPlan !== null) {
             $this->assertSame($expectedPaymentPlan, $eligibility->getPaymentPlan());

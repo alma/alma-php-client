@@ -22,15 +22,12 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Endpoint\Result;
-
-use Alma\API\Entities\FeePlan;
-use Alma\API\Entities\PaymentPlanInterface;
-use Alma\API\Entities\PaymentPlanTrait;
+namespace Alma\API\Entities;
 
 class Eligibility implements PaymentPlanInterface
 {
     use PaymentPlanTrait;
+
     /**
      * @var bool
      */
@@ -347,5 +344,10 @@ class Eligibility implements PaymentPlanInterface
         $this->annualInterestRate = $annualInterestRate;
 
         return $this;
+    }
+
+    public function getFeePlanKey(): string
+    {
+        return implode('_', [FeePlan::KIND_GENERAL, $this->installmentsCount, $this->deferredDays, $this->deferredMonths]);
     }
 }

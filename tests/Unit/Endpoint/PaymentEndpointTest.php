@@ -2,6 +2,9 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
+use Alma\API\Entities\DTO\CustomerDto;
+use Alma\API\Entities\DTO\OrderDto;
+use Alma\API\Entities\DTO\PaymentDto;
 use Alma\API\Entities\Order;
 use Alma\API\Entities\Payment;
 use Alma\API\Exceptions\ClientException;
@@ -163,7 +166,14 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
 
         // Assertions
-        $this->assertInstanceOf(Payment::class, $this->paymentService->create(1000));
+        $this->assertInstanceOf(
+            Payment::class,
+            $this->paymentService->create(
+                new PaymentDto(1000),
+                new OrderDto(),
+                new CustomerDto()
+            )
+        );
     }
 
     /**
@@ -181,7 +191,11 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(PaymentServiceException::class);
-        $paymentServiceMock->create(1000);
+        $paymentServiceMock->create(
+            new PaymentDto(1000),
+            new OrderDto(),
+            new CustomerDto()
+        );
     }
 
     /**
@@ -196,7 +210,11 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(PaymentServiceException::class);
-        $this->paymentService->create(1000);
+        $this->paymentService->create(
+            new PaymentDto(1000),
+            new OrderDto(),
+            new CustomerDto()
+        );
     }
 
     /**
@@ -211,7 +229,11 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(PaymentServiceException::class);
-        $this->paymentService->create(1000);
+        $this->paymentService->create(
+            new PaymentDto(1000),
+            new OrderDto(),
+            new CustomerDto()
+        );
     }
 
     /**
