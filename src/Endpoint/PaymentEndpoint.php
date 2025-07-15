@@ -67,7 +67,7 @@ class PaymentEndpoint extends AbstractEndpoint
         }
 
         if ($response->isError()) {
-            throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
+            throw new PaymentEndpointException(var_export($data, true), $request, $response);
         }
 
         return new Payment($response->getJson());

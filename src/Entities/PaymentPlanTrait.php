@@ -73,6 +73,6 @@ trait PaymentPlanTrait
      */
     public function isCredit(): bool
     {
-        return $this->getInstallmentsCount() > 4;
+        return $this->getInstallmentsCount() > 4 && (! $this->getDeferredDays() && ! $this->getDeferredMonths());
     }
 }

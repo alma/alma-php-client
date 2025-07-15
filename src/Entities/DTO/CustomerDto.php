@@ -96,7 +96,7 @@ class CustomerDto {
             'birth_date'              => $this->birthDate,
             'banking_data_collected'  => $this->bankingDataCollected,
         ], function($value) {
-            return $value !== null && $value !== '';
+            return $value !== null && $value !== '' && !(is_array($value) && empty($value));
         });
     }
 }
