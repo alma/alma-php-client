@@ -135,7 +135,7 @@ class PaymentDto {
             'shipping_address'     => $this->shippingAddress,
             'cart'                 => $this->cart,
         ], function($value) {
-            return $value !== null && $value !== '';
+            return $value !== null && $value !== '' && !(is_array($value) && empty($value));
         });
     }
 }

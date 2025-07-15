@@ -94,7 +94,7 @@ class CartItemDto {
             'picture_url'       => $this->pictureUrl,
             'requires_shipping' => $this->requiresShipping
         ], function($value) {
-            return $value !== null && $value !== '';
+            return $value !== null && $value !== '' && !(is_array($value) && empty($value));
         });
     }
 }

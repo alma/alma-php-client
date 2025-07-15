@@ -96,7 +96,7 @@ class AddressDto {
             'country'            => $this->country,
             'company'            => $this->company,
         ], function($value) {
-            return $value !== null && $value !== '';
+            return $value !== null && $value !== '' && !(is_array($value) && empty($value));
         });
     }
 }

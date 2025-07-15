@@ -42,8 +42,8 @@ class ClientConfiguration
 
     private string $apiKey;
 
-    private array $userAgentComponents;
-    private array $config;
+    private array $userAgentComponents = [];
+    private array $config = [];
     private string $baseUri = self::LIVE_API_URL;
 
     /**

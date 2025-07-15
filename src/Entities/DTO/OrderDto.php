@@ -44,7 +44,7 @@ class OrderDto {
             'customer_url'       => $this->customerUrl,
             'comment'            => $this->comment,
         ], function($value) {
-            return $value !== null && $value !== '';
+            return $value !== null && $value !== '' && !(is_array($value) && empty($value));
         });
     }
 }

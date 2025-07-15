@@ -74,6 +74,11 @@ class CurlClient implements ClientInterface
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $url = $this->config->getBaseUri() . $request->getUri()->getPath();
+        $query = $request->getUri()->getQuery();
+        if (!empty($query)) {
+            $url .= '?' . $query;
+        }
+
         $headers = array_merge($this->config->getHeaders(), $request->getHeaders());
 
         $this->init($url);

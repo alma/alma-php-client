@@ -17,6 +17,13 @@ class FeePlanList extends ArrayObject
         $this[] = $feePlan;
     }
 
+	public function addList(FeePlanList $feePlanList): void
+	{
+		foreach ($feePlanList as $feePlan) {
+			$this->add($feePlan);
+		}
+	}
+
     /**
      * Returns a FeePlan by its plan key.
      * @param string $planKey
@@ -38,30 +45,27 @@ class FeePlanList extends ArrayObject
      */
     public function filterFeePlanList($paymentMethod): FeePlanList
     {
-        switch ($paymentMethod) {
-            case 'credit':
-                $feePlanList = new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+	    $feePlanList = new FeePlanList();
+        if (in_array('credit', $paymentMethod)) {
+	        $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
                     return $feePlan->isCredit();
-                })));
-                break;
-            case 'pnx':
-                $feePlanList = new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
-                    return $feePlan->isPnXOnly();
-                })));
-                break;
-            case 'pay-later':
-                $feePlanList = new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
-                    return $feePlan->isPayLaterOnly();
-                })));
-                break;
-            case 'pay-now':
-                $feePlanList = new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
-                    return $feePlan->isPayNow();
-                })));
-                break;
-            default:
-                $feePlanList = new FeePlanList();
+                }))));
         }
+	    if (in_array('pnx', $paymentMethod)) {
+		    $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+			    return $feePlan->isPnXOnly();
+		    }))));
+	    }
+	    if (in_array('pay-later', $paymentMethod)) {
+		    $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+			    return $feePlan->isPayLaterOnly();
+		    }))));
+	    }
+	    if (in_array('pay-now', $paymentMethod)) {
+		    $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+			    return $feePlan->isPayNow();
+		    }))));
+	    }
 
         return $feePlanList;
     }
