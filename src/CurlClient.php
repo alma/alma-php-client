@@ -166,7 +166,7 @@ class CurlClient implements ClientInterface
     }
 
     /** @codeCoverageIgnore Curl Wrapper used to test sendRequest function */
-    public function getError(): string
+    public function getError(): int
     {
         return curl_error($this->curlClient);
     }

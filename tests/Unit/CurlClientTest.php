@@ -5,6 +5,7 @@ namespace Alma\API\Tests\Unit;
 use Alma\API\ClientConfiguration;
 use Alma\API\CurlClient;
 use Alma\API\Exceptions\ClientException;
+use Alma\API\Exceptions\RequestException;
 use Alma\API\Request;
 use Alma\API\Response;
 use GuzzleHttp\Psr7\Stream;
@@ -25,7 +26,7 @@ class CurlClientTest extends TestCase
     private $requestMock;
 
     /** @var ClientConfiguration */
-    private $clientConfiguration;
+    private ClientConfiguration $clientConfiguration;
 
     private string $curlResponse = <<<EOF
 HTTP/2 200
@@ -104,7 +105,7 @@ EOF;
 
     /**
      * Ensure we can do send Requests
-     * @throws ClientException
+     * @throws ClientException|RequestException
      */
     public function testSendRequest()
     {
@@ -117,7 +118,7 @@ EOF;
 
     /**
      * Ensure we can do send Requests
-     * @throws ClientException
+     * @throws RequestException
      */
     public function testSendRequestWithError()
     {
