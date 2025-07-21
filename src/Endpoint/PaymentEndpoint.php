@@ -155,7 +155,7 @@ class PaymentEndpoint extends AbstractEndpoint
     public function flagAsPotentialFraud(string $id, string $reason = null): bool
     {
         $request = null;
-        $data = null;
+        $data = [];
         if (!empty($reason)) {
             $data = array("reason" => $reason);
         }

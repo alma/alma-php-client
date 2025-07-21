@@ -14,7 +14,7 @@ env:
   COMPOSER_VERSION: '{{ .COMPOSER_VERSION }}'
 
 tasks:
-  docker:build:
+  build:test:
     internal: true
     desc: Build the PHP test container
     cmds:
@@ -23,7 +23,7 @@ tasks:
   tests:
     desc: Execute PHPUnit tests on PHP {{ .PHP_VERSION }}
     deps:
-      - docker:build
+      - build:test
     cmds:
       - >-
         docker compose run --rm {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --configuration {{ .PHPUNIT_FILE }} --testsuite "Alma PHP Client Unit Test Suite" --coverage-xml ./.coverage
@@ -31,7 +31,7 @@ tasks:
   tests:integration:
     desc: Execute integration tests
     deps:
-      - docker:build
+      - build:test
     cmds:
        - >-
           docker compose run --rm {{ .COMPOSE_SERVICE }} composer exec phpunit --verbose -- --configuration {{ .PHPUNIT_FILE }} --testsuite "Alma PHP Client Integration Test Suite"
@@ -39,7 +39,7 @@ tasks:
   shell:
     desc: Connect to PHP container
     deps:
-      - docker:build
+      - build:test
     cmds:
       - sed 's/{MYVERSION}/{{ .PHPUNIT_VERSION }}/g' {{ .PHPUNIT_FILE }} > phpunit.xml
       - docker compose run --rm {{ .COMPOSE_SERVICE }} bash

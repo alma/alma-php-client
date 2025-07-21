@@ -12,10 +12,12 @@ includes:
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "7.4"
+      PHPUNIT_FILE: phpunit.dist.xml
   "8.0":
     taskfile: Taskfile.php.yml
     vars:
       PHP_VERSION: "8.0"
+      PHPUNIT_FILE: phpunit.dist.xml
   "8.1":
     taskfile: Taskfile.php.yml
     vars:

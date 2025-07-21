@@ -16,6 +16,10 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
     /** @var CurlClient */
     protected CurlClient $client;
 
+    /**
+     * Init the Endpoint
+     * @param CurlClient $client The Client to use with the Endpoint
+     */
     public function __construct(CurlClient $client)
     {
         $this->client = $client;
@@ -23,6 +27,11 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
     }
 
     /**
+     * Create a Request
+     * @param string $method The HTTP verb of the Request
+     * @param string $uri The endpoint URI
+     * @param array $body The body of the Request
+     * @return Request The Request object
      * @throws RequestException
      */
     private function createRequest(string $method, string $uri, array $body = []): Request {
@@ -33,6 +42,11 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
     }
 
     /**
+     * Create a GET Request
+     *
+     * @param string $uri The endpoint URI
+     * @param array $queryParams The query parameters
+     * @return Request The Request object
      * @throws RequestException
      */
     public function createGetRequest(string $uri, array $queryParams = []): Request {
@@ -44,20 +58,34 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
     }
 
     /**
+     * Create a POST Request
+     *
+     * @param string $uri The endpoint URI
+     * @param array $body The body attributes
+     * @return Request The Request object
      * @throws RequestException
      */
-    public function createPostRequest(string $uri, array $body = null): Request {
+    public function createPostRequest(string $uri, array $body = []): Request {
         return $this->createRequest('POST', $uri, $body);
     }
 
     /**
+     * Create a PUT Request
+     *
+     * @param string $uri The endpoint URI
+     * @param array $body The body attributes
+     * @return Request The Request object
      * @throws RequestException
      */
-    public function createPutRequest(string $uri, array $body = null): Request {
+    public function createPutRequest(string $uri, array $body = []): Request {
         return $this->createRequest('PUT', $uri, $body);
     }
 
     /**
+     * Create de DELETE Request
+     *
+     * @param string $uri The endpoint URI
+     * @return Request The Request object
      * @throws RequestException
      */
     public function createDeleteRequest(string $uri): Request {

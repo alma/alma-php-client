@@ -40,16 +40,16 @@ class FeePlanList extends ArrayObject
 
     /**
      * Returns a list of Fee Plans that are only available for the given payment method.
-     * @param $paymentMethod
+     * @param array $paymentMethod
      * @return FeePlanList
      */
-    public function filterFeePlanList($paymentMethod): FeePlanList
+    public function filterFeePlanList(array $paymentMethod): FeePlanList
     {
 	    $feePlanList = new FeePlanList();
         if (in_array('credit', $paymentMethod)) {
 	        $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
-                    return $feePlan->isCredit();
-                }))));
+                return $feePlan->isCredit();
+            }))));
         }
 	    if (in_array('pnx', $paymentMethod)) {
 		    $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {

@@ -25,6 +25,7 @@
 
 namespace Alma\API\Entities;
 
+use Alma\Gateway\WooCommerce\Exception\CoreException;
 use InvalidArgumentException;
 
 class FeePlan implements PaymentPlanInterface
@@ -84,10 +85,10 @@ class FeePlan implements PaymentPlanInterface
     /** @var string Kind of payments this fee plan applies to (see kinds above, most likely KIND_GENERAL) */
     protected string $kind;
 
-    /** @var ?int Maximum purchase amount allowed for this fee plan */
-    protected ?int $maxPurchaseAmount;
+    /** @var int Maximum purchase amount allowed for this fee plan */
+    protected int $maxPurchaseAmount;
 
-    /** @var mixed|null Local override of the maximum purchase amount allowed for this fee plan */
+    /** @var int|null Local override of the maximum purchase amount allowed for this fee plan */
     private $overrideMaxPurchaseAmount;
 
     /** @var ?string */
@@ -99,10 +100,10 @@ class FeePlan implements PaymentPlanInterface
     /** @var ?int Fixed fees in cents paid for by the merchant */
     protected ?int $merchantFeeFixed;
 
-    /** @var ?int Minimum purchase amount allowed for this fee plan */
-    protected ?int $minPurchaseAmount;
+    /** @var int Minimum purchase amount allowed for this fee plan */
+    protected int $minPurchaseAmount;
 
-    /** @var mixed|null Local override of the minimum purchase amount allowed for this fee plan */
+    /** @var int|null Local override of the minimum purchase amount allowed for this fee plan */
     private $overrideMinPurchaseAmount;
 
     /** @var ?bool Whether payout is made on acceptance of the payment plan */
@@ -209,7 +210,7 @@ class FeePlan implements PaymentPlanInterface
     /**
      * Get the minimum purchase amount allowed for this fee plan.
      * @param bool $localOverride If true, returns the local override if set, otherwise returns the minimum amount given by API.
-     * @return ?int
+     * @return int
      */
     public function getMinPurchaseAmount(bool $localOverride = false): int
     {
@@ -218,6 +219,16 @@ class FeePlan implements PaymentPlanInterface
         }
         return $this->minPurchaseAmount;
     }
+
+	/**
+	 * Values from the API can't be overridden. Use setOverrideMinPurchaseAmount() instead.
+	 * @throws CoreException
+	 * @return void
+	 */
+	public function setMinPurchaseAmount(): void
+	{
+		throw new InvalidArgumentException("Values from the API can't be overridden. Use setOverrideMinPurchaseAmount() instead.");
+	}
 
     /**
      * Set a local override to the minimum purchase amount allowed for this fee plan.
@@ -236,7 +247,7 @@ class FeePlan implements PaymentPlanInterface
     /**
      * Get the maximum purchase amount allowed for this fee plan.
      * @param bool $localOverride If true, returns the local override if set, otherwise returns the maximum amount given by API.
-     * @return ?int
+     * @return int
      */
     public function getMaxPurchaseAmount(bool $localOverride = false): int
     {
@@ -245,6 +256,16 @@ class FeePlan implements PaymentPlanInterface
         }
         return $this->maxPurchaseAmount;
     }
+
+	/**
+	 * Values from the API can't be overridden. Use setOverrideMaxPurchaseAmount() instead.
+	 * @throws CoreException
+	 * @return void
+	 */
+	public function setMaxPurchaseAmount(): void
+	{
+		throw new InvalidArgumentException("Values from the API can't be overridden. Use setOverrideMaxPurchaseAmount() instead.");
+	}
 
     /**
      * Set a local override to the maximum purchase amount allowed for this fee plan.

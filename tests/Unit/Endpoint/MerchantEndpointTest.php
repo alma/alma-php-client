@@ -26,7 +26,9 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
             "deferredMonths": 0,
             "deferredDays": 0,
             "deferredTriggerLimitDays": 0,
-            "allowed": 1
+            "allowed": 1,
+            "min_purchase_amount": 500,
+            "max_purchase_amount": 1000
         }
     ]';
 
@@ -54,6 +56,11 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         $this->badResponseMock->shouldReceive('getBody')->andReturn(self::FEE_PLAN_JSON_RESPONSE);
 
         $this->merchantService = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])->makePartial();
+    }
+
+    public function tearDown(): void
+    {
+        Mockery::close();
     }
 
     /**
@@ -128,7 +135,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     public function testFeePlans()
     {
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->twice()->andReturn($this->responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->responseMock);
 
         // MerchantService
         $result = $this->merchantService->getFeePlanList();

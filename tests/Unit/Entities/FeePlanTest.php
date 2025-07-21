@@ -12,6 +12,7 @@ class FeePlanTest extends TestCase
         $feePlan = (new FeePlan([
             'deferred_trigger_limit_days' => 0,
             'kind'                        => 'general',
+            'min_purchase_amount'         => 500,
             'max_purchase_amount'         => 1000,
         ]))->setDeferredMonths(5)
            ->setDeferredDays(3)
@@ -22,6 +23,7 @@ class FeePlanTest extends TestCase
         $this->assertEquals(3, $feePlan->getDeferredDays());
         $this->assertEquals(5, $feePlan->getDeferredMonths());
         $this->assertEquals(0, $feePlan->getDeferredTriggerLimitDays());
+        $this->assertEquals(500, $feePlan->getMinPurchaseAmount());
         $this->assertEquals(1000, $feePlan->getMaxPurchaseAmount());
     }
 }
