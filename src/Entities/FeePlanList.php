@@ -69,4 +69,18 @@ class FeePlanList extends ArrayObject
 
         return $feePlanList;
     }
+
+    /**
+     * Returns a FeePlanList containing only enabled FeePlans.
+     *
+     * @return FeePlanList
+     */
+    public function filterEnabled(): FeePlanList
+    {
+        $feePlanList = new FeePlanList();
+        $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+            return $feePlan->isEnabled();
+        }))));
+        return $feePlanList;
+    }
 }
