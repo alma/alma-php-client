@@ -2,7 +2,7 @@
 
 namespace Alma\API\Domain;
 
-interface OrderItemInterface {
+interface OrderLineInterface {
 
 	public function __call( $name, $arguments );
 }
