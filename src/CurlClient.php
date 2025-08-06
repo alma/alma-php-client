@@ -25,10 +25,10 @@
 
 namespace Alma\API;
 
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\DependenciesException;
-use Alma\API\Exceptions\RequestException;
-use Alma\API\Lib\StreamHelper;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\DependenciesException;
+use Alma\API\Exception\RequestException;
+use Alma\API\Helper\StreamHelper;
 use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Client\ClientInterface;

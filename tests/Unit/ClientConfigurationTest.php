@@ -3,7 +3,7 @@
 namespace Alma\API\Tests\Unit;
 
 use Alma\API\ClientConfiguration;
-use Alma\API\Exceptions\ClientConfigurationException;
+use Alma\API\Exception\ClientConfigurationException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

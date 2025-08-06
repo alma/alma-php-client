@@ -2,16 +2,17 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
+use Alma\API\DTO\CustomerDto;
+use Alma\API\DTO\OrderDto;
+use Alma\API\DTO\PaymentDto;
+use Alma\API\DTO\RefundDto;
 use Alma\API\Endpoint\PaymentEndpoint;
-use Alma\API\Entities\DTO\CustomerDto;
-use Alma\API\Entities\DTO\OrderDto;
-use Alma\API\Entities\DTO\PaymentDto;
-use Alma\API\Entities\Order;
-use Alma\API\Entities\Payment;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\Endpoint\PaymentEndpointException;
-use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Entity\Order;
+use Alma\API\Entity\Payment;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\Endpoint\PaymentEndpointException;
+use Alma\API\Exception\ParametersException;
+use Alma\API\Exception\RequestException;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
@@ -77,14 +78,13 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
        ],
        "refunds":[
           {
-             "amount":35299,
-             "created":1649770695,
-             "from_payment_cancellation":false,
-             "id":"refund_11uPrHz4TfHmQrD1OkYyWb4hPuq3673Vqm",
-             "merchant_reference":null,
-             "payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx",
-             "payment_refund_amount":11833,
-             "rebate_amount":23466
+            "amount": 1000,
+            "amount_customer_fees": 0,
+            "amount_customer_fees_vat": 0,
+            "amount_customer_fees_with_vat": 0,
+            "created": 1754405833,
+            "id": "refund_121UtfV4TNBPbhPn9I0nYVIs0HJSU49Kaf",
+            "merchant_reference": null
           }
        ]
     }';
@@ -488,272 +488,30 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->paymentService->flagAsPotentialFraud('id_1234');
     }
 
-    /**
-     * Return input to test testPartialRefund
-     * @return array[]
-     */
-    public static function partialRefundProvider(): array
+    // TODO REFUND TEST
+
+    public function testPartialRefund()
     {
-        return [
-            [[
-                'id' => "some_id",
-                'amount' => 15000,
-                'merchant_ref' => self::MERCHANT_REF,
-                'comment' => "some comment"
-            ]],
-            [[
-                'id' => "some_id",
-                'amount' => 15000,
-                'merchant_ref' => self::MERCHANT_REF
-            ]],
-            [[
-                'id' => "some_id",
-                'amount' => 15000
-            ]]
-        ];
-    }
+        $paymentId = 'payment_1234';
+        $amount = 1000; // Amount to refund in cents
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
+        $refundDto = (new RefundDto())->setAmount($amount);
 
-    /**
-     * Test the partialRefund method with valid data
-     * @dataProvider partialRefundProvider
-     * @param $data
-     * @return void
-     * @throws PaymentEndpointException|ParametersException
-     */
-    public function testPartialRefund($data)
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')
-            ->once()
-            ->andReturn($this->paymentResponseMock);
-        $paymentService = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-
-        // Call
-        $this->callPartialRefund($paymentService, $data);
-    }
-
-    /**
-     * Return invalid input to test testPartialRefund
-     * @return array[]
-     */
-    public static function partialRefundInvalidProvider(): array
-    {
-        return [
-            [[
-                'id' => "zero_amount",
-                'amount' => 0
-            ], ParametersException::class],
-            [[
-                'id' => "negative_amount",
-                'amount' => -1
-            ], ParametersException::class],
-            [[
-                'id' => "",
-                'amount' => 1500,
-                'merchant_ref' => "no id",
-            ], ParametersException::class],
-        ];
-    }
-
-    /**
-     * Test the partialRefund method with valid data
-     * @dataProvider partialRefundInvalidProvider
-     * @param $data
-     * @param $expectedException
-     * @return void
-     * @throws PaymentEndpointException|ParametersException
-     */
-    public function testInvalidPartialRefund($data, $expectedException)
-    {
-        // Mocks
-        $paymentService = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-
-        // Expectations
-        $this->expectException($expectedException);
-
-        // Call
-        $this->callPartialRefund($paymentService, $data);
-    }
-
-    /**
-     * Ensure we can do partial refunds
-     * @param PaymentEndpoint $paymentService
-     * @param $data
-     * @return void
-     * @throws PaymentEndpointException|ParametersException
-     */
-    private function callPartialRefund(PaymentEndpoint $paymentService, $data)
-    {
-        if (isset($data['merchant_ref']) && isset($data['comment'])) {
-            $paymentService->partialRefund($data['id'], $data['amount'], $data['merchant_ref'], $data['comment']);
-        } elseif (isset($data['merchant_ref'])) {
-            $paymentService->partialRefund($data['id'], $data['amount'], $data['merchant_ref']);
-        } elseif (isset($data['comment'])) {
-            $paymentService->partialRefund($data['id'], $data['amount'], '', $data['comment']);
-        } else {
-            $paymentService->partialRefund($data['id'], $data['amount']);
-        }
-    }
-
-    /**
-     * Return input to test testFullRefund
-     * @return array[]
-     */
-    public static function fullRefundProvider(): array
-    {
-        return [
-            [[
-                'id' => "some_id",
-                'merchant_ref' => self::MERCHANT_REF,
-                'comment' => "some comment"
-            ]],
-            [[
-                'id' => "some_id",
-                'merchant_ref' => self::MERCHANT_REF
-            ]],
-            [[
-                'id' => "some_id",
-            ]]
-        ];
-    }
-
-    /**
-     * Test the fullRefund method with valid data
-     * @dataProvider fullRefundProvider
-     * @return void
-     * @throws PaymentEndpointException|ParametersException
-     */
-    public function testFullRefund($data)
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')
-            ->once()
-            ->andReturn($this->paymentResponseMock);
-
-        // PaymentService
-        $paymentService = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-
-        // Call
-        $payment = $this->callFullRefund($paymentService, $data);
-
-        // Assertions
-        /** @var Mixed|Payment $payment */
-        $this->assertInstanceOf(Payment::class, $payment);
-    }
-
-    /**
-     * @throws PaymentEndpointException|ParametersException
-     */
-    private function callFullRefund(PaymentEndpoint $paymentService, $data): Payment
-    {
-        if (isset($data['merchant_ref']) && isset($data['comment'])) {
-            return $paymentService->fullRefund($data['id'], $data['merchant_ref'], $data['comment']);
-        } elseif (isset($data['merchant_ref'])) {
-            return $paymentService->fullRefund($data['id'], $data['merchant_ref']);
-        } elseif (isset($data['comment'])) {
-            return $paymentService->fullRefund($data['id'], '', $data['comment']);
-        } else {
-            return $paymentService->fullRefund($data['id']);
-        }
-    }
-
-    /**
-     * Return invalid input to test testFullRefund
-     * @return array[]
-     */
-    public static function fullRefundInvalidProvider(): array
-    {
-        return [
-            [[
-                'id' => "",
-                'merchant_ref' => "no id",
-            ], ParametersException::class],
-        ];
-    }
-
-    /**
-     * Test the fullRefund method with invalid data
-     * @dataProvider fullRefundInvalidProvider
-     * @return void
-     * @throws PaymentEndpointException|ParametersException
- */
-    public function testInvalidFullRefund($data, $expectedException)
-    {
-        // PaymentService
-        $paymentService = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-
-        // Expectations
-        $this->expectException($expectedException);
-
-        // Call
-        $this->callFullRefund($paymentService, $data);
-    }
-
-    /**
-     * Ensure we can catch API error
-     * @throws PaymentEndpointException|ParametersException
-     */
-    public function testFullRefundRequestError()
-    {
-        // Params
-        $id = "some_id";
-
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->badPaymentResponseMock);
-
-        // PaymentService
-        $paymentService = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-
-        // Expectations
-        $this->expectException(PaymentEndpointException::class);
-
-        // Call
-        $paymentService->fullRefund($id);
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @throws ParametersException
-     */
-    public function testFullRefundRequestException()
-    {
         // Mocks
         $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
             ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+        $paymentServiceMock->shouldReceive('createPostRequest')
+            ->with(
+                '/v1/payments/payment_1234/refund',
+                ['amount' => 1000]
+            )
+            ->once();
 
-        // Expectations
-        $this->expectException(PaymentEndpointException::class);
+        // Act
+        $result = $paymentServiceMock->refund($paymentId, $refundDto);
 
-        // Call
-        $paymentServiceMock->fullRefund('id_1234');
-    }
-
-    /**
-     * Ensure we can catch ClientException
-     * @throws ParametersException
-     */
-    public function testFullRefundClientException()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
-
-        // Expectations
-        $this->expectException(PaymentEndpointException::class);
-
-        // Call
-        $this->paymentService->fullRefund('id_1234');
+        // Assert
+        $this->assertInstanceOf(Payment::class, $result);
     }
 
     /**

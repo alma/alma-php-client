@@ -25,10 +25,10 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Entities\DataExport;
-use Alma\API\Exceptions\Endpoint\DataExportEndpointException;
-use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Entity\DataExport;
+use Alma\API\Exception\Endpoint\DataExportEndpointException;
+use Alma\API\Exception\ParametersException;
+use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class DataExportEndpoint extends AbstractEndpoint

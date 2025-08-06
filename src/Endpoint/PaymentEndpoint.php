@@ -25,15 +25,14 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Entities\DTO\CustomerDto;
-use Alma\API\Entities\DTO\OrderDto;
-use Alma\API\Entities\DTO\PaymentDto;
-use Alma\API\Entities\Order;
-use Alma\API\Entities\Payment;
-use Alma\API\Exceptions\Endpoint\PaymentEndpointException;
-use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\RequestException;
-use Alma\API\Payloads\Refund;
+use Alma\API\DTO\CustomerDto;
+use Alma\API\DTO\OrderDto;
+use Alma\API\DTO\PaymentDto;
+use Alma\API\DTO\RefundDto;
+use Alma\API\Entity\Order;
+use Alma\API\Entity\Payment;
+use Alma\API\Exception\Endpoint\PaymentEndpointException;
+use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class PaymentEndpoint extends AbstractEndpoint
@@ -175,54 +174,19 @@ class PaymentEndpoint extends AbstractEndpoint
     }
 
     /**
-     * Refund a payment partially
-     * @param string $id ID of the payment to be refunded
-     * @param int $amount Amount that should be refunded. Must be expressed as a cents
-     *                          integer
-     * @param string $merchantReference Merchant reference for the refund to be executed
-     * @param string $comment
+     * Refund a payment - full or partial depending on the RefundDto provided.
      *
-     * @return Payment
-     * @throws ParametersException
-     * @throws PaymentEndpointException
-     */
-    public function partialRefund(string $id, int $amount, string $merchantReference = "", string $comment = ""): Payment
-    {
-        return $this->doRefund(
-            Refund::create($id, $amount, $merchantReference, $comment)
-        );
-    }
-
-    /**
-     * Totally refund a payment
-     * @param string $id ID of the payment to be refunded
-     * @param string $merchantReference Merchant reference for the refund to be executed
-     * @param string $comment
-     *
-     * @return Payment
-     * @throws ParametersException
-     * @throws PaymentEndpointException
-     */
-    public function fullRefund(string $id, string $merchantReference = "", string $comment = ""): Payment
-    {
-        return $this->doRefund(
-            Refund::create($id, null, $merchantReference, $comment)
-        );
-    }
-
-    /**
-     * Totally refund a payment
-     * @param Refund $refundPayload contains all the refund info
+     * @param string $paymentId ID of the payment to be refunded
+     * @param RefundDto $refundDto contains all the refund info
      *
      * @return Payment
      * @throws PaymentEndpointException
      */
-    private function doRefund(Refund $refundPayload): Payment
+    public function refund(string $paymentId, RefundDto $refundDto): Payment
     {
-        $id = $refundPayload->getId();
         try {
             $request = null;
-            $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/refund", $refundPayload->getRequestBody());
+            $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$paymentId/refund", $refundDto->toArray());
             $response = $this->client->sendRequest($request);
         } catch (RequestException|ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);

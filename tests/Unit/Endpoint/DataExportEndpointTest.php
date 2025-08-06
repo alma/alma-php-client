@@ -3,12 +3,12 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\DataExportEndpoint;
-use Alma\API\Entities\DataExport;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\Endpoint\DataExportEndpointException;
-use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\RequestException;
-use Alma\API\Lib\StreamHelper;
+use Alma\API\Entity\DataExport;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\Endpoint\DataExportEndpointException;
+use Alma\API\Exception\ParametersException;
+use Alma\API\Exception\RequestException;
+use Alma\API\Helper\StreamHelper;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;

@@ -3,9 +3,9 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\EligibilityEndpoint;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\Endpoint\EligibilityEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\Endpoint\EligibilityEndpointException;
+use Alma\API\Exception\RequestException;
 use Alma\API\Response;
 use Mockery;
 

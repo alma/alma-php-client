@@ -3,7 +3,7 @@
 namespace Alma\API\Endpoint;
 
 use Alma\API\CurlClient;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\RequestException;
 use Alma\API\Request;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;

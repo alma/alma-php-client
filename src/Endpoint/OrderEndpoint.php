@@ -25,12 +25,12 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Entities\Order;
-use Alma\API\Exceptions\Endpoint\OrderEndpointException;
-use Alma\API\Exceptions\MissingKeyException;
-use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\RequestException;
-use Alma\API\Lib\ArrayUtils;
+use Alma\API\Entity\Order;
+use Alma\API\Exception\Endpoint\OrderEndpointException;
+use Alma\API\Exception\MissingKeyException;
+use Alma\API\Exception\ParametersException;
+use Alma\API\Exception\RequestException;
+use Alma\API\Helper\ArrayHelper;
 use Alma\API\PaginatedResult;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -39,12 +39,12 @@ class OrderEndpoint extends AbstractEndpoint
 {
     const ORDERS_ENDPOINT_V1 = '/v1/orders';
     const ORDERS_ENDPOINT = '/v2/orders';
-    private ArrayUtils $arrayUtils;
+    private ArrayHelper $arrayUtils;
 
     public function __construct(ClientInterface $client)
     {
         parent::__construct($client);
-        $this->arrayUtils = new ArrayUtils();
+        $this->arrayUtils = new ArrayHelper();
     }
 
     /**
@@ -181,7 +181,7 @@ class OrderEndpoint extends AbstractEndpoint
         }
 
         try {
-            $arrayUtils = new ArrayUtils();
+            $arrayUtils = new ArrayHelper();
             $arrayUtils->checkMandatoryKeys(['status', 'is_shipped'], $orderData);
         } catch (MissingKeyException $e) {
             throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus', 0, $e);

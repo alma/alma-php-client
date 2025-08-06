@@ -2,8 +2,8 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Exceptions\Endpoint\ShareOfCheckoutEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\Endpoint\ShareOfCheckoutEndpointException;
+use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class ShareOfCheckoutEndpoint extends AbstractEndpoint
