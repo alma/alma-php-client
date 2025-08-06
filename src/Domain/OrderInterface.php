@@ -6,7 +6,7 @@ interface OrderInterface {
 
 	public function __call( string $name, array $arguments );
 
-	public function getOrderItems(): array;
+	public function getOrderLines(): array;
 
 	public function getPaymentId(): string;
 
