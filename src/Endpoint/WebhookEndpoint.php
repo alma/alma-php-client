@@ -25,9 +25,9 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Entities\Webhook;
-use Alma\API\Exceptions\Endpoint\WebhookEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Entity\Webhook;
+use Alma\API\Exception\Endpoint\WebhookEndpointException;
+use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class WebhookEndpoint extends AbstractEndpoint

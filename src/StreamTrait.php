@@ -2,7 +2,7 @@
 
 namespace Alma\API;
 
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\RequestException;
 use GuzzleHttp\Psr7\Stream;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;

@@ -3,9 +3,9 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\ShareOfCheckoutEndpoint;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\Endpoint\ShareOfCheckoutEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\Endpoint\ShareOfCheckoutEndpointException;
+use Alma\API\Exception\RequestException;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;

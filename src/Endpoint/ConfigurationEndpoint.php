@@ -25,8 +25,8 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Exceptions\Endpoint\ConfigurationEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\Endpoint\ConfigurationEndpointException;
+use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class ConfigurationEndpoint extends AbstractEndpoint

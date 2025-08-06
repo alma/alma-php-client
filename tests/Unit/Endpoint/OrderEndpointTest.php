@@ -3,12 +3,12 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Endpoint\OrderEndpoint;
-use Alma\API\Entities\Order;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\Endpoint\OrderEndpointException;
-use Alma\API\Exceptions\ParametersException;
-use Alma\API\Exceptions\RequestException;
-use Alma\API\Lib\ArrayUtils;
+use Alma\API\Entity\Order;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\Endpoint\OrderEndpointException;
+use Alma\API\Exception\ParametersException;
+use Alma\API\Exception\RequestException;
+use Alma\API\Helper\ArrayHelper;
 use Alma\API\PaginatedResult;
 use Alma\API\Response;
 use Mockery;
@@ -77,7 +77,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     /** @var OrderEndpoint|Mock */
     protected $orderServiceMock;
 
-    /** @var ArrayUtils|Mock */
+    /** @var ArrayHelper|Mock */
     protected $arrayUtilsMock;
 
     /** @var Response|Mock */

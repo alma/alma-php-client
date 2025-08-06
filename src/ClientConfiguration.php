@@ -25,7 +25,7 @@
 
 namespace Alma\API;
 
-use Alma\API\Exceptions\ClientConfigurationException;
+use Alma\API\Exception\ClientConfigurationException;
 use InvalidArgumentException;
 
 class ClientConfiguration

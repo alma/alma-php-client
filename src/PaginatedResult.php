@@ -24,7 +24,7 @@
 
 namespace Alma\API;
 
-use Alma\API\Lib\StreamHelper;
+use Alma\API\Exception\RequestException;
 use Iterator;
 
 class PaginatedResult implements Iterator
@@ -79,6 +79,9 @@ class PaginatedResult implements Iterator
         return isset($this->entities[$this->position]);
     }
 
+    /**
+     * @throws RequestException
+     */
     public function nextPage()
     {
         $callback = $this->nextPageCallback;

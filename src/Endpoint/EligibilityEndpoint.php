@@ -25,10 +25,10 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Entities\Eligibility;
-use Alma\API\Entities\EligibilityList;
-use Alma\API\Exceptions\Endpoint\EligibilityEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Entity\Eligibility;
+use Alma\API\Entity\EligibilityList;
+use Alma\API\Exception\Endpoint\EligibilityEndpointException;
+use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 

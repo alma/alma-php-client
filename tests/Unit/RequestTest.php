@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\Exceptions\RequestException;
-use Alma\API\Lib\StreamHelper;
+use Alma\API\Exception\RequestException;
+use Alma\API\Helper\StreamHelper;
 use Alma\API\Request;
 use Alma\API\Response;
 use GuzzleHttp\Psr7\Uri;

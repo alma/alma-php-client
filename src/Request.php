@@ -25,7 +25,7 @@
 
 namespace Alma\API;
 
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\RequestException;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;

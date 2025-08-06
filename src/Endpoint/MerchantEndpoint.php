@@ -25,13 +25,13 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Entities\DTO\MerchantBusinessEvent\CartInitiatedBusinessEvent;
-use Alma\API\Entities\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEvent;
-use Alma\API\Entities\FeePlan;
-use Alma\API\Entities\FeePlanList;
-use Alma\API\Entities\Merchant;
-use Alma\API\Exceptions\Endpoint\MerchantEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDtoDto;
+use Alma\API\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDtoDto;
+use Alma\API\Entity\FeePlan;
+use Alma\API\Entity\FeePlanList;
+use Alma\API\Entity\Merchant;
+use Alma\API\Exception\Endpoint\MerchantEndpointException;
+use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class MerchantEndpoint extends AbstractEndpoint
@@ -110,11 +110,11 @@ class MerchantEndpoint extends AbstractEndpoint
     /**
      * Prepare and send a business event for a cart initiated
      *
-     * @param CartInitiatedBusinessEvent $cartEventData
+     * @param CartInitiatedBusinessEventDtoDto $cartEventData
      * @return void
      * @throws MerchantEndpointException
      */
-    public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEvent $cartEventData)
+    public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEventDtoDto $cartEventData)
     {
         $cartEventDataPayload = [
             'event_type' => $cartEventData->getEventType(),
@@ -126,11 +126,11 @@ class MerchantEndpoint extends AbstractEndpoint
     /**
      * Prepare and send a business event for Order confirmed
      *
-     * @param OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent
+     * @param OrderConfirmedBusinessEventDtoDto $orderConfirmedBusinessEvent
      * @return void
      * @throws MerchantEndpointException
      */
-    public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEvent $orderConfirmedBusinessEvent)
+    public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEventDtoDto $orderConfirmedBusinessEvent)
     {
         $cartEventDataPayload = [
             'event_type' => $orderConfirmedBusinessEvent->getEventType(),

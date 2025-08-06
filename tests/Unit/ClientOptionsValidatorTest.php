@@ -3,8 +3,8 @@
 namespace Alma\API\Tests\Unit;
 
 use Alma\API\ClientConfiguration;
-use Alma\API\Exceptions\ParametersException;
-use Alma\API\Lib\ClientConfigurationValidator;
+use Alma\API\Exception\ParametersException;
+use Alma\API\Helper\ClientConfigurationValidatorHelper;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Psr\Log\NullLogger;
 
@@ -138,7 +138,7 @@ class ClientOptionsValidatorTest extends MockeryTestCase
     public function testClientOptionsValidator($options, $expectedResult)
     {
         /** @var mixed $validatedConfig */
-        $validatedConfig = ClientConfigurationValidator::validateOptions($options);
+        $validatedConfig = ClientConfigurationValidatorHelper::validateOptions($options);
 
         $this->assertEquals($expectedResult, $validatedConfig);
     }
@@ -151,6 +151,6 @@ class ClientOptionsValidatorTest extends MockeryTestCase
     {
         $this->expectException(ParametersException::class);
 
-        ClientConfigurationValidator::validateOptions($options);
+        ClientConfigurationValidatorHelper::validateOptions($options);
     }
 }

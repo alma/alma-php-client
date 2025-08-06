@@ -4,10 +4,10 @@ namespace Alma\API\Tests\Unit\Endpoint;
 
 
 use Alma\API\Endpoint\WebhookEndpoint;
-use Alma\API\Entities\Webhook;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\Endpoint\WebhookEndpointException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Entity\Webhook;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\Endpoint\WebhookEndpointException;
+use Alma\API\Exception\RequestException;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;

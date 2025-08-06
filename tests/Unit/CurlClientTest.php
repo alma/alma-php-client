@@ -4,8 +4,8 @@ namespace Alma\API\Tests\Unit;
 
 use Alma\API\ClientConfiguration;
 use Alma\API\CurlClient;
-use Alma\API\Exceptions\ClientException;
-use Alma\API\Exceptions\RequestException;
+use Alma\API\Exception\ClientException;
+use Alma\API\Exception\RequestException;
 use Alma\API\Request;
 use Alma\API\Response;
 use GuzzleHttp\Psr7\Stream;
@@ -52,7 +52,7 @@ EOF;
 
         // Mocks
         $this->requestMock = Mockery::mock(Request::class);
-        $this->requestMock->shouldReceive('getUri')->andReturn(new Uri('https://api.getalma.eu'));
+        $this->requestMock->shouldReceive('getUri')->andReturn(new Uri('https://api.getalma.eu/v1/test?param=value'));
         $this->requestMock->shouldReceive('getMethod')->andReturn('GET');
         $this->requestMock->shouldReceive('getHeaders')->andReturn([]);
         $this->requestMock->shouldReceive('getBody')->andReturn($this->stringToStream('The content'));
