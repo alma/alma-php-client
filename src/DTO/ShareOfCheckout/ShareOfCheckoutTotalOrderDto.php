@@ -10,12 +10,24 @@ class ShareOfCheckoutTotalOrderDto implements DTOInterface
     private int $totalAmount;
     private string $currency;
 
-    public function __construct(int $totalOrderCount, int $totalAmount, string $currency) {
+    /**
+     * Constructor for ShareOfCheckoutTotalOrderDto.
+     * @param int $totalOrderCount
+     * @param int $totalAmount
+     * @param string $currency
+     */
+    public function __construct(int $totalOrderCount, int $totalAmount, string $currency)
+    {
         $this->setTotalOrderCount($totalOrderCount);
         $this->setTotalAmount($totalAmount);
         $this->setCurrency($currency);
     }
 
+    /**
+     * Set the total order count.
+     * @param int $totalOrderCount
+     * @return $this
+     */
     public function setTotalOrderCount(int $totalOrderCount): self
     {
         $this->totalOrderCount = $totalOrderCount;
@@ -28,17 +40,27 @@ class ShareOfCheckoutTotalOrderDto implements DTOInterface
         return $this;
     }
 
+    /**
+     * Set the currency.
+     * @param string $currency
+     * @return $this
+     */
     public function setCurrency(string $currency): self
     {
         $this->currency = $currency;
         return $this;
     }
 
-    public function toArray(): array {
+    /**
+     * Convert the DTO to an array.
+     * @return array
+     */
+    public function toArray(): array
+    {
         return [
             "total_order_count" => $this->totalOrderCount,
-			"total_amount" => $this->totalAmount,
-		    "currency" => $this->currency,
+            "total_amount" => $this->totalAmount,
+            "currency" => $this->currency,
         ];
     }
 }
