@@ -28,13 +28,13 @@ class ShareOfCheckoutTotalOrderDto implements DTOInterface
      * @param int $totalOrderCount
      * @return $this
      */
-    public function setTotalOrderCount(int $totalOrderCount): self
+    private function setTotalOrderCount(int $totalOrderCount): self
     {
         $this->totalOrderCount = $totalOrderCount;
         return $this;
     }
 
-    public function setTotalAmount(int $totalAmount): self
+    private function setTotalAmount(int $totalAmount): self
     {
         $this->totalAmount = $totalAmount;
         return $this;
@@ -45,7 +45,7 @@ class ShareOfCheckoutTotalOrderDto implements DTOInterface
      * @param string $currency
      * @return $this
      */
-    public function setCurrency(string $currency): self
+    private function setCurrency(string $currency): self
     {
         $this->currency = $currency;
         return $this;

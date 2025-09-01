@@ -19,10 +19,7 @@ class ShareOfCheckoutTotalOrderDtoTest extends TestCase
             $data['total_order_count'],
             $data['total_amount'],
             $data['currency']
-        ))
-            ->setTotalOrderCount($data['total_order_count'])
-            ->setTotalAmount($data['total_amount'])
-            ->setCurrency($data['currency']);
+        ));
 
         $this->assertEquals($data, $shareOfCheckoutTotalOrderDto->toArray());
 

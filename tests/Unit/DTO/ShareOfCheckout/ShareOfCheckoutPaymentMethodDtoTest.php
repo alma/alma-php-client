@@ -30,8 +30,7 @@ class ShareOfCheckoutPaymentMethodDtoTest extends TestCase
         $shareOfCheckoutPaymentMethodDto = (new ShareOfCheckoutPaymentMethodDto(
             $data['payment_method_name']
         ))
-            ->addOrder($shareOfCheckoutOrderDto)
-            ->setPaymentMethodName($data['payment_method_name']);
+            ->addOrder($shareOfCheckoutOrderDto);
 
         $this->assertEquals($data, $shareOfCheckoutPaymentMethodDto->toArray());
     }

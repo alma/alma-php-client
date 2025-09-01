@@ -6,6 +6,7 @@ use Alma\API\DTO\ShareOfCheckout\ShareOfCheckoutDto;
 use Alma\API\DTO\ShareOfCheckout\ShareOfCheckoutOrderDto;
 use Alma\API\DTO\ShareOfCheckout\ShareOfCheckoutPaymentMethodDto;
 use Alma\API\DTO\ShareOfCheckout\ShareOfCheckoutTotalOrderDto;
+use Alma\API\Exception\ParametersException;
 use PHPUnit\Framework\TestCase;
 
 class ShareOfCheckoutDtoTest extends TestCase
@@ -56,8 +57,6 @@ class ShareOfCheckoutDtoTest extends TestCase
             $data['start_date'],
             $data['end_date']
         ))
-            ->setStartDate($data['start_date'])
-            ->setEndDate($data['end_date'])
             ->addOrder($shareOfCheckoutTotalOrderDto)
             ->addPaymentMethod($shareOfCheckoutPaymentMethodDto);
 
@@ -65,7 +64,7 @@ class ShareOfCheckoutDtoTest extends TestCase
     }
 
     public function testShareOfCheckoutDtoInvalidDates() {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(ParametersException::class);
         new ShareOfCheckoutDto(new \DateTime("2023-01-31"), new \DateTime("2023-01-01"));
     }
 }
