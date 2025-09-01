@@ -1,4 +1,4 @@
-ARG PHP_IMG_TAG=7.4-alpine
+ARG PHP_IMG_TAG=8.3-alpine
 FROM php:${PHP_IMG_TAG} AS production
 
 WORKDIR /composer
