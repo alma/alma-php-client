@@ -3,8 +3,8 @@
 namespace Alma\API\DTO\ShareOfCheckout;
 
 use Alma\API\DTO\DtoInterface;
+use Alma\API\Exception\ParametersException;
 use DateTime;
-use InvalidArgumentException;
 
 class ShareOfCheckoutDto implements DtoInterface
 {
@@ -17,15 +17,16 @@ class ShareOfCheckoutDto implements DtoInterface
      * Constructor for ShareOfCheckoutDto.
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @throws ParametersException
      */
     public function __construct(DateTime $startDate, DateTime $endDate)
     {
         if ($endDate < $startDate) {
-            throw new InvalidArgumentException("End date must be after start date.");
+            throw new ParametersException("End date must be after start date.");
         }
 
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
+        $this->setStartDate($startDate);
+        $this->setEndDate($endDate);
     }
 
     /**
@@ -33,7 +34,7 @@ class ShareOfCheckoutDto implements DtoInterface
      * @param DateTime $startDate
      * @return $this
      */
-    public function setStartDate(DateTime $startDate): self
+    private function setStartDate(DateTime $startDate): self
     {
         $this->startDate = $startDate;
         return $this;
@@ -44,7 +45,7 @@ class ShareOfCheckoutDto implements DtoInterface
      * @param DateTime $endDate
      * @return $this
      */
-    public function setEndDate(DateTime $endDate): self
+    private function setEndDate(DateTime $endDate): self
     {
         $this->endDate = $endDate;
         return $this;

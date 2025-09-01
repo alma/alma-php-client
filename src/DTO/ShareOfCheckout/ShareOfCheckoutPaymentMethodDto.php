@@ -23,7 +23,7 @@ class ShareOfCheckoutPaymentMethodDto implements DTOInterface
      * @param string $paymentMethodName
      * @return $this
      */
-    public function setPaymentMethodName(string $paymentMethodName): self
+    private function setPaymentMethodName(string $paymentMethodName): self
     {
         $this->paymentMethodName = $paymentMethodName;
         return $this;
