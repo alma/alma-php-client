@@ -123,7 +123,7 @@ tasks:
     deps:
         - php-compatibility:build
     cmds:
-      - docker compose run --rm -T php composer exec phpcs -- -p src --standard=PHPCompatibility -s --runtime-set testVersion 7.4-8.3 --ignore=\*/vendor/\*
+      - docker compose run --rm -T php composer exec phpcs -- -p src --standard=PHPCompatibility -s --runtime-set testVersion 5.6-8.3 --ignore=\*/vendor/\*
 
   gh-cli:
     internal: true
