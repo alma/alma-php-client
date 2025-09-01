@@ -1,0 +1,29 @@
+<?php
+
+namespace Alma\API\Tests\Unit\DTO\ShareOfCheckout;
+
+use Alma\API\DTO\ShareOfCheckout\ShareOfCheckoutOrderDto;
+use PHPUnit\Framework\TestCase;
+
+class ShareOfCheckoutOrderDtoTest extends TestCase
+{
+    public function testShareOfCheckoutOrderDto()
+    {
+        $data = [
+            "order_count" => 60,
+            "amount" => 30000,
+            "currency" => "EUR"
+        ];
+
+        $shareOfCheckoutOrderDto = (new ShareOfCheckoutOrderDto(
+            $data['order_count'],
+            $data['amount'],
+            $data['currency']
+        ))
+            ->setOrderCount($data['order_count'])
+            ->setAmount($data['amount'])
+            ->setCurrency($data['currency']);
+
+        $this->assertEquals($data, $shareOfCheckoutOrderDto->toArray());
+    }
+}
