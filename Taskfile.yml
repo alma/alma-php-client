@@ -65,31 +65,43 @@ tasks:
     cmds:
       - pre-commit install --hook-type pre-commit --hook-type commit-msg
 
+  lint:build:
+    desc: Build lint container (php-cs-fixer)
+    cmds:
+        - docker build -t lint:ps -f lint.Dockerfile .
+
   lint:
     desc: Lint the php code
     deps:
-      - 8.3:docker:build
+      - lint:build
     cmds:
       - docker compose run --rm -T php composer exec phpcs -- src/
 
   lint:fix:
     desc: Lint fix the php code
     deps:
-      - 8.3:docker:build
+      - lint:build
     cmds:
       - docker compose run --rm -T php composer exec phpcbf -- src/ tests/
+
+  php-compatibility:build:
+      desc: Build php-compatibility container (phpcs)
+      cmds:
+          - docker build -t php-compatibility:ps -f php-compatibility.Dockerfile .
 
   dist:
     desc: Build zip dist package using Docker
     deps:
-      - 8.3:docker:build
+      - php-compatibility:build
     cmds:
       - docker compose run --rm php ./scripts/build.sh
 
   php-compatibility:
     desc: Check compatibility code
+    deps:
+        - php-compatibility:build
     cmds:
-      - docker compose run --rm -T php composer exec phpcs -- -p src --standard=PHPCompatibility -s --runtime-set testVersion 5.6-8.1 --ignore=\*/vendor/\*
+      - docker compose run --rm -T php composer exec phpcs -- -p src --standard=PHPCompatibility -s --runtime-set testVersion 7.4-8.3 --ignore=\*/vendor/\*
 
   gh-cli:
     internal: true
