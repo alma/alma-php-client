@@ -47,7 +47,7 @@ jobs:
       # If using default Github token, the created pull request won't trigger workflows with pull_request event
       # See https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
       - name: Generate Github token to create PR
-        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
+        uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
         id: github-token
         with:
           app-id: ${{ secrets.ALMA_CREATE_TEAM_PRS_APP_ID }}
