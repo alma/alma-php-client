@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v2.5.1 - 2025-09-01
+
+### Changes
+
+- Add DataExports endpoints (#137)
+
+#### Contributors
+
+@Francois-Gomis, @alma-renovate-bot[bot], @carine-bonnafous, @joyet-simon, @martinfobian, @remi-zuffinetti, [alma-renovate-bot[bot]](https://github.com/apps/alma-renovate-bot) and [github-actions[bot]](https://github.com/apps/github-actions)
+
 ## v2.5.0 - 2025-01-30
 
 ### Changes
@@ -214,6 +224,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
