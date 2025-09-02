@@ -6,10 +6,12 @@ on:
     branches:
       - develop
       - main
+      - feature/3.0
   pull_request:
     branches:
       - develop
       - main
+      - feature/3.0
 
 jobs:
   ci:
