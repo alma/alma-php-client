@@ -24,17 +24,10 @@
  */
 
 
-namespace Alma\API\Entity;
+namespace Alma\API\Helper;
 
-class Webhook extends Base
+class WebhookHelper
 {
-    const TYPE_INTEGRATION_CAPABILITIES = "integration_capabilities";
-
-    /** @var string */
-    public string $type;
-    /** @var string */
-    public string $url;
-
     /**
      * Verifies that the provided signature is valid for the given params and secret.
      *

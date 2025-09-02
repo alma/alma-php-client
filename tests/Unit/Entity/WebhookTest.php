@@ -2,8 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Entity\FeePlan;
-use Alma\API\Entity\Webhook;
+use Alma\API\Helper\WebhookHelper;
 use PHPUnit\Framework\TestCase;
 
 class WebhookTest extends TestCase
@@ -66,6 +65,6 @@ class WebhookTest extends TestCase
         bool $urlEncode,
         bool $expected
     ) {
-        $this->assertSame($expected, Webhook::verifySignature($signature, $params, $secret, $urlEncode));
+        $this->assertSame($expected, WebhookHelper::verifySignature($signature, $params, $secret, $urlEncode));
     }
 }

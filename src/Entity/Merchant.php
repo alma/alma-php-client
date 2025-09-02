@@ -25,22 +25,21 @@
 
 namespace Alma\API\Entity;
 
-class Merchant extends Base
+class Merchant
 {
     /** @var string */
+    public $id;
+
+    /** @var string */
     public $name;
-    /** @var string */
-    public $website;
-    /** @var string */
-    public $state;
-    /** @var bool */
-    public $manuallyReviewed;
+
     /** @var bool */
     public $canCreatePayments;
-    /** @var int */
-    public $minimumPurchaseAmount;
-    /** @var int */
-    public $maximumPurchaseAmount;
-    /** @var array */
-    public $feePlans;
+
+    public function __construct(array $merchantData)
+    {
+        $this->id = $merchantData['id'] ?? '';
+        $this->name = $merchantData['name'] ?? '';
+        $this->canCreatePayments = $merchantData['can_create_payments'] ?? false;
+    }
 }
