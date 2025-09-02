@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\DTO\MerchantBusinessEvent;
 
-use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDtoDto;
+use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDto;
 use Alma\API\Exception\ParametersException;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
@@ -11,14 +11,17 @@ class CartInitiatedBusinessEventDtoTest extends MockeryTestCase
 
     public function testCartInitiatedBusinessEventData()
     {
-        $event = new CartInitiatedBusinessEventDtoDto('54');
-        $this->assertEquals('cart_initiated', $event->getEventType());
-        $this->assertEquals('54', $event->getCartId());
+        $data = [
+            'event_type' => 'cart_initiated',
+            'cart_id' => '54'
+        ];
+        $event = new CartInitiatedBusinessEventDto('54');
+        $this->assertEquals($data, $event->toArray());
     }
 
     public function testCartInitiatedBusinessEventBadData()
     {
         $this->expectException(ParametersException::class);
-        new CartInitiatedBusinessEventDtoDto('');
+        new CartInitiatedBusinessEventDto('');
     }
 }

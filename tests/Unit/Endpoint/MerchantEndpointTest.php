@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDtoDto;
-use Alma\API\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDtoDto;
+use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDto;
+use Alma\API\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDto;
 use Alma\API\Endpoint\MerchantEndpoint;
 use Alma\API\Entity\FeePlan;
 use Alma\API\Entity\Merchant;
@@ -206,7 +206,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     public function testSendCartInitiatedBusinessEvent()
     {
         // Params
-        $cartInitiatedEvent = new CartInitiatedBusinessEventDtoDto('42');
+        $cartInitiatedEvent = new CartInitiatedBusinessEventDto('42');
 
         // Mocks
         $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
@@ -223,7 +223,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     public function testSendOrderConfirmedBusinessEventForNonAlmaPayment()
     {
         // Params
-        $orderConfirmedBusinessEvent = new OrderConfirmedBusinessEventDtoDto(
+        $orderConfirmedBusinessEvent = new OrderConfirmedBusinessEventDto(
             false,
             false,
             true,
@@ -245,7 +245,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     public function testSendOrderConfirmedBusinessEventForAlmaPayment()
     {
         // Params
-        $orderConfirmedBusinessEvent = new OrderConfirmedBusinessEventDtoDto(
+        $orderConfirmedBusinessEvent = new OrderConfirmedBusinessEventDto(
             true,
             false,
             true,
@@ -274,7 +274,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         $this->expectException(MerchantEndpointException::class);
 
         // Call
-        $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDtoDto('42'));
+        $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDto('42'));
     }
 
     /**
@@ -292,7 +292,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(MerchantEndpointException::class);
-        $merchantServiceMock->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDtoDto('42'));
+        $merchantServiceMock->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDto('42'));
     }
 
     /**
@@ -307,6 +307,6 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(MerchantEndpointException::class);
-        $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDtoDto('42'));
+        $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDto('42'));
     }
 }

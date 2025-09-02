@@ -5,33 +5,34 @@ namespace Alma\API\DTO\MerchantBusinessEvent;
 
 use Alma\API\Exception\ParametersException;
 
-class OrderConfirmedBusinessEventDtoDto extends AbstractBusinessEventDto
+class OrderConfirmedBusinessEventDto
 {
+    private const EVENT_TYPE = 'order_confirmed';
 
     /**
      * @var bool
      */
-    private $almaP1XStatus;
+    private bool $isAlmaP1X;
     /**
      * @var bool
      */
-    private $almaBNPLStatus;
+    private bool $isAlmaBNPL;
     /**
      * @var bool
      */
-    private $wasBNPLEligible;
+    private bool $wasBNPLEligible;
     /**
      * @var string
      */
-    private $orderId;
+    private string $orderId;
     /**
      * @var string
      */
-    private $cartId;
+    private string $cartId;
     /**
      * @var string | null
      */
-    private $almaPaymentId;
+    private ?string $almaPaymentId;
 
 
     /**
@@ -48,64 +49,13 @@ class OrderConfirmedBusinessEventDtoDto extends AbstractBusinessEventDto
      */
     public function __construct(bool $isAlmaP1X, bool $isAlmaBNPL, bool $wasBNPLEligible, string $orderId, string $cartId, string $almaPaymentId = null)
     {
-        $this->eventType = 'order_confirmed';
-        $this->almaP1XStatus = $isAlmaP1X;
-        $this->almaBNPLStatus = $isAlmaBNPL;
-        $this->wasBNPLEligible = $wasBNPLEligible;
-        $this->orderId = $orderId;
-        $this->cartId = $cartId;
-        $this->almaPaymentId = $almaPaymentId;
+        $this->setIsAlmaP1X($isAlmaP1X);
+        $this->setIsAlmaBNPL($isAlmaBNPL);
+        $this->setWasBNPLEligible($wasBNPLEligible);
+        $this->setOrderId($orderId);
+        $this->setCartId($cartId);
+        $this->setAlmaPaymentId($almaPaymentId);
         $this->validateData();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAlmaP1X(): bool
-    {
-        return $this->almaP1XStatus;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAlmaBNPL(): bool
-    {
-        return $this->almaBNPLStatus;
-    }
-
-    /**
-     * Was eligible at the time of payment
-     *
-     * @return bool
-     */
-    public function wasBNPLEligible(): bool
-    {
-        return $this->wasBNPLEligible;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOrderId(): string
-    {
-        return $this->orderId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCartId(): string
-    {
-        return $this->cartId;
-    }
-
-    /**
-     * @return string | null
-     */
-    public function getAlmaPaymentId(): ?string
-    {
-        return $this->almaPaymentId;
     }
 
     /**
@@ -115,7 +65,7 @@ class OrderConfirmedBusinessEventDtoDto extends AbstractBusinessEventDto
      */
     public function isAlmaPayment(): bool
     {
-        return $this->almaP1XStatus || $this->almaBNPLStatus;
+        return $this->isAlmaP1X || $this->isAlmaBNPL;
     }
 
     /**
@@ -141,5 +91,50 @@ class OrderConfirmedBusinessEventDtoDto extends AbstractBusinessEventDto
         {
             throw new ParametersException('Alma payment id is mandatory for Alma payment');
         }
+    }
+
+    private function setIsAlmaP1X(bool $isAlmaP1X): void
+    {
+        $this->isAlmaP1X = $isAlmaP1X;
+    }
+
+    private function setIsAlmaBNPL(bool $isAlmaBNPL): void
+    {
+        $this->isAlmaBNPL = $isAlmaBNPL;
+    }
+
+    private function setWasBNPLEligible(bool $wasBNPLEligible): void
+    {
+        $this->wasBNPLEligible = $wasBNPLEligible;
+    }
+
+    private function setOrderId(string $orderId): void
+    {
+        $this->orderId = $orderId;
+    }
+
+    private function setCartId(string $cartId): void
+    {
+        $this->cartId = $cartId;
+    }
+
+    private function setAlmaPaymentId(?string $almaPaymentId): void
+    {
+        $this->almaPaymentId = $almaPaymentId;
+    }
+
+    public function toArray(): array
+    {
+        return array_filter([
+            'event_type' => self::EVENT_TYPE,
+            'is_alma_p1x' => $this->isAlmaP1X,
+            'is_alma_bnpl' => $this->isAlmaBNPL,
+            'was_bnpl_eligible' => $this->wasBNPLEligible,
+            'order_id' => $this->orderId,
+            'cart_id' => $this->cartId,
+            'alma_payment_id' => $this->almaPaymentId
+        ], function($value) {
+            return $value !== null && $value !== '' && !(is_array($value) && empty($value));
+        });
     }
 }
