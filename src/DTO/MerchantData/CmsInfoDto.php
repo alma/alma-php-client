@@ -17,7 +17,7 @@ class CmsInfoDto implements DtoInterface
     private $cmsVersion;
 
     /**
-     * @var array<array{name: string, version: string}>|null
+     * @var string[]|null
      */
     private $thirdPartiesPlugins;
 
@@ -47,12 +47,12 @@ class CmsInfoDto implements DtoInterface
     private $almaSdkName;
 
     /**
-     * @var string | null
+     * @var string
      */
     private $themeName;
 
     /**
-     * @var null|string
+     * @var string
      */
     private $themeVersion;
 
