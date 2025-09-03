@@ -47,7 +47,7 @@ class CmsFeaturesDto  implements DtoInterface
     private $excludedCategories;
 
     /**
-     * @var array<array{name: string}>|null
+     * @var string[]|null
      */
     private $specificFeatures;
 
