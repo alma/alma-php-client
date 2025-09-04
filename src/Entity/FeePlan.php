@@ -36,20 +36,14 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
 
     const KIND_GENERAL = 'general';
 
-    /** @var ?bool Is this fee plan enabled by merchant? True by default */
-    protected bool $enabled = true;
-
-    /** @var ?bool Is this fee plan available? True by default, merchant rules can make it unavailable */
-    protected bool $available = true;
-
     /** @var bool Is this fee plan allowed by Alma? */
     protected bool $allowed = false;
 
-    /** @var bool Whether this fee plan is available in POS (point of sale) */
-    protected bool $availableInPos = false;
-
     /** @var bool Whether this fee plan is available online */
     protected bool $availableOnline = false;
+
+    /** @var bool Is this fee plan enabled by merchant? True by default */
+    protected bool $enabled = true;
 
     /** @var ?int Fixed fees in cents paid by the customer */
     protected ?int $customerFeeFixed;
@@ -107,12 +101,13 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     /** @var ?bool Whether payout is made on acceptance of the payment plan */
     protected ?bool $payoutOnAcceptance;
 
+    /** Mapping of required fields */
     protected array $requiredFields = [
     ];
 
+    /** Mapping of optional fields */
     protected array $optionalFields = [
         'allowed'                      => 'allowed',
-        'availableInPos'               => 'available_in_pos',
         'availableOnline'              => 'available_online',
         'customerFeeFixed'             => 'customer_fee_fixed',
         'customerFeeVariable'          => 'customer_fee_variable',
@@ -133,6 +128,10 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
         'payoutOnAcceptance'           => 'payout_on_acceptance',
     ];
 
+    /**
+     *
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -162,12 +161,11 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
 
     /**
      * Check if this fee plan is:
-     * - allowed by Alma
      * - enabled by the merchant.
      * @return bool
      */
     public function isEnabled(): bool {
-        return $this->isAllowed() && $this->enabled;
+        return $this->enabled;
     }
 
     /**
@@ -182,23 +180,10 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
      * Check if this fee plan is:
      * - allowed by Alma
      * - enabled by the merchant
-     * - available (not disabled by contextual rules)
      * @return bool
      */
     public function isAvailable(): bool {
-        return $this->isEnabled() && $this->available;
-    }
-
-    public function makeUnavailable() : void {
-        $this->available = false;
-    }
-
-    /**
-     * Check if this fee plan is available in POS (point of sale).
-     * @return bool True if this fee plan is available in POS, false otherwise.
-     */
-    public function get_available_in_pos(): bool {
-        return $this->availableInPos;
+        return $this->isAllowed() && $this->isEnabled();
     }
 
     /**

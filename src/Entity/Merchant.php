@@ -25,8 +25,6 @@
 
 namespace Alma\API\Entity;
 
-use Alma\API\Exception\ParametersException;
-
 class Merchant extends AbstractEntity
 {
     protected string $id;
@@ -35,18 +33,21 @@ class Merchant extends AbstractEntity
 
     protected bool $canCreatePayments;
 
+    /** Mapping of required fields */
     protected array $requiredFields = [
         'id'                => 'id',
         'name'              => 'name',
         'canCreatePayments' => 'can_create_payments',
     ];
 
+    /** Mapping of optional fields */
     protected array $optionalFields = [
     ];
 
     /**
      * Returns the merchant ID.
      * @return string
+     * @noinspection PhpUnused Used by implementations
      */
     public function getId(): string
     {
@@ -56,6 +57,7 @@ class Merchant extends AbstractEntity
     /**
      * Returns the merchant name.
      * @return string
+     * @noinspection PhpUnused Used by implementations
      */
     public function getName(): string
     {
@@ -65,6 +67,7 @@ class Merchant extends AbstractEntity
     /**
      * Method to check if the merchant can create payments.
      * @return bool
+     * @noinspection PhpUnused Used by implementations
      */
     public function canCreatePayments(): bool
     {

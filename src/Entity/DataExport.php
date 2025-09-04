@@ -24,55 +24,61 @@
 
 namespace Alma\API\Entity;
 
-use Alma\API\Exception\ParametersException;
-
+/**
+ * Class DataExport
+ * @package Alma\API\Entity
+ *
+ * @link https://docs.almapay.com/reference/data-export
+ */
 class DataExport extends AbstractEntity
 {
-    /** @var bool */
-    protected $complete;
+    /** @var bool Indicates whether the generation of the export is complete or not, this being done asynchronously after the creation of the object DataExport via API */
+    protected bool $complete;
+
+    /** @var int Export creation date/time in timestamp format */
+    protected int $created;
+
+    /** @var int Date/time of the beginning of the period taken into account for the export in timestamp format */
+    protected int $start;
+
+    /** @var int Date/time of the end of the period taken into account for the export in timestamp format */
+    protected int $end;
+
+    /** @var string Export ID */
+    protected string $id;
+
+    /** @var string Export type (payments, pos_export, statement, accounting, accounting_for_payout) */
+    protected string $type;
 
     /** @var int Timestamp */
-    protected $created;
+    protected int $updated;
 
-    /** @var int Timestamp */
-    protected $end;
+    /**
+     * URLs of files available for download for this export.
+     * Not all formats are available for all export types: see details in the table below.
+     * These URLs will only be filled in for the formats supported by the type of export and once the attribute completed will be true.
+     */
 
-    /** @var string */
-    protected $id;
+    /** @var string CSV url of the export if available */
+    protected string $csvUrl;
 
-    /** @var bool */
-    protected $includeChildAccounts;
+    /** @var string PDF url of the export if available */
+    protected string $pdfUrl;
 
-    /** @var string */
-    protected $merchant;
+    /** @var string XSLX url of the export if available */
+    protected string $xlsxUrl;
 
-    /** @var int Timestamp */
-    protected $start;
+    /** @var string XML url of the export if available */
+    protected string $xmlUrl;
 
-    /** @var string */
-    protected $type;
+    /** @var string ZIP url of the export if available */
+    protected string $zipUrl;
 
-    /** @var string Timestamp */
-    protected $updated;
-
-    /** @var string */
-    protected $csvUrl;
-
-    /** @var string */
-    protected $pdfUrl;
-
-    /** @var string */
-    protected $xlsxUrl;
-
-    /** @var string */
-    protected $xmlUrl;
-
-    /** @var string */
-    protected $zipUrl;
-
+    /** Mapping of required fields */
     protected array $requiredFields = [
     ];
 
+    /** Mapping of optional fields */
     protected array $optionalFields = [
         'complete'             => 'complete',
         'created'              => 'created',
@@ -90,8 +96,123 @@ class DataExport extends AbstractEntity
         'zipUrl'               => 'zip_url',
     ];
 
+    /**
+     * Returns the data export completion status.
+     * @return bool
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function isComplete(): bool
+    {
+        return $this->complete;
+    }
+
+    /**
+     * Returns the data export creation timestamp.
+     * @return int
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getCreated(): int
+    {
+        return $this->created;
+    }
+
+    /**
+     * Returns the data export end timestamp.
+     * @return int
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getEnd(): int
+    {
+        return $this->end;
+    }
+
+    /**
+     * Returns the data export ID.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
     public function getId(): string
     {
         return $this->id;
+    }
+
+    /**
+     * Returns the data export start timestamp.
+     * @return int
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getStart(): int
+    {
+        return $this->start;
+    }
+
+    /**
+     * Returns the data export type.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * Returns the data export update timestamp.
+     * @return int
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getUpdated(): int
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Returns the data export CSV URL.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getCsvUrl(): string
+    {
+        return $this->csvUrl;
+    }
+
+    /**
+     * Returns the data export PDF URL.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getPdfUrl(): string
+    {
+        return $this->pdfUrl;
+    }
+
+    /**
+     * Returns the data export XLSX URL.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getXlsxUrl(): string
+    {
+        return $this->xlsxUrl;
+    }
+
+    /**
+     * Returns the data export XML URL.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getXmlUrl(): string
+    {
+        return $this->xmlUrl;
+    }
+
+    /**
+     * Returns the data export ZIP URL.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getZipUrl(): string
+    {
+        return $this->zipUrl;
     }
 }

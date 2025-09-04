@@ -27,85 +27,50 @@ namespace Alma\API\Entity;
 
 class Order extends AbstractEntity
 {
-    /** @var string ID of the Payment owning this Order */
-    protected string $paymentId;
-
-    /**
-     * @var string | null  Order reference from the merchant's platform
-     */
-    protected ?string $merchantReference;
-
-    /** @var string | null  URL to the merchant's backoffice for that Order */
-    protected ?string $merchantUrl;
-
-    /** @var array  Free-form custom data */
-    protected array $orderData;
-
-    /**
-     * @var string | null Order comment
-     */
-    protected ?string $comment;
-    /**
-     * @var int Order creation timestamp
-     */
-    protected int $createdAt;
-
-    /**
-     * @var string | null Customer URL
-     */
-    protected ?string $customerUrl;
-
-    /**
-     * @var string Order external ID
-     */
+    /** @var string Order ID (on Alma's side). */
     protected string $externalId;
 
-    /**
-     * @var int Order updated timestamp
-     */
-    protected int $updatedAt;
+    /** @var int Order creation date (on Alma's side) as a timestamp. */
+    protected int $createdAt;
 
+    /** @var string | null Merchant reference for this order. Enables to link an order and a payment made with Alma. */
+    protected ?string $merchantReference;
+
+    /** @var string | null Merchant backoffice URL for this order. */
+    protected ?string $merchantUrl;
+
+    /** @var string | null Customer order tracking URL for this order. */
+    protected ?string $customerUrl;
+
+    /** @var string Alma ID of the payment corresponding to this order. Not present since a payment was submitted. */
+    protected string $paymentId;
+
+    /** @var array Array containing arbitrary data entered by the merchant */
+    protected array $orderData;
+
+    /** @var string | null Merchant comment on the order. */
+    protected ?string $comment;
+
+    /** Mapping of required fields */
     protected array $requiredFields = [
+        'externalId'        => 'id',
+        'createdAt'         => 'created',
+        'paymentId'         => 'payment',
+        'orderData'         => 'data',
     ];
 
+    /** Mapping of optional fields */
     protected array $optionalFields = [
-        'comment'           => 'comment',
-        'createdAt'         => 'created',
-        'customerUrl'       => 'customer_url',
-        'orderData'         => 'data',
-        'externalId'        => 'id',
         'merchantReference' => 'merchant_reference',
         'merchantUrl'       => 'merchant_url',
-        'paymentId'         => 'payment',
-        'updatedAt'         => 'updated',
+        'customerUrl'       => 'customer_url',
+        'comment'           => 'comment',
     ];
 
     /**
+     * Gets the order ID (on Alma's side).
      * @return string
-     */
-    public function getPaymentId(): string
-    {
-        return $this->paymentId;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMerchantReference(): ?string
-    {
-        return $this->merchantReference;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMerchantUrl(): ?string
-    {
-        return $this->merchantUrl;
-    }
-
-    /**
-     * @return string
+     * @noinspection PhpUnused Used by implementations
      */
     public function getExternalId(): string
     {
@@ -113,15 +78,9 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @return string|null
-     */
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
-
-    /**
+     * Gets the order creation date as a timestamp.
      * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getCreatedAt(): int
     {
@@ -129,7 +88,29 @@ class Order extends AbstractEntity
     }
 
     /**
+     * Gets the merchant reference for this order.
      * @return string|null
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getMerchantReference(): ?string
+    {
+        return $this->merchantReference;
+    }
+
+    /**
+     * Gets the merchant backoffice URL for this order.
+     * @return string|null
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getMerchantUrl(): ?string
+    {
+        return $this->merchantUrl;
+    }
+
+    /**
+     * Gets the customer order tracking URL for this order.
+     * @return string|null
+     * @noinspection PhpUnused Used by implementations
      */
     public function getCustomerUrl(): ?string
     {
@@ -137,18 +118,32 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @return int
+     * Gets the Alma payment ID corresponding to this order.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
      */
-    public function getUpdatedAt(): int
+    public function getPaymentId(): string
     {
-        return $this->updatedAt;
+        return $this->paymentId;
     }
 
     /**
+     * Gets the arbitrary data entered by the merchant.
      * @return array
+     * @noinspection PhpUnused Used by implementations
      */
     public function getOrderData(): array
     {
         return $this->orderData;
+    }
+
+    /**
+     * Gets the merchant comment on the order.
+     * @return string|null
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getComment(): ?string
+    {
+        return $this->comment;
     }
 }

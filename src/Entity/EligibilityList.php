@@ -6,11 +6,22 @@ use ArrayObject;
 
 class EligibilityList extends ArrayObject
 {
+    /**
+     * Adds an Eligibility to the list.
+     * @param Eligibility $eligibility
+     * @return void
+     */
     public function add(Eligibility $eligibility): void
     {
         $this[] = $eligibility;
     }
 
+    /**
+     * Returns the Eligibility for the given plan key.
+     *
+     * @param string $planKey
+     * @return Eligibility
+     */
     public function getByPlanKey(string $planKey): Eligibility
     {
         $filter = array_values(array_filter($this->getArrayCopy(), function($eligibility) use ($planKey) {

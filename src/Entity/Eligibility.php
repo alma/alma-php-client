@@ -24,66 +24,74 @@
 
 namespace Alma\API\Entity;
 
-use Alma\API\Exception\ParametersException;
-
+/**
+ * Class Eligibility
+ * @package Alma\API\Entity
+ *
+ * @link https://docs.almapay.com/reference/verifier-eligibilite-achat
+ */
 class Eligibility extends AbstractEntity implements PaymentPlanInterface
 {
     use PaymentPlanTrait;
 
-    /** @var bool */
+    /** @var bool Tells whether the installment is eligible (true) or not (false). */
     protected bool $isEligible = false;
 
-    /** @var array */
-    protected array $reasons = [];
+    /** @var int Number of deferred days for a deferred payment. */
+    protected int $deferredDays = 0;
 
-    /** @var array */
-    protected array $constraints = [];
+    /** @var int Number of deferred months for a deferred payment. */
+    protected int $deferredMonths = 0;
 
-    /** @var array */
-    protected array $paymentPlan = [];
-
-    /** @var int */
-    protected int $installmentsCount;
-
-    /** @var int */
-    protected int $deferredDays;
-
-    /** @var int */
-    protected int $deferredMonths;
-
-    /** @var int */
-    protected int $customerTotalCostAmount = 0;
-
-    /** @var int */
-    protected int $customerTotalCostBps = 0;
+    /** @var int Number of installments in the installment plan (3 by default). */
+    protected int $installmentsCount = 3;
 
     /**
-     * @var int|null Percentage of fees + credit in bps paid for by the customer (100bps = 1%)
-     *
-     * if value is null, that's mean the API does not return this property
+     * @var int Total amount of fees and interest paid by the client in cents.
+     * Interest is calculated based on the date of the eligibility call.
      */
-    protected int $annualInterestRate = 0;
+    protected int $customerTotalCostAmount = 0;
 
+    /**
+     * @var int Percentage in bps of the share of fees and interest paid by the client.
+     * Interest is calculated based on the date of the eligibility call.
+     * - For pay-in-3 and pay-in-4, this most often corresponds to the customer_fee_variable.
+     * - For credit (more than 4 installments) this value changes based on the calculation of interest
+     * and therefore the start date of the schedule. It has an informative value but is not contractual.
+     * It is therefore not recommended to display it in the payment journey.
+     */
+    protected int $customerTotalCostBps = 0;
+
+    /** @var array List of installments for this purchase. This field is available only when eligibility value is true. */
+    protected array $paymentPlan = [];
+
+    /** @var array Constraints that the request fails to satisfy, causing the ineligibility */
+    protected array $constraints = [];
+
+    /** @var array Reason for ineligibility */
+    protected array $reasons = [];
+
+    /** Mapping of required fields */
     protected array $requiredFields = [
-        'isEligible'              => 'is_eligible',
-        'installmentsCount'       => 'installments_count',
+        'isEligible'              => 'eligible',
         'deferredDays'            => 'deferred_days',
         'deferredMonths'          => 'deferred_months',
-    ];
-
-    protected array $optionalFields = [
-        'reasons'                 => 'reasons',
-        'constraints'             => 'constraints',
-        'paymentPlan'             => 'payment_plan',
+        'installmentsCount'       => 'installments_count',
         'customerTotalCostAmount' => 'customer_total_cost_amount',
         'customerTotalCostBps'    => 'customer_total_cost_bps',
-        'annualInterestRate'      => 'annual_interest_rate',
+        'paymentPlan'             => 'payment_plan',
+    ];
+
+    /** Mapping of optional fields */
+    protected array $optionalFields = [
+        'constraints'             => 'constraints',
+        'reasons'                 => 'reasons',
     ];
 
     /**
      * Kind is always 'general' for eligibility at this time
-     *
      * @return string
+     * @noinspection PhpUnused Used by implementations
      */
     public function getKind(): string
     {
@@ -91,9 +99,9 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Is Eligible.
-     *
+     * Tells whether the installment is eligible (true) or not (false).
      * @return bool
+     * @noinspection PhpUnused Used by implementations
      */
     public function isEligible(): bool
     {
@@ -101,59 +109,9 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Getter reasons.
-     *
-     * @return array
-     */
-    public function getReasons(): array
-    {
-        return $this->reasons;
-    }
-
-    /**
-     * Getter constraints.
-     *
-     * @return array
-     */
-    public function getConstraints(): array
-    {
-        return $this->constraints;
-    }
-
-    /**
-     * Getter paymentPlan.
-     *
-     * @return array
-     */
-    public function getPaymentPlan(): array
-    {
-        return $this->paymentPlan;
-    }
-
-    /**
-     * Getter paymentPlan.
-     *
+     * Get the number of deferred days for a deferred payment.
      * @return int
-     */
-    public function getInstallmentsCount(): int
-    {
-        return $this->installmentsCount;
-    }
-
-    /**
-     * Get the value of deferredMonths.
-     *
-     * @return int
-     */
-    public function getDeferredMonths(): int
-    {
-        return $this->deferredMonths;
-    }
-
-    /**
-     * Get the value of deferredDays.
-     *
-     * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getDeferredDays(): int
     {
@@ -161,9 +119,29 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Get the value of customerTotalCostAmount.
-     *
+     * Get the number of deferred months for a deferred payment.
      * @return int
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getDeferredMonths(): int
+    {
+        return $this->deferredMonths;
+    }
+
+    /**
+     * Get the number of installments in the installment plan.
+     * @return int
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getInstallmentsCount(): int
+    {
+        return $this->installmentsCount;
+    }
+
+    /**
+     * Get the total amount of fees and interest paid by the client in cents.
+     * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getCustomerTotalCostAmount(): int
     {
@@ -171,9 +149,9 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Get the value of customerTotalCostBps.
-     *
+     * Get the percentage in bps of the share of fees and interest paid by the client.
      * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getCustomerTotalCostBps(): int
     {
@@ -181,13 +159,32 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Get the value of annualInterestRate.
-     * if value is null, that's mean the API does not return this property
-     *
-     * @return int|null
+     * Get Payment Plans
+     * @return array
+     * @noinspection PhpUnused Used by implementations
      */
-    public function getAnnualInterestRate(): ?int
+    public function getPaymentPlan(): array
     {
-        return $this->annualInterestRate;
+        return $this->paymentPlan;
+    }
+
+    /**
+     * Get failure constraints.
+     * @return array
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getConstraints(): array
+    {
+        return $this->constraints;
+    }
+
+    /**
+     * Get failure reasons.
+     * @return array
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getReasons(): array
+    {
+        return $this->reasons;
     }
 }

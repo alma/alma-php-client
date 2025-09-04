@@ -22,6 +22,9 @@ abstract class AbstractEntity
     }
 
     /**
+     * @param array $data
+     * @param bool $autoAssign
+     * @return array
      * @throws ParametersException
      */
     protected function prepareValues(array $data, bool $autoAssign = true): array
@@ -33,6 +36,11 @@ abstract class AbstractEntity
     }
 
     /**
+     * @param array $data
+     * @param array $mapping
+     * @param bool $required
+     * @param bool $autoAssign
+     * @return array
      * @throws ParametersException
      */
     protected function extractValues(array $data, array $mapping, bool $required = false, bool $autoAssign = true): array

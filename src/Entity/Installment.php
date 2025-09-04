@@ -25,8 +25,6 @@
 
 namespace Alma\API\Entity;
 
-use Alma\API\Exception\ParametersException;
-
 class Installment extends AbstractEntity
 {
     protected int $customerFee;
@@ -37,6 +35,7 @@ class Installment extends AbstractEntity
 
     protected int $purchaseAmount;
 
+    /** Mapping of required fields */
     protected array $requiredFields = [
         'customerFee'      => 'customer_fee',
         'customerInterest' => 'customer_interest',
@@ -44,12 +43,14 @@ class Installment extends AbstractEntity
         'purchaseAmount'   => 'purchase_amount',
     ];
 
+    /** Mapping of optional fields */
     protected array $optionalFields = [
     ];
 
     /**
      * Returns the customer fee in cents
      * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getCustomerFee(): int
     {
@@ -59,6 +60,7 @@ class Installment extends AbstractEntity
     /**
      * Returns the customer interest in cents
      * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getCustomerInterest(): int
     {
@@ -68,6 +70,7 @@ class Installment extends AbstractEntity
     /**
      * Returns the due date as a UNIX timestamp
      * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getDueDate(): int
     {
@@ -77,6 +80,7 @@ class Installment extends AbstractEntity
     /**
      * Returns the purchase amount in cents
      * @return int
+     * @noinspection PhpUnused Used by implementations
      */
     public function getPurchaseAmount(): int
     {

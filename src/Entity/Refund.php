@@ -25,31 +25,34 @@
 
 namespace Alma\API\Entity;
 
-class Refund
+class Refund extends AbstractEntity
 {
-    /* @var int */
+    /** @var int The amount of the refund */
     protected int $amount;
 
-    /* @var int */
-    protected int $created;
+    /** @var int The date of the refund */
+    protected int $createdAt;
 
-    /* @var string */
+    /** @var string The ID of the refund */
     protected string $id;
 
-    /* @var string  */
+    /** @var string The MerchantReference of the refund */
     protected string $merchantReference;
 
+    /** Mapping of required fields */
     protected array $requiredFields = [
         'id'                 => 'id',
-        'created'            => 'created',
+        'createdAt'          => 'created',
         'amount'             => 'amount',
     ];
 
+    /** Mapping of optional fields */
     protected array $optionalFields = [
         'merchantReference' => 'merchant_reference',
     ];
 
     /**
+     * Get the refund ID
      * @return string
      */
     public function getId(): string
@@ -58,28 +61,16 @@ class Refund
     }
 
     /**
-     * @param string $id
-     */
-    public function setId(string $id) {
-        $this->id = $id;
-    }
-
-    /**
+     * Get the creation timestamp
      * @return int
      */
-    public function getCreated(): int
+    public function getCreatedAt(): int
     {
-        return $this->created;
+        return $this->createdAt;
     }
 
     /**
-     * @param int $createdDate
-     */
-    public function setCreated(int $createdDate) {
-        $this->created = $createdDate;
-    }
-
-    /**
+     * Get the amount in cents
      * @return int
      */
     public function getAmount(): ?int
@@ -88,13 +79,17 @@ class Refund
     }
 
     /**
+     * Set the amount in cents
      * @param int $amount
+     * @return $this
      */
-    public function setAmount(int $amount) {
+    public function setAmount(int $amount): self {
         $this->amount = $amount;
+        return $this;
     }
 
     /**
+     * Get the merchant reference
      * @return string
      */
     public function getMerchantReference(): string
@@ -103,9 +98,12 @@ class Refund
     }
 
     /**
+     * Set the merchant reference
      * @param string $merchantReference
+     * @return $this
      */
-    public function setMerchantReference(string $merchantReference) {
+    public function setMerchantReference(string $merchantReference): self {
         $this->merchantReference = $merchantReference;
+        return $this;
     }
 }
