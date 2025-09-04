@@ -4,8 +4,10 @@ namespace Alma\API\DTO\MerchantBusinessEvent;
 
 use Alma\API\Exception\ParametersException;
 
-class CartInitiatedBusinessEventDtoDto extends AbstractBusinessEventDto
+class CartInitiatedBusinessEventDto
 {
+    private const EVENT_TYPE = 'cart_initiated';
+
     /**
      * @var string
      */
@@ -17,20 +19,24 @@ class CartInitiatedBusinessEventDtoDto extends AbstractBusinessEventDto
      */
     public function __construct(string $cartId)
     {
-        $this->eventType = 'cart_initiated';
         if(empty($cartId)) {
             throw new ParametersException('CartId must be a string and cannot be empty');
         }
+        $this->setCartId($cartId);
+    }
+
+    private function setCartId(string $cartId): void
+    {
         $this->cartId = $cartId;
     }
 
-    /**
-     * Get Cart Id
-     *
-     * @return string
-     */
-    public function getCartId(): string
+    public function toArray(): array
     {
-        return $this->cartId;
+        return [
+            'event_type' => self::EVENT_TYPE,
+            'cart_id' => $this->cartId
+        ];
     }
+
+
 }

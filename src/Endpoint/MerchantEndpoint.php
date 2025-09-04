@@ -25,8 +25,8 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDtoDto;
-use Alma\API\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDtoDto;
+use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDto;
+use Alma\API\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDto;
 use Alma\API\Entity\FeePlan;
 use Alma\API\Entity\FeePlanList;
 use Alma\API\Entity\Merchant;
@@ -110,38 +110,25 @@ class MerchantEndpoint extends AbstractEndpoint
     /**
      * Prepare and send a business event for a cart initiated
      *
-     * @param CartInitiatedBusinessEventDtoDto $cartEventData
+     * @param CartInitiatedBusinessEventDto $cartEventData
      * @return void
      * @throws MerchantEndpointException
      */
-    public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEventDtoDto $cartEventData)
+    public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEventDto $cartEventData)
     {
-        $cartEventDataPayload = [
-            'event_type' => $cartEventData->getEventType(),
-            'cart_id' => $cartEventData->getCartId()
-        ];
-        $this->sendBusinessEvent($cartEventDataPayload);
+        $this->sendBusinessEvent($cartEventData->toArray());
     }
 
     /**
      * Prepare and send a business event for Order confirmed
      *
-     * @param OrderConfirmedBusinessEventDtoDto $orderConfirmedBusinessEvent
+     * @param OrderConfirmedBusinessEventDto $orderConfirmedBusinessEvent
      * @return void
      * @throws MerchantEndpointException
      */
-    public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEventDtoDto $orderConfirmedBusinessEvent)
+    public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEventDto $orderConfirmedBusinessEvent)
     {
-        $cartEventDataPayload = [
-            'event_type' => $orderConfirmedBusinessEvent->getEventType(),
-            'is_alma_p1x' => $orderConfirmedBusinessEvent->isAlmaP1X(),
-            'is_alma_bnpl' => $orderConfirmedBusinessEvent->isAlmaBNPL(),
-            'was_bnpl_eligible' => $orderConfirmedBusinessEvent->wasBNPLEligible(),
-            'order_id' => $orderConfirmedBusinessEvent->getOrderId(),
-            'cart_id' => $orderConfirmedBusinessEvent->getCartId(),
-            'alma_payment_id' => $orderConfirmedBusinessEvent->getAlmaPaymentId()
-        ];
-        $this->sendBusinessEvent($cartEventDataPayload);
+        $this->sendBusinessEvent($orderConfirmedBusinessEvent->toArray());
     }
 
     /**
