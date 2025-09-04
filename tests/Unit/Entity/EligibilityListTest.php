@@ -13,44 +13,52 @@ class EligibilityListTest extends TestCase
 
         // Pay now plans
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 1,
             'deferred_months' => 0,
             'deferred_days' => 0,
         ]));
         // Pay-later plans
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 1,
             'deferred_months' => 2,
             'deferred_days' => 0,
         ]));
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 1,
             'deferred_months' => 0,
             'deferred_days' => 15,
         ]));
         // Pnx plans
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 2,
             'deferred_months' => 0,
             'deferred_days' => 0,
         ]));
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 3,
             'deferred_months' => 0,
             'deferred_days' => 0,
         ]));
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 4,
             'deferred_months' => 0,
             'deferred_days' => 0,
         ]));
         // Credit plans
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 10,
             'deferred_months' => 0,
             'deferred_days' => 0,
         ]));
         $eligibilityList->add(new Eligibility([
+            'is_eligible' => true,
             'installments_count' => 12,
             'deferred_months' => 0,
             'deferred_days' => 0,

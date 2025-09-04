@@ -12,7 +12,6 @@ class OrderTest extends MockeryTestCase
     {
         $orderData = $this->orderDataFactory();
         $order = new Order($orderData);
-
         $this->assertEquals($orderData['payment'], $order->getPaymentId());
         $this->assertEquals($orderData['merchant_reference'], $order->getMerchantReference());
         $this->assertEquals($orderData['merchant_url'], $order->getMerchantUrl());

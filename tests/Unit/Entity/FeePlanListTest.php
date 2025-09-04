@@ -5,10 +5,14 @@ namespace Alma\API\Tests\Unit\Entity;
 use Alma\API\Entity\Eligibility;
 use Alma\API\Entity\FeePlan;
 use Alma\API\Entity\FeePlanList;
+use Alma\API\Exception\ParametersException;
 use PHPUnit\Framework\TestCase;
 
 class FeePlanListTest extends TestCase
 {
+    /**
+     * @throws ParametersException
+     */
     public function testFeePlanList() {
         $feePlanList = new FeePlanList();
 

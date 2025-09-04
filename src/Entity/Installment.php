@@ -25,32 +25,61 @@
 
 namespace Alma\API\Entity;
 
-class Installment extends Base
+use Alma\API\Exception\ParametersException;
+
+class Installment extends AbstractEntity
 {
-    const STATE_PAID = 'paid';
-    const STATE_PENDING = "pending";
-    const STATE_INCIDENT = "incident";
-    const STATE_CLAIMED = "claimed";
-    const STATE_COVERED = "covered";
+    protected int $customerFee;
 
-    /** @var string */
-    public $state;
+    protected int $customerInterest;
 
-    /** @var int */
-    public $purchaseAmount;
+    protected int $dueDate;
 
-    /** @var int */
-    public $originalPurchaseAmount;
+    protected int $purchaseAmount;
 
-    /** @var int */
-    public $dueDate;
+    protected array $requiredFields = [
+        'customerFee'      => 'customer_fee',
+        'customerInterest' => 'customer_interest',
+        'dueDate'          => 'due_date',
+        'purchaseAmount'   => 'purchase_amount',
+    ];
 
-    /** @var int */
-    public $customerFee;
+    protected array $optionalFields = [
+    ];
 
-	/** @var int */
-    public $customerInterest;
+    /**
+     * Returns the customer fee in cents
+     * @return int
+     */
+    public function getCustomerFee(): int
+    {
+        return $this->customerFee;
+    }
 
-	/** @var int */
-    public $totalAmount;
+    /**
+     * Returns the customer interest in cents
+     * @return int
+     */
+    public function getCustomerInterest(): int
+    {
+        return $this->customerInterest;
+    }
+
+    /**
+     * Returns the due date as a UNIX timestamp
+     * @return int
+     */
+    public function getDueDate(): int
+    {
+        return $this->dueDate;
+    }
+
+    /**
+     * Returns the purchase amount in cents
+     * @return int
+     */
+    public function getPurchaseAmount(): int
+    {
+        return $this->purchaseAmount;
+    }
 }

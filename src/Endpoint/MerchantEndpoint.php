@@ -31,6 +31,7 @@ use Alma\API\Entity\FeePlan;
 use Alma\API\Entity\FeePlanList;
 use Alma\API\Entity\Merchant;
 use Alma\API\Exception\Endpoint\MerchantEndpointException;
+use Alma\API\Exception\ParametersException;
 use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
@@ -43,7 +44,7 @@ class MerchantEndpoint extends AbstractEndpoint
 
     /**
      * @return Merchant
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function me(): Merchant
     {
@@ -72,6 +73,7 @@ class MerchantEndpoint extends AbstractEndpoint
      * @return FeePlanList A list of available fee plans (some might be disabled, check FeePlan->allowed for each)
      *
      * @throws MerchantEndpointException
+     * @throws ParametersException
      */
     public function getFeePlanList(string $kind = FeePlan::KIND_GENERAL, $installmentsCounts = "all", bool $includeDeferred = false): FeePlanList
     {

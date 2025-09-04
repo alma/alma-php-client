@@ -28,6 +28,7 @@ namespace Alma\API\Endpoint;
 use Alma\API\Entity\Eligibility;
 use Alma\API\Entity\EligibilityList;
 use Alma\API\Exception\Endpoint\EligibilityEndpointException;
+use Alma\API\Exception\ParametersException;
 use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
@@ -43,6 +44,7 @@ class EligibilityEndpoint extends AbstractEndpoint
      *                              can be an array of integers, to test for multiple eligible plans at once.
      * @return EligibilityList A list of Eligibility objects, one for each payment plan.
      * @throws EligibilityEndpointException
+     * @throws ParametersException
      */
     public function getEligibilityList(array $data = []): EligibilityList
     {
@@ -68,7 +70,7 @@ class EligibilityEndpoint extends AbstractEndpoint
 			if (!$eligibility->isEligible()) {
 				$this->logger->info(
 					"Eligibility check failed for following reasons: " .
-					var_export($eligibility->reasons, true)
+					var_export($eligibility->getReasons(), true)
 				);
 			}
 		}

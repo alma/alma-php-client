@@ -11,7 +11,6 @@ final class DataExportsTest extends MockeryTestCase
     protected static $almaClient;
 
     /**
-     * @throws ParametersException
      */
     public static function setUpBeforeClass(): void
     {

@@ -9,6 +9,7 @@ use Alma\API\Entity\FeePlan;
 use Alma\API\Entity\Merchant;
 use Alma\API\Exception\ClientException;
 use Alma\API\Exception\Endpoint\MerchantEndpointException;
+use Alma\API\Exception\ParametersException;
 use Alma\API\Exception\RequestException;
 use Alma\API\Response;
 use Mockery;
@@ -18,6 +19,12 @@ use Psr\Log\LoggerInterface;
 class MerchantEndpointTest extends AbstractEndpointSetUp
 {
     const DEFAULT_JSON_RESPONSE = '{"json_key": "json_value"}';
+
+    const MERCHANT_JSON_RESPONSE = '{
+        "id": "string",
+        "name": "string",
+        "can_create_payments": true
+    }';
 
     const FEE_PLAN_JSON_RESPONSE = '[
         {
@@ -32,6 +39,8 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         }
     ]';
 
+    const BUSINEES_EVENT_JSON_RESPONSE = '{}';
+
     /** @var MerchantEndpoint|Mock */
     private $merchantService;
 
@@ -43,17 +52,29 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         $loggerMock = Mockery::mock(LoggerInterface::class);
         $loggerMock->shouldReceive('error');
 
-        $this->responseMock = Mockery::mock(Response::class);
-        $this->responseMock->shouldReceive('getStatusCode')->andReturn(200);
-        $this->responseMock->shouldReceive('isError')->andReturn(false);
-        $this->responseMock->shouldReceive('getBody')->andReturn(self::FEE_PLAN_JSON_RESPONSE);
-        $this->responseMock->shouldReceive('getJson')->andReturn(json_decode(self::FEE_PLAN_JSON_RESPONSE, true));
+        $this->feePlanResponseMock = Mockery::mock(Response::class);
+        $this->feePlanResponseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $this->feePlanResponseMock->shouldReceive('isError')->andReturn(false);
+        $this->feePlanResponseMock->shouldReceive('getBody')->andReturn(self::FEE_PLAN_JSON_RESPONSE);
+        $this->feePlanResponseMock->shouldReceive('getJson')->andReturn(json_decode(self::FEE_PLAN_JSON_RESPONSE, true));
+
+        $this->meResponseMock = Mockery::mock(Response::class);
+        $this->meResponseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $this->meResponseMock->shouldReceive('isError')->andReturn(false);
+        $this->meResponseMock->shouldReceive('getBody')->andReturn(self::MERCHANT_JSON_RESPONSE);
+        $this->meResponseMock->shouldReceive('getJson')->andReturn(json_decode(self::MERCHANT_JSON_RESPONSE, true));
+
+        $this->businessEventResponseMock = Mockery::mock(Response::class);
+        $this->businessEventResponseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $this->businessEventResponseMock->shouldReceive('isError')->andReturn(false);
+        $this->businessEventResponseMock->shouldReceive('getBody')->andReturn(self::BUSINEES_EVENT_JSON_RESPONSE);
+        $this->businessEventResponseMock->shouldReceive('getJson')->andReturn(json_decode(self::BUSINEES_EVENT_JSON_RESPONSE, true));
 
         $this->badResponseMock = Mockery::mock(Response::class);
         $this->badResponseMock->shouldReceive('getStatusCode')->andReturn(500);
         $this->badResponseMock->shouldReceive('getReasonPhrase')->andReturn('Internal Server Error');
         $this->badResponseMock->shouldReceive('isError')->andReturn(true);
-        $this->badResponseMock->shouldReceive('getBody')->andReturn(self::FEE_PLAN_JSON_RESPONSE);
+        $this->badResponseMock->shouldReceive('getBody')->andReturn(self::MERCHANT_JSON_RESPONSE);
 
         $this->merchantService = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])->makePartial();
     }
@@ -65,12 +86,12 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can create a DataExport
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function testMe()
     {
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->meResponseMock);
 
         // MerchantService
         $result = $this->merchantService->me();
@@ -81,7 +102,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch DataExportServiceException
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function testMeMerchantServiceException()
     {
@@ -98,7 +119,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function testMeRequestException()
     {
@@ -116,7 +137,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function testMeClientException()
     {
@@ -131,11 +152,12 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we get fee plans
      * @throws MerchantEndpointException
+     * @throws ParametersException
      */
     public function testFeePlans()
     {
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->feePlanResponseMock);
 
         // MerchantService
         $result = $this->merchantService->getFeePlanList();
@@ -152,7 +174,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
     /**
      * Ensure we can catch API errors
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function testFeePlansMerchantServiceException()
     {
@@ -169,7 +191,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch RequestException
      * @return void
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function testFeePlansRequestException()
     {
@@ -187,7 +209,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     /**
      * Ensure we can catch ClientException
      * @return void
-     * @throws MerchantEndpointException
+     * @throws MerchantEndpointException|ParametersException
      */
     public function testFeePlansClientException()
     {
@@ -209,7 +231,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         $cartInitiatedEvent = new CartInitiatedBusinessEventDto('42');
 
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->businessEventResponseMock);
 
         // Call
         $this->merchantService->sendCartInitiatedBusinessEvent($cartInitiatedEvent);
@@ -232,7 +254,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         );
 
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->businessEventResponseMock);
 
         // Call
         $this->merchantService->sendOrderConfirmedBusinessEvent($orderConfirmedBusinessEvent);
@@ -255,7 +277,7 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
         );
 
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->businessEventResponseMock);
 
         // Call
         $this->merchantService->sendOrderConfirmedBusinessEvent($orderConfirmedBusinessEvent);

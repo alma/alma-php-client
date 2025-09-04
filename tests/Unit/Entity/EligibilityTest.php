@@ -4,14 +4,18 @@ namespace Alma\API\Tests\Unit\Entity;
 
 use Alma\API\Entity\Eligibility;
 use Alma\API\Entity\FeePlan;
+use Alma\API\Exception\ParametersException;
 use PHPUnit\Framework\TestCase;
 
 class EligibilityTest extends TestCase
 {
+    /**
+     * @throws ParametersException
+     */
     public function testCommonCase()
     {
         $eligibility = new Eligibility([
-            'eligible' => true,
+            'is_eligible' => true,
             'reasons' => ['reason1', 'reason2'],
             'constraints' => ['constraint1'],
             'payment_plan' => ['plan1'],
@@ -33,21 +37,21 @@ class EligibilityTest extends TestCase
         $this->assertSame(500, $eligibility->getCustomerTotalCostAmount());
         $this->assertSame(500, $eligibility->getCustomerTotalCostBps());
         $this->assertSame(500, $eligibility->getAnnualInterestRate());
-        $this->assertSame('general_3_0_2', $eligibility->getFeePlanKey());
+        $this->assertSame('general_3_0_2', $eligibility->getPlanKey());
     }
 
     public static function eligibilityConstructorHandlesScenariosProvider(): array
     {
         return [
             'eligible_with_reasons_and_constraints' => [
-                ['eligible' => true, 'reasons' => ['reason1'], 'constraints' => ['constraint1']],
+                ['is_eligible' => true, 'reasons' => ['reason1'], 'constraints' => ['constraint1'], 'installments_count' => 3, 'deferred_days' => 0, 'deferred_months' => 0],
                 200,
                 true,
                 ['reason1'],
                 ['constraint1']
             ],
             'eligible_with_payment_plan' => [
-                ['eligible' => true, 'payment_plan' => ['plan1'], 'installments_count' => 3, 'deferred_days' => 30, 'deferred_months' => 2],
+                ['is_eligible' => true, 'payment_plan' => ['plan1'], 'installments_count' => 3, 'deferred_days' => 30, 'deferred_months' => 2],
                 200,
                 true,
                 [],
@@ -69,6 +73,7 @@ class EligibilityTest extends TestCase
      * @param array|null $expectedPaymentPlan
      * @param int|null $expectedInstallmentsCount
      * @return void
+     * @throws ParametersException
      */
     public function testEligibilityConstructorHandlesScenarios(
         array $data,
@@ -99,12 +104,23 @@ class EligibilityTest extends TestCase
     {
         return [
             'annual_interest_rate_set' => [
-                ['annual_interest_rate' => 500],
+                [
+                    'annual_interest_rate' => 500,
+                    'is_eligible' => true,
+                    'installments_count' => 3,
+                    'deferred_days' => 0,
+                    'deferred_months' => 0,
+                ],
                 500
             ],
             'annual_interest_rate_not_set' => [
-                [],
-                null
+                [
+                    'is_eligible' => true,
+                    'installments_count' => 3,
+                    'deferred_days' => 0,
+                    'deferred_months' => 0,
+                ],
+                0
             ],
         ];
     }
@@ -115,6 +131,7 @@ class EligibilityTest extends TestCase
      * @param array $data
      * @param int|null $expectedAnnualInterestRate
      * @return void
+     * @throws ParametersException
      */
     public function testAnnualInterestRateHandlesScenarios(array $data, ?int $expectedAnnualInterestRate)
     {
@@ -127,13 +144,23 @@ class EligibilityTest extends TestCase
     {
         return [
             'variable_set' => [
-                ['customer_total_cost_amount' => 500, 'customer_total_cost_bps' => 500],
-                ['customer_total_cost_bps' => 500, 'customer_total_cost_amount' => 500]
-            ],
-            'variable_not_set' => [
-                [],
-                ['customer_total_cost_bps' => 0, 'customer_total_cost_amount' => 0]
-            ],
+                [
+                    'customer_total_cost_amount' => 500,
+                    'customer_total_cost_bps' => 500,
+                    'is_eligible' => true,
+                    'installments_count' => 3,
+                    'deferred_days' => 0,
+                    'deferred_months' => 0,
+                ],
+                [
+                    'customer_total_cost_bps' => 500,
+                    'customer_total_cost_amount' => 500,
+                    'is_eligible' => true,
+                    'installments_count' => 3,
+                    'deferred_days' => 0,
+                    'deferred_months' => 0,
+                ]
+            ]
         ];
     }
 
@@ -143,6 +170,7 @@ class EligibilityTest extends TestCase
      * @param array $data
      * @param array $expectedValues
      * @return void
+     * @throws ParametersException
      */
     public function testEligibilityScenarios(array $data, array $expectedValues)
     {

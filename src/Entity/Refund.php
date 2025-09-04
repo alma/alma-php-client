@@ -28,28 +28,26 @@ namespace Alma\API\Entity;
 class Refund
 {
     /* @var int */
-    private int $amount;
+    protected int $amount;
 
     /* @var int */
-    private int $created;
+    protected int $created;
 
     /* @var string */
-    private string $id;
+    protected string $id;
 
     /* @var string  */
-    private string $merchantReference;
+    protected string $merchantReference;
 
-    /**
-     * Refund constructor.
-     *
-     * @param array $refundData
-     */
-    public function __construct(array $refundData) {
-        $this->setId($refundData['id']);
-        $this->setCreated($refundData['created']);
-        $this->setMerchantReference($refundData['merchant_reference'] ?? '');
-        $this->setAmount($refundData['amount']);
-    }
+    protected array $requiredFields = [
+        'id'                 => 'id',
+        'created'            => 'created',
+        'amount'             => 'amount',
+    ];
+
+    protected array $optionalFields = [
+        'merchantReference' => 'merchant_reference',
+    ];
 
     /**
      * @return string

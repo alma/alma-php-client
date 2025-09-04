@@ -25,10 +25,9 @@
 
 namespace Alma\API\Entity;
 
-use Alma\Gateway\WooCommerce\Exception\CoreException;
 use InvalidArgumentException;
 
-class FeePlan implements PaymentPlanInterface
+class FeePlan extends AbstractEntity implements PaymentPlanInterface
 {
     /**
      * This trait provides methods for handling payment plans, such as getPlanKey.
@@ -36,7 +35,6 @@ class FeePlan implements PaymentPlanInterface
     use PaymentPlanTrait;
 
     const KIND_GENERAL = 'general';
-    const KIND_POS = 'pos';
 
     /** @var ?bool Is this fee plan enabled by merchant? True by default */
     protected bool $enabled = true;
@@ -89,7 +87,7 @@ class FeePlan implements PaymentPlanInterface
     protected int $maxPurchaseAmount;
 
     /** @var int|null Local override of the maximum purchase amount allowed for this fee plan */
-    private $overrideMaxPurchaseAmount;
+    private ?int $overrideMaxPurchaseAmount;
 
     /** @var ?string */
     protected ?string $merchant;
@@ -104,36 +102,40 @@ class FeePlan implements PaymentPlanInterface
     protected int $minPurchaseAmount;
 
     /** @var int|null Local override of the minimum purchase amount allowed for this fee plan */
-    private $overrideMinPurchaseAmount;
+    private ?int $overrideMinPurchaseAmount;
 
     /** @var ?bool Whether payout is made on acceptance of the payment plan */
     protected ?bool $payoutOnAcceptance;
 
-    public function __construct(array $attributes) {
-        $this->enabled                      = $attributes['enabled'] ?? true;
-        $this->available                    = $attributes['available'] ?? true;
-        $this->allowed                      = $attributes['allowed'] ?? false;
-        $this->availableInPos               = $attributes['available_in_pos'] ?? false;
-        $this->availableOnline              = $attributes['available_online'] ?? false;
-        $this->customerFeeFixed             = $attributes['customer_fee_fixed'] ?? null;
-        $this->customerFeeVariable          = $attributes['customer_fee_variable'] ?? null;
-        $this->customerLendingRate          = $attributes['customer_lending_rate'] ?? null;
-        $this->deferredDays                 = $attributes['deferred_days'] ?? 0;
-        $this->deferredMonths               = $attributes['deferred_months'] ?? 0;
-        $this->deferredTriggerBypassScoring = $attributes['deferred_trigger_bypass_scoring'] ?? null;
-        $this->deferredTriggerLimitDays     = $attributes['deferred_trigger_limit_days'] ?? null;
-        $this->firstInstallmentRatio        = $attributes['first_installment_ratio'] ?? null;
-        $this->id                           = $attributes['id'] ?? null;
-        $this->installmentsCount            = $attributes['installments_count'] ?? 1;
-        $this->kind                         = $attributes['kind'] ?? 'general';
-        $this->maxPurchaseAmount            = $attributes['max_purchase_amount'] ?? null;
-        $this->overrideMaxPurchaseAmount    = $attributes['override_max_purchase_amount'] ?? null;
-        $this->merchant                     = $attributes['merchant'] ?? null;
-        $this->merchantFeeVariable          = $attributes['merchant_fee_variable'] ?? null;
-        $this->merchantFeeFixed             = $attributes['merchant_fee_fixed'] ?? null;
-        $this->minPurchaseAmount            = $attributes['min_purchase_amount'] ?? null;
-        $this->overrideMinPurchaseAmount    = $attributes['override_min_purchase_amount'] ?? null;
-        $this->payoutOnAcceptance           = $attributes['payout_on_acceptance'] ?? null;
+    protected array $requiredFields = [
+    ];
+
+    protected array $optionalFields = [
+        'allowed'                      => 'allowed',
+        'availableInPos'               => 'available_in_pos',
+        'availableOnline'              => 'available_online',
+        'customerFeeFixed'             => 'customer_fee_fixed',
+        'customerFeeVariable'          => 'customer_fee_variable',
+        'customerLendingRate'          => 'customer_lending_rate',
+        'deferredDays'                 => 'deferred_days',
+        'deferredMonths'               => 'deferred_months',
+        'deferredTriggerBypassScoring' => 'deferred_trigger_bypass_scoring',
+        'deferredTriggerLimitDays'     => 'deferred_trigger_limit_days',
+        'firstInstallmentRatio'        => 'first_installment_ratio',
+        'id'                           => 'id',
+        'installmentsCount'            => 'installments_count',
+        'kind'                         => 'kind',
+        'maxPurchaseAmount'            => 'max_purchase_amount',
+        'merchant'                     => 'merchant',
+        'merchantFeeVariable'          => 'merchant_fee_variable',
+        'merchantFeeFixed'             => 'merchant_fee_fixed',
+        'minPurchaseAmount'            => 'min_purchase_amount',
+        'payoutOnAcceptance'           => 'payout_on_acceptance',
+    ];
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     /**
@@ -222,7 +224,6 @@ class FeePlan implements PaymentPlanInterface
 
 	/**
 	 * Values from the API can't be overridden. Use setOverrideMinPurchaseAmount() instead.
-	 * @throws CoreException
 	 * @return void
 	 */
 	public function setMinPurchaseAmount(): void
@@ -259,7 +260,6 @@ class FeePlan implements PaymentPlanInterface
 
 	/**
 	 * Values from the API can't be overridden. Use setOverrideMaxPurchaseAmount() instead.
-	 * @throws CoreException
 	 * @return void
 	 */
 	public function setMaxPurchaseAmount(): void
@@ -401,6 +401,6 @@ class FeePlan implements PaymentPlanInterface
      */
     public function getKind(): string
     {
-        return $this->kind;
+        return self::KIND_GENERAL;
     }
 }

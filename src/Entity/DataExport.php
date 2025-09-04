@@ -22,47 +22,76 @@
  * @license   https://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Alma\API\Entities;
+namespace Alma\API\Entity;
 
-class DataExport extends Base
+use Alma\API\Exception\ParametersException;
+
+class DataExport extends AbstractEntity
 {
-    public $complete;
+    /** @var bool */
+    protected $complete;
 
-    public $created;
+    /** @var int Timestamp */
+    protected $created;
 
-    public $end;
+    /** @var int Timestamp */
+    protected $end;
 
-    public $holder_id;
+    /** @var string */
+    protected $id;
 
-    public $id;
+    /** @var bool */
+    protected $includeChildAccounts;
 
-    public $include_child_accounts;
+    /** @var string */
+    protected $merchant;
 
-    public $merchant;
+    /** @var int Timestamp */
+    protected $start;
 
-    public $receivable_export_type;
+    /** @var string */
+    protected $type;
 
-    public $start;
+    /** @var string Timestamp */
+    protected $updated;
 
-    public $type;
+    /** @var string */
+    protected $csvUrl;
 
-    public $updated;
+    /** @var string */
+    protected $pdfUrl;
 
-    public $url_csv;
+    /** @var string */
+    protected $xlsxUrl;
 
-    public $url_pdf;
+    /** @var string */
+    protected $xmlUrl;
 
-    public $url_xlsx;
+    /** @var string */
+    protected $zipUrl;
 
-    public $url_xml;
+    protected array $requiredFields = [
+    ];
 
-    public $url_zip;
+    protected array $optionalFields = [
+        'complete'             => 'complete',
+        'created'              => 'created',
+        'end'                  => 'end',
+        'id'                   => 'id',
+        'includeChildAccounts' => 'include_child_accounts',
+        'merchant'             => 'merchant',
+        'start'                => 'start',
+        'type'                 => 'type',
+        'updated'              => 'updated',
+        'csvUrl'               => 'csv_url',
+        'pdfUrl'               => 'pdf_url',
+        'xlsxUrl'              => 'xlsx_url',
+        'xmlUrl'               => 'xml_url',
+        'zipUrl'               => 'zip_url',
+    ];
 
-    /**
-     * @param array $attributes
-     */
-    public function __construct($attributes)
+    public function getId(): string
     {
-        parent::__construct($attributes);
+        return $this->id;
     }
 }

@@ -14,9 +14,10 @@ class FeePlanTest extends TestCase
             'kind'                        => 'general',
             'min_purchase_amount'         => 500,
             'max_purchase_amount'         => 1000,
-        ]))->setDeferredMonths(5)
-           ->setDeferredDays(3)
-           ->setInstallmentsCount(4);
+            'deferred_months'             => 5,
+            'deferred_days'               => 3,
+            'installments_count'          => 4,
+        ]));
 
         $this->assertEquals('general', $feePlan->getKind());
         $this->assertEquals(4, $feePlan->getInstallmentsCount());

@@ -25,7 +25,9 @@
 
 namespace Alma\API\Entity;
 
-class Payment extends Base
+use Alma\API\Exception\ParametersException;
+
+class Payment extends AbstractEntity
 {
     /** @var string Payment is ongoing */
     const STATE_IN_PROGRESS = 'in_progress';
@@ -39,108 +41,74 @@ class Payment extends Base
     const FRAUD_AMOUNT_MISMATCH = 'amount_mismatch';
     const FRAUD_STATE_ERROR = 'state_error';
 
-    /** @var int Creation UNIX timestamp */
-    public int $created;
-
-    /** @var string URL of that payment's page to which the customer should be redirected */
-    public string $url;
-
-    /** @var string State of the payment (see above STATE_PAID / STATE_IN_PROGRESS / ...) */
-    public string $state;
-
-    /** @var int Purchase amount, in cents */
-    public int $purchaseAmount;
-
-    /** @var int Fees to be paid by the customer, in cents */
-    public int $customerFee;
-
-    /** @var int Interests to be paid by the customer, in cents */
-    public int $customerInterest;
-
-    /** @var int Fees paid by the merchant, in cents */
-    public int $merchantTargetFee;
-
-    /** @var int Number of installments for this payment */
-    public int $installmentsCount;
-
-    /** @var int Number of days the payment was deferred for */
-    public int $deferredDays;
-
-    /** @var int Number of months the payment was deferred for */
-    public int $deferredMonths;
-
     /**
      * @var Installment[] Array of installments, representing the payment plan for this payment.
-     * Might include more than $installments_count installments in some cases.
      */
-    public array $paymentPlan;
-
-    /** @var string URL the customer is sent back to once the payment is complete */
-    public string $returnUrl;
-
-    /** @var array Custom data provided at creation time */
-    public array $customData;
+    protected array $paymentPlan;
 
     /** @var Order[] List of orders associated to that payment */
-    public array $orders;
+    protected array $orders;
 
     /** @var Refund[] List of refunds for that payment */
-    public array $refunds;
+    protected array $refunds;
 
-    /** @var array Customer representation */
-    public array $customer;
+    protected array $requiredFields = [
+        'paymentPlan' => 'payment_plan',
+        'orders'      => 'orders',
+        'refunds'     => 'refunds',
+    ];
 
-    /** @var array Billing address representation */
-    public array $billingAddress;
-
-    /** @var bool If is a payment with trigger or not */
-    public bool $deferredTrigger;
-
-    /** @var string|null Description given at payment creation */
-    public ?string $deferredTriggerDescription;
-
-    /** @var int|null Timestamp or NULL if not already applied */
-    public ?int $deferredTriggerApplied;
-
-    /** @var int|null Timestamp or NULL if not expired */
-    public ?int $expiredAt;
+    protected array $optionalFields = [
+    ];
 
     /**
-     * @param array $attributes
+     * @param array $paymentData
+     * @throws ParametersException
      */
-    public function __construct($attributes)
+    public function __construct(array $paymentData)
     {
-        // Manually process `payment_plan` to create Installment instances
-        if (array_key_exists('payment_plan', $attributes)) {
-            $this->paymentPlan = array();
+        $this->paymentPlan = array();
+        $this->orders = array();
+        $this->refunds = array();
+        $values = $this->prepareValues($paymentData, false);
 
-            foreach ($attributes['payment_plan'] as $installment) {
-                $this->paymentPlan[] = new Installment($installment);
-            }
-
-            unset($attributes['payment_plan']);
+        foreach ($values['payment_plan'] as $installment) {
+            $this->paymentPlan[] = new Installment($installment);
         }
 
-        if (array_key_exists('orders', $attributes)) {
-            $this->orders = array();
-
-            foreach ($attributes['orders'] as $order) {
-                $this->orders[] = new Order($order);
-            }
-
-            unset($attributes['orders']);
+        foreach ($values['orders'] as $order) {
+            $this->orders[] = new Order($order);
         }
 
-        if (array_key_exists('refunds', $attributes)) {
-            $this->refunds = array();
-
-            foreach ($attributes['refunds'] as $refund) {
-                $this->refunds[] = new Refund($refund);
-            }
-
-            unset($attributes['refunds']);
+        foreach ($values['refunds'] as $refund) {
+            $this->refunds[] = new Refund($refund);
         }
+    }
 
-        parent::__construct($attributes);
+    /**
+     * Returns the array of installments representing the payment plan for this payment.
+     * @return Installment[]
+     */
+    public function getPaymentPlan(): array
+    {
+        return $this->paymentPlan;
+    }
+
+    /**
+     * Returns the list of orders associated to that payment.
+     * @return Order[]
+     */
+    public function getOrders(): array
+    {
+        return $this->orders;
+    }
+
+    /**
+     * Returns the list of refunds for that payment.
+     * @return Refund[]
+     */
+    public function getRefunds(): array
+    {
+        return $this->refunds;
     }
 }

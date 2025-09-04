@@ -25,21 +25,49 @@
 
 namespace Alma\API\Entity;
 
-class Merchant
+use Alma\API\Exception\ParametersException;
+
+class Merchant extends AbstractEntity
 {
-    /** @var string */
-    public $id;
+    protected string $id;
 
-    /** @var string */
-    public $name;
+    protected string $name;
 
-    /** @var bool */
-    public $canCreatePayments;
+    protected bool $canCreatePayments;
 
-    public function __construct(array $merchantData)
+    protected array $requiredFields = [
+        'id'                => 'id',
+        'name'              => 'name',
+        'canCreatePayments' => 'can_create_payments',
+    ];
+
+    protected array $optionalFields = [
+    ];
+
+    /**
+     * Returns the merchant ID.
+     * @return string
+     */
+    public function getId(): string
     {
-        $this->id = $merchantData['id'] ?? '';
-        $this->name = $merchantData['name'] ?? '';
-        $this->canCreatePayments = $merchantData['can_create_payments'] ?? false;
+        return $this->id;
+    }
+
+    /**
+     * Returns the merchant name.
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Method to check if the merchant can create payments.
+     * @return bool
+     */
+    public function canCreatePayments(): bool
+    {
+        return $this->canCreatePayments;
     }
 }

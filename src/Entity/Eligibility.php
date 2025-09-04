@@ -24,100 +24,61 @@
 
 namespace Alma\API\Entity;
 
-class Eligibility implements PaymentPlanInterface
+use Alma\API\Exception\ParametersException;
+
+class Eligibility extends AbstractEntity implements PaymentPlanInterface
 {
     use PaymentPlanTrait;
 
-    /**
-     * @var bool
-     */
-    public bool $isEligible = false;
-    /**
-     * @var array
-     */
-    public array $reasons = [];
-    /**
-     * @var array
-     */
-    public array $constraints = [];
-    /**
-     * @var array
-     */
-    public array $paymentPlan = [];
-    /**
-     * @var int
-     */
-    public int $installmentsCount;
-    /**
-     *  @var int
-     */
-    public int $deferredDays;
-    /**
-     * @var int
-     */
-    public int $deferredMonths;
-    /**
-     * @var int
-     */
-    public int $customerTotalCostAmount = 0;
-    /**
-     * @var int
-     */
-    public int $customerTotalCostBps = 0;
+    /** @var bool */
+    protected bool $isEligible = false;
+
+    /** @var array */
+    protected array $reasons = [];
+
+    /** @var array */
+    protected array $constraints = [];
+
+    /** @var array */
+    protected array $paymentPlan = [];
+
+    /** @var int */
+    protected int $installmentsCount;
+
+    /** @var int */
+    protected int $deferredDays;
+
+    /** @var int */
+    protected int $deferredMonths;
+
+    /** @var int */
+    protected int $customerTotalCostAmount = 0;
+
+    /** @var int */
+    protected int $customerTotalCostBps = 0;
+
     /**
      * @var int|null Percentage of fees + credit in bps paid for by the customer (100bps = 1%)
      *
      * if value is null, that's mean the API does not return this property
      */
-    public ?int $annualInterestRate = null;
+    protected int $annualInterestRate = 0;
 
-    /**
-     * Eligibility constructor.
-     *
-     * @param array    $data
-     */
-    public function __construct(array $data = [])
-    {
-        if (array_key_exists('eligible', $data)) {
-            $this->setIsEligible($data['eligible']);
-        }
+    protected array $requiredFields = [
+        'isEligible'              => 'is_eligible',
+        'installmentsCount'       => 'installments_count',
+        'deferredDays'            => 'deferred_days',
+        'deferredMonths'          => 'deferred_months',
+    ];
 
-        if (array_key_exists('reasons', $data)) {
-            $this->setReasons($data['reasons']);
-        }
-
-        if (array_key_exists('constraints', $data)) {
-            $this->setConstraints($data['constraints']);
-        }
-
-        if (array_key_exists('payment_plan', $data)) {
-            $this->setPaymentPlan($data['payment_plan']);
-        }
-
-        if (array_key_exists('installments_count', $data)) {
-            $this->setInstallmentsCount($data['installments_count']);
-        }
-
-        if (array_key_exists('deferred_days', $data)) {
-            $this->setDeferredDays($data['deferred_days']);
-        }
-
-        if (array_key_exists('deferred_months', $data)) {
-            $this->setDeferredMonths($data['deferred_months']);
-        }
-
-        if (array_key_exists('customer_total_cost_amount', $data)) {
-            $this->setCustomerTotalCostAmount($data['customer_total_cost_amount']);
-        }
-
-        if (array_key_exists('customer_total_cost_bps', $data)) {
-            $this->setCustomerTotalCostBps($data['customer_total_cost_bps']);
-        }
-
-        if (array_key_exists('annual_interest_rate', $data)) {
-            $this->setAnnualInterestRate($data['annual_interest_rate']);
-        }
-    }
+    protected array $optionalFields = [
+        'reasons'                 => 'reasons',
+        'constraints'             => 'constraints',
+        'paymentPlan'             => 'payment_plan',
+        'customerTotalCostAmount' => 'customer_total_cost_amount',
+        'customerTotalCostBps'    => 'customer_total_cost_bps',
+        'annualInterestRate'      => 'annual_interest_rate',
+    ];
 
     /**
      * Kind is always 'general' for eligibility at this time
@@ -180,56 +141,6 @@ class Eligibility implements PaymentPlanInterface
     }
 
     /**
-     * Setter isEligible.
-     *
-     * @param bool $isEligible
-     */
-    public function setIsEligible(bool $isEligible)
-    {
-        $this->isEligible = $isEligible;
-    }
-
-    /**
-     * Setter reasons.
-     *
-     * @param array $reasons
-     */
-    public function setReasons(array $reasons)
-    {
-        $this->reasons = $reasons;
-    }
-
-    /**
-     * Setter constraints.
-     *
-     * @param array $constraints
-     */
-    public function setConstraints(array $constraints)
-    {
-        $this->constraints = $constraints;
-    }
-
-    /**
-     * Setter paymentPlan.
-     *
-     * @param array $paymentPlan
-     */
-    public function setPaymentPlan(array $paymentPlan)
-    {
-        $this->paymentPlan = $paymentPlan;
-    }
-
-    /**
-     * Setter paymentPlan.
-     *
-     * @param int $installmentsCount
-     */
-    public function setInstallmentsCount(int $installmentsCount)
-    {
-        $this->installmentsCount = $installmentsCount;
-    }
-
-    /**
      * Get the value of deferredMonths.
      *
      * @return int
@@ -237,18 +148,6 @@ class Eligibility implements PaymentPlanInterface
     public function getDeferredMonths(): int
     {
         return $this->deferredMonths;
-    }
-
-    /**
-     * Set the value of deferredMonths.
-     *
-     * @param mixed $deferredMonths
-     */
-    public function setDeferredMonths($deferredMonths): Eligibility
-    {
-        $this->deferredMonths = $deferredMonths;
-
-        return $this;
     }
 
     /**
@@ -262,18 +161,6 @@ class Eligibility implements PaymentPlanInterface
     }
 
     /**
-     * Set the value of deferredDays.
-     *
-     * @param mixed $deferredDays
-     */
-    public function setDeferredDays($deferredDays): Eligibility
-    {
-        $this->deferredDays = $deferredDays;
-
-        return $this;
-    }
-
-    /**
      * Get the value of customerTotalCostAmount.
      *
      * @return int
@@ -281,20 +168,6 @@ class Eligibility implements PaymentPlanInterface
     public function getCustomerTotalCostAmount(): int
     {
         return $this->customerTotalCostAmount;
-    }
-
-    /**
-     * Set the value of customerTotalCostAmount.
-     *
-     * @param int $customerTotalCostAmount
-     *
-     * @return self
-     */
-    public function setCustomerTotalCostAmount(int $customerTotalCostAmount): Eligibility
-    {
-        $this->customerTotalCostAmount = $customerTotalCostAmount;
-
-        return $this;
     }
 
     /**
@@ -308,20 +181,6 @@ class Eligibility implements PaymentPlanInterface
     }
 
     /**
-     * Set the value of customerTotalCostBps.
-     *
-     * @param int $customerTotalCostBps
-     *
-     * @return self
-     */
-    public function setCustomerTotalCostBps(int $customerTotalCostBps): Eligibility
-    {
-        $this->customerTotalCostBps = $customerTotalCostBps;
-
-        return $this;
-    }
-
-    /**
      * Get the value of annualInterestRate.
      * if value is null, that's mean the API does not return this property
      *
@@ -330,24 +189,5 @@ class Eligibility implements PaymentPlanInterface
     public function getAnnualInterestRate(): ?int
     {
         return $this->annualInterestRate;
-    }
-
-    /**
-     * Set the value of annualInterestRate.
-     *
-     * @param int $annualInterestRate
-     *
-     * @return self
-     */
-    private function setAnnualInterestRate(int $annualInterestRate): Eligibility
-    {
-        $this->annualInterestRate = $annualInterestRate;
-
-        return $this;
-    }
-
-    public function getFeePlanKey(): string
-    {
-        return implode('_', [FeePlan::KIND_GENERAL, $this->installmentsCount, $this->deferredDays, $this->deferredMonths]);
     }
 }

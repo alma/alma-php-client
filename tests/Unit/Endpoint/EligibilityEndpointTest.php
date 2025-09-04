@@ -23,7 +23,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             "customer_total_cost_bps": 0,
             "deferred_days": 0,
             "deferred_months": 0,
-            "eligible": true,
+            "is_eligible": true,
             "installments_count": 3,
             "payment_plan": [
                 {
@@ -68,7 +68,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             "reasons": {
                 "purchase_amount": "invalid_value"
             },
-            "eligible": false
+            "is_eligible": false
         }
     ]';
 

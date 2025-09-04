@@ -25,69 +25,60 @@
 
 namespace Alma\API\Entity;
 
-class Order
+class Order extends AbstractEntity
 {
-    /** @var string ID of the Payment owning this Order
-     * @deprecated
-     */
-    public $payment;
-
     /** @var string ID of the Payment owning this Order */
-    private $paymentId;
+    protected string $paymentId;
 
     /**
      * @var string | null  Order reference from the merchant's platform
      */
-    private $merchantReference;
+    protected ?string $merchantReference;
 
     /** @var string | null  URL to the merchant's backoffice for that Order */
-    private $merchantUrl;
-
-    /**
-     * @var array  Free-form custom data
-     * @deprecated
-     * */
-    public $data;
+    protected ?string $merchantUrl;
 
     /** @var array  Free-form custom data */
-    private $orderData;
+    protected array $orderData;
 
     /**
      * @var string | null Order comment
      */
-    private $comment;
+    protected ?string $comment;
     /**
      * @var int Order creation timestamp
      */
-    private $createdAt;
+    protected int $createdAt;
 
     /**
      * @var string | null Customer URL
      */
-    private $customerUrl;
+    protected ?string $customerUrl;
 
     /**
      * @var string Order external ID
      */
-    private $externalId;
+    protected string $externalId;
 
     /**
-     * @var string Order updated timestamp
+     * @var int Order updated timestamp
      */
-    private $updatedAt;
+    protected int $updatedAt;
 
-    public function __construct($orderDataArray)
-    {
-        $this->comment = $orderDataArray['comment'];
-        $this->createdAt = $orderDataArray['created'];
-        $this->customerUrl = $orderDataArray['customer_url'];
-        $this->orderData = $orderDataArray['data'];
-        $this->externalId = $orderDataArray['id'];
-        $this->merchantReference = $orderDataArray['merchant_reference'];
-        $this->merchantUrl = $orderDataArray['merchant_url'];
-        $this->paymentId = $orderDataArray['payment'];
-        $this->updatedAt = $orderDataArray['updated'] ?? null;
-    }
+    protected array $requiredFields = [
+    ];
+
+    protected array $optionalFields = [
+        'comment'           => 'comment',
+        'createdAt'         => 'created',
+        'customerUrl'       => 'customer_url',
+        'orderData'         => 'data',
+        'externalId'        => 'id',
+        'merchantReference' => 'merchant_reference',
+        'merchantUrl'       => 'merchant_url',
+        'paymentId'         => 'payment',
+        'updatedAt'         => 'updated',
+    ];
 
     /**
      * @return string
@@ -148,7 +139,7 @@ class Order
     /**
      * @return int
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): int
     {
         return $this->updatedAt;
     }
