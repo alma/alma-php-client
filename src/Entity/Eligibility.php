@@ -24,6 +24,8 @@
 
 namespace Alma\API\Entity;
 
+use Alma\API\Exception\ParametersException;
+
 /**
  * Class Eligibility
  * @package Alma\API\Entity
@@ -47,6 +49,11 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     protected int $installmentsCount = 3;
 
     /**
+     * @var int
+     */
+    protected int $customerFee = 0 ;
+
+    /**
      * @var int Total amount of fees and interest paid by the client in cents.
      * Interest is calculated based on the date of the eligibility call.
      */
@@ -61,6 +68,10 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
      * It is therefore not recommended to display it in the payment journey.
      */
     protected int $customerTotalCostBps = 0;
+    /**
+     * @var int
+     */
+    protected int $annualInterestRate = 0;
 
     /** @var array List of installments for this purchase. This field is available only when eligibility value is true. */
     protected array $paymentPlan = [];
@@ -71,22 +82,39 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     /** @var array Reason for ineligibility */
     protected array $reasons = [];
 
-    /** Mapping of required fields */
-    protected array $requiredFields = [
-        'isEligible'              => 'eligible',
-        'deferredDays'            => 'deferred_days',
-        'deferredMonths'          => 'deferred_months',
-        'installmentsCount'       => 'installments_count',
-        'customerTotalCostAmount' => 'customer_total_cost_amount',
-        'customerTotalCostBps'    => 'customer_total_cost_bps',
-        'paymentPlan'             => 'payment_plan',
-    ];
+    public function __construct(array $data = [])
+    {
+        // 'eligible' is always required to determine which other fields are required
+        if (!array_key_exists('eligible', $data)) {
+            throw new ParametersException('Missing required field "eligible"');
+        }
 
-    /** Mapping of optional fields */
-    protected array $optionalFields = [
-        'constraints'             => 'constraints',
-        'reasons'                 => 'reasons',
-    ];
+        // Common fields for both eligible and non-eligible responses
+        $commonFields = [
+            'isEligible'              => 'eligible',
+            'deferredDays'            => 'deferred_days',
+            'deferredMonths'          => 'deferred_months',
+            'installmentsCount'       => 'installments_count',
+        ];
+
+        // Depending on eligibility, different fields are required
+        if ($data['eligible']) {
+            $this->requiredFields = array_merge($commonFields, [
+                'customerFee'             => 'customer_fee',
+                'customerTotalCostAmount' => 'customer_total_cost_amount',
+                'customerTotalCostBps'    => 'customer_total_cost_bps',
+                'paymentPlan'             => 'payment_plan',
+                'annualInterestRate'      => 'annual_interest_rate',
+            ]);
+        } else {
+            $this->requiredFields = array_merge($commonFields, [
+                'constraints'             => 'constraints',
+                'reasons'                 => 'reasons',
+            ]);
+        }
+
+        parent::__construct($data);
+    }
 
     /**
      * Kind is always 'general' for eligibility at this time
@@ -156,6 +184,22 @@ class Eligibility extends AbstractEntity implements PaymentPlanInterface
     public function getCustomerTotalCostBps(): int
     {
         return $this->customerTotalCostBps;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCustomerFee(): int
+    {
+        return $this->customerFee;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAnnualInterestRate(): int
+    {
+        return $this->annualInterestRate;
     }
 
     /**
