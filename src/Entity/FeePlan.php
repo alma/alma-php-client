@@ -25,7 +25,7 @@
 
 namespace Alma\API\Entity;
 
-use InvalidArgumentException;
+use Alma\API\Exception\ParametersException;
 
 class FeePlan extends AbstractEntity implements PaymentPlanInterface
 {
@@ -37,42 +37,22 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     const KIND_GENERAL = 'general';
 
     /** @var bool Is this fee plan allowed by Alma? */
-    protected bool $allowed = false;
+    protected bool $allowed;
 
     /** @var bool Whether this fee plan is available online */
-    protected bool $availableOnline = false;
+    protected bool $availableOnline;
 
-    /** @var bool Is this fee plan enabled by merchant? True by default */
-    protected bool $enabled = true;
-
-    /** @var ?int Fixed fees in cents paid by the customer */
-    protected ?int $customerFeeFixed;
-
-    /** @var ?int Percentage of fees in bps paid by the customer (100bps = 1%) */
-    protected ?int $customerFeeVariable;
-
-    /** @var ?int Percentage of lending rate in bps used to calculate the fee plan interest paid by the customer (100bps = 1%) */
-    protected ?int $customerLendingRate;
+    /** @var int Percentage of fees in bps paid by the customer (100bps = 1%) */
+    protected int $customerFeeVariable;
 
     /** @var int Number of deferred days this fee plan applies to */
-    protected int $deferredDays = 0;
+    protected int $deferredDays;
 
     /** @var int Number of deferred months this fee plan applies to */
-    protected int $deferredMonths = 0;
-
-    /** @var ?bool Whether this fee plan bypasses scoring for deferred triggers */
-    protected ?bool $deferredTriggerBypassScoring;
-
-    /** @var ?int Number of deferred trigger limit days this fee plan applies to */
-    protected ?int $deferredTriggerLimitDays;
-
-    protected ?int $firstInstallmentRatio;
-
-    /** @var ?int Numeric identifier */
-    private ?int $id;
+    protected int $deferredMonths;
 
     /** @var int Installments count this fee plan applies to*/
-    protected int $installmentsCount = 1;
+    protected int $installmentsCount;
 
     /** @var string Kind of payments this fee plan applies to (see kinds above, most likely KIND_GENERAL) */
     protected string $kind;
@@ -80,62 +60,42 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     /** @var int Maximum purchase amount allowed for this fee plan */
     protected int $maxPurchaseAmount;
 
-    /** @var int|null Local override of the maximum purchase amount allowed for this fee plan */
-    private ?int $overrideMaxPurchaseAmount;
+    /** @var int Percentage of fees in bps paid for by the merchant (100bps = 1%) */
+    protected int $merchantFeeVariable;
 
-    /** @var ?string */
-    protected ?string $merchant;
-
-    /** @var ?int Percentage of fees in bps paid for by the merchant (100bps = 1%) */
-    protected ?int $merchantFeeVariable;
-
-    /** @var ?int Fixed fees in cents paid for by the merchant */
-    protected ?int $merchantFeeFixed;
+    /** @var int Fixed fees in cents paid for by the merchant */
+    protected int $merchantFeeFixed;
 
     /** @var int Minimum purchase amount allowed for this fee plan */
     protected int $minPurchaseAmount;
 
+
+    /** @var bool Is this fee plan enabled by merchant? True by default */
+    protected bool $enabled = false;
+
+    /** @var int|null Local override of the maximum purchase amount allowed for this fee plan */
+    private ?int $overrideMaxPurchaseAmount;
+
     /** @var int|null Local override of the minimum purchase amount allowed for this fee plan */
     private ?int $overrideMinPurchaseAmount;
 
-    /** @var ?bool Whether payout is made on acceptance of the payment plan */
-    protected ?bool $payoutOnAcceptance;
-
     /** Mapping of required fields */
-    protected array $requiredFields = [
-    ];
-
-    /** Mapping of optional fields */
-    protected array $optionalFields = [
+    protected array $requiredFields =  [
         'allowed'                      => 'allowed',
         'availableOnline'              => 'available_online',
-        'customerFeeFixed'             => 'customer_fee_fixed',
         'customerFeeVariable'          => 'customer_fee_variable',
-        'customerLendingRate'          => 'customer_lending_rate',
         'deferredDays'                 => 'deferred_days',
         'deferredMonths'               => 'deferred_months',
-        'deferredTriggerBypassScoring' => 'deferred_trigger_bypass_scoring',
-        'deferredTriggerLimitDays'     => 'deferred_trigger_limit_days',
-        'firstInstallmentRatio'        => 'first_installment_ratio',
-        'id'                           => 'id',
         'installmentsCount'            => 'installments_count',
         'kind'                         => 'kind',
         'maxPurchaseAmount'            => 'max_purchase_amount',
-        'merchant'                     => 'merchant',
         'merchantFeeVariable'          => 'merchant_fee_variable',
         'merchantFeeFixed'             => 'merchant_fee_fixed',
         'minPurchaseAmount'            => 'min_purchase_amount',
-        'payoutOnAcceptance'           => 'payout_on_acceptance',
     ];
 
-    /**
-     *
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    /** Mapping of optional fields */
+    protected array $optionalFields = [];
 
     /**
      * Check if this fee plan is:
@@ -146,13 +106,21 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
         return $this->allowed;
     }
 
-    public function isEligible($purchaseAmount): bool {
+    /**
+     * Check if this fee plan is eligible for a given purchase amount depends on override.
+     * @param int $purchaseAmount Amount in cents
+     * @return bool
+     */
+    public function isEligible(int $purchaseAmount): bool {
         if (!$this->isAvailable()) {
             return false;
         }
 
-        // If the purchase amount is below the minimum or above the maximum, it is not eligible
-        if ($purchaseAmount < $this->getMinPurchaseAmount(true) || $purchaseAmount > $this->getMaxPurchaseAmount(true)) {
+        // If the purchase amount is below the minimum override or above the maximum override, it is not eligible
+        if (
+            $purchaseAmount < $this->getMinPurchaseAmount(true) ||
+            $purchaseAmount > $this->getMaxPurchaseAmount(true))
+        {
             return false;
         }
 
@@ -169,11 +137,11 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Disable this fee plan.
+     * Enable this fee plan.
      * @return void
      */
-    public function disable() : void {
-        $this->enabled = false;
+    public function enable() : void {
+        $this->enabled = true;
     }
 
     /**
@@ -190,7 +158,7 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
      * Check if this fee plan is available online.
      * @return bool True if this fee plan is available online, false otherwise.
      */
-    public function get_available_online(): bool {
+    public function isAvailableOnline(): bool {
         return $this->availableOnline;
     }
 
@@ -207,25 +175,16 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
         return $this->minPurchaseAmount;
     }
 
-	/**
-	 * Values from the API can't be overridden. Use setOverrideMinPurchaseAmount() instead.
-	 * @return void
-	 */
-	public function setMinPurchaseAmount(): void
-	{
-		throw new InvalidArgumentException("Values from the API can't be overridden. Use setOverrideMinPurchaseAmount() instead.");
-	}
-
     /**
      * Set a local override to the minimum purchase amount allowed for this fee plan.
      * @param int $overrideMinPurchaseAmount Amount in cents
      * @return void
+     * @throws ParametersException
      */
     public function setOverrideMinPurchaseAmount(int $overrideMinPurchaseAmount): void
     {
         if ($overrideMinPurchaseAmount < $this->minPurchaseAmount) {
-	        return; // No need to throw an exception, just ignore the override
-	        // throw new InvalidArgumentException("Override minimum purchase amount must be higher than the minimum amount given by API.");
+	        throw new ParametersException("Override minimum purchase amount must be higher than the minimum amount given by API.");
         }
         $this->overrideMinPurchaseAmount = $overrideMinPurchaseAmount;
     }
@@ -243,25 +202,16 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
         return $this->maxPurchaseAmount;
     }
 
-	/**
-	 * Values from the API can't be overridden. Use setOverrideMaxPurchaseAmount() instead.
-	 * @return void
-	 */
-	public function setMaxPurchaseAmount(): void
-	{
-		throw new InvalidArgumentException("Values from the API can't be overridden. Use setOverrideMaxPurchaseAmount() instead.");
-	}
-
     /**
      * Set a local override to the maximum purchase amount allowed for this fee plan.
      * @param int $overrideMaxPurchaseAmount Amount in cents
      * @return void
+     * @throws ParametersException
      */
     public function setOverrideMaxPurchaseAmount(int $overrideMaxPurchaseAmount): void
     {
         if ($overrideMaxPurchaseAmount > $this->maxPurchaseAmount) {
-            return; // No need to throw an exception, just ignore the override
-            // throw new InvalidArgumentException("Override maximum purchase amount must be lower than the maximum amount given by API.");
+            throw new ParametersException("Override maximum purchase amount must be lower than the maximum amount given by API.");
         }
         $this->overrideMaxPurchaseAmount = $overrideMaxPurchaseAmount;
     }
@@ -276,17 +226,6 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Set the number of deferred days this fee plan applies to.
-     * @param $deferredDays int The number of deferred days to set.
-     * @return self
-     */
-    public function setDeferredDays(int $deferredDays): self
-    {
-        $this->deferredDays = $deferredDays;
-        return $this;
-    }
-
-    /**
      * Get the number of deferred months this fee plan applies to.
      * @return int The number of deferred months this fee plan applies to.
      */
@@ -296,43 +235,12 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     }
 
     /**
-     * Set the number of deferred months this fee plan applies to.
-     * @param $deferredMonths int The number of deferred months to set.
-     * @return self
-     */
-    public function setDeferredMonths(int $deferredMonths): self
-    {
-        $this->deferredMonths = $deferredMonths;
-        return $this;
-    }
-
-    /**
-     * Get the deferred trigger limit days.
-     * @return int
-     */
-    public function getDeferredTriggerLimitDays(): int
-    {
-        return $this->deferredTriggerLimitDays;
-    }
-
-    /**
      * Get the installments count this fee plan applies to.
      * @return int
      */
     public function getInstallmentsCount(): int
     {
         return $this->installmentsCount;
-    }
-
-    /**
-     * Set the installments count this fee plan applies to.
-     * @param $installmentsCount int The number of installments to set.
-     * @return $this
-     */
-    public function setInstallmentsCount(int $installmentsCount): self
-    {
-        $this->installmentsCount = $installmentsCount;
-        return $this;
     }
 
     /**
@@ -353,14 +261,6 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
         return $this->merchantFeeVariable;
     }
 
-    /**
-     * Get the Fixed Customer Fees applied to this fee plan.
-     * @return int|null
-     */
-    public function getCustomerFeeFixed(): ?int
-    {
-        return $this->customerFeeFixed;
-    }
 
     /**
      * Get the Variable Customer Fees applied to this fee plan.
@@ -369,15 +269,6 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     public function getCustomerFeeVariable(): ?int
     {
         return $this->customerFeeVariable;
-    }
-
-    /**
-     * Get the Customer Lending Rate applied to this fee plan.
-     * @return int|null
-     */
-    public function getCustomerLendingRate(): ?int
-    {
-        return $this->customerLendingRate;
     }
 
     /**

@@ -3,28 +3,103 @@
 namespace Alma\API\Tests\Unit\Entity;
 
 use Alma\API\Entity\FeePlan;
+use Alma\API\Exception\ParametersException;
 use PHPUnit\Framework\TestCase;
 
 class FeePlanTest extends TestCase
 {
+    const VALID_AMOUNT = 10000;
+    const INVALID_AMOUNT = 300000;
+    private ?FeePlan $AllowedFeePlan;
+    private ?FeePlan $NoAllowedFeePlan;
+    public function setUp(): void
+    {
+        $planData = [
+            "available_in_pos" => true,
+            "available_online" => true,
+            "customer_fee_variable" => 380,
+            "deferred_days" => 1,
+            "deferred_months" => 2,
+            "deferred_trigger_bypass_scoring" => false,
+            "deferred_trigger_limit_days" => null,
+            "first_installment_ratio" => null,
+            "installments_count" => 3,
+            "kind" => "general",
+            "max_purchase_amount" => 200000,
+            "merchant" => "merchant_11xYpTY1GTkww5uWFKFdOllK82S1r7j5v5",
+            "merchant_fee_variable" => 12,
+            "merchant_fee_fixed" => 18,
+            "min_purchase_amount" => 5000
+        ];
+
+        $this->AllowedFeePlan = new FeePlan(array_merge($planData, [
+            "allowed" => true,
+        ]));
+        $this->NoAllowedFeePlan = new FeePlan(array_merge($planData, [
+            "allowed" => false,
+        ]));
+    }
+
+    public function tearDown(): void
+    {
+        $this->AllowedFeePlan = null;
+        $this->NoAllowedFeePlan = null;
+    }
+
     public function testConstructorSetsValuesCorrectly()
     {
-        $feePlan = (new FeePlan([
-            'deferred_trigger_limit_days' => 0,
-            'kind'                        => 'general',
-            'min_purchase_amount'         => 500,
-            'max_purchase_amount'         => 1000,
-            'deferred_months'             => 5,
-            'deferred_days'               => 3,
-            'installments_count'          => 4,
-        ]));
+        $this->assertTrue( $this->AllowedFeePlan->isAllowed());
+        $this->assertTrue( $this->AllowedFeePlan->isAvailableOnline());
+        $this->assertEquals( 380, $this->AllowedFeePlan->getCustomerFeeVariable());
+        $this->assertEquals(1, $this->AllowedFeePlan->getDeferredDays());
+        $this->assertEquals(2, $this->AllowedFeePlan->getDeferredMonths());
+        $this->assertEquals(3, $this->AllowedFeePlan->getInstallmentsCount());
+        $this->assertEquals(FeePlan::KIND_GENERAL, $this->AllowedFeePlan->getKind());
+        $this->assertEquals(12, $this->AllowedFeePlan->getMerchantFeeVariable());
+        $this->assertEquals(18, $this->AllowedFeePlan->getMerchantFeeFixed());
+        $this->assertEquals(200000, $this->AllowedFeePlan->getMaxPurchaseAmount());
+        $this->assertEquals(5000, $this->AllowedFeePlan->getMinPurchaseAmount());
+    }
 
-        $this->assertEquals('general', $feePlan->getKind());
-        $this->assertEquals(4, $feePlan->getInstallmentsCount());
-        $this->assertEquals(3, $feePlan->getDeferredDays());
-        $this->assertEquals(5, $feePlan->getDeferredMonths());
-        $this->assertEquals(0, $feePlan->getDeferredTriggerLimitDays());
-        $this->assertEquals(500, $feePlan->getMinPurchaseAmount());
-        $this->assertEquals(1000, $feePlan->getMaxPurchaseAmount());
+    public function testEligibilityWithoutOverride()
+    {
+        $this->AllowedFeePlan->enable();
+        $this->assertTrue($this->AllowedFeePlan->isEligible(self::VALID_AMOUNT));
+        $this->assertFalse($this->AllowedFeePlan->isEligible(self::INVALID_AMOUNT));
+    }
+
+    public function testEligibilityWithOverride()
+    {
+        $this->AllowedFeePlan->enable();
+        $this->AllowedFeePlan->setOverrideMinPurchaseAmount(self::VALID_AMOUNT);
+        $this->AllowedFeePlan->setOverrideMaxPurchaseAmount(180000);
+        $this->assertTrue($this->AllowedFeePlan->isEligible(self::VALID_AMOUNT));
+        $this->assertTrue($this->AllowedFeePlan->isEligible(180000));
+        $this->assertFalse($this->AllowedFeePlan->isEligible(self::VALID_AMOUNT - 1 ));
+        $this->assertFalse($this->AllowedFeePlan->isEligible(190000));
+    }
+
+    public function testisAvailable()
+    {
+        // A plan that is allowed is available only when enabled
+        $this->assertFalse($this->AllowedFeePlan->isAvailable());
+        $this->AllowedFeePlan->enable();
+        $this->assertTrue($this->AllowedFeePlan->isAvailable());
+
+        // A plan that is not allowed is never available
+        $this->assertFalse($this->NoAllowedFeePlan->isAvailable());
+        $this->NoAllowedFeePlan->enable();
+        $this->assertFalse($this->NoAllowedFeePlan->isAvailable());
+    }
+
+    public function testSetOverrideMinPurchaseAmountThrowsExceptionForInvalidAmount()
+    {
+        $this->expectException(ParametersException::class);
+        $this->AllowedFeePlan->setOverrideMinPurchaseAmount(1);
+    }
+    public function testSetOverrideMaxPurchaseAmountThrowsExceptionForInvalidAmount()
+    {
+        $this->expectException(ParametersException::class);
+        $this->AllowedFeePlan->setOverrideMaxPurchaseAmount(999999999);
     }
 }
