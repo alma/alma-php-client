@@ -3,49 +3,67 @@
 namespace Alma\API\Tests\Unit\Entity;
 
 use Alma\API\Entity\Order;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
+use PHPUnit\Framework\TestCase;
 
-class OrderTest extends MockeryTestCase
+class OrderTest extends TestCase
 {
 
-    public function testOrderGetters()
+    public function testOrderConstructWithPaymentData()
     {
-        $orderData = $this->orderDataFactory();
-        $order = new Order($orderData);
-        $this->assertEquals($orderData['payment'], $order->getPaymentId());
-        $this->assertEquals($orderData['merchant_reference'], $order->getMerchantReference());
-        $this->assertEquals($orderData['merchant_url'], $order->getMerchantUrl());
-        $this->assertEquals($orderData['data'], $order->getOrderData());
-        $this->assertEquals($orderData['comment'], $order->getComment());
-        $this->assertEquals($orderData['created'], $order->getCreatedAt());
-        $this->assertEquals($orderData['customer_url'], $order->getCustomerUrl());
-        $this->assertEquals($orderData['id'], $order->getExternalId());
-        $this->assertEquals($orderData['updated'], $order->getUpdatedAt());
+        $order = new Order($this->getPaymentOrderData());
+        $this->assertEquals($this->getPaymentOrderData()['comment'], $order->getComment());
+        $this->assertEquals($this->getPaymentOrderData()['created'], $order->getCreatedAt());
+        $this->assertEquals($this->getPaymentOrderData()['id'], $order->getExternalId());
+        $this->assertEquals($this->getPaymentOrderData()['merchant_reference'], $order->getMerchantReference());
+        $this->assertEquals($this->getPaymentOrderData()['payment'], $order->getPaymentId());
+        $this->assertNull($order->getUpdatedAt());
+    }
+    public function testOrderConstructUpdateOrderData()
+    {
+        $order = new Order($this->getUpdateOrderData());
+        $this->assertEquals($this->getUpdateOrderData()['comment'], $order->getComment());
+        $this->assertEquals($this->getUpdateOrderData()['created'], $order->getCreatedAt());
+        $this->assertEquals($this->getUpdateOrderData()['id'], $order->getExternalId());
+        $this->assertEquals($this->getUpdateOrderData()['merchant_reference'], $order->getMerchantReference());
+        $this->assertEquals($this->getUpdateOrderData()['payment'], $order->getPaymentId());
+        $this->assertEquals($this->getUpdateOrderData()['updated'], $order->getUpdatedAt());
     }
 
+    public function testSetShippingSetter()
+    {
+        $order = new Order($this->getPaymentOrderData());
+        $this->assertNull($order->isShipped());
+        $order->setIsShipped(true);
+        $this->assertTrue($order->isShipped());
+        $order->setIsShipped(false);
+        $this->assertFalse($order->isShipped());
+    }
 
-    public static function orderDataFactory(
-        $comment = 'my comment',
-        $created = 1715331839,
-        $customer_url = 'http://customer.url',
-        $data = ['key' => 'value'],
-        $id = 'order_123',
-        $merchant_reference = 'my reference',
-        $merchant_url = 'https://merchant.url',
-        $payment = 'payment_123456',
-        $updated = 1715331845
-    ): array
+    private function getPaymentOrderData(): array
     {
         return [
-            'comment' => $comment,
-            'created' => $created,
-            'customer_url' => $customer_url,
-            'data' => $data,
-            'id' => $id,
-            'merchant_reference' => $merchant_reference,
-            'merchant_url' => $merchant_url,
-            'payment' => $payment,
-            'updated' => $updated
+            "comment" => 'Created from order endpoint test',
+            "created" => 1757407747,
+            "customer_url" => null,
+            "data" => [],
+            "id" => "order_121hUbT2DLnhrK7lVhedy8R1ejqiF4NQq1",
+            "merchant_reference" => "18491",
+            "merchant_url" => null,
+            "payment" => ""
+        ];
+    }
+    private function getUpdateOrderData(): array
+    {
+        return [
+            "comment" => null,
+            "created" => 1757407747,
+            "customer_url" => null,
+            "data" => [],
+            "id" => "order_121hUbT2DLnhrK7lVhedy8R1ejqiF4NQq1",
+            "merchant_reference" => "18491",
+            "merchant_url" => null,
+            "payment" => "",
+            "updated" => 1757420429
         ];
     }
 }

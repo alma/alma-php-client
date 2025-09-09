@@ -58,7 +58,7 @@ class OrderEndpoint extends AbstractEndpoint
     {
         try {
             $request = null;
-            $request = $this->createPostRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId", $orderData);
+            $request = $this->createPutRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId", $orderData);
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface|RequestException $e) {
             throw new OrderEndpointException($e->getMessage(), $request);

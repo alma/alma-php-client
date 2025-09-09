@@ -27,54 +27,63 @@ namespace Alma\API\Entity;
 
 class Order extends AbstractEntity
 {
-    /** @var string Order ID (on Alma's side). */
-    protected string $externalId;
+    /** @var string | null Merchant comment on the order. */
+    protected ?string $comment;
 
     /** @var int Order creation date (on Alma's side) as a timestamp. */
     protected int $createdAt;
 
+    /** @var string Order ID (on Alma's side). */
+    protected string $externalId;
+
     /** @var string | null Merchant reference for this order. Enables to link an order and a payment made with Alma. */
     protected ?string $merchantReference;
-
-    /** @var string | null Merchant backoffice URL for this order. */
-    protected ?string $merchantUrl;
-
-    /** @var string | null Customer order tracking URL for this order. */
-    protected ?string $customerUrl;
 
     /** @var string Alma ID of the payment corresponding to this order. Not present since a payment was submitted. */
     protected string $paymentId;
 
-    /** @var array Array containing arbitrary data entered by the merchant */
-    protected array $orderData;
+    /** @var int|null Order update date (on Alma's side) as a timestamp. */
+    protected ?int $updatedAt = null;
 
-    /** @var string | null Merchant comment on the order. */
-    protected ?string $comment;
+    // Fields for order update
+
+    /** @var string|null Order status for alma update */
+    private ?string $status = null;
+
+    /** @var bool|null Order shipment status */
+    private ?bool $isShipped = null;
+
+    /** @var string|null Order carrier for alma update */
+    private ?string $carrier = null;
+
+    /** @var string|null Order tracking number for alma update */
+    private ?string $trackingNumber = null;
+
+    /** @var string|null Order tracking url for alma update */
+    private ?string $trackingUrl = null;
 
     /** Mapping of required fields */
     protected array $requiredFields = [
-        'externalId'        => 'id',
+        'comment'           => 'comment',
         'createdAt'         => 'created',
+        'externalId'        => 'id',
+        'merchantReference' => 'merchant_reference',
         'paymentId'         => 'payment',
-        'orderData'         => 'data',
     ];
 
     /** Mapping of optional fields */
     protected array $optionalFields = [
-        'merchantReference' => 'merchant_reference',
-        'merchantUrl'       => 'merchant_url',
-        'customerUrl'       => 'customer_url',
-        'comment'           => 'comment',
+        'updatedAt'         => 'updated',
     ];
 
     /**
-     * Gets the order ID (on Alma's side).
-     * @return string
+     * Gets the merchant comment on the order.
+     * @return string|null
      * @noinspection PhpUnused Used by implementations
      */
-    public function getExternalId(): string
+    public function getComment(): ?string
     {
-        return $this->externalId;
+        return $this->comment;
     }
 
     /**
@@ -88,6 +97,16 @@ class Order extends AbstractEntity
     }
 
     /**
+     * Gets the order ID (on Alma's side).
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getExternalId(): string
+    {
+        return $this->externalId;
+    }
+
+    /**
      * Gets the merchant reference for this order.
      * @return string|null
      * @noinspection PhpUnused Used by implementations
@@ -95,26 +114,6 @@ class Order extends AbstractEntity
     public function getMerchantReference(): ?string
     {
         return $this->merchantReference;
-    }
-
-    /**
-     * Gets the merchant backoffice URL for this order.
-     * @return string|null
-     * @noinspection PhpUnused Used by implementations
-     */
-    public function getMerchantUrl(): ?string
-    {
-        return $this->merchantUrl;
-    }
-
-    /**
-     * Gets the customer order tracking URL for this order.
-     * @return string|null
-     * @noinspection PhpUnused Used by implementations
-     */
-    public function getCustomerUrl(): ?string
-    {
-        return $this->customerUrl;
     }
 
     /**
@@ -128,22 +127,77 @@ class Order extends AbstractEntity
     }
 
     /**
-     * Gets the arbitrary data entered by the merchant.
-     * @return array
-     * @noinspection PhpUnused Used by implementations
+     * Gets the order update date as a timestamp | can be null.
+     * @return int|null
      */
-    public function getOrderData(): array
+    public function getUpdatedAt(): ?int
     {
-        return $this->orderData;
+        return $this->updatedAt;
     }
 
     /**
-     * Gets the merchant comment on the order.
-     * @return string|null
-     * @noinspection PhpUnused Used by implementations
+     * Sets the order status for alma update
+     *
+     * @param string $status
+     * @return void
      */
-    public function getComment(): ?string
+    public function setStatus(string $status): void
     {
-        return $this->comment;
+        $this->status = $status;
     }
+
+    /**
+     * Sets the order shipment status
+     *
+     * @param bool $isShipped
+     * @return void
+     */
+    public function setIsShipped(bool $isShipped): void
+    {
+        $this->isShipped = $isShipped;
+    }
+
+    /**
+     * Gets the order shipment status
+     *
+     * @return bool|null
+     */
+    public function isShipped(): ?bool
+    {
+        return $this->isShipped;
+    }
+
+    /**
+     * Sets the order carrier for alma update
+     *
+     * @param string $carrier
+     * @return void
+     */
+    public function setCarrier(string $carrier): void
+    {
+        $this->carrier = $carrier;
+    }
+
+    /**
+     * Sets the order tracking number for alma update
+     *
+     * @param string $trackingNumber
+     * @return void
+     */
+    public function setTrackingNumber(string $trackingNumber): void
+    {
+        $this->trackingNumber = $trackingNumber;
+    }
+
+    /**
+     * Sets the order tracking url for alma update
+     *
+     * @param string $trackingUrl
+     * @return void
+     */
+    public function setTrackingUrl(string $trackingUrl): void
+    {
+        $this->trackingUrl = $trackingUrl;
+    }
+
 }
