@@ -35,12 +35,15 @@ class Installment extends AbstractEntity
 
     protected int $purchaseAmount;
 
+    protected string $state;
+
     /** Mapping of required fields */
     protected array $requiredFields = [
         'customerFee'      => 'customer_fee',
         'customerInterest' => 'customer_interest',
         'dueDate'          => 'due_date',
         'purchaseAmount'   => 'purchase_amount',
+        'state'            => 'state',
     ];
 
     /** Mapping of optional fields */
@@ -50,7 +53,6 @@ class Installment extends AbstractEntity
     /**
      * Returns the customer fee in cents
      * @return int
-     * @noinspection PhpUnused Used by implementations
      */
     public function getCustomerFee(): int
     {
@@ -60,7 +62,6 @@ class Installment extends AbstractEntity
     /**
      * Returns the customer interest in cents
      * @return int
-     * @noinspection PhpUnused Used by implementations
      */
     public function getCustomerInterest(): int
     {
@@ -70,7 +71,6 @@ class Installment extends AbstractEntity
     /**
      * Returns the due date as a UNIX timestamp
      * @return int
-     * @noinspection PhpUnused Used by implementations
      */
     public function getDueDate(): int
     {
@@ -80,10 +80,18 @@ class Installment extends AbstractEntity
     /**
      * Returns the purchase amount in cents
      * @return int
-     * @noinspection PhpUnused Used by implementations
      */
     public function getPurchaseAmount(): int
     {
         return $this->purchaseAmount;
+    }
+
+    /**
+     * Returns the state of the installment
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
     }
 }
