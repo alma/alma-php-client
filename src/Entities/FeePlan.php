@@ -68,8 +68,8 @@ class FeePlan extends Base implements PaymentPlanInterface
 	/** @var int Percentage of lending rate in bps used to calculate the fee plan interest paid by the customer (100bps = 1%) */
     public $customer_lending_rate;
 
-    /** @var int Fixed fees in cents paid for by the customer */
-    public $customer_fee_fixed;
+    /** @var int Fixed fees in cents paid for by the customer: Deprecated in the FeePlan*/
+    public $customer_fee_fixed = 0;
 
     public function getDeferredDays()
     {
