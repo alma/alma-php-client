@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API;
+namespace Alma\API\Tests\Unit\Entity;
 
 use Alma\API\Entity\Order;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +52,7 @@ class OrderTest extends TestCase
             "id" => "order_121hUbT2DLnhrK7lVhedy8R1ejqiF4NQq1",
             "merchant_reference" => "18491",
             "merchant_url" => null,
-            "payment" => "",
+            "payment" => "payment_xxxxxxxxxxxxxxxxxxxxxx",
             "updated" => 1757420429
         ];
     }
