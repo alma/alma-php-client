@@ -45,23 +45,6 @@ class Order extends AbstractEntity
     /** @var int|null Order update date (on Alma's side) as a timestamp. */
     protected ?int $updatedAt = null;
 
-    // Fields for order update
-
-    /** @var string|null Order status for alma update */
-    private ?string $status = null;
-
-    /** @var bool|null Order shipment status */
-    private ?bool $isShipped = null;
-
-    /** @var string|null Order carrier for alma update */
-    private ?string $carrier = null;
-
-    /** @var string|null Order tracking number for alma update */
-    private ?string $trackingNumber = null;
-
-    /** @var string|null Order tracking url for alma update */
-    private ?string $trackingUrl = null;
-
     /** Mapping of required fields */
     protected array $requiredFields = [
         'comment'           => 'comment',
@@ -134,70 +117,4 @@ class Order extends AbstractEntity
     {
         return $this->updatedAt;
     }
-
-    /**
-     * Sets the order status for alma update
-     *
-     * @param string $status
-     * @return void
-     */
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * Sets the order shipment status
-     *
-     * @param bool $isShipped
-     * @return void
-     */
-    public function setIsShipped(bool $isShipped): void
-    {
-        $this->isShipped = $isShipped;
-    }
-
-    /**
-     * Gets the order shipment status
-     *
-     * @return bool|null
-     */
-    public function isShipped(): ?bool
-    {
-        return $this->isShipped;
-    }
-
-    /**
-     * Sets the order carrier for alma update
-     *
-     * @param string $carrier
-     * @return void
-     */
-    public function setCarrier(string $carrier): void
-    {
-        $this->carrier = $carrier;
-    }
-
-    /**
-     * Sets the order tracking number for alma update
-     *
-     * @param string $trackingNumber
-     * @return void
-     */
-    public function setTrackingNumber(string $trackingNumber): void
-    {
-        $this->trackingNumber = $trackingNumber;
-    }
-
-    /**
-     * Sets the order tracking url for alma update
-     *
-     * @param string $trackingUrl
-     * @return void
-     */
-    public function setTrackingUrl(string $trackingUrl): void
-    {
-        $this->trackingUrl = $trackingUrl;
-    }
-
 }

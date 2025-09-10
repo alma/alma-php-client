@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Unit\Entity;
+namespace Alma\API;
 
 use Alma\API\Entity\Order;
 use PHPUnit\Framework\TestCase;
@@ -27,16 +27,6 @@ class OrderTest extends TestCase
         $this->assertEquals($this->getUpdateOrderData()['merchant_reference'], $order->getMerchantReference());
         $this->assertEquals($this->getUpdateOrderData()['payment'], $order->getPaymentId());
         $this->assertEquals($this->getUpdateOrderData()['updated'], $order->getUpdatedAt());
-    }
-
-    public function testSetShippingSetter()
-    {
-        $order = new Order($this->getPaymentOrderData());
-        $this->assertNull($order->isShipped());
-        $order->setIsShipped(true);
-        $this->assertTrue($order->isShipped());
-        $order->setIsShipped(false);
-        $this->assertFalse($order->isShipped());
     }
 
     private function getPaymentOrderData(): array
