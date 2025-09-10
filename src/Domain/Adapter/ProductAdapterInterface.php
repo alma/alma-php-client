@@ -1,8 +1,8 @@
 <?php
 
-namespace Alma\API\Domain;
+namespace Alma\API\Domain\Adapter;
 
-interface ProductInterface
+interface ProductAdapterInterface
 {
     public function __call( string $name, array $arguments );
 
