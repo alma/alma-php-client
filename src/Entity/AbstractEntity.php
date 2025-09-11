@@ -47,16 +47,17 @@ abstract class AbstractEntity
     {
         $extractedValues = [];
         foreach ($mapping as $mappedKey => $key) {
-            if (array_key_exists($key, $data) && property_exists($this, $mappedKey)) {
-                if ($autoAssign) {
-                    $this->$mappedKey = $data[$key];
-                } else {
-                    $extractedValues[$key] = $data[$key];
-                }
-            } else {
+            if (!array_key_exists($key, $data) || !property_exists($this, $mappedKey)) {
                 if ($required) {
                     throw new ParametersException("Missing required property/field: $mappedKey/$key");
                 }
+                continue;
+            }
+
+            if ($autoAssign) {
+                $this->$mappedKey = $data[$key];
+            } else {
+                $extractedValues[$key] = $data[$key];
             }
         }
 
