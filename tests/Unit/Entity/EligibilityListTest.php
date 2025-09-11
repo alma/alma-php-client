@@ -12,57 +12,17 @@ class EligibilityListTest extends TestCase
         $eligibilityList = new EligibilityList();
 
         // Pay now plans
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 1,
-            'deferred_months' => 0,
-            'deferred_days' => 0,
-        ]));
+        $eligibilityList->add($this->eligibilityFactory(1, 0, 0));
         // Pay-later plans
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 1,
-            'deferred_months' => 2,
-            'deferred_days' => 0,
-        ]));
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 1,
-            'deferred_months' => 0,
-            'deferred_days' => 15,
-        ]));
+        $eligibilityList->add($this->eligibilityFactory(1, 2, 0));
+        $eligibilityList->add($this->eligibilityFactory(1, 0, 15));
         // Pnx plans
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 2,
-            'deferred_months' => 0,
-            'deferred_days' => 0,
-        ]));
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 3,
-            'deferred_months' => 0,
-            'deferred_days' => 0,
-        ]));
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 4,
-            'deferred_months' => 0,
-            'deferred_days' => 0,
-        ]));
+        $eligibilityList->add($this->eligibilityFactory(2, 0, 0));
+        $eligibilityList->add($this->eligibilityFactory(3, 0, 0));
+        $eligibilityList->add($this->eligibilityFactory(4, 0, 0));
         // Credit plans
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 10,
-            'deferred_months' => 0,
-            'deferred_days' => 0,
-        ]));
-        $eligibilityList->add(new Eligibility([
-            'is_eligible' => true,
-            'installments_count' => 12,
-            'deferred_months' => 0,
-            'deferred_days' => 0,
-        ]));
+        $eligibilityList->add($this->eligibilityFactory(10, 0, 0));
+        $eligibilityList->add($this->eligibilityFactory(12, 0, 0));
 
         $this->assertInstanceOf(Eligibility::class, $eligibilityList->getByPlanKey('general_2_0_0'));
         $this->assertCount(3, $eligibilityList->filterEligibilityList('pnx'));
@@ -70,6 +30,21 @@ class EligibilityListTest extends TestCase
         $this->assertCount(2, $eligibilityList->filterEligibilityList('pay-later'));
         $this->assertCount(1, $eligibilityList->filterEligibilityList('pay-now'));
         $this->assertCount(0, $eligibilityList->filterEligibilityList('never'));
+    }
+
+    private function eligibilityFactory(int $installments, int $deferredDays, int $deferredMonths ): Eligibility
+    {
+        return new Eligibility([
+            'eligible' => true,
+            'deferred_days' => $deferredDays,
+            'deferred_months' => $deferredMonths,
+            'installments_count' => $installments,
+            'customer_fee' => 0 ,
+            'customer_total_cost_amount' => 0,
+            'customer_total_cost_bps' => 0,
+            'payment_plan' => [],
+            'annual_interest_rate' => 0,
+        ]);
     }
 
 }
