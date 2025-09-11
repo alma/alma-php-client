@@ -28,14 +28,17 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
     const FEE_PLAN_JSON_RESPONSE = '[
         {
-            "installmentsCount": 3,
-            "kind": "general",
-            "deferredMonths": 0,
-            "deferredDays": 0,
-            "deferredTriggerLimitDays": 0,
             "allowed": 1,
-            "min_purchase_amount": 500,
-            "max_purchase_amount": 1000
+            "available_online": 1,
+            "customer_fee_variable": 380,
+            "deferred_days": 1,
+            "deferred_months": 2,
+            "installments_count": 3,
+            "kind": "general",
+            "max_purchase_amount": 1000,
+            "merchant_fee_variable": 12,
+            "merchant_fee_fixed": 18,
+            "min_purchase_amount": 500
         }
     ]';
 
