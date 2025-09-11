@@ -24,11 +24,20 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
 {
     const MERCHANT_REF = "merchant_ref";
 
-    /** @var string Classical JSON response*/
+    /** @var string Classical JSON response */
     const SERVER_REQUEST_RESPONSE_JSON = '{
+       "amount_already_refunded":1200,
+       "custom_data":{},
+       "customer_fee":100,
+       "customer_interest":0,
+       "deferred_days":0,
+       "deferred_months":0,
+       "expired_at":1657528851,
+       "id":"payment_xxxxxx",
+       "installments_count":3,
+       "kind":"installments",         
        "payment_plan":[
           {
-             "customer_can_postpone":false,
              "customer_fee":100,
              "customer_interest":0,
              "date_paid":1649672472,
@@ -39,7 +48,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
              "state":"paid"
           },
           {
-             "customer_can_postpone":false,
              "customer_fee":0,
              "customer_interest":0,
              "date_paid":null,
@@ -50,7 +58,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
              "state":"paid"
           },
           {
-             "customer_can_postpone":false,
              "customer_fee":0,
              "customer_interest":0,
              "date_paid":null,
@@ -61,35 +68,12 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
              "state":"paid"
           }
        ],
-       "orders":[
-          {
-             "carrier":"carrier",
-             "tracking_number":123,
-             "tracking_url":"url",
-             "comment":"comment",
-             "created":1649672451,
-             "customer_url":"customer_url",
-             "data":{},
-             "id":"order_11uPRjP4L9Dgbttx3cFUKGFPppdZIlrR2V",
-             "merchant_reference":"00000206",
-             "merchant_url":"merchant_url",
-             "payment":"payment_11uPRjP5FaIYygQao8WdMQFnKRMOV14frx"
-          }
-       ],
-       "refunds":[
-          {
-            "amount": 1000,
-            "amount_customer_fees": 0,
-            "amount_customer_fees_vat": 0,
-            "amount_customer_fees_with_vat": 0,
-            "created": 1754405833,
-            "id": "refund_121UtfV4TNBPbhPn9I0nYVIs0HJSU49Kaf",
-            "merchant_reference": null
-          }
-       ]
+       "purchase_amount":11733,
+       "state":"paid",
+       "url":"https://test.alma.eu/payments/v2/payments/payment_xxxxxx"
     }';
 
-    /** @var string JSON response for add order*/
+    /** @var string JSON response for add order */
     const SERVER_REQUEST_ORDER_RESPONSE_JSON = '[
         {
             "comment": "comment",
