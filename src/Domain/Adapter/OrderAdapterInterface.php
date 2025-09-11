@@ -1,8 +1,8 @@
 <?php
 
-namespace Alma\API\Domain;
+namespace Alma\API\Domain\Adapter;
 
-interface OrderInterface {
+interface OrderAdapterInterface {
 
 	public function __call( string $name, array $arguments );
 
@@ -21,4 +21,13 @@ interface OrderInterface {
 	public function hasATransactionId(): bool;
 
 	public function isRefundable(): bool;
+
+    /**
+     * Get the order total in cents.
+     *
+     * @param string $orderId
+     *
+     * @return int The order total in cents.
+     */
+    public function getOrderTotal( string $orderId ): int;
 }
