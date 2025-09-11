@@ -174,7 +174,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
-        $orderServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
+        $orderServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
 
         // Call
         $this->expectException(OrderEndpointException::class);
