@@ -4,151 +4,125 @@ namespace Alma\API\Tests\Unit\Entity;
 
 use Alma\API\Entity\Eligibility;
 use Alma\API\Entity\FeePlan;
+use Alma\API\Exception\ParametersException;
 use PHPUnit\Framework\TestCase;
 
 class EligibilityTest extends TestCase
 {
-    public function testCommonCase()
-    {
-        $eligibility = new Eligibility([
-            'eligible' => true,
-            'reasons' => ['reason1', 'reason2'],
-            'constraints' => ['constraint1'],
-            'payment_plan' => ['plan1'],
-            'installments_count' => 3,
-            'deferred_days' => 0,
-            'deferred_months' => 2,
-            'customer_total_cost_amount' => 500,
-            'customer_total_cost_bps' => 500,
-            'annual_interest_rate' => 500
-        ]);
-
-        $this->assertTrue($eligibility->isEligible());
-        $this->assertSame(['reason1', 'reason2'], $eligibility->getReasons());
-        $this->assertSame(['constraint1'], $eligibility->getConstraints());
-        $this->assertSame(['plan1'], $eligibility->getPaymentPlan());
-        $this->assertSame(3, $eligibility->getInstallmentsCount());
-        $this->assertSame(0, $eligibility->getDeferredDays());
-        $this->assertSame(2, $eligibility->getDeferredMonths());
-        $this->assertSame(500, $eligibility->getCustomerTotalCostAmount());
-        $this->assertSame(500, $eligibility->getCustomerTotalCostBps());
-        $this->assertSame(500, $eligibility->getAnnualInterestRate());
-        $this->assertSame('general_3_0_2', $eligibility->getFeePlanKey());
-    }
-
-    public static function eligibilityConstructorHandlesScenariosProvider(): array
+    private function getNotEligibleReponse()
     {
         return [
-            'eligible_with_reasons_and_constraints' => [
-                ['eligible' => true, 'reasons' => ['reason1'], 'constraints' => ['constraint1']],
-                200,
-                true,
-                ['reason1'],
-                ['constraint1']
+            'purchase_amount' => 3762300,
+            'installments_count' => 10,
+            'deferred_days' => 0,
+            'deferred_months' => 0,
+            'constraints' => [
+                'purchase_amount' => [
+                    'minimum' => 5000,
+                    'maximum' => 200000
+                ]
             ],
-            'eligible_with_payment_plan' => [
-                ['eligible' => true, 'payment_plan' => ['plan1'], 'installments_count' => 3, 'deferred_days' => 30, 'deferred_months' => 2],
-                200,
-                true,
-                [],
-                [],
-                ['plan1'],
-                3
+            'reasons' => [
+                'purchase_amount' => 'invalid_value'
+            ],
+            'eligible' => false
+        ];
+    }
+
+    private function getEligiblePaymentPlan()
+    {
+        return [
+            [
+                'due_date' => 1757063789,
+                'total_amount' => 70108,
+                'customer_fee' => 3440,
+                'customer_interest' => 0,
+                'purchase_amount' => 66668,
+                'localized_due_date' => "aujourd'hui",
+                'time_delta_from_start' => null
+            ],
+            [
+                'due_date' => 1759655789,
+                'total_amount' => 66666,
+                'customer_fee' => 0,
+                'customer_interest' => 0,
+                'purchase_amount' => 66666,
+                'localized_due_date' => "5 octobre 2025",
+                'time_delta_from_start' => null
+            ],
+            [
+                'due_date' => 1762334189,
+                'total_amount' => 66666,
+                'customer_fee' => 0,
+                'customer_interest' => 0,
+                'purchase_amount' => 66666,
+                'localized_due_date' => "5 novembre 2025",
+                'time_delta_from_start' => null
             ]
         ];
     }
 
-    /**
-     * Ensure Eligibility constructor handles various scenarios
-     * @dataProvider eligibilityConstructorHandlesScenariosProvider
-     * @param array $data
-     * @param int|null $responseCode
-     * @param bool $expectedIsEligible
-     * @param array $expectedReasons
-     * @param array $expectedConstraints
-     * @param array|null $expectedPaymentPlan
-     * @param int|null $expectedInstallmentsCount
-     * @return void
-     */
-    public function testEligibilityConstructorHandlesScenarios(
-        array $data,
-        ?int $responseCode,
-        bool $expectedIsEligible,
-        array $expectedReasons,
-        array $expectedConstraints,
-        ?array $expectedPaymentPlan = null,
-        ?int $expectedInstallmentsCount = null
-    ) {
-        $eligibility = new Eligibility($data);
+    private function getEligibleResponse()
+    {
+        return [
+            'purchase_amount' => 200000,
+            'installments_count' => 3,
+            'deferred_days' => 0,
+            'deferred_months' => 0,
+            'payment_plan' => $this->getEligiblePaymentPlan(),
+            'customer_fee' => 3440,
+            'customer_interest' => 0,
+            'customer_total_cost_amount' => 3441,
+            'customer_total_cost_bps' => 172,
+            'annual_interest_rate' => 2330,
+            'modulated_first_installment' => false,
+            'eligible' => true
+        ];
+    }
 
-        $this->assertSame($expectedIsEligible, $eligibility->isEligible());
-        $this->assertSame($expectedReasons, $eligibility->getReasons());
-        $this->assertSame($expectedConstraints, $eligibility->getConstraints());
+
+    /**
+     * @throws ParametersException
+     */
+    public function testConstructEligibilityWithEligibleResponse()
+    {
+        $eligibility = new Eligibility($this->getEligibleResponse());
         $this->assertSame(FeePlan::KIND_GENERAL, $eligibility->getKind());
+        $this->assertTrue($eligibility->isEligible());
+        $this->assertSame(0, $eligibility->getDeferredDays());
+        $this->assertSame(0, $eligibility->getDeferredMonths());
+        $this->assertSame(3, $eligibility->getInstallmentsCount());
+        $this->assertSame(3441, $eligibility->getCustomerTotalCostAmount());
+        $this->assertSame(172, $eligibility->getCustomerTotalCostBps());
+        $this->assertSame(3440, $eligibility->getCustomerFee());
+        $this->assertSame(2330, $eligibility->getAnnualInterestRate());
+        $this->assertSame($this->getEligiblePaymentPlan(), $eligibility->getPaymentPlan());
+        $this->assertEmpty($eligibility->getConstraints());
+        $this->assertEmpty($eligibility->getReasons());
+        $this->assertSame('general_3_0_0', $eligibility->getPlanKey());
 
-        if ($expectedPaymentPlan !== null) {
-            $this->assertSame($expectedPaymentPlan, $eligibility->getPaymentPlan());
-        }
-
-        if ($expectedInstallmentsCount !== null) {
-            $this->assertSame($expectedInstallmentsCount, $eligibility->getInstallmentsCount());
-        }
     }
 
-    public static function annualInterestRateHandlesScenariosProvider(): array
+    public function testConstructEligibilityWithNotEligibleResponse()
     {
-        return [
-            'annual_interest_rate_set' => [
-                ['annual_interest_rate' => 500],
-                500
-            ],
-            'annual_interest_rate_not_set' => [
-                [],
-                null
-            ],
-        ];
+        $eligibility = new Eligibility($this->getNotEligibleReponse());
+        $this->assertFalse($eligibility->isEligible());
+        $this->assertSame(0, $eligibility->getDeferredDays());
+        $this->assertSame(0, $eligibility->getDeferredMonths());
+        $this->assertSame(10, $eligibility->getInstallmentsCount());
+        $this->assertEmpty($eligibility->getCustomerTotalCostAmount());
+        $this->assertEmpty($eligibility->getCustomerTotalCostBps());
+        $this->assertEmpty($eligibility->getCustomerFee());
+        $this->assertEmpty($eligibility->getAnnualInterestRate());
+        $this->assertEmpty($eligibility->getPaymentPlan());
+        $this->assertSame([
+            'purchase_amount' => [
+                'minimum' => 5000,
+                'maximum' => 200000
+            ]
+        ], $eligibility->getConstraints());
+        $this->assertSame(['purchase_amount' => 'invalid_value'], $eligibility->getReasons());
+        $this->assertSame('general_10_0_0', $eligibility->getPlanKey());
     }
 
-    /**
-     * Ensure annualInterestRate is handled correctly
-     * @dataProvider annualInterestRateHandlesScenariosProvider
-     * @param array $data
-     * @param int|null $expectedAnnualInterestRate
-     * @return void
-     */
-    public function testAnnualInterestRateHandlesScenarios(array $data, ?int $expectedAnnualInterestRate)
-    {
-        $eligibility = new Eligibility($data);
-
-        $this->assertSame($expectedAnnualInterestRate, $eligibility->getAnnualInterestRate());
-    }
-
-    public static function eligibilityProvider(): array
-    {
-        return [
-            'variable_set' => [
-                ['customer_total_cost_amount' => 500, 'customer_total_cost_bps' => 500],
-                ['customer_total_cost_bps' => 500, 'customer_total_cost_amount' => 500]
-            ],
-            'variable_not_set' => [
-                [],
-                ['customer_total_cost_bps' => 0, 'customer_total_cost_amount' => 0]
-            ],
-        ];
-    }
-
-    /**
-     * Ensure annualInterestRate is handled correctly
-     * @dataProvider eligibilityProvider
-     * @param array $data
-     * @param array $expectedValues
-     * @return void
-     */
-    public function testEligibilityScenarios(array $data, array $expectedValues)
-    {
-        $eligibility = new Eligibility($data);
-
-        $this->assertSame($expectedValues['customer_total_cost_amount'], $eligibility->getCustomerTotalCostAmount());
-        $this->assertSame($expectedValues['customer_total_cost_bps'], $eligibility->getCustomerTotalCostBps());
-    }
 }

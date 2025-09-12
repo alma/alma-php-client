@@ -25,9 +25,9 @@
 
 namespace Alma\API\Endpoint;
 
-use Alma\API\Entity\Webhook;
 use Alma\API\Exception\Endpoint\WebhookEndpointException;
 use Alma\API\Exception\RequestException;
+use Alma\API\Helper\WebhookHelper;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class WebhookEndpoint extends AbstractEndpoint
@@ -38,10 +38,10 @@ class WebhookEndpoint extends AbstractEndpoint
      * @param string $type The webhook type, see available constants in Alma\API\Entities\Webhook
      * @param string $url The URL to be called for that webhook
      *
-     * @return Webhook
+     * @return WebhookHelper
      * @throws WebhookEndpointException
      */
-    public function create(string $type, string $url): Webhook
+    public function create(string $type, string $url): WebhookHelper
     {
         $data = array("type" => $type, "url" => $url);
 
@@ -57,16 +57,16 @@ class WebhookEndpoint extends AbstractEndpoint
             throw new WebhookEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Webhook($response->getJson());
+        return new WebhookHelper($response->getJson());
     }
 
     /**
      * @param string $id The external ID for the payment to fetch
      *
-     * @return Webhook
+     * @return WebhookHelper
      * @throws WebhookEndpointException
      */
-    public function fetch(string $id): Webhook
+    public function fetch(string $id): WebhookHelper
     {
         try {
             $request = null;
@@ -80,7 +80,7 @@ class WebhookEndpoint extends AbstractEndpoint
             throw new WebhookEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Webhook($response->getJson());
+        return new WebhookHelper($response->getJson());
     }
 
     /**

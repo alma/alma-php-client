@@ -25,22 +25,52 @@
 
 namespace Alma\API\Entity;
 
-class Merchant extends Base
+class Merchant extends AbstractEntity
 {
-    /** @var string */
-    public $name;
-    /** @var string */
-    public $website;
-    /** @var string */
-    public $state;
-    /** @var bool */
-    public $manuallyReviewed;
-    /** @var bool */
-    public $canCreatePayments;
-    /** @var int */
-    public $minimumPurchaseAmount;
-    /** @var int */
-    public $maximumPurchaseAmount;
-    /** @var array */
-    public $feePlans;
+    protected string $id;
+
+    protected string $name;
+
+    protected bool $canCreatePayments;
+
+    /** Mapping of required fields */
+    protected array $requiredFields = [
+        'id'                => 'id',
+        'name'              => 'name',
+        'canCreatePayments' => 'can_create_payments',
+    ];
+
+    /** Mapping of optional fields */
+    protected array $optionalFields = [
+    ];
+
+    /**
+     * Returns the merchant ID.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Returns the merchant name.
+     * @return string
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Method to check if the merchant can create payments.
+     * @return bool
+     * @noinspection PhpUnused Used by implementations
+     */
+    public function canCreatePayments(): bool
+    {
+        return $this->canCreatePayments;
+    }
 }

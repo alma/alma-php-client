@@ -17,10 +17,10 @@ trait PaymentPlanTrait
     {
         return sprintf(
             '%s_%s_%s_%s',
-            is_null($this->getKind()) ? '-' : $this->getKind(),
-            is_null($this->getInstallmentsCount()) ? '-' : $this->getInstallmentsCount(),
-            is_null($this->getDeferredDays()) ? '-' : $this->getDeferredDays(),
-            is_null($this->getDeferredMonths()) ? '-' : $this->getDeferredMonths()
+            is_null($this->getKind()) ? 'general' : $this->getKind(),
+            is_null($this->getInstallmentsCount()) ? '1' : $this->getInstallmentsCount(),
+            is_null($this->getDeferredDays()) ? '0' : $this->getDeferredDays(),
+            is_null($this->getDeferredMonths()) ? '0' : $this->getDeferredMonths()
         );
     }
 

@@ -4,10 +4,10 @@ namespace Alma\API\Tests\Unit\Endpoint;
 
 
 use Alma\API\Endpoint\WebhookEndpoint;
-use Alma\API\Entity\Webhook;
 use Alma\API\Exception\ClientException;
 use Alma\API\Exception\Endpoint\WebhookEndpointException;
 use Alma\API\Exception\RequestException;
+use Alma\API\Helper\WebhookHelper;
 use Alma\API\Response;
 use Mockery;
 use Mockery\Mock;
@@ -63,7 +63,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $result = $this->webhookServiceMock->create("ecommerce_report", "https://api-sandbox.example-services.io");
 
         // Assertions
-        $this->assertInstanceOf(Webhook::class, $result);
+        $this->assertInstanceOf(WebhookHelper::class, $result);
     }
 
     /**
@@ -128,7 +128,7 @@ class WebhookEndpointTest extends AbstractEndpointSetUp
         $result = $this->webhookServiceMock->fetch("webhook_1213KqH5XRTfCB2w3ZK1qkZRahPy22Ex4J");
 
         // Assertions
-        $this->assertInstanceOf(Webhook::class, $result);
+        $this->assertInstanceOf(WebhookHelper::class, $result);
     }
 
     /**

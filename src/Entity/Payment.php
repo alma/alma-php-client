@@ -25,122 +25,238 @@
 
 namespace Alma\API\Entity;
 
-class Payment extends Base
+use Alma\API\Exception\ParametersException;
+
+/**
+ * Class Payment
+ * @package Alma\API\Entity
+ * @link https://docs.almapay.com/reference/payment
+ */
+class Payment extends AbstractEntity
 {
-    /** @var string Payment is ongoing */
+    /**
+     * @var string Payment is ongoing
+     * @noinspection PhpUnused Used by implementations
+     */
     const STATE_IN_PROGRESS = 'in_progress';
 
-    /** @var string Payment has been fully paid, either at once after being scored negatively, or after all installments
+    /**
+     * @var string Payment has been fully paid, either at once after being scored negatively, or after all installments
      *              have been paid for. Note that by extension, a payment that has no amount due left after partial or
      *              total refunds will be considered PAID as well.
+     * @noinspection PhpUnused Used by implementations
      */
     const STATE_PAID = 'paid';
 
+    /**
+     * @var string Payment has been cancelled, automatically because the payment amount and the order amount did not match.
+     * @noinspection PhpUnused Used by implementations
+     */
     const FRAUD_AMOUNT_MISMATCH = 'amount_mismatch';
+
+    /**
+     * @var string Payment has been cancelled, either by the merchant or automatically by Alma because the payment was not completed
+     *              within the time limit.
+     * @noinspection PhpUnused Used by implementations
+     */
     const FRAUD_STATE_ERROR = 'state_error';
 
-    /** @var int Creation UNIX timestamp */
-    public int $created;
 
-    /** @var string URL of that payment's page to which the customer should be redirected */
-    public string $url;
+    /** @var int  Amount already refunded for the payment */
+    protected int $amountRefunded;
 
-    /** @var string State of the payment (see above STATE_PAID / STATE_IN_PROGRESS / ...) */
-    public string $state;
+    /** @var array Custom data provided when creating the payment */
+    protected array $customData;
 
-    /** @var int Purchase amount, in cents */
-    public int $purchaseAmount;
+    /** @var int Customer fee for payment */
+    protected int $customerFee;
 
-    /** @var int Fees to be paid by the customer, in cents */
-    public int $customerFee;
+    /** @var int Customer interest for payment */
+    protected int $customerInterest;
 
-    /** @var int Interests to be paid by the customer, in cents */
-    public int $customerInterest;
+    /** @var int Number of days before the first installment. */
+    protected int $deferredDays;
 
-    /** @var int Fees paid by the merchant, in cents */
-    public int $merchantTargetFee;
+    /** @var int Number of months prior to the first installment. */
+    protected int $deferredMonths;
 
-    /** @var int Number of installments for this payment */
-    public int $installmentsCount;
+    /** @var int|null Payment expiration date as a timestamp, if any */
+    protected ?int $expiredAt;
 
-    /** @var int Number of days the payment was deferred for */
-    public int $deferredDays;
+    /** @var string Payment ID */
+    protected string $id;
 
-    /** @var int Number of months the payment was deferred for */
-    public int $deferredMonths;
+    /** @var int Number of installments for that payment */
+    protected int $installmentsCount;
+
+    /** @var string|null Payment plan kind: P1X, P1X_D+30, P3X, P10X, etc… */
+    protected ?string $kind;
+
+    /** @var array Payment Plan  */
+    protected array $paymentPlan;
+
+    /** @var int Cart amount, excluding Alma fees */
+    protected int $purchaseAmount;
+
+    /** @var string Payment status. */
+    protected string $state;
+
+    /** @var string Payment URL */
+    protected string $url;
+
+    /** Mapping of required fields */
+    protected array $requiredFields = [
+        'amountRefunded'     => 'amount_already_refunded',
+        'customData'         => 'custom_data',
+        'customerFee'        => 'customer_fee',
+        'customerInterest'   => 'customer_interest',
+        'deferredDays'       => 'deferred_days',
+        'deferredMonths'     => 'deferred_months',
+        'expiredAt'          => 'expired_at',
+        'id'                 => 'id',
+        'installmentsCount'  => 'installments_count',
+        'kind'               => 'kind',
+        'paymentPlan'        => 'payment_plan',
+        'purchaseAmount'     => 'purchase_amount',
+        'state'              => 'state',
+        'url'                => 'url',
+    ];
+
+    /** Mapping of optional fields */
+    protected array $optionalFields = [];
+
 
     /**
-     * @var Installment[] Array of installments, representing the payment plan for this payment.
-     * Might include more than $installments_count installments in some cases.
+     * Returns the amount already refunded for the payment, in cents.
+     * @return int
      */
-    public array $paymentPlan;
-
-    /** @var string URL the customer is sent back to once the payment is complete */
-    public string $returnUrl;
-
-    /** @var array Custom data provided at creation time */
-    public array $customData;
-
-    /** @var Order[] List of orders associated to that payment */
-    public array $orders;
-
-    /** @var Refund[] List of refunds for that payment */
-    public array $refunds;
-
-    /** @var array Customer representation */
-    public array $customer;
-
-    /** @var array Billing address representation */
-    public array $billingAddress;
-
-    /** @var bool If is a payment with trigger or not */
-    public bool $deferredTrigger;
-
-    /** @var string|null Description given at payment creation */
-    public ?string $deferredTriggerDescription;
-
-    /** @var int|null Timestamp or NULL if not already applied */
-    public ?int $deferredTriggerApplied;
-
-    /** @var int|null Timestamp or NULL if not expired */
-    public ?int $expiredAt;
-
-    /**
-     * @param array $attributes
-     */
-    public function __construct($attributes)
+    public function getAmountRefunded(): int
     {
-        // Manually process `payment_plan` to create Installment instances
-        if (array_key_exists('payment_plan', $attributes)) {
-            $this->paymentPlan = array();
-
-            foreach ($attributes['payment_plan'] as $installment) {
-                $this->paymentPlan[] = new Installment($installment);
-            }
-
-            unset($attributes['payment_plan']);
-        }
-
-        if (array_key_exists('orders', $attributes)) {
-            $this->orders = array();
-
-            foreach ($attributes['orders'] as $order) {
-                $this->orders[] = new Order($order);
-            }
-
-            unset($attributes['orders']);
-        }
-
-        if (array_key_exists('refunds', $attributes)) {
-            $this->refunds = array();
-
-            foreach ($attributes['refunds'] as $refund) {
-                $this->refunds[] = new Refund($refund);
-            }
-
-            unset($attributes['refunds']);
-        }
-
-        parent::__construct($attributes);
+        return $this->amountRefunded;
     }
+
+    /**
+     * Returns the custom data provided when creating the payment.
+     * @return array
+     */
+    public function getCustomData(): array
+    {
+        return $this->customData;
+    }
+
+    /**
+     * Returns the customer fee for payment, in cents.
+     * @return int
+     */
+    public function getCustomerFee(): int
+    {
+        return $this->customerFee;
+    }
+
+    /**
+     * Returns the customer interest for payment, in cents.
+     * @return int
+     */
+    public function getCustomerInterest(): int
+    {
+        return $this->customerInterest;
+    }
+
+
+    /**
+     * Returns the number of days before the first installment.
+     * @return int
+     */
+    public function getDeferredDays(): int
+    {
+        return $this->deferredDays;
+    }
+
+    /**
+     * Returns the number of months prior to the first installment.
+     * @return int
+     */
+    public function getDeferredMonths(): int
+    {
+        return $this->deferredMonths;
+    }
+
+    /**
+     * Returns the payment expiration date as a timestamp, if any.
+     * @return int|null
+     */
+    public function getExpiredAt(): ?int
+    {
+        return $this->expiredAt;
+    }
+
+    /**
+     * Returns the payment external ID.
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Returns the number of installments for that payment.
+     * @return int
+     */
+    public function getInstallmentsCount(): int
+    {
+        return $this->installmentsCount;
+    }
+
+    /**
+     * Returns the payment type: P1X, P1X_D+30, P3X, P10X, etc…
+     * @return string|null
+     */
+    public function getKind(): ?string
+    {
+        return $this->kind;
+    }
+
+    /**
+     * Returns the payment plan.
+     * @return PaymentPlan
+     * @throws ParametersException
+     */
+    public function getPaymentPlan(): PaymentPlan
+    {
+        $paymentPlan = new PaymentPlan();
+        foreach ($this->paymentPlan as $installment) {
+            $paymentPlan->add(new Installment($installment));
+        }
+        return $paymentPlan;
+    }
+
+    /**
+     * Returns the cart amount, excluding Alma fees, in cents.
+     * @return int
+     */
+    public function getPurchaseAmount(): int
+    {
+        return $this->purchaseAmount;
+    }
+
+    /**
+     * Returns the payment status.
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
+    }
+
+    /**
+     * Returns the payment URL.
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+
 }

@@ -19,12 +19,10 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
     const SERVER_REQUEST_ELIGIBILITY_RESPONSE_JSON = '
     [
         {
-            "customer_total_cost_amount": 0,
-            "customer_total_cost_bps": 0,
+            "purchase_amount": 60000,
+            "installments_count": 3,
             "deferred_days": 0,
             "deferred_months": 0,
-            "eligible": true,
-            "installments_count": 3,
             "payment_plan": [
                 {
                     "customer_fee": 0,
@@ -48,7 +46,12 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
                     "total_amount": 20000
                 }
             ],
-            "purchase_amount": 60000
+            "customer_fee": 0,
+            "customer_interest": 0,
+            "customer_total_cost_amount": 0,
+            "customer_total_cost_bps": 0,
+            "annual_interest_rate": 0,
+            "eligible": true
         }
     ]';
 

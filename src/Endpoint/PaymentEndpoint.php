@@ -32,6 +32,7 @@ use Alma\API\DTO\RefundDto;
 use Alma\API\Entity\Order;
 use Alma\API\Entity\Payment;
 use Alma\API\Exception\Endpoint\PaymentEndpointException;
+use Alma\API\Exception\ParametersException;
 use Alma\API\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
@@ -180,7 +181,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param RefundDto $refundDto contains all the refund info
      *
      * @return Payment
-     * @throws PaymentEndpointException
+     * @throws PaymentEndpointException|ParametersException
      */
     public function refund(string $paymentId, RefundDto $refundDto): Payment
     {

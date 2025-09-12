@@ -25,32 +25,73 @@
 
 namespace Alma\API\Entity;
 
-class Installment extends Base
+class Installment extends AbstractEntity
 {
-    const STATE_PAID = 'paid';
-    const STATE_PENDING = "pending";
-    const STATE_INCIDENT = "incident";
-    const STATE_CLAIMED = "claimed";
-    const STATE_COVERED = "covered";
+    protected int $customerFee;
 
-    /** @var string */
-    public $state;
+    protected int $customerInterest;
 
-    /** @var int */
-    public $purchaseAmount;
+    protected int $dueDate;
 
-    /** @var int */
-    public $originalPurchaseAmount;
+    protected int $purchaseAmount;
 
-    /** @var int */
-    public $dueDate;
+    protected string $state;
 
-    /** @var int */
-    public $customerFee;
+    /** Mapping of required fields */
+    protected array $requiredFields = [
+        'customerFee'      => 'customer_fee',
+        'customerInterest' => 'customer_interest',
+        'dueDate'          => 'due_date',
+        'purchaseAmount'   => 'purchase_amount',
+        'state'            => 'state',
+    ];
 
-	/** @var int */
-    public $customerInterest;
+    /** Mapping of optional fields */
+    protected array $optionalFields = [
+    ];
 
-	/** @var int */
-    public $totalAmount;
+    /**
+     * Returns the customer fee in cents
+     * @return int
+     */
+    public function getCustomerFee(): int
+    {
+        return $this->customerFee;
+    }
+
+    /**
+     * Returns the customer interest in cents
+     * @return int
+     */
+    public function getCustomerInterest(): int
+    {
+        return $this->customerInterest;
+    }
+
+    /**
+     * Returns the due date as a UNIX timestamp
+     * @return int
+     */
+    public function getDueDate(): int
+    {
+        return $this->dueDate;
+    }
+
+    /**
+     * Returns the purchase amount in cents
+     * @return int
+     */
+    public function getPurchaseAmount(): int
+    {
+        return $this->purchaseAmount;
+    }
+
+    /**
+     * Returns the state of the installment
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
+    }
 }

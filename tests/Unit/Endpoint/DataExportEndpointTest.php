@@ -83,7 +83,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
         // Assertions
         $this->assertInstanceOf(DataExport::class, $result);
-        $this->assertEquals(self::DEFAULT_ID, $result->id);
+        $this->assertEquals(self::DEFAULT_ID, $result->getId());
     }
 
     /**
@@ -149,7 +149,7 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
         // Assertions
         $this->assertInstanceOf(DataExport::class, $result);
-        $this->assertEquals(self::DEFAULT_ID, $result->id);
+        $this->assertEquals(self::DEFAULT_ID, $result->getId());
     }
 
     /**
