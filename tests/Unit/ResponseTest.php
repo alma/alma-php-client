@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\Response;
+use Alma\API\Infrastructure\Response;
 use GuzzleHttp\Psr7\Stream;
 use PHPUnit\Framework\TestCase;
 

@@ -1,7 +1,7 @@
 <?php
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Entity\Installment;
+use Alma\API\Domain\Entity\Installment;
 use PHPUnit\Framework\TestCase;
 
 class InstallmentTest extends TestCase

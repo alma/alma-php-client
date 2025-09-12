@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Helper\WebhookHelper;
+use Alma\API\Infrastructure\Helper\WebhookHelper;
 use PHPUnit\Framework\TestCase;
 
 class WebhookTest extends TestCase

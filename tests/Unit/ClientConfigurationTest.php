@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\ClientConfiguration;
-use Alma\API\Exception\ClientConfigurationException;
+use Alma\API\Infrastructure\ClientConfiguration;
+use Alma\API\Infrastructure\Exception\ClientConfigurationException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

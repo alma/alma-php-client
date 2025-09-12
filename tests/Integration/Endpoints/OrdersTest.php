@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Integration\Endpoints;
 
-use Alma\API\Entity\Order;
-use Alma\API\Exception\RequestException;
+use Alma\API\Domain\Entity\Order;
+use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Tests\Integration\TestHelpers\ClientTestHelper;
 use Alma\API\Tests\Integration\TestHelpers\PaymentTestHelper;
 use Mockery\Adapter\Phpunit\MockeryTestCase;

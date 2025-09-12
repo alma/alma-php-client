@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\DTO\ShareOfCheckout;
 
-use Alma\API\DTO\ShareOfCheckout\ShareOfCheckoutOrderDto;
-use Alma\API\DTO\ShareOfCheckout\ShareOfCheckoutPaymentMethodDto;
+use Alma\API\Application\DTO\ShareOfCheckout\ShareOfCheckoutOrderDto;
+use Alma\API\Application\DTO\ShareOfCheckout\ShareOfCheckoutPaymentMethodDto;
 use PHPUnit\Framework\TestCase;
 
 class ShareOfCheckoutPaymentMethodDtoTest extends TestCase

@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Integration\TestHelpers;
 
-use Alma\API\Entity\Payment;
-use Alma\API\Exception\ParametersException;
+use Alma\API\Domain\Entity\Payment;
+use Alma\API\Infrastructure\Exception\ParametersException;
 
 class PaymentTestHelper
 {

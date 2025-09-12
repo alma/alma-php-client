@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Entity\PaymentPlanTrait;
-use Alma\API\Exception\Endpoint\EligibilityEndpointException;
+use Alma\API\Domain\Entity\PaymentPlanTrait;
+use Alma\API\Infrastructure\Exception\Endpoint\EligibilityEndpointException;
 use PHPUnit\Framework\TestCase;
 
 class PaymentPlanTraitTest extends TestCase

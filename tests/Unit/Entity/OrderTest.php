@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Entity\Order;
+use Alma\API\Domain\Entity\Order;
 use PHPUnit\Framework\TestCase;
 
 class OrderTest extends TestCase

@@ -2,7 +2,7 @@
 
 namespace Alma\API\Domain\Helper;
 
-use Alma\API\Entity\FeePlanList;
+use Alma\API\Domain\Entity\FeePlanList;
 
 interface WidgetHelperInterface
 {

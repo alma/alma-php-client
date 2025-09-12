@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Helper;
 
-use Alma\API\Helper\RequestHelper;
+use Alma\API\Infrastructure\Helper\RequestHelper;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase

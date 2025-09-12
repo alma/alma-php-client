@@ -2,9 +2,9 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\ClientConfiguration;
-use Alma\API\Exception\ParametersException;
-use Alma\API\Helper\ClientConfigurationValidatorHelper;
+use Alma\API\Infrastructure\ClientConfiguration;
+use Alma\API\Infrastructure\Exception\ParametersException;
+use Alma\API\Infrastructure\Helper\ClientConfigurationValidatorHelper;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Psr\Log\NullLogger;
 

@@ -2,10 +2,10 @@
 
 namespace Alma\API\Tests\Unit\DTO;
 
-use Alma\API\DTO\AddressDto;
-use Alma\API\DTO\CartDto;
-use Alma\API\DTO\CartItemDto;
-use Alma\API\DTO\PaymentDto;
+use Alma\API\Application\DTO\AddressDto;
+use Alma\API\Application\DTO\CartDto;
+use Alma\API\Application\DTO\CartItemDto;
+use Alma\API\Application\DTO\PaymentDto;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

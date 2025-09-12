@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\DTO\MerchantBusinessEvent;
 
-use Alma\API\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDto;
-use Alma\API\Exception\ParametersException;
+use Alma\API\Application\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDto;
+use Alma\API\Infrastructure\Exception\ParametersException;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class OrderConfirmedBusinessEventDtoTest extends MockeryTestCase

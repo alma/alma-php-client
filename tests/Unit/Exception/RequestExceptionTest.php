@@ -2,11 +2,11 @@
 
 namespace Alma\API\Tests\Unit\Exception;
 
-use Alma\API\Exception\RequestException;
+use Alma\API\Infrastructure\Exception\RequestException;
+use Alma\API\Infrastructure\ResponseInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
-use Alma\API\ResponseInterface;
 
 class RequestExceptionTest extends TestCase
 {

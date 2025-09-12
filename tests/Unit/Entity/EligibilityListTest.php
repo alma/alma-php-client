@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
+use Alma\API\Domain\Entity\EligibilityList;
 use Alma\API\Entity\Eligibility;
-use Alma\API\Entity\EligibilityList;
 use PHPUnit\Framework\TestCase;
 
 class EligibilityListTest extends TestCase

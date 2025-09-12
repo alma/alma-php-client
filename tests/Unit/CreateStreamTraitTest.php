@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\StreamTrait;
+use Alma\API\Infrastructure\StreamTrait;
 use GuzzleHttp\Psr7\Stream;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;

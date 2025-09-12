@@ -3,12 +3,12 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 
-use Alma\API\Endpoint\WebhookEndpoint;
-use Alma\API\Exception\ClientException;
-use Alma\API\Exception\Endpoint\WebhookEndpointException;
-use Alma\API\Exception\RequestException;
-use Alma\API\Helper\WebhookHelper;
-use Alma\API\Response;
+use Alma\API\Infrastructure\Endpoint\WebhookEndpoint;
+use Alma\API\Infrastructure\Exception\ClientException;
+use Alma\API\Infrastructure\Exception\Endpoint\WebhookEndpointException;
+use Alma\API\Infrastructure\Exception\RequestException;
+use Alma\API\Infrastructure\Helper\WebhookHelper;
+use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
 
