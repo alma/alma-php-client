@@ -1,6 +1,6 @@
 <?php
 /**
- * EligibilityServiceException.
+ * ContainerException.
  *
  * @since 6.0.0
  *
@@ -9,11 +9,13 @@
  * @namespace Alma\Gateway\Business\Exception
  */
 
-namespace Alma\API\Domain\Exception;
+namespace Alma\API\Domain\Exception\Service;
+
+use Alma\API\Domain\Exception\AlmaGatewayException;
 
 /**
- * EligibilityServiceException
+ * ContainerException
  */
-class EligibilityServiceException extends AlmaGatewayException {
+class ContainerServiceException extends AlmaGatewayException {
 
 }

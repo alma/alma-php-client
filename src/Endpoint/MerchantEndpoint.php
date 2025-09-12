@@ -44,7 +44,7 @@ class MerchantEndpoint extends AbstractEndpoint
 
     /**
      * @return Merchant
-     * @throws MerchantEndpointException|ParametersException
+     * @throws MerchantEndpointException
      */
     public function me(): Merchant
     {
@@ -60,7 +60,13 @@ class MerchantEndpoint extends AbstractEndpoint
             throw new MerchantEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Merchant($response->getJson());
+        try {
+            $merchant = new Merchant($response->getJson());
+        } catch (ParametersException $e) {
+            throw new MerchantEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $merchant;
     }
 
     /**
@@ -73,7 +79,6 @@ class MerchantEndpoint extends AbstractEndpoint
      * @return FeePlanList A list of available fee plans (some might be disabled, check FeePlan->allowed for each)
      *
      * @throws MerchantEndpointException
-     * @throws ParametersException
      */
     public function getFeePlanList(string $kind = FeePlan::KIND_GENERAL, $installmentsCounts = "all", bool $includeDeferred = false): FeePlanList
     {
@@ -102,7 +107,11 @@ class MerchantEndpoint extends AbstractEndpoint
 
         $feePlanList = new FeePlanList();
         foreach ($response->getJson() as $jsonFeePlan) {
-            $feePlan = new FeePlan($jsonFeePlan);
+            try {
+                $feePlan = new FeePlan($jsonFeePlan);
+            } catch (ParametersException $e) {
+                throw new MerchantEndpointException($e->getMessage(), $request, $response);
+            }
             $feePlanList->Add($feePlan);
         }
 

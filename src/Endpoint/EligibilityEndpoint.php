@@ -44,7 +44,6 @@ class EligibilityEndpoint extends AbstractEndpoint
      *                              can be an array of integers, to test for multiple eligible plans at once.
      * @return EligibilityList A list of Eligibility objects, one for each payment plan.
      * @throws EligibilityEndpointException
-     * @throws ParametersException
      */
     public function getEligibilityList(array $data = []): EligibilityList
     {
@@ -64,7 +63,12 @@ class EligibilityEndpoint extends AbstractEndpoint
 
         $eligibilityList = new EligibilityList();
 		foreach ($response->getJson() as $jsonEligibility) {
-			$eligibility = new Eligibility($jsonEligibility);
+            try {
+                $eligibility = new Eligibility($jsonEligibility);
+            } catch (ParametersException $e) {
+                throw new EligibilityEndpointException($e->getMessage(), $request, $response);
+            }
+
             $eligibilityList->Add($eligibility);
 
 			if (!$eligibility->isEligible()) {

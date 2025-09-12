@@ -9,7 +9,7 @@
  * @namespace Alma\Gateway\Business\Exception
  */
 
-namespace Alma\API\Domain\Exception;
+namespace Alma\API\Infrastructure\Exception;
 
 /**
  * Alma_Alma.

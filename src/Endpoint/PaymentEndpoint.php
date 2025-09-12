@@ -70,7 +70,13 @@ class PaymentEndpoint extends AbstractEndpoint
             throw new PaymentEndpointException(var_export($data, true), $request, $response);
         }
 
-        return new Payment($response->getJson());
+        try {
+            $payment = new Payment($response->getJson());
+        } catch (ParametersException $e) {
+            throw new PaymentEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $payment;
     }
 
     /**
@@ -118,7 +124,13 @@ class PaymentEndpoint extends AbstractEndpoint
             throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Payment($response->getJson());
+        try {
+            $payment = new Payment($response->getJson());
+        } catch (ParametersException $e) {
+            throw new PaymentEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $payment;
     }
 
     /**
@@ -142,7 +154,13 @@ class PaymentEndpoint extends AbstractEndpoint
             throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Payment($response->getJson());
+        try {
+            $payment = new Payment($response->getJson());
+        } catch (ParametersException $e) {
+            throw new PaymentEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $payment;
     }
 
     /**
@@ -181,7 +199,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @param RefundDto $refundDto contains all the refund info
      *
      * @return Payment
-     * @throws PaymentEndpointException|ParametersException
+     * @throws PaymentEndpointException
      */
     public function refund(string $paymentId, RefundDto $refundDto): Payment
     {
@@ -197,7 +215,13 @@ class PaymentEndpoint extends AbstractEndpoint
             throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Payment($response->getJson());
+        try {
+            $payment = new Payment($response->getJson());
+        } catch (ParametersException $e) {
+            throw new PaymentEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $payment;
     }
 
     /**
@@ -220,7 +244,13 @@ class PaymentEndpoint extends AbstractEndpoint
             throw new PaymentEndpointException($response->getReasonPhrase(), $request, $response);
         }
 
-        return new Payment($response->getJson());
+        try {
+            $payment = new Payment($response->getJson());
+        } catch (ParametersException $e) {
+            throw new PaymentEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $payment;
     }
 
     /**
@@ -254,7 +284,13 @@ class PaymentEndpoint extends AbstractEndpoint
 
         $json = $response->getJson();
 
-        return new Order(end($json));
+        try {
+            $order = new Order(end($json));
+        } catch (ParametersException $e) {
+            throw new PaymentEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $order;
     }
 
     /**
@@ -283,7 +319,13 @@ class PaymentEndpoint extends AbstractEndpoint
 
         $json = $response->getJson();
 
-        return new Order(end($json));
+        try {
+            $order = new Order(end($json));
+        } catch (ParametersException $e) {
+            throw new PaymentEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $order;
     }
 
     /**

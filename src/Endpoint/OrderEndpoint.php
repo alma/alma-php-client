@@ -69,7 +69,13 @@ class OrderEndpoint extends AbstractEndpoint
         }
 
         $json = $response->getJson();
-        return new Order(end($json));
+        try {
+            $order = new Order(end($json));
+        } catch (ParametersException $e) {
+            throw new OrderEndpointException($e->getMessage(), $request, $response);
+        }
+
+        return $order;
     }
 
     /**
@@ -166,33 +172,12 @@ class OrderEndpoint extends AbstractEndpoint
         }
 
         $json = $response->getJson();
-        return new Order($json);
-    }
-
-    /**
-     * @param array $orderData
-     * @return void
-     * @throws ParametersException
-     */
-    public function validateStatusData(array $orderData = array())
-    {
-        if (empty($orderData)) {
-            throw new ParametersException('Missing in the required parameters (status, is_shipped) when calling orders.sendStatus');
-        }
-
         try {
-            $arrayUtils = new ArrayHelper();
-            $arrayUtils->checkMandatoryKeys(['status', 'is_shipped'], $orderData);
-        } catch (MissingKeyException $e) {
-            throw new ParametersException('Error in the required parameters (status, is_shipped) when calling orders.sendStatus', 0, $e);
+            $order = new Order($json);
+        } catch (ParametersException $e) {
+            throw new OrderEndpointException($e->getMessage(), $request, $response);
         }
 
-        if (!is_bool($orderData['is_shipped'])) {
-            throw new ParametersException('Parameter "is_shipped" must be a boolean');
-        }
-
-        if (!$orderData['status']) {
-            throw new ParametersException('Missing the required parameter "status" when calling orders.sendStatus');
-        }
+        return $order;
     }
 }
