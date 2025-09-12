@@ -2,12 +2,12 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\ClientConfiguration;
-use Alma\API\CurlClient;
-use Alma\API\Exception\ClientException;
-use Alma\API\Exception\RequestException;
-use Alma\API\Request;
-use Alma\API\Response;
+use Alma\API\Infrastructure\ClientConfiguration;
+use Alma\API\Infrastructure\CurlClient;
+use Alma\API\Infrastructure\Exception\ClientException;
+use Alma\API\Infrastructure\Exception\RequestException;
+use Alma\API\Infrastructure\Request;
+use Alma\API\Infrastructure\Response;
 use GuzzleHttp\Psr7\Stream;
 use GuzzleHttp\Psr7\Uri;
 use Mockery;

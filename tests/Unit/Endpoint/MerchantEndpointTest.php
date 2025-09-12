@@ -2,16 +2,16 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDto;
-use Alma\API\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDto;
-use Alma\API\Endpoint\MerchantEndpoint;
-use Alma\API\Entity\FeePlan;
-use Alma\API\Entity\Merchant;
-use Alma\API\Exception\ClientException;
-use Alma\API\Exception\Endpoint\MerchantEndpointException;
-use Alma\API\Exception\ParametersException;
-use Alma\API\Exception\RequestException;
-use Alma\API\Response;
+use Alma\API\Application\DTO\MerchantBusinessEvent\CartInitiatedBusinessEventDto;
+use Alma\API\Application\DTO\MerchantBusinessEvent\OrderConfirmedBusinessEventDto;
+use Alma\API\Domain\Entity\FeePlan;
+use Alma\API\Domain\Entity\Merchant;
+use Alma\API\Infrastructure\Endpoint\MerchantEndpoint;
+use Alma\API\Infrastructure\Exception\ClientException;
+use Alma\API\Infrastructure\Exception\Endpoint\MerchantEndpointException;
+use Alma\API\Infrastructure\Exception\ParametersException;
+use Alma\API\Infrastructure\Exception\RequestException;
+use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;

@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\DTO;
 
-use Alma\API\DTO\AddressDto;
-use Alma\API\DTO\CustomerDto;
+use Alma\API\Application\DTO\AddressDto;
+use Alma\API\Application\DTO\CustomerDto;
 use PHPUnit\Framework\TestCase;
 
 class CustomerDtoTest extends TestCase

@@ -2,13 +2,12 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\Exception\RequestException;
 use Alma\API\Helper\StreamHelper;
-use Alma\API\Request;
-use Alma\API\Response;
+use Alma\API\Infrastructure\Exception\RequestException;
+use Alma\API\Infrastructure\Request;
+use GuzzleHttp\Psr7\Stream;
 use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
-use GuzzleHttp\Psr7\Stream;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase

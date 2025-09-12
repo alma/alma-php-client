@@ -1,7 +1,7 @@
 <?php
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Entity\Merchant;
+use Alma\API\Domain\Entity\Merchant;
 use PHPUnit\Framework\TestCase;
 
 class MerchantTest extends TestCase

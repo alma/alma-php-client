@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\DTO;
 
-use Alma\API\DTO\RefundDto;
+use Alma\API\Application\DTO\RefundDto;
 use PHPUnit\Framework\TestCase;
 
 class RefundDtoTest extends TestCase

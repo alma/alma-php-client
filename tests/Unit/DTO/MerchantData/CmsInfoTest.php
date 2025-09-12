@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\DTO\MerchantData;
 
-use Alma\API\DTO\MerchantData\CmsInfoDto;
+use Alma\API\Application\DTO\MerchantData\CmsInfoDto;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class CmsInfoTest extends MockeryTestCase

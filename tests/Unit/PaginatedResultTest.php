@@ -2,11 +2,10 @@
 
 namespace Alma\API\Tests\Unit;
 
-use Alma\API\Response;
+use Alma\API\Infrastructure\PaginatedResult;
+use Alma\API\Infrastructure\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Alma\API\ResponseInterface;
-use Alma\API\PaginatedResult;
 
 class PaginatedResultTest extends TestCase
 {

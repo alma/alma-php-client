@@ -2,15 +2,15 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\Endpoint\OrderEndpoint;
-use Alma\API\Entity\Order;
-use Alma\API\Exception\ClientException;
-use Alma\API\Exception\Endpoint\OrderEndpointException;
-use Alma\API\Exception\ParametersException;
-use Alma\API\Exception\RequestException;
-use Alma\API\Helper\ArrayHelper;
-use Alma\API\PaginatedResult;
-use Alma\API\Response;
+use Alma\API\Domain\Entity\Order;
+use Alma\API\Infrastructure\Endpoint\OrderEndpoint;
+use Alma\API\Infrastructure\Exception\ClientException;
+use Alma\API\Infrastructure\Exception\Endpoint\OrderEndpointException;
+use Alma\API\Infrastructure\Exception\ParametersException;
+use Alma\API\Infrastructure\Exception\RequestException;
+use Alma\API\Infrastructure\Helper\ArrayHelper;
+use Alma\API\Infrastructure\PaginatedResult;
+use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
 use Psr\Log\LoggerInterface;

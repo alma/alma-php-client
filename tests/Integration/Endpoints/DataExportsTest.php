@@ -2,7 +2,6 @@
 
 namespace Alma\API\Tests\Integration\Endpoints;
 
-use Alma\API\Exception\ParametersException;
 use Alma\API\Tests\Integration\TestHelpers\ClientTestHelper;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 

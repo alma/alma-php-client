@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Entity\Payment;
-use Alma\API\Entity\PaymentPlan;
+use Alma\API\Domain\Entity\Payment;
+use Alma\API\Domain\Entity\PaymentPlan;
 use PHPUnit\Framework\TestCase;
 
 class PaymentTest extends TestCase

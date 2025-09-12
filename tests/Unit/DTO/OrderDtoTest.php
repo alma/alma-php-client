@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\DTO;
 
-use Alma\API\DTO\OrderDto;
+use Alma\API\Application\DTO\OrderDto;
 use PHPUnit\Framework\TestCase;
 
 class OrderDtoTest extends TestCase

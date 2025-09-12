@@ -2,11 +2,11 @@
 
 namespace Alma\API\Domain\Service\API;
 
-use Alma\API\DTO\CustomerDto;
-use Alma\API\DTO\OrderDto;
-use Alma\API\DTO\PaymentDto;
-use Alma\API\DTO\RefundDto;
-use Alma\API\Entity\Payment;
+use Alma\API\Application\DTO\CustomerDto;
+use Alma\API\Application\DTO\OrderDto;
+use Alma\API\Application\DTO\PaymentDto;
+use Alma\API\Application\DTO\RefundDto;
+use Alma\API\Domain\Entity\Payment;
 
 interface PaymentServiceInterface
 {

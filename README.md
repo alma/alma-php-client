@@ -42,7 +42,7 @@ An example of using the API client. (check [API documentation](https://docs.geta
 ### 1. instanciate client in test mode
 
 ```php
-$alma = new Alma\API\CurlClient($apiKey, ['mode' => Alma\API\CurlClient::TEST_MODE]);
+$alma = new \Alma\API\Infrastructure\CurlClient($apiKey, ['mode' => \Alma\API\Infrastructure\CurlClient::TEST_MODE]);
 ```
 
 ### 2. check eligibility
@@ -259,8 +259,8 @@ exit();
 // ...
 $payment = $alma->payments->fetch($paymentId);
 switch($payment->state) {
-    case Alma\API\Entity\Payment::STATE_IN_PROGRESS: break;
-    case Alma\API\Entity\Payment::STATE_PAID: break;
+    case \Alma\API\Domain\Entity\Payment::STATE_IN_PROGRESS: break;
+    case \Alma\API\Domain\Entity\Payment::STATE_PAID: break;
 }
 // ...
 ```

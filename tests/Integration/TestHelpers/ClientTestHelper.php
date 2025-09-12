@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Integration\TestHelpers;
 
-use Alma\API\ClientConfiguration;
-use Alma\API\CurlClient;
+use Alma\API\Infrastructure\ClientConfiguration;
+use Alma\API\Infrastructure\CurlClient;
 
 class ClientTestHelper
 {

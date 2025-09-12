@@ -2,7 +2,7 @@
 
 namespace Alma\API\Domain\Service\API;
 
-use Alma\API\Entity\EligibilityList;
+use Alma\API\Domain\Entity\EligibilityList;
 
 interface EligibilityServiceInterface
 {

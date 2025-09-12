@@ -2,7 +2,7 @@
 
 namespace Alma\API\Tests\Unit\DTO;
 
-use Alma\API\DTO\AddressDto;
+use Alma\API\Application\DTO\AddressDto;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

@@ -2,7 +2,7 @@
 
 namespace Alma\API\Domain\Service\API;
 
-use Alma\API\Entity\FeePlanList;
+use Alma\API\Domain\Entity\FeePlanList;
 
 interface FeePlanServiceInterface
 {

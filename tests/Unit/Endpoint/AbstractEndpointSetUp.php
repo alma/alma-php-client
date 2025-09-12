@@ -2,9 +2,9 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
-use Alma\API\CurlClient;
-use Alma\API\ClientConfiguration;
-use Alma\API\Response;
+use Alma\API\Infrastructure\ClientConfiguration;
+use Alma\API\Infrastructure\CurlClient;
+use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\Mock;

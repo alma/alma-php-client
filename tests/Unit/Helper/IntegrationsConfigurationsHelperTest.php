@@ -2,7 +2,7 @@
 
 namespace Unit\Lib;
 
-use Alma\API\Helper\IntegrationsConfigurationsHelper;
+use Alma\API\Infrastructure\Helper\IntegrationsConfigurationsHelper;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class IntegrationsConfigurationsHelperTest extends MockeryTestCase

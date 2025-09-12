@@ -2,9 +2,9 @@
 
 namespace Alma\API\Tests\Unit\Helper;
 
-use Alma\API\Exception\MissingKeyException;
-use Alma\API\Exception\ParametersException;
-use Alma\API\Helper\ArrayHelper;
+use Alma\API\Infrastructure\Exception\MissingKeyException;
+use Alma\API\Infrastructure\Exception\ParametersException;
+use Alma\API\Infrastructure\Helper\ArrayHelper;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class ArrayTest extends MockeryTestCase
@@ -86,13 +86,13 @@ class ArrayTest extends MockeryTestCase
      */
     public function testSlugifyHandlesScenarios(string $input, $expected)
     {
-        if ($expected === 'Alma\API\Exception\ParametersException') {
+        if ($expected === 'Alma\API\Infrastructure\Exception\ParametersException') {
             $this->expectException($expected);
         }
 
         $result = (new ArrayHelper())->slugify($input);
 
-        if ($expected !== 'Alma\API\Exception\ParametersException') {
+        if ($expected !== 'Alma\API\Infrastructure\Exception\ParametersException') {
             $this->assertSame($expected, $result);
         }
     }

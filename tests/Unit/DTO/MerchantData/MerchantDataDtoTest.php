@@ -2,9 +2,9 @@
 
 namespace Alma\API\Tests\Unit\DTO\MerchantData;
 
-use Alma\API\DTO\MerchantData\CmsFeaturesDto;
-use Alma\API\DTO\MerchantData\CmsInfoDto;
-use Alma\API\DTO\MerchantData\MerchantDataDto;
+use Alma\API\Application\DTO\MerchantData\CmsFeaturesDto;
+use Alma\API\Application\DTO\MerchantData\CmsInfoDto;
+use Alma\API\Application\DTO\MerchantData\MerchantDataDto;
 use PHPUnit\Framework\TestCase;
 
 class MerchantDataDtoTest extends TestCase

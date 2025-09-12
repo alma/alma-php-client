@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
-use Alma\API\Entity\FeePlan;
-use Alma\API\Exception\ParametersException;
+use Alma\API\Domain\Entity\FeePlan;
+use Alma\API\Infrastructure\Exception\ParametersException;
 use PHPUnit\Framework\TestCase;
 
 class FeePlanTest extends TestCase
