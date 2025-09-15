@@ -2,8 +2,8 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
+use Alma\API\Domain\Entity\Eligibility;
 use Alma\API\Domain\Entity\FeePlan;
-use Alma\API\Entity\Eligibility;
 use Alma\API\Infrastructure\Exception\ParametersException;
 use PHPUnit\Framework\TestCase;
 

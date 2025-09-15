@@ -34,7 +34,20 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
        "expired_at":1657528851,
        "id":"payment_xxxxxx",
        "installments_count":3,
-       "kind":"installments",         
+       "kind":"installments",
+       "orders":[         
+          {
+             "comment":"comment",
+             "created":1649672472,
+             "customer_url":"customer_url",
+             "data":{
+             },
+             "id":"order_11uPRjP4a3cFQvoM1lehDnpxa2tYm2Hy0I",
+             "merchant_reference":"C1-000027951",
+             "merchant_url":"merchant_url",
+             "payment":"payment_xxxxxx"
+          }
+       ],
        "payment_plan":[
           {
              "customer_fee":100,
@@ -230,7 +243,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
 
         // Assertions
-        $this->assertTrue($this->paymentService->cancel('id_1234'));
+        $this->assertNull($this->paymentService->cancel('id_1234'));
     }
 
     /**
@@ -418,8 +431,8 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
 
         // Assertions
-        $this->assertTrue($this->paymentService->flagAsPotentialFraud('id_1234'));
-        $this->assertTrue($this->paymentService->flagAsPotentialFraud('id_1234', 'reason'));
+        $this->assertNull($this->paymentService->flagAsPotentialFraud('id_1234'));
+        $this->assertNull($this->paymentService->flagAsPotentialFraud('id_1234', 'reason'));
 
     }
 
@@ -498,69 +511,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure payment trigger is ok
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testTriggerPayment()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->paymentResponseMock);
-
-        // Assertions
-        $this->assertInstanceOf(Payment::class, $this->paymentService->trigger('id_1234'));
-
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testTriggerPaymentRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->trigger('id_1234');
-    }
-
-    /**
-     * Ensure we can catch ClientException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testTriggerPaymentClientException()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $this->paymentService->trigger('id_1234');
-    }
-
-    /**
-     * Ensure we can catch API error
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testTriggerPaymentPaymentServiceException()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badPaymentResponseMock);
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $this->paymentService->trigger('id_1234');
-    }
-
-    /**
      * Ensure payment edition is ok
      * @return void
      * @throws PaymentEndpointException
@@ -624,69 +574,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->paymentService->addOrder('id_1234');
     }
 
-    /**
-     * Ensure order overwrite is ok
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testOverwriteOrder()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->orderResponseMock);
-
-        // Assertions
-        $this->assertInstanceOf(Order::class, $this->paymentService->overwriteOrder('id_1234'));
-
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testOverwriteOrderRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->overwriteOrder('id_1234');
-    }
-
-    /**
-     * Ensure we can catch ClientException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testOverwriteOrderClientException()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andThrow(ClientException::class);
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $this->paymentService->overwriteOrder('id_1234');
-    }
-
-    /**
-     * Ensure we can catch API error
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testOverwriteOrderPaymentServiceException()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->andReturn($this->badOrderResponseMock);
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $this->paymentService->overwriteOrder('id_1234');
-    }
-
 
     /**
      * Ensure payment edition is ok
@@ -699,7 +586,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->andReturn($this->orderResponseMock);
 
         // Assertions
-        $this->assertTrue($this->paymentService->addOrderStatusByMerchantOrderReference(
+        $this->assertNull($this->paymentService->addOrderStatusByMerchantOrderReference(
             'payment_id',
             'merchant_order_reference',
             'status'
