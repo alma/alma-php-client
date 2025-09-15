@@ -2,7 +2,6 @@
 
 namespace Alma\API\Domain\Entity;
 
-use Alma\API\Entity\Eligibility;
 use ArrayObject;
 
 class EligibilityList extends ArrayObject
