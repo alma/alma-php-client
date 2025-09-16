@@ -125,7 +125,7 @@ class MerchantEndpoint extends AbstractEndpoint
      * @return void
      * @throws MerchantEndpointException
      */
-    public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEventDto $cartEventData)
+    public function sendCartInitiatedBusinessEvent(CartInitiatedBusinessEventDto $cartEventData) :void
     {
         $this->sendBusinessEvent($cartEventData->toArray());
     }
@@ -137,7 +137,7 @@ class MerchantEndpoint extends AbstractEndpoint
      * @return void
      * @throws MerchantEndpointException
      */
-    public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEventDto $orderConfirmedBusinessEvent)
+    public function sendOrderConfirmedBusinessEvent(OrderConfirmedBusinessEventDto $orderConfirmedBusinessEvent):void
     {
         $this->sendBusinessEvent($orderConfirmedBusinessEvent->toArray());
     }
@@ -149,7 +149,7 @@ class MerchantEndpoint extends AbstractEndpoint
      * @return void
      * @throws MerchantEndpointException
      */
-    private function sendBusinessEvent(array $eventData)
+    private function sendBusinessEvent(array $eventData) :void
     {
         try {
             $request = null;

@@ -92,6 +92,9 @@ class Payment extends AbstractEntity
     /** @var string|null Payment plan kind: P1X, P1X_D+30, P3X, P10X, etc… */
     protected ?string $kind;
 
+    /** @var array Orders associated with the payment */
+    protected array $orders;
+
     /** @var array Payment Plan  */
     protected array $paymentPlan;
 
@@ -116,6 +119,7 @@ class Payment extends AbstractEntity
         'id'                 => 'id',
         'installmentsCount'  => 'installments_count',
         'kind'               => 'kind',
+        'orders'             => 'orders',
         'paymentPlan'        => 'payment_plan',
         'purchaseAmount'     => 'purchase_amount',
         'state'              => 'state',
@@ -215,6 +219,20 @@ class Payment extends AbstractEntity
     public function getKind(): ?string
     {
         return $this->kind;
+    }
+
+    /**
+     * Returns the orders associated with the payment.
+     * @return OrderList
+     * @throws ParametersException
+     */
+    public function getOrders(): OrderList
+    {
+        $orderList = new OrderList();
+        foreach ($this->orders as $orderData) {
+            $orderList->add(new Order($orderData));
+        }
+        return $orderList;
     }
 
     /**
