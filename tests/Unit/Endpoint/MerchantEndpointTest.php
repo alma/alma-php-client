@@ -46,6 +46,9 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
     /** @var MerchantEndpoint|Mock */
     private $merchantService;
+    private $feePlanResponseMock;
+    private $meResponseMock;
+    private $businessEventResponseMock;
 
     public function setUp(): void
     {

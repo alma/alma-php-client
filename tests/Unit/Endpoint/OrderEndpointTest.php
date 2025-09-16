@@ -96,6 +96,11 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
     /** @var Response|Mock */
     protected $responseMock;
+    protected $badResponseMock;
+    protected $fetchAllResponseMock;
+    protected $badFetchAllResponseMock;
+    protected $fetchResponseMock;
+    protected $badFetchResponseMock;
 
     public function setUp(): void
     {
