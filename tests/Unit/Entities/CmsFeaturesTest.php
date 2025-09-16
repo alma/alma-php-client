@@ -14,6 +14,7 @@ class CmsFeaturesTest extends TestCase
 			'widget_cart_activated' => true,
 			'widget_product_activated' => false,
 			'used_fee_plans' => ['Plan A'],
+			'payment_methods_list' => [['name' => 'alma', 'position' => 1], ['name' => 'paypal', 'position' => 2]],
 			'payment_method_position' => 1,
 			'in_page_activated' => true,
 			'log_activated' => false,
@@ -30,6 +31,7 @@ class CmsFeaturesTest extends TestCase
 		$this->assertTrue($cmsFeatures->getProperties()['widget_cart_activated']);
 		$this->assertFalse($cmsFeatures->getProperties()['widget_product_activated']);
 		$this->assertEquals(['Plan A'], $cmsFeatures->getProperties()['used_fee_plans']);
+		$this->assertEquals([['name' => 'alma', 'position' => 1], ['name' => 'paypal', 'position' => 2]], $cmsFeatures->getProperties()['payment_methods_list']);
 		$this->assertEquals(1, $cmsFeatures->getProperties()['payment_method_position']);
 		$this->assertTrue($cmsFeatures->getProperties()['in_page_activated']);
 		$this->assertFalse($cmsFeatures->getProperties()['log_activated']);
@@ -47,6 +49,7 @@ class CmsFeaturesTest extends TestCase
 			'widget_cart_activated' => null,
 			'widget_product_activated' => null,
 			'used_fee_plans' => null,
+			'payment_methods_list' => null,
 			'payment_method_position' => null,
 			'in_page_activated' => null,
 			'log_activated' => null,
@@ -64,6 +67,7 @@ class CmsFeaturesTest extends TestCase
         $this->assertArrayNotHasKey('widget_cart_activated', $properties);
         $this->assertArrayNotHasKey('widget_product_activated', $properties);
         $this->assertArrayNotHasKey('used_fee_plans', $properties);
+        $this->assertArrayNotHasKey('payment_methods_list', $properties);
         $this->assertArrayNotHasKey('payment_method_position', $properties);
         $this->assertArrayNotHasKey('in_page_activated', $properties);
         $this->assertArrayNotHasKey('excluded_categories', $properties);
@@ -80,6 +84,7 @@ class CmsFeaturesTest extends TestCase
 			'widget_cart_activated' => null,
 			'widget_product_activated' => null,
 			'used_fee_plans' => 'Plan B',
+			'payment_methods_list' => null,
 			'payment_method_position' => null,
 			'in_page_activated' => false,
 			'log_activated' => null,
@@ -97,6 +102,7 @@ class CmsFeaturesTest extends TestCase
 		$this->assertArrayNotHasKey('widget_cart_activated', $properties); // Should be filtered out (empty string)
 		$this->assertArrayNotHasKey('widget_product_activated', $properties); // Should be filtered out (null)
 		$this->assertArrayHasKey('used_fee_plans', $properties);
+		$this->assertArrayNotHasKey('payment_methods_list', $properties); // Should be filtered out (null)
 		$this->assertArrayNotHasKey('payment_method_position', $properties); // Should be filtered out (null)
 		$this->assertArrayHasKey('in_page_activated', $properties);
 		$this->assertArrayHasKey('excluded_categories', $properties);
@@ -117,6 +123,7 @@ class CmsFeaturesTest extends TestCase
         $this->assertArrayNotHasKey('widget_cart_activated', $properties);
         $this->assertArrayNotHasKey('widget_product_activated', $properties);
         $this->assertArrayNotHasKey('used_fee_plans', $properties);
+        $this->assertArrayNotHasKey('payment_methods_list', $properties);
         $this->assertArrayNotHasKey('payment_method_position', $properties);
         $this->assertArrayNotHasKey('in_page_activated', $properties);
         $this->assertArrayNotHasKey('excluded_categories', $properties);
