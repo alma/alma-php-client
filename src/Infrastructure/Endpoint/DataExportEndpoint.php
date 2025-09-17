@@ -91,7 +91,12 @@ class DataExportEndpoint extends AbstractEndpoint
         }
 
         $json = $response->getJson();
-        return new DataExport($json);
+        try {
+            $dataExport = new DataExport($json);
+        } catch (ParametersException $e) {
+            throw new DataExportEndpointException($e->getMessage(), $request);
+        }
+        return $dataExport;
     }
 
     /**

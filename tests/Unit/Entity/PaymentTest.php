@@ -2,6 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Entity;
 
+use Alma\API\Domain\Entity\OrderList;
 use Alma\API\Domain\Entity\Payment;
 use Alma\API\Domain\Entity\PaymentPlan;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +25,7 @@ class PaymentTest extends TestCase
         $this->assertEquals($paymentData['id'], $payment->getId());
         $this->assertEquals($paymentData['installments_count'], $payment->getInstallmentsCount());
         $this->assertEquals($paymentData['kind'], $payment->getKind());
+        $this->assertInstanceOf(OrderList::class, $payment->getOrders());
         $this->assertEquals($paymentData['purchase_amount'], $payment->getPurchaseAmount());
         $this->assertEquals($paymentData['state'], $payment->getState());
         $this->assertEquals($paymentData['url'], $payment->getUrl());

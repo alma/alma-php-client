@@ -69,7 +69,7 @@ class OrderEndpoint extends AbstractEndpoint
 
         $json = $response->getJson();
         try {
-            $order = new Order(end($json));
+            $order = new Order($json);
         } catch (ParametersException $e) {
             throw new OrderEndpointException($e->getMessage(), $request, $response);
         }

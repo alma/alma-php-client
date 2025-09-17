@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Tests\Integration\TestHelpers;
+namespace Alma\API\Tests\Integration;
 
 use Alma\API\Infrastructure\ClientConfiguration;
 use Alma\API\Infrastructure\CurlClient;
@@ -9,7 +9,7 @@ class ClientTestHelper
 {
     public static function getAlmaClient(): CurlClient
     {
-        $config = new ClientConfiguration(['mode' => 'test', 'api_root' => $_ENV['ALMA_API_ROOT'], 'force_tls' => false]);
+        $config = new ClientConfiguration($_ENV['ALMA_API_KEY'], ClientConfiguration::TEST_MODE,);
         return new CurlClient($config);
     }
 }

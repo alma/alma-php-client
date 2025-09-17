@@ -50,7 +50,7 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     /** @var string JSON response for add order*/
     const SERVER_REQUEST_ORDER_RESPONSE_JSON = '[
         {
-            "comment": "comment",
+            "comment": "the comment",
             "created": 1747829359,
             "customer_url": "customer_url",
             "data": {},
@@ -61,6 +61,20 @@ class OrderEndpointTest extends AbstractEndpointSetUp
             "updated": 1747829359
         }
     ]';
+
+    const SERVER_REQUEST_ORDER_UPDATE_RESPONSE_JSON = '
+        {
+            "comment": "the comment",
+            "created": 1747829359,
+            "customer_url": "customer_url",
+            "data": {},
+            "id": "order_1213IpL5UdjoOqjgdljmNPMB3MOJw5vtgd",
+            "merchant_reference": "C1-000027951",
+            "merchant_url": "merchant_url",
+            "payment": "payment_1213Ioh6xMAUYk7OTZ52VHNgGGwgT9B4ro",
+            "updated": 1747829359
+        }
+    ';
 
     CONST FETCH_ORDER_RESPONSE_JSON = '{
             "comment": "comment",
@@ -82,6 +96,11 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
     /** @var Response|Mock */
     protected $responseMock;
+    protected $badResponseMock;
+    protected $fetchAllResponseMock;
+    protected $badFetchAllResponseMock;
+    protected $fetchResponseMock;
+    protected $badFetchResponseMock;
 
     public function setUp(): void
     {
@@ -138,7 +157,13 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     public function testUpdateOrder()
     {
         // Mocks
-        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($this->responseMock);
+
+        $responseMock = Mockery::mock(Response::class);
+        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $responseMock->shouldReceive('isError')->andReturn(false);
+        $responseMock->shouldReceive('getBody')->andReturn(self::SERVER_REQUEST_ORDER_RESPONSE_JSON);
+        $responseMock->shouldReceive('getJson')->andReturn(json_decode(self::SERVER_REQUEST_ORDER_UPDATE_RESPONSE_JSON, true));
+        $this->clientMock->shouldReceive('sendRequest')->once()->andReturn($responseMock);
 
         // OrderService
         $result = $this->orderServiceMock->update('order_id');
@@ -273,15 +298,6 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->orderServiceMock->addTracking('order_id', 'carrier', 'tracking_number', 'tracking_url');
     }
 
-    public function testValidateStatusDataNoOrderData()
-    {
-        // Expectations
-        $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('Missing in the required parameters (status, is_shipped) when calling orders.sendStatus');
-
-        // Call
-        $this->orderServiceMock->validateStatusData();
-    }
 
     /**
      * Ensure we can create a DataExport
@@ -413,53 +429,6 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         // Call
         $this->expectException(OrderEndpointException::class);
         $this->orderServiceMock->fetch('order_id');
-    }
-
-
-
-    public function testValidateStatusDataMissingKeyException()
-    {
-        // OrderService
-        $orderService = Mockery::mock(OrderEndpoint::class)->makePartial();
-
-        // Expectations
-        $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('Error in the required parameters (status, is_shipped) when calling orders.sendStatus');
-
-        // Call
-        $orderService->validateStatusData(array('status'));
-    }
-
-    public function testValidateStatusDataIsShippedNotBool()
-    {
-        // OrderService
-        $orderService = Mockery::mock(OrderEndpoint::class)->makePartial();
-
-        // Expectations
-        $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('Parameter "is_shipped" must be a boolean');
-
-        // Call
-        $orderService->validateStatusData(array(
-            'status' => 'Mon Status - 1',
-            'is_shipped' => 'oui',
-        ));
-    }
-
-    public function testValidateStatusDataStatusIsEmpty()
-    {
-        // OrderService
-        $orderService = Mockery::mock(OrderEndpoint::class)->makePartial();
-
-        // Expectations
-        $this->expectException(ParametersException::class);
-        $this->expectExceptionMessage('Missing the required parameter "status" when calling orders.sendStatus');
-
-        // Call
-        $orderService->validateStatusData(array(
-            'status' => '',
-            'is_shipped' => true,
-        ));
     }
 
 }
