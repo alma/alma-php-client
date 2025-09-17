@@ -26,7 +26,7 @@
 namespace Alma\API\Infrastructure\Endpoint;
 
 use Alma\API\Domain\Entity\EligibilityList;
-use Alma\API\Entity\Eligibility;
+use Alma\API\Domain\Entity\Eligibility;
 use Alma\API\Infrastructure\Exception\Endpoint\EligibilityEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
 use Alma\API\Infrastructure\Exception\RequestException;

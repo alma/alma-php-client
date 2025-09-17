@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Infrastructure\Repository;
+namespace Alma\API\Domain\Repository;
 
 interface ProductCategoryRepositoryInterface
 {
@@ -9,5 +9,5 @@ interface ProductCategoryRepositoryInterface
      *
      * @return array The product categories
      */
-    public static function getProductCategories(): array;
+    public function getAll(): array;
 }

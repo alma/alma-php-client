@@ -25,9 +25,7 @@ interface OrderAdapterInterface {
     /**
      * Get the order total in cents.
      *
-     * @param string $orderId
-     *
      * @return int The order total in cents.
      */
-    public function getOrderTotal( string $orderId ): int;
+    public function getTotal(): int;
 }
