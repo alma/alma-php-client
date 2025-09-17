@@ -63,6 +63,10 @@ class CmsFeatures
      * @var bool | null
      */
     private $customWidgetCss;
+    /**
+     * @var array{name: string, position: int}[]|null  [['name' => 'paypal', 'position' => 2],['name' => 'paypal', 'position' => 2]]
+     */
+    private $paymentMethodsList;
 
     /**
      * CmsFeatures constructor.
@@ -78,6 +82,7 @@ class CmsFeatures
         $this->inPageActivated = isset($cmsFeaturesDataArray['in_page_activated']) ? $cmsFeaturesDataArray['in_page_activated'] : null;
         $this->logActivated = isset($cmsFeaturesDataArray['log_activated']) ? $cmsFeaturesDataArray['log_activated'] : null;
         $this->excludedCategories = isset($cmsFeaturesDataArray['excluded_categories']) ? $cmsFeaturesDataArray['excluded_categories'] : null;
+        $this->paymentMethodsList = isset($cmsFeaturesDataArray['payment_methods_list']) ? $cmsFeaturesDataArray['payment_methods_list'] : null;
         $this->paymentMethodPosition = isset($cmsFeaturesDataArray['payment_method_position']) ? $cmsFeaturesDataArray['payment_method_position'] : null;
         $this->specificFeatures = isset($cmsFeaturesDataArray['specific_features']) ? $cmsFeaturesDataArray['specific_features'] : null;
         $this->countryRestriction = isset($cmsFeaturesDataArray['country_restriction']) ? $cmsFeaturesDataArray['country_restriction'] : null;
@@ -99,6 +104,7 @@ class CmsFeatures
             'in_page_activated' => $this->inPageActivated,
             'log_activated' => $this->logActivated,
             'excluded_categories' => $this->excludedCategories,
+            'payment_methods_list' => $this->paymentMethodsList,
             'payment_method_position' => $this->paymentMethodPosition,
             'specific_features' => $this->specificFeatures,
             'country_restriction' => $this->countryRestriction,
