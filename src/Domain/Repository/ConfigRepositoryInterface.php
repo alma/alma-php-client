@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Infrastructure\Repository;
+namespace Alma\API\Domain\Repository;
 
 interface ConfigRepositoryInterface
 {
