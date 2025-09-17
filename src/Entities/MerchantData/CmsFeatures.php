@@ -64,7 +64,7 @@ class CmsFeatures
      */
     private $customWidgetCss;
     /**
-     * @var string[]|null
+     * @var array{name: string, position: int}[]|null  [['name' => 'paypal', 'position' => 2],['name' => 'paypal', 'position' => 2]]
      */
     private $paymentMethodsList;
 
