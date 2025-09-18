@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2018 Alma / Nabla SAS
+ * Copyright (c) 2018 Alma / Nabla SAS.
  *
  * THE MIT LICENSE
  *
@@ -20,50 +20,60 @@
  * @author    Alma / Nabla SAS <contact@getalma.eu>
  * @copyright Copyright (c) 2018 Alma / Nabla SAS
  * @license   https://opensource.org/licenses/MIT The MIT License
- *
  */
 
-namespace Alma\API;
+namespace Alma\API\Entities;
 
-class Response
+class DataExport extends Base
 {
-    public $responseCode;
-    public $json;
-    public $responseFile;
-    public $errorMessage;
+    /** @var bool */
+    public $complete;
 
-    public function __construct($curlHandle, $curlResult)
+    /** @var int Timestamp */
+    public $created;
+
+    /** @var int Timestamp */
+    public $end;
+
+    /** @var string */
+    public $id;
+
+    /** @var bool */
+    public $include_child_accounts;
+
+    /** @var string */
+    public $merchant;
+
+
+    /** @var int Timestamp */
+    public $start;
+
+    /** @var string */
+    public $type;
+
+    /** @var string Timestamp */
+    public $updated;
+
+    /** @var string */
+    public $url_csv;
+
+    /** @var string */
+    public $url_pdf;
+
+    /** @var string */
+    public $url_xlsx;
+
+    /** @var string */
+    public $url_xml;
+
+    /** @var string */
+    public $url_zip;
+
+    /**
+     * @param array $attributes
+     */
+    public function __construct($attributes)
     {
-        $this->responseCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
-
-        if ('application/json' === curl_getinfo($curlHandle, CURLINFO_CONTENT_TYPE)) {
-            $this->json = json_decode($curlResult, true);
-        } else {
-            $this->json = null;
-            $this->responseFile = $curlResult;
-        }
-
-        if ($this->isError()) {
-            if ($this->json && array_key_exists('message', $this->json)) {
-                $this->errorMessage = $this->json['message'];
-            } else {
-                $this->errorMessage = curl_error($curlHandle);
-            }
-        }
-    }
-
-    public function isError()
-    {
-        return $this->responseCode >= 400 && $this->responseCode < 600;
-    }
-}
-
-class EmptyResponse extends Response
-{
-    public function __construct()
-    {
-        $this->errorMessage = null;
-        $this->json = [];
-        $this->responseCode = null;
+        parent::__construct($attributes);
     }
 }
