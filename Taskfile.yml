@@ -114,7 +114,7 @@ tasks:
   dist:
     desc: Build zip dist package using Docker
     deps:
-      - php-compatibility:build
+      - 8.3:docker:build
     cmds:
       - docker compose run --rm php ./scripts/build.sh
 
