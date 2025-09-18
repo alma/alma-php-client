@@ -28,7 +28,6 @@ final class DataExportsTest extends TestCase
             if ($fetchedExport->complete) {
                 break;
             }
-            sleep(2);
         }
         $this->assertEquals($dataExport->id, $fetchedExport->id);
 
