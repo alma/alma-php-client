@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v2.6.0 - 2025-09-18
+
+### Changes
+
+### 🚀 New Features
+
+- Add payment methods list in cms_feature (#200)
+- Add DataExports endpoints (#137)
+
+#### Contributors
+
+@Benjamin-Freoua-Alma, @Francois-Gomis, @alma-renovate-bot[bot], @carine-bonnafous, @joyet-simon, @martinfobian, @remi-zuffinetti, @webaaz, [alma-renovate-bot[bot]](https://github.com/apps/alma-renovate-bot) and [github-actions[bot]](https://github.com/apps/github-actions)
+
 ## v2.5.0 - 2025-01-30
 
 ### Changes
@@ -214,6 +227,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
