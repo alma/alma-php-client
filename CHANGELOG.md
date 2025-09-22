@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v2.6.1 - 2025-09-18
+
+### Changes
+
+#### Contributors
+
+@Benjamin-Freoua-Alma and [github-actions[bot]](https://github.com/apps/github-actions)
+
 ## v2.6.0 - 2025-09-18
 
 ### Changes
@@ -227,6 +235,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
