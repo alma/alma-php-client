@@ -1,6 +1,6 @@
 <?php
 
-namespace Alma\API\Domain\Service\API;
+namespace Alma\API\Domain\Port;
 
 use Alma\API\Application\DTO\CustomerDto;
 use Alma\API\Application\DTO\OrderDto;
@@ -8,7 +8,7 @@ use Alma\API\Application\DTO\PaymentDto;
 use Alma\API\Application\DTO\RefundDto;
 use Alma\API\Domain\Entity\Payment;
 
-interface PaymentServiceInterface
+interface PaymentProviderInterface
 {
     /**
      * Create a new payment.

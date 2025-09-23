@@ -1,10 +1,10 @@
 <?php
 
-namespace Alma\API\Domain\Service\API;
+namespace Alma\API\Domain\Port;
 
 use Alma\API\Domain\Entity\FeePlanList;
 
-interface FeePlanServiceInterface
+interface FeePlanProviderInterface
 {
     /**
      * Get the fee plan list.

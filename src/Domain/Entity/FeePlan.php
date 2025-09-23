@@ -25,9 +25,9 @@
 
 namespace Alma\API\Domain\Entity;
 
-use Alma\API\Infrastructure\Exception\ParametersException;
+use Alma\API\Domain\Adapter\FeePlanInterface;
 
-class FeePlan extends AbstractEntity implements PaymentPlanInterface
+class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInterface
 {
     /**
      * This trait provides methods for handling payment plans, such as getPlanKey.
@@ -69,15 +69,8 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
     /** @var int Minimum purchase amount allowed for this fee plan */
     protected int $minPurchaseAmount;
 
-
     /** @var bool Is this fee plan enabled by merchant? True by default */
     protected bool $enabled = false;
-
-    /** @var int|null Local override of the maximum purchase amount allowed for this fee plan */
-    private ?int $overrideMaxPurchaseAmount;
-
-    /** @var int|null Local override of the minimum purchase amount allowed for this fee plan */
-    private ?int $overrideMinPurchaseAmount;
 
     /** Mapping of required fields */
     protected array $requiredFields =  [
@@ -164,56 +157,20 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface
 
     /**
      * Get the minimum purchase amount allowed for this fee plan.
-     * @param bool $localOverride If true, returns the local override if set, otherwise returns the minimum amount given by API.
      * @return int
      */
-    public function getMinPurchaseAmount(bool $localOverride = false): int
+    public function getMinPurchaseAmount(): int
     {
-        if ($localOverride) {
-            return $this->overrideMinPurchaseAmount ?? $this->minPurchaseAmount;
-        }
         return $this->minPurchaseAmount;
     }
 
     /**
-     * Set a local override to the minimum purchase amount allowed for this fee plan.
-     * @param int $overrideMinPurchaseAmount Amount in cents
-     * @return void
-     * @throws ParametersException
-     */
-    public function setOverrideMinPurchaseAmount(int $overrideMinPurchaseAmount): void
-    {
-        if ($overrideMinPurchaseAmount < $this->minPurchaseAmount) {
-	        throw new ParametersException("Override minimum purchase amount must be higher than the minimum amount given by API.");
-        }
-        $this->overrideMinPurchaseAmount = $overrideMinPurchaseAmount;
-    }
-
-    /**
      * Get the maximum purchase amount allowed for this fee plan.
-     * @param bool $localOverride If true, returns the local override if set, otherwise returns the maximum amount given by API.
      * @return int
      */
-    public function getMaxPurchaseAmount(bool $localOverride = false): int
+    public function getMaxPurchaseAmount(): int
     {
-        if ($localOverride) {
-            return $this->overrideMaxPurchaseAmount ?? $this->maxPurchaseAmount;
-        }
         return $this->maxPurchaseAmount;
-    }
-
-    /**
-     * Set a local override to the maximum purchase amount allowed for this fee plan.
-     * @param int $overrideMaxPurchaseAmount Amount in cents
-     * @return void
-     * @throws ParametersException
-     */
-    public function setOverrideMaxPurchaseAmount(int $overrideMaxPurchaseAmount): void
-    {
-        if ($overrideMaxPurchaseAmount > $this->maxPurchaseAmount) {
-            throw new ParametersException("Override maximum purchase amount must be lower than the maximum amount given by API.");
-        }
-        $this->overrideMaxPurchaseAmount = $overrideMaxPurchaseAmount;
     }
 
     /**
