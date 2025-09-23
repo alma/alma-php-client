@@ -1,10 +1,10 @@
 <?php
 
-namespace Alma\API\Domain\Service\API;
+namespace Alma\API\Domain\Port;
 
 use Alma\API\Domain\Entity\EligibilityList;
 
-interface EligibilityServiceInterface
+interface EligibilityProviderInterface
 {
     /**
      * Retrieve the eligibility list based on the current cart total.

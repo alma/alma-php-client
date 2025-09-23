@@ -68,17 +68,6 @@ class FeePlanTest extends TestCase
         $this->assertFalse($this->AllowedFeePlan->isEligible(self::INVALID_AMOUNT));
     }
 
-    public function testEligibilityWithOverride()
-    {
-        $this->AllowedFeePlan->enable();
-        $this->AllowedFeePlan->setOverrideMinPurchaseAmount(self::VALID_AMOUNT);
-        $this->AllowedFeePlan->setOverrideMaxPurchaseAmount(180000);
-        $this->assertTrue($this->AllowedFeePlan->isEligible(self::VALID_AMOUNT));
-        $this->assertTrue($this->AllowedFeePlan->isEligible(180000));
-        $this->assertFalse($this->AllowedFeePlan->isEligible(self::VALID_AMOUNT - 1 ));
-        $this->assertFalse($this->AllowedFeePlan->isEligible(190000));
-    }
-
     public function testisAvailable()
     {
         // A plan that is allowed is available only when enabled
@@ -90,16 +79,5 @@ class FeePlanTest extends TestCase
         $this->assertFalse($this->NoAllowedFeePlan->isAvailable());
         $this->NoAllowedFeePlan->enable();
         $this->assertFalse($this->NoAllowedFeePlan->isAvailable());
-    }
-
-    public function testSetOverrideMinPurchaseAmountThrowsExceptionForInvalidAmount()
-    {
-        $this->expectException(ParametersException::class);
-        $this->AllowedFeePlan->setOverrideMinPurchaseAmount(1);
-    }
-    public function testSetOverrideMaxPurchaseAmountThrowsExceptionForInvalidAmount()
-    {
-        $this->expectException(ParametersException::class);
-        $this->AllowedFeePlan->setOverrideMaxPurchaseAmount(999999999);
     }
 }

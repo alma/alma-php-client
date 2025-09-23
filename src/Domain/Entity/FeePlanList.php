@@ -2,22 +2,24 @@
 
 namespace Alma\API\Domain\Entity;
 
+use Alma\API\Domain\Adapter\FeePlanInterface;
+use Alma\API\Domain\Adapter\FeePlanListInterface;
 use ArrayObject;
 use OutOfBoundsException;
 
-class FeePlanList extends ArrayObject
+class FeePlanList extends ArrayObject implements FeePlanListInterface
 {
     public function __construct($array = [], $flags = 0, $iteratorClass = "ArrayIterator")
     {
         parent::__construct($array, $flags, $iteratorClass);
     }
 
-    public function add(FeePlan $feePlan): void
+    public function add(FeePlanInterface $feePlan): void
     {
         $this[] = $feePlan;
     }
 
-	public function addList(FeePlanList $feePlanList): void
+	public function addList(FeePlanListInterface $feePlanList): void
 	{
 		foreach ($feePlanList as $feePlan) {
 			$this->add($feePlan);
@@ -27,10 +29,10 @@ class FeePlanList extends ArrayObject
     /**
      * Returns a FeePlan by its plan key.
      * @param string $planKey
-     * @return FeePlan
+     * @return FeePlanInterface
      * @throws OutOfBoundsException if the plan key does not exist in the list.
      */
-    public function getByPlanKey(string $planKey): FeePlan
+    public function getByPlanKey(string $planKey): FeePlanInterface
     {
         $filter = array_values(array_filter($this->getArrayCopy(), function($feePlan) use ($planKey) {
             return $feePlan->getPlanKey() === $planKey;
@@ -41,9 +43,9 @@ class FeePlanList extends ArrayObject
     /**
      * Returns a list of Fee Plans that are only available for the given payment method.
      * @param array $paymentMethod
-     * @return FeePlanList
+     * @return FeePlanListInterface
      */
-    public function filterFeePlanList(array $paymentMethod): FeePlanList
+    public function filterFeePlanList(array $paymentMethod): FeePlanListInterface
     {
 	    $feePlanList = new FeePlanList();
         if (in_array('credit', $paymentMethod)) {
@@ -73,9 +75,9 @@ class FeePlanList extends ArrayObject
     /**
      * Returns a FeePlanList containing only enabled FeePlans.
      *
-     * @return FeePlanList
+     * @return FeePlanListInterface
      */
-    public function filterEnabled(): FeePlanList
+    public function filterEnabled(): FeePlanListInterface
     {
         $feePlanList = new FeePlanList();
         $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {

@@ -20,8 +20,18 @@ interface ConfigRepositoryInterface
      */
     public function hasSetting( string $setting ): bool;
 
+	/**
+	 * Add a specific setting value.
+	 *
+	 * @param string $setting The setting name to update.
+	 * @param mixed  $value The value to set for the setting.
+	 *
+	 * @return bool True if the setting was updated, false otherwise.
+	 */
+	public function createSetting( string $setting, $value ): bool;
+
     /**
-     * Add or Update a specific setting value.
+     * Update a specific setting value.
      *
      * @param string $setting The setting name to update.
      * @param mixed  $value The value to set for the setting.
