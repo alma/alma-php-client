@@ -25,7 +25,6 @@
 
 namespace Alma\API\Infrastructure;
 
-use Alma\API\Helper\StreamHelper;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\DependenciesException;
 use Alma\API\Infrastructure\Exception\RequestException;
@@ -41,9 +40,9 @@ class CurlClient implements ClientInterface
     /** @var resource|null */
     private $curlClient;
 
-    /**
-     * @throws ClientException
-     */
+    /** @var array */
+    private array $errors = [];
+
     public function __construct(ClientConfiguration $config)
     {
         $this->config = $config;
@@ -52,7 +51,7 @@ class CurlClient implements ClientInterface
         try {
             $this->checkDependencies();
         } catch (DependenciesException $e) {
-            throw new ClientException('Dependencies check failed: ' . $e->getMessage());
+            $this->addError('Dependencies check failed: ' . $e->getMessage());
         }
         // @codeCoverageIgnoreEnd
     }
@@ -60,6 +59,16 @@ class CurlClient implements ClientInterface
     public function getConfig(): ClientConfiguration
     {
         return $this->config;
+    }
+
+    /**
+     * Checks if the client is available (i.e., properly configured).
+     *
+     * @return bool True if the client is available, false otherwise.
+     */
+    public function isAvailable(): bool
+    {
+        return !$this->config->hasError() && !$this->hasError();
     }
 
     /**
@@ -72,6 +81,11 @@ class CurlClient implements ClientInterface
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
+        if (!$this->isAvailable()) {
+            $errors = array_merge($this->config->getErrors(), $this->getErrors());
+            throw new ClientException('Client is not available: ' . implode('; ', $errors));
+        }
+
         $url = $this->config->getBaseUri() . $request->getUri()->getPath();
         $query = $request->getUri()->getQuery();
         if (!empty($query)) {
@@ -208,5 +222,18 @@ class CurlClient implements ClientInterface
         if (!version_compare($matches[1], '1.1.1', '>=')) {
             throw new DependenciesException('Alma requires OpenSSL >= 1.1.1');
         }
+    }
+
+    public function addError(string $message): void
+    {
+        $this->errors[$message] = $message;
+    }
+
+    public function hasError(): bool {
+        return !empty($this->errors);
+    }
+
+    public function getErrors(): array {
+        return array_values($this->errors);
     }
 }
