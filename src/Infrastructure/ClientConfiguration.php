@@ -46,13 +46,14 @@ class ClientConfiguration
     private array $config = [];
     private string $baseUri = self::LIVE_API_URL;
 
+    private $errors = [];
+
     /**
      * ClientConfiguration constructor.
      *
      * @param string $apiKey
      * @param string $mode
      * @param array $options
-     * @throws ClientConfigurationException
      */
     public function __construct(string $apiKey, string $mode = self::LIVE_MODE, array $options = [])
     {
@@ -73,11 +74,11 @@ class ClientConfiguration
             } elseif ($this->mode === self::TEST_MODE) {
                 $this->baseUri = self::SANDBOX_API_URL;
             } else {
-                throw new ClientConfigurationException("Invalid mode: $mode");
+                $this->addError("Invalid mode: $mode");
             }
             
         } catch (InvalidArgumentException $e) {
-            throw new ClientConfigurationException("Invalid configuration: " . $e->getMessage());
+            $this->addError("Invalid configuration: " . $e->getMessage());
         }
     }
 
@@ -178,14 +179,14 @@ class ClientConfiguration
     /**
      * @param string $apiKey
      * @return string
-     * @throws InvalidArgumentException
      */
     public function validateApiKey(string $apiKey): string
     {
         if (in_array(substr($apiKey, 0, 8), ['sk_live_', 'sk_test_'])) {
             return $apiKey;
         } else {
-            throw new InvalidArgumentException("Invalid API key");
+            $this->addError("Invalid API key");
+            return '';
         }
     }
 
@@ -238,5 +239,18 @@ class ClientConfiguration
             return $mode;
         }
         return self::LIVE_MODE; // Default to live mode if invalid
+    }
+
+    public function addError(string $message): void
+    {
+        $this->errors[$message] = $message;
+    }
+
+    public function hasError(): bool {
+        return !empty($this->errors);
+    }
+
+    public function getErrors(): array {
+        return array_values($this->errors);
     }
 }
