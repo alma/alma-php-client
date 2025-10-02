@@ -13,20 +13,20 @@ interface PaymentProviderInterface
     /**
      * Create a new payment.
      *
-     * @param PaymentDto  $payment_dto The payment data transfer object.
-     * @param OrderDto    $order_dto The order data transfer object.
-     * @param CustomerDto $customer_dto The customer data transfer object.
+     * @param PaymentDto  $paymentDto The payment data transfer object.
+     * @param OrderDto    $orderDto The order data transfer object.
+     * @param CustomerDto $customerDto The customer data transfer object.
      *
      * @return Payment The created payment.
      */
-    public function createPayment(PaymentDto $payment_dto, OrderDto $order_dto, CustomerDto $customer_dto): Payment;
+    public function createPayment(PaymentDto $paymentDto, OrderDto $orderDto, CustomerDto $customerDto): Payment;
 
     /**
      * Fetch a payment by its ID.
      *
-     * @param string|null $payment_id The ID of the payment to fetch.
+     * @param string $paymentId The ID of the payment to fetch.
      */
-    public function fetchPayment( ?string $payment_id ): Payment;
+    public function fetchPayment( string $paymentId ): Payment;
 
     /**
      * Flag a payment as potential fraud.
