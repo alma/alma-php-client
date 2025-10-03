@@ -45,6 +45,6 @@ jobs:
           AQUA_URL: https://api.eu-1.supply-chain.cloud.aquasec.com
           CSPM_URL: https://eu-1.api.cloudsploit.com
           TRIVY_RUN_AS_PLUGIN: aqua
-          TRIVY_DB_REPOSITORY: europe-docker.pkg.dev/lyrical-carver-335213/ghcr-remote-cache/aquasecurity/trivy-db:2
+          TRIVY_DB_REPOSITORY: europe-docker.pkg.dev/lyrical-carver-335213/remote-cache-aquasec/trivy-db:2
         with:
           args: trivy fs --sast --reachability --scanners misconfig,vuln,secret .
