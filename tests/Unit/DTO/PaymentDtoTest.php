@@ -27,7 +27,7 @@ class PaymentDtoTest extends TestCase
                 'key2' => 'value2',
             ],
             'ipn_callback_url' => 'https://example.com/ipn',
-            'origin' => 'web',
+            'origin' => 'online',
             'return_url' => 'https://example.com/return',
             'failure_return_url' => 'https://example.com/failure',
             'billing_address' => [
@@ -92,7 +92,7 @@ class PaymentDtoTest extends TestCase
             ->setCustomerCancelUrl($data['customer_cancel_url'])
             ->setCustomData($data['custom_data'])
             ->setIpnCallbackUrl($data['ipn_callback_url'])
-            ->setOrigin($data['origin'])
+            ->setOrigin(false)
             ->setReturnUrl($data['return_url'])
             ->setFailureReturnUrl($data['failure_return_url'])
             ->setBillingAddress($billingAddressDto)

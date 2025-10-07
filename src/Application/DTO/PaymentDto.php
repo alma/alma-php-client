@@ -6,6 +6,16 @@ namespace Alma\API\Application\DTO;
 use InvalidArgumentException;
 
 class PaymentDto implements DtoInterface {
+    /**
+     * @var string payment origin for redirect payments
+     * @noinspection PhpUnused Used by implementations
+     */
+    const REDIRECT_PAYMENT_ORIGIN = 'online';
+    /**
+     * @var string payment origin for in-page payments
+     * @noinspection PhpUnused Used by implementations
+     */
+    const IN_PAGE_PAYMENT_ORIGIN = 'online_in_page';
     private int $purchaseAmount;
     private ?int $installmentsCount = null;
     private ?int $deferredMonths = null;
@@ -86,8 +96,20 @@ class PaymentDto implements DtoInterface {
         return $this;
     }
 
-    public function setOrigin(string $origin): self {
-        $this->origin = $origin;
+    /**
+     * Set the origin of the payment.
+     * Use IN_PAGE_PAYMENT_ORIGIN for in-page payments and REDIRECT_PAYMENT_ORIGIN for redirect payments.
+     *
+     * @param bool $isInPagePayment True for in-page payments, false for redirect payments.
+     * @return $this
+     */
+    public function setOrigin(bool $isInPagePayment): self {
+        if ($isInPagePayment) {
+            $this->origin = self::IN_PAGE_PAYMENT_ORIGIN;
+            return $this;
+        }
+
+        $this->origin = self::REDIRECT_PAYMENT_ORIGIN;
         return $this;
     }
 

@@ -22,7 +22,7 @@ class PaymentEndpointTest extends AbstractEndpointTest
     public function testCreatePayment(): string
     {
         $paymentDto = new PaymentDto(22000);
-        $paymentDto->setInstallmentsCount(3)->setDeferredDays(0)->setDeferredMonths(0)->setOrigin('online');
+        $paymentDto->setInstallmentsCount(3)->setDeferredDays(0)->setDeferredMonths(0)->setOrigin(false);
         $orderDto = (new OrderDto())->setComment('PHP Client Integration test order')->setMerchantReference('test-php-client-integration');
         $customerDto = (new CustomerDto())->setFirstName('Test')->setLastName('Php-client Integration');
 
