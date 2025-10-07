@@ -61,6 +61,18 @@ class Payment extends AbstractEntity
      */
     const FRAUD_STATE_ERROR = 'state_error';
 
+    /**
+     * @var string payment origin for redirect payments
+     * @noinspection PhpUnused Used by implementations
+     */
+    const REDIRECT_PAYMENT_ORIGIN = 'online';
+    /**
+     * @var string payment origin for in-page payments
+     * @noinspection PhpUnused Used by implementations
+     */
+    const IN_PAGE_PAYMENT_ORIGIN = 'online_in_page';
+
+
 
     /** @var int  Amount already refunded for the payment */
     protected int $amountRefunded;
