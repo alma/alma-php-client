@@ -2,6 +2,7 @@
 
 namespace Alma\API\Tests\Unit;
 
+use Alma\API\Domain\ValueObject\Environment;
 use Alma\API\Infrastructure\ClientConfiguration;
 use Alma\API\Infrastructure\Exception\ParametersException;
 use Alma\API\Infrastructure\Helper\ClientConfigurationValidatorHelper;
@@ -27,31 +28,31 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 [],
                 [
                     'api_root' => [
-                        ClientConfiguration::TEST_MODE => ClientConfiguration::SANDBOX_API_URL,
-                        ClientConfiguration::LIVE_MODE => ClientConfiguration::LIVE_API_URL
+                        Environment::TEST_MODE => Environment::SANDBOX_API_URL,
+                        Environment::LIVE_MODE => Environment::LIVE_API_URL
                     ],
                     'force_tls' => 2,
-                    'mode' => ClientConfiguration::LIVE_MODE,
+                    'mode' => Environment::LIVE_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
             [
                 [
                     'api_root' => [
-                        ClientConfiguration::TEST_MODE => self::FAKE_API_URI,
-                        ClientConfiguration::LIVE_MODE => self::FAKE_API_URI
+                        Environment::TEST_MODE => self::FAKE_API_URI,
+                        Environment::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
-                    'mode' => ClientConfiguration::TEST_MODE,
+                    'mode' => Environment::TEST_MODE,
                     'logger' => new NullLogger()
                 ],
                 [
                     'api_root' => [
-                        ClientConfiguration::TEST_MODE => self::FAKE_API_URI,
-                        ClientConfiguration::LIVE_MODE => self::FAKE_API_URI
+                        Environment::TEST_MODE => self::FAKE_API_URI,
+                        Environment::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 0,
-                    'mode' => ClientConfiguration::TEST_MODE,
+                    'mode' => Environment::TEST_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
@@ -63,11 +64,11 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 ],
                 [
                     'api_root' => [
-                        ClientConfiguration::TEST_MODE => self::FAKE_API_URI,
-                        ClientConfiguration::LIVE_MODE => self::FAKE_API_URI
+                        Environment::TEST_MODE => self::FAKE_API_URI,
+                        Environment::LIVE_MODE => self::FAKE_API_URI
                     ],
                     'force_tls' => 2,
-                    'mode' => ClientConfiguration::LIVE_MODE,
+                    'mode' => Environment::LIVE_MODE,
                     'logger' => new NullLogger()
                 ]
             ],
@@ -80,11 +81,11 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 ],
                 [
                     'api_root' => [
-                        ClientConfiguration::TEST_MODE => ClientConfiguration::SANDBOX_API_URL,
-                        ClientConfiguration::LIVE_MODE => ClientConfiguration::LIVE_API_URL
+                        Environment::TEST_MODE => Environment::SANDBOX_API_URL,
+                        Environment::LIVE_MODE => Environment::LIVE_API_URL
                     ],
                     'force_tls' => 2,
-                    'mode' => ClientConfiguration::LIVE_MODE,
+                    'mode' => Environment::LIVE_MODE,
                     'logger' => new NullLogger(),
                     'user_agent_component' => [
                         'PrestaShop' => 2.3,
@@ -105,8 +106,8 @@ class ClientOptionsValidatorTest extends MockeryTestCase
 			'invalid api_root' => [
 				[
 					'api_root' => [
-						'something wrong' => ClientConfiguration::SANDBOX_API_URL,
-						'something wronger' => ClientConfiguration::LIVE_API_URL
+						'something wrong' => Environment::SANDBOX_API_URL,
+						'something wronger' => Environment::LIVE_API_URL
 					],
 				],
 			],

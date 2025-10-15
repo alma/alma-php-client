@@ -2,6 +2,7 @@
 
 namespace Alma\API\Tests\Unit;
 
+use Alma\API\Domain\ValueObject\Environment;
 use Alma\API\Infrastructure\ClientConfiguration;
 use Alma\API\Infrastructure\Exception\ClientConfigurationException;
 use InvalidArgumentException;
@@ -20,8 +21,8 @@ class ClientConfigurationTest extends TestCase
 
     public function testTestMode()
     {
-        $clientConfiguration = new ClientConfiguration('sk_test_xxxxxxxxxxxx', ClientConfiguration::TEST_MODE);
-        $this->assertEquals(ClientConfiguration::TEST_MODE, $clientConfiguration->getMode());
+        $clientConfiguration = new ClientConfiguration('sk_test_xxxxxxxxxxxx', new Environment(Environment::TEST_MODE));
+        $this->assertEquals(new Environment(Environment::TEST_MODE), $clientConfiguration->getEnvironment());
     }
 
     /**
@@ -31,8 +32,8 @@ class ClientConfigurationTest extends TestCase
      */
     public function testInvalidMode()
     {
-        $clientConfiguration = new ClientConfiguration('sk_test_xxxxxxxxxxxx', 'INVALID_MODE');
-        $this->assertEquals(ClientConfiguration::LIVE_MODE, $clientConfiguration->getMode());
+        $clientConfiguration = new ClientConfiguration('sk_test_xxxxxxxxxxxx', new Environment('INVALID_MODE'));
+        $this->assertEquals(new Environment(Environment::LIVE_MODE), $clientConfiguration->getEnvironment());
     }
 
     /**
@@ -41,8 +42,8 @@ class ClientConfigurationTest extends TestCase
      */
     public function testConstructClientConfigurationException(): void
     {
-        $this->expectException(ClientConfigurationException::class);
-        new ClientConfiguration('invalid_key');
+        $clientConfiguration = new ClientConfiguration('invalid_key');
+        $this->assertCount(1, $clientConfiguration->getErrors());
     }
 
     /**
@@ -215,8 +216,7 @@ class ClientConfigurationTest extends TestCase
      */
     public function testValidateApiKeyInvalidArgumentException(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid API key');
         $this->clientConfig->validateApiKey('invalid_key');
+        $this->assertCount(1, $this->clientConfig->getErrors());
     }
 }
