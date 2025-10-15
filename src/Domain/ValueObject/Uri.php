@@ -16,7 +16,7 @@ final class Uri
     /**
      * Private constructor to enforce the use of the factory method.
      *
-     * @param string $uri URL to validate and encapsulate.
+     * @param string $uri URI to validate and encapsulate.
      * @throws InvalidArgumentException If the provided string is not a valid URL.
      */
     private function __construct(string $uri)
