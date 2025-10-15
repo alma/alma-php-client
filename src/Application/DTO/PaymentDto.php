@@ -6,6 +6,9 @@ namespace Alma\API\Application\DTO;
 use InvalidArgumentException;
 
 class PaymentDto implements DtoInterface {
+    const ORIGIN_ONLINE = 'online';
+    const ORIGIN_ONLINE_IN_PAGE = 'online_in_page';
+
     private int $purchaseAmount;
     private ?int $installmentsCount = null;
     private ?int $deferredMonths = null;
@@ -87,6 +90,9 @@ class PaymentDto implements DtoInterface {
     }
 
     public function setOrigin(string $origin): self {
+        if (!in_array($origin, [self::ORIGIN_ONLINE, self::ORIGIN_ONLINE_IN_PAGE])) {
+            throw new InvalidArgumentException("Invalid origin value.");
+        }
         $this->origin = $origin;
         return $this;
     }
