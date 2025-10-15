@@ -6,6 +6,8 @@ use Alma\API\Application\DTO\AddressDto;
 use Alma\API\Application\DTO\CartDto;
 use Alma\API\Application\DTO\CartItemDto;
 use Alma\API\Application\DTO\PaymentDto;
+use Alma\API\Domain\ValueObject\Environment;
+use http\Env;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +29,7 @@ class PaymentDtoTest extends TestCase
                 'key2' => 'value2',
             ],
             'ipn_callback_url' => 'https://example.com/ipn',
-            'origin' => 'web',
+            'origin' => PaymentDto::ORIGIN_ONLINE,
             'return_url' => 'https://example.com/return',
             'failure_return_url' => 'https://example.com/failure',
             'billing_address' => [

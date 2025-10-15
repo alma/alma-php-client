@@ -9,7 +9,7 @@ class ClientTestHelper
 {
     public static function getAlmaClient(): CurlClient
     {
-        $config = new ClientConfiguration($_ENV['ALMA_API_KEY'], ClientConfiguration::TEST_MODE,);
+        $config = new ClientConfiguration($_ENV['ALMA_API_KEY'], Environment::TEST_MODE,);
         return new CurlClient($config);
     }
 }

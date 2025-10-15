@@ -25,20 +25,14 @@
 
 namespace Alma\API\Infrastructure;
 
+use Alma\API\Domain\ValueObject\Environment;
 use Alma\API\Infrastructure\Exception\ClientConfigurationException;
 use InvalidArgumentException;
 
 class ClientConfiguration
 {
-    const LIVE_MODE = 'live';
-    const TEST_MODE = 'test';
-    // Custom mode is used for testing purposes, allowing to set a custom API URL
-    const CUSTOM_MODE = 'custom';
-
     const LIVE_API_URL = 'https://api.getalma.eu';
     const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
-
-    private string $mode;
 
     private string $apiKey;
 
@@ -46,20 +40,23 @@ class ClientConfiguration
     private array $config = [];
     private string $baseUri = self::LIVE_API_URL;
 
-    private $errors = [];
+    private array $errors = [];
+    private Environment $environment;
 
     /**
      * ClientConfiguration constructor.
      *
      * @param string $apiKey
-     * @param string $mode
+     * @param ?Environment $environment
      * @param array $options
      */
-    public function __construct(string $apiKey, string $mode = self::LIVE_MODE, array $options = [])
+    public function __construct(string $apiKey, ?Environment $environment = null, array $options = [])
     {
         try {
-            // Check if the base URI is valid
-            $this->mode = $this->validateMode($mode);
+            if (is_null($environment)) {
+                $environment = new Environment(Environment::LIVE_MODE);
+            }
+            $this->environment = $environment;
 
             // Check if the auth is valid
             $this->apiKey = $this->validateApiKey($apiKey);
@@ -69,12 +66,12 @@ class ClientConfiguration
 
 
             // Define Base URI based on the mode
-            if ($this->mode === self::LIVE_MODE) {
+            if ($this->environment->isLiveMode()) {
                 $this->baseUri = self::LIVE_API_URL;
-            } elseif ($this->mode === self::TEST_MODE) {
+            } elseif ($this->environment->isTestMode()) {
                 $this->baseUri = self::SANDBOX_API_URL;
             } else {
-                $this->addError("Invalid mode: $mode");
+                $this->addError("Invalid mode: $environment");
             }
             
         } catch (InvalidArgumentException $e) {
@@ -100,9 +97,9 @@ class ClientConfiguration
         return $options;
     }
 
-    public function getMode(): string
+    public function getEnvironment(): string
     {
-        return $this->mode;
+        return $this->environment;
     }
 
     public function getApiKey(): string
@@ -227,18 +224,6 @@ class ClientConfiguration
             $version = $defaultVersion;
         }
         return $version;
-    }
-
-    /**
-     * @param string $mode
-     * @return string
-     */
-    public function validateMode(string $mode): string
-    {
-        if (in_array($mode, [self::LIVE_MODE, self::TEST_MODE, self::CUSTOM_MODE])) {
-            return $mode;
-        }
-        return self::LIVE_MODE; // Default to live mode if invalid
     }
 
     public function addError(string $message): void

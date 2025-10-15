@@ -25,6 +25,7 @@
 
 namespace Alma\API\Infrastructure\Helper;
 
+use Alma\API\Domain\ValueObject\Environment;
 use Alma\API\Infrastructure\ClientConfiguration;
 use Alma\API\Infrastructure\Exception\ParametersException;
 use Psr\Log\LoggerInterface;
@@ -57,11 +58,11 @@ class ClientConfigurationValidatorHelper
     {
         $config = [
             'api_root' => [
-                ClientConfiguration::TEST_MODE => $_ENV['ALMA_TEST_API_ROOT'] ?? ClientConfiguration::SANDBOX_API_URL,
-                ClientConfiguration::LIVE_MODE => $_ENV['ALMA_LIVE_API_ROOT'] ?? ClientConfiguration::LIVE_API_URL
+                Environment::TEST_MODE => $_ENV['ALMA_TEST_API_ROOT'] ?? ClientConfiguration::SANDBOX_API_URL,
+                Environment::LIVE_MODE => $_ENV['ALMA_LIVE_API_ROOT'] ?? ClientConfiguration::LIVE_API_URL
             ],
             'force_tls' => 2,
-            'mode' => ClientConfiguration::LIVE_MODE,
+            'mode' => Environment::LIVE_MODE,
             'logger' => new NullLogger(),
         ];
 
@@ -97,14 +98,14 @@ class ClientConfigurationValidatorHelper
     {
         if (is_string($api_root)) {
             return [
-                ClientConfiguration::TEST_MODE => $api_root,
-                ClientConfiguration::LIVE_MODE => $api_root
+                Environment::TEST_MODE => $api_root,
+                Environment::LIVE_MODE => $api_root
             ];
         }
-        if (is_array($api_root) && isset($api_root[ClientConfiguration::TEST_MODE]) && isset($api_root[ClientConfiguration::LIVE_MODE])) {
+        if (is_array($api_root) && isset($api_root[Environment::TEST_MODE]) && isset($api_root[Environment::LIVE_MODE])) {
             return [
-                ClientConfiguration::TEST_MODE => $api_root[ClientConfiguration::TEST_MODE],
-                ClientConfiguration::LIVE_MODE => $api_root[ClientConfiguration::LIVE_MODE]
+                Environment::TEST_MODE => $api_root[Environment::TEST_MODE],
+                Environment::LIVE_MODE => $api_root[Environment::LIVE_MODE]
             ];
         }
         throw new ParametersException('option \'api_root\' is not configured properly');
@@ -135,7 +136,7 @@ class ClientConfigurationValidatorHelper
      */
     public static function validateModeOption(string $mode): string
     {
-        if (in_array($mode, [ClientConfiguration::TEST_MODE, ClientConfiguration::LIVE_MODE])) {
+        if (in_array($mode, [Environment::TEST_MODE, Environment::LIVE_MODE])) {
             return $mode;
         }
         throw new ParametersException('option \'mode\' is not configured properly');
