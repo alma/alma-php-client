@@ -86,7 +86,7 @@ class CurlClient implements ClientInterface
             throw new ClientException('Client is not available: ' . implode('; ', $errors));
         }
 
-        $url = $this->config->getBaseUri() . $request->getUri()->getPath();
+        $url = $this->config->getEnvironment()->getBaseUri() . $request->getUri()->getPath();
         $query = $request->getUri()->getQuery();
         if (!empty($query)) {
             $url .= '?' . $query;

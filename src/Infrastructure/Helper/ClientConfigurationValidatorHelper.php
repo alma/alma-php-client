@@ -58,8 +58,8 @@ class ClientConfigurationValidatorHelper
     {
         $config = [
             'api_root' => [
-                Environment::TEST_MODE => $_ENV['ALMA_TEST_API_ROOT'] ?? ClientConfiguration::SANDBOX_API_URL,
-                Environment::LIVE_MODE => $_ENV['ALMA_LIVE_API_ROOT'] ?? ClientConfiguration::LIVE_API_URL
+                Environment::TEST_MODE => $_ENV['ALMA_TEST_API_ROOT'] ?? Environment::SANDBOX_API_URL,
+                Environment::LIVE_MODE => $_ENV['ALMA_LIVE_API_ROOT'] ?? Environment::LIVE_API_URL
             ],
             'force_tls' => 2,
             'mode' => Environment::LIVE_MODE,

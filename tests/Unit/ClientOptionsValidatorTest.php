@@ -28,8 +28,8 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 [],
                 [
                     'api_root' => [
-                        Environment::TEST_MODE => ClientConfiguration::SANDBOX_API_URL,
-                        Environment::LIVE_MODE => ClientConfiguration::LIVE_API_URL
+                        Environment::TEST_MODE => Environment::SANDBOX_API_URL,
+                        Environment::LIVE_MODE => Environment::LIVE_API_URL
                     ],
                     'force_tls' => 2,
                     'mode' => Environment::LIVE_MODE,
@@ -81,8 +81,8 @@ class ClientOptionsValidatorTest extends MockeryTestCase
                 ],
                 [
                     'api_root' => [
-                        Environment::TEST_MODE => ClientConfiguration::SANDBOX_API_URL,
-                        Environment::LIVE_MODE => ClientConfiguration::LIVE_API_URL
+                        Environment::TEST_MODE => Environment::SANDBOX_API_URL,
+                        Environment::LIVE_MODE => Environment::LIVE_API_URL
                     ],
                     'force_tls' => 2,
                     'mode' => Environment::LIVE_MODE,
@@ -106,8 +106,8 @@ class ClientOptionsValidatorTest extends MockeryTestCase
 			'invalid api_root' => [
 				[
 					'api_root' => [
-						'something wrong' => ClientConfiguration::SANDBOX_API_URL,
-						'something wronger' => ClientConfiguration::LIVE_API_URL
+						'something wrong' => Environment::SANDBOX_API_URL,
+						'something wronger' => Environment::LIVE_API_URL
 					],
 				],
 			],

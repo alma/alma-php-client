@@ -26,19 +26,14 @@
 namespace Alma\API\Infrastructure;
 
 use Alma\API\Domain\ValueObject\Environment;
-use Alma\API\Infrastructure\Exception\ClientConfigurationException;
 use InvalidArgumentException;
 
 class ClientConfiguration
 {
-    const LIVE_API_URL = 'https://api.getalma.eu';
-    const SANDBOX_API_URL = 'https://api.sandbox.getalma.eu';
-
     private string $apiKey;
 
     private array $userAgentComponents = [];
     private array $config = [];
-    private string $baseUri = self::LIVE_API_URL;
 
     private array $errors = [];
     private Environment $environment;
@@ -54,7 +49,7 @@ class ClientConfiguration
     {
         try {
             if (is_null($environment)) {
-                $environment = new Environment(Environment::LIVE_MODE);
+                $environment = Environment::fromString(Environment::LIVE_MODE);
             }
             $this->environment = $environment;
 
@@ -63,16 +58,6 @@ class ClientConfiguration
 
             // Check if the config is valid
             $this->config = $this->validateConfiguration($options);
-
-
-            // Define Base URI based on the mode
-            if ($this->environment->isLiveMode()) {
-                $this->baseUri = self::LIVE_API_URL;
-            } elseif ($this->environment->isTestMode()) {
-                $this->baseUri = self::SANDBOX_API_URL;
-            } else {
-                $this->addError("Invalid mode: $environment");
-            }
             
         } catch (InvalidArgumentException $e) {
             $this->addError("Invalid configuration: " . $e->getMessage());
@@ -97,7 +82,7 @@ class ClientConfiguration
         return $options;
     }
 
-    public function getEnvironment(): string
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }
@@ -105,11 +90,6 @@ class ClientConfiguration
     public function getApiKey(): string
     {
         return $this->apiKey;
-    }
-
-    public function getBaseUri(): string
-    {
-        return $this->baseUri;
     }
 
     public function getHeaders(): array

@@ -4,7 +4,7 @@ namespace Alma\API\Domain\ValueObject;
 
 use InvalidArgumentException;
 
-class Price {
+final class Price {
 
     const EUROCENTS = 'EUROCENTS';
 

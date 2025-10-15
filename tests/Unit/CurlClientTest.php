@@ -97,7 +97,7 @@ EOF;
     {
         $client = new CurlClient($this->clientConfiguration);
         $config = $client->getConfig();
-        $this->assertEquals('https://api.getalma.eu', $config->getBaseUri());
+        $this->assertEquals('https://api.getalma.eu', $config->getEnvironment()->getBaseUri());
         $this->assertEquals(30, $config->getTimeout());
         $this->assertEquals(['Content-Type' => ['application/json']], $config->getHeaders());
         $this->assertTrue($config->getSslVerify());
