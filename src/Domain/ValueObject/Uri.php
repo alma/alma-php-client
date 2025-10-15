@@ -16,18 +16,18 @@ final class Uri
     /**
      * Private constructor to enforce the use of the factory method.
      *
-     * @param string $url URL to validate and encapsulate.
+     * @param string $uri URL to validate and encapsulate.
      * @throws InvalidArgumentException If the provided string is not a valid URL.
      */
-    private function __construct(string $url)
+    private function __construct(string $uri)
     {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        if (!filter_var($uri, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(
-                sprintf('The provided string "%s" is not a valid URL.', $url)
+                sprintf('The provided string "%s" is not a valid URI.', $uri)
             );
         }
 
-        $this->value = $url;
+        $this->value = $uri;
     }
 
     /**
