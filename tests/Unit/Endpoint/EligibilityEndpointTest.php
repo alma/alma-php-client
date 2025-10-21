@@ -2,6 +2,7 @@
 
 namespace Alma\API\Tests\Unit\Endpoint;
 
+use Alma\API\Application\DTO\EligibilityDto;
 use Alma\API\Infrastructure\Endpoint\EligibilityEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\EligibilityEndpointException;
@@ -83,41 +84,39 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
     {
         return [
             [[
-                'params' => [
-                    'purchase_amount' => 15000,
-                    'queries'         => [
+                'params' => (new EligibilityDto())
+                    ->setPurchaseAmount(15000)
+                    ->setQueries([
                         [
                             'deferred_days'      => 0,
                             'deferred_months'    => 0,
                             'deferred_trigger'   => false,
                             'installments_count' => 3,
                         ],
-                    ],
-                ],
+                    ]),
                 'response_code' => 200,
                 'is_error' => false,
                 'eligibility' => true
             ]],
             [[
-                'params' => [
-                    'purchase_amount' => 1500,
-                    'queries'         => [
+                'params' => (new EligibilityDto())
+                    ->setPurchaseAmount(1500)
+                    ->setQueries([
                         [
                             'deferred_days'      => 0,
                             'deferred_months'    => 0,
                             'deferred_trigger'   => false,
                             'installments_count' => 3,
-                        ],
-                    ],
-                ],
+                        ]
+                    ]),
                 'response_code' => 200,
                 'is_error' => false,
                 'eligibility' => false
             ]],
             [[
-                'params' => [
-                    'purchase_amount' => 15000,
-                    'queries'         => [
+                'params' => (new EligibilityDto())
+                    ->setPurchaseAmount(15000)
+                    ->setQueries([
                         [
                             'deferred_days'      => 0,
                             'deferred_months'    => 0,
@@ -129,9 +128,8 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
                             'deferred_months'    => 0,
                             'deferred_trigger'   => false,
                             'installments_count' => 4,
-                        ],
-                    ],
-                ],
+                        ]
+                    ]),
                 'response_code' => 200,
                 'is_error' => false,
                 'eligibility' => false
@@ -165,7 +163,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, $data['params'])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, ($data['params'])->toArray())
             ->once();
 
         // Call
@@ -201,7 +199,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(EligibilityEndpointException::class);
-        $eligibilityServiceMock->getEligibilityList([]);
+        $eligibilityServiceMock->getEligibilityList(new EligibilityDto());
     }
 
     /**
@@ -225,7 +223,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(EligibilityEndpointException::class);
-        $eligibilityServiceMock->getEligibilityList([]);
+        $eligibilityServiceMock->getEligibilityList(new EligibilityDto());
     }
 
     /**
@@ -249,6 +247,6 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->expectException(EligibilityEndpointException::class);
-        $eligibilityServiceMock->getEligibilityList([]);
+        $eligibilityServiceMock->getEligibilityList(new EligibilityDto());
     }
 }

@@ -25,6 +25,7 @@
 
 namespace Alma\API\Infrastructure\Endpoint;
 
+use Alma\API\Application\DTO\EligibilityDto;
 use Alma\API\Domain\Entity\Eligibility;
 use Alma\API\Domain\Entity\EligibilityList;
 use Alma\API\Infrastructure\Exception\Endpoint\EligibilityEndpointException;
@@ -39,17 +40,17 @@ class EligibilityEndpoint extends AbstractEndpoint
 
     /**
      * Ask for Eligibility of a payment plan.
-     * @param array $data Payment data to check the eligibility for – same data format as payment creation,
+     * @param EligibilityDto $data Payment data to check the eligibility for – same data format as payment creation,
      *                              except that only payment.purchase_amount is mandatory and payment.installments_count
      *                              can be an array of integers, to test for multiple eligible plans at once.
      * @return EligibilityList A list of Eligibility objects, one for each payment plan.
      * @throws EligibilityEndpointException
      */
-    public function getEligibilityList(array $data = []): EligibilityList
+    public function getEligibilityList(EligibilityDto $eligibilityDto): EligibilityList
     {
         try {
             $request = null;
-            $request = $this->createPostRequest(self::ELIGIBILITY_ENDPOINT, $data);
+            $request = $this->createPostRequest(self::ELIGIBILITY_ENDPOINT, $eligibilityDto->toArray());
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new EligibilityEndpointException($e->getMessage(), $request);
@@ -62,7 +63,7 @@ class EligibilityEndpoint extends AbstractEndpoint
         }
 
         $eligibilityList = new EligibilityList();
-		foreach ($response->getJson() as $jsonEligibility) {
+        foreach ($response->getJson() as $jsonEligibility) {
             try {
                 $eligibility = new Eligibility($jsonEligibility);
             } catch (ParametersException $e) {
@@ -71,13 +72,13 @@ class EligibilityEndpoint extends AbstractEndpoint
 
             $eligibilityList->Add($eligibility);
 
-			if (!$eligibility->isEligible()) {
-				$this->logger->info(
-					"Eligibility check failed for following reasons: " .
-					var_export($eligibility->getReasons(), true)
-				);
-			}
-		}
+            if (!$eligibility->isEligible()) {
+                $this->logger->info(
+                    "Eligibility check failed for following reasons: " .
+                    var_export($eligibility->getReasons(), true)
+                );
+            }
+        }
 
         return $eligibilityList;
     }
