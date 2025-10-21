@@ -3,5 +3,5 @@
 namespace Alma\API\Domain\Repository;
 
 interface GatewayRepositoryInterface {
-    public function getAlmaGateways(): array;
+    public function findAllAlmaGateways(): array;
 }
