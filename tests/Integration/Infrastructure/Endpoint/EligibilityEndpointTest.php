@@ -2,6 +2,7 @@
 
 namespace Alma\API\Tests\Integration\Infrastructure\Endpoint;
 
+use Alma\API\Application\DTO\EligibilityDto;
 use Alma\API\Domain\Entity\EligibilityList;
 use Alma\API\Infrastructure\Endpoint\EligibilityEndpoint;
 
@@ -15,9 +16,8 @@ class EligibilityEndpointTest extends AbstractEndpointTest
 
     public function testEligibilityList():void
     {
-         $response = ($this->endpoint->getEligibilityList(
-             ['purchase_amount' => 10000]
-         ));
+        $eligibilityDto = new EligibilityDto(10000);
+        $response = ($this->endpoint->getEligibilityList($eligibilityDto));
         $this->assertInstanceOf(EligibilityList::class, $response);
     }
 

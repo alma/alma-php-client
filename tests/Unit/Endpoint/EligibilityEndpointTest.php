@@ -84,8 +84,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
     {
         return [
             [[
-                'params' => (new EligibilityDto())
-                    ->setPurchaseAmount(15000)
+                'params' => (new EligibilityDto(15000))
                     ->setQueries([
                         [
                             'deferred_days'      => 0,
@@ -99,8 +98,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
                 'eligibility' => true
             ]],
             [[
-                'params' => (new EligibilityDto())
-                    ->setPurchaseAmount(1500)
+                'params' => (new EligibilityDto(1500))
                     ->setQueries([
                         [
                             'deferred_days'      => 0,
@@ -114,8 +112,7 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
                 'eligibility' => false
             ]],
             [[
-                'params' => (new EligibilityDto())
-                    ->setPurchaseAmount(15000)
+                'params' => (new EligibilityDto(15000))
                     ->setQueries([
                         [
                             'deferred_days'      => 0,
@@ -194,12 +191,12 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, [])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, ['purchase_amount' => 10000])
             ->once();
 
         // Call
         $this->expectException(EligibilityEndpointException::class);
-        $eligibilityServiceMock->getEligibilityList(new EligibilityDto());
+        $eligibilityServiceMock->getEligibilityList(new EligibilityDto(10000));
     }
 
     /**
@@ -218,12 +215,12 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, [])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, ['purchase_amount' => 10000])
             ->once();
 
         // Call
         $this->expectException(EligibilityEndpointException::class);
-        $eligibilityServiceMock->getEligibilityList(new EligibilityDto());
+        $eligibilityServiceMock->getEligibilityList(new EligibilityDto(10000));
     }
 
     /**
@@ -242,11 +239,11 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, [])
+            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, ['purchase_amount' => 10000])
             ->once();
 
         // Call
         $this->expectException(EligibilityEndpointException::class);
-        $eligibilityServiceMock->getEligibilityList(new EligibilityDto());
+        $eligibilityServiceMock->getEligibilityList(new EligibilityDto(10000));
     }
 }

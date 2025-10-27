@@ -4,13 +4,19 @@ namespace Alma\API\Infrastructure;
 
 use Alma\API\Infrastructure\Exception\RequestException;
 use GuzzleHttp\Psr7\Stream;
+use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 trait StreamTrait
 {
+    /**
+     * @throws RequestException
+     */
     protected function createStream($body = null): StreamInterface
     {
+        return Utils::streamFor($body);
+
         if (is_resource($body)) {
             $stream = new Stream($body);
         } elseif (is_string($body)) {

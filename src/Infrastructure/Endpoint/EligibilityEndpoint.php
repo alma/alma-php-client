@@ -40,7 +40,7 @@ class EligibilityEndpoint extends AbstractEndpoint
 
     /**
      * Ask for Eligibility of a payment plan.
-     * @param EligibilityDto $data Payment data to check the eligibility for – same data format as payment creation,
+     * @param EligibilityDto $eligibilityDto Payment data to check the eligibility for – same data format as payment creation,
      *                              except that only payment.purchase_amount is mandatory and payment.installments_count
      *                              can be an array of integers, to test for multiple eligible plans at once.
      * @return EligibilityList A list of Eligibility objects, one for each payment plan.

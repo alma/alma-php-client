@@ -14,18 +14,17 @@ class EligibilityDto implements DtoInterface {
     private ?array $shippingAddress = [];
 
     /**
-     * Set the total purchase amount.
+     * Construct DTO and Set the total purchase amount.
      *
      * @param int $purchaseAmount The total amount of the purchase in cents.
-     * @return $this
+     *
      * @throws InvalidArgumentException if the purchase amount is negative.
      */
-    public function setPurchaseAmount(int $purchaseAmount): self {
-	    if ($purchaseAmount < 0) {
-		    throw new InvalidArgumentException("Purchase amount cannot be negative.");
-	    }
+    public function __construct(int $purchaseAmount) {
+        if ($purchaseAmount < 0) {
+            throw new InvalidArgumentException("Purchase amount cannot be negative.");
+        }
         $this->purchaseAmount = $purchaseAmount;
-        return $this;
     }
 
     /**
