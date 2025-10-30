@@ -13,7 +13,7 @@ class EligibilityListTest extends TestCase
 
         // Pay now plans
         $eligibilityList->add($this->eligibilityFactory(1, 0, 0));
-        // Pay-later plans
+        // Pay later plans
         $eligibilityList->add($this->eligibilityFactory(1, 2, 0));
         $eligibilityList->add($this->eligibilityFactory(1, 0, 15));
         // Pnx plans
@@ -27,8 +27,8 @@ class EligibilityListTest extends TestCase
         $this->assertInstanceOf(Eligibility::class, $eligibilityList->getByPlanKey('general_2_0_0'));
         $this->assertCount(3, $eligibilityList->filterEligibilityList('pnx'));
         $this->assertCount(2, $eligibilityList->filterEligibilityList('credit'));
-        $this->assertCount(2, $eligibilityList->filterEligibilityList('pay-later'));
-        $this->assertCount(1, $eligibilityList->filterEligibilityList('pay-now'));
+        $this->assertCount(2, $eligibilityList->filterEligibilityList('paylater'));
+        $this->assertCount(1, $eligibilityList->filterEligibilityList('paynow'));
         $this->assertCount(0, $eligibilityList->filterEligibilityList('never'));
     }
 

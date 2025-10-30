@@ -49,12 +49,12 @@ class EligibilityList extends ArrayObject
                     return $eligibility->isPnXOnly();
                 })));
                 break;
-            case 'pay-later':
+            case 'paylater':
                 $eligibilityList = new EligibilityList(array_values(array_filter($this->getArrayCopy(), function(Eligibility $eligibility) {
                     return $eligibility->isPayLaterOnly();
                 })));
                 break;
-            case 'pay-now':
+            case 'paynow':
                 $eligibilityList = new EligibilityList(array_values(array_filter($this->getArrayCopy(), function(Eligibility $eligibility) {
                     return $eligibility->isPayNow();
                 })));

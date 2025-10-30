@@ -63,12 +63,12 @@ class FeePlanList extends ArrayObject implements FeePlanListInterface
                 return $feePlan->isPnXOnly();
             }))));
         }
-        if (in_array('pay-later', $paymentMethod)) {
+        if (in_array('paylater', $paymentMethod)) {
             $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
                 return $feePlan->isPayLaterOnly();
             }))));
         }
-        if (in_array('pay-now', $paymentMethod)) {
+        if (in_array('paynow', $paymentMethod)) {
             $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
                 return $feePlan->isPayNow();
             }))));
