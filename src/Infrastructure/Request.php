@@ -25,8 +25,8 @@
 
 namespace Alma\API\Infrastructure;
 
-use Alma\API\Infrastructure\Exception\RequestException;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -34,23 +34,18 @@ use Psr\Http\Message\UriInterface;
 
 class Request implements RequestInterface
 {
-    use StreamTrait;
-
     private string $method;
     private UriInterface $uri;
     private array $headers;
     private StreamInterface $body;
     private string $protocolVersion = '1.1';
 
-    /**
-     * @throws RequestException
-     */
     public function __construct(string $method, $uri, array $headers = [], $body = null)
     {
         $this->method = $this->validateMethod($method);
         $this->uri = ($uri instanceof UriInterface) ? $uri : new Uri($uri);
         $this->headers = $headers;
-        $this->body = $this->createStream($body);
+        $this->body = Utils::streamFor($body);
     }
 
     public function getRequestTarget(): string

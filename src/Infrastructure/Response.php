@@ -25,14 +25,12 @@
 
 namespace Alma\API\Infrastructure;
 
-use Alma\API\Infrastructure\Exception\RequestException;
+use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 class Response implements ResponseInterface
 {
-    use StreamTrait;
-
     private int $statusCode;
     private array $headers;
     private StreamInterface $body;
@@ -53,13 +51,12 @@ class Response implements ResponseInterface
      * @param StreamInterface $body
      * @param array $headers
      * @param string $protocolVersion
-     * @throws RequestException
      */
     public function __construct(int $statusCode, $body = '', array $headers = [], string $protocolVersion = '1.1')
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
-        $this->body = $this->createStream($body);
+        $this->body = Utils::streamFor($body);
         $this->protocolVersion = $this->validateProtocolVersion($protocolVersion);
     }
 
