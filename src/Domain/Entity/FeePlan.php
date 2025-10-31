@@ -111,8 +111,8 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInt
 
         // If the purchase amount is below the minimum override or above the maximum override, it is not eligible
         if (
-            $purchaseAmount < $this->getMinPurchaseAmount(true) ||
-            $purchaseAmount > $this->getMaxPurchaseAmount(true))
+            $purchaseAmount < $this->getMinPurchaseAmount() ||
+            $purchaseAmount > $this->getMaxPurchaseAmount())
         {
             return false;
         }
