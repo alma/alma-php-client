@@ -6,7 +6,7 @@ use OutOfBoundsException;
 
 interface FeePlanListInterface
 {
-    public function add(FeePlanInterface $feePlanAdapterInterface): void;
+    public function add(FeePlanInterface $feePlan): void;
 
     public function addList(FeePlanListInterface $feePlanList): void;
 

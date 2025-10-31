@@ -4,6 +4,7 @@ namespace Alma\API\Domain\Entity;
 
 use Alma\API\Domain\Adapter\FeePlanInterface;
 use Alma\API\Domain\Adapter\FeePlanListInterface;
+use Alma\API\Domain\ValueObject\PaymentMethod;
 use Alma\Gateway\Application\Entity\Form\FeePlanConfiguration;
 use ArrayObject;
 use OutOfBoundsException;
@@ -53,22 +54,22 @@ class FeePlanList extends ArrayObject implements FeePlanListInterface
     public function filterFeePlanList(array $paymentMethod): FeePlanListInterface
     {
         $feePlanList = new FeePlanList();
-        if (in_array('credit', $paymentMethod)) {
+        if (in_array(PaymentMethod::CREDIT, $paymentMethod)) {
             $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
                 return $feePlan->isCredit();
             }))));
         }
-        if (in_array('pnx', $paymentMethod)) {
+        if (in_array(PaymentMethod::PNX, $paymentMethod)) {
             $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
                 return $feePlan->isPnXOnly();
             }))));
         }
-        if (in_array('paylater', $paymentMethod)) {
+        if (in_array(PaymentMethod::PAY_LATER, $paymentMethod)) {
             $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
                 return $feePlan->isPayLaterOnly();
             }))));
         }
-        if (in_array('paynow', $paymentMethod)) {
+        if (in_array(PaymentMethod::PAY_NOW, $paymentMethod)) {
             $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
                 return $feePlan->isPayNow();
             }))));
