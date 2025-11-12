@@ -27,14 +27,13 @@ namespace Alma\API\Infrastructure;
 
 use Alma\API\Domain\ValueObject\Environment;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class ClientConfiguration
 {
     private string $apiKey;
-
     private array $userAgentComponents = [];
     private array $config = [];
-
     private array $errors = [];
     private Environment $environment;
 
@@ -58,7 +57,7 @@ class ClientConfiguration
 
             // Check if the config is valid
             $this->config = $this->validateConfiguration($options);
-            
+
         } catch (InvalidArgumentException $e) {
             $this->addError("Invalid configuration: " . $e->getMessage());
         }

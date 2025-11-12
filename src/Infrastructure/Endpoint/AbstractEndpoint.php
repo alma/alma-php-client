@@ -3,7 +3,6 @@
 namespace Alma\API\Infrastructure\Endpoint;
 
 use Alma\API\Infrastructure\CurlClient;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Request;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -32,7 +31,6 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
      * @param string $uri The endpoint URI
      * @param array $body The body of the Request
      * @return Request The Request object
-     * @throws RequestException
      */
     private function createRequest(string $method, string $uri, array $body = []): Request {
         $headers = [
@@ -47,7 +45,6 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
      * @param string $uri The endpoint URI
      * @param array $queryParams The query parameters
      * @return Request The Request object
-     * @throws RequestException
      */
     public function createGetRequest(string $uri, array $queryParams = []): Request {
         $queryString = http_build_query($queryParams);
@@ -63,7 +60,6 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
      * @param string $uri The endpoint URI
      * @param array $body The body attributes
      * @return Request The Request object
-     * @throws RequestException
      */
     public function createPostRequest(string $uri, array $body = []): Request {
         return $this->createRequest('POST', $uri, $body);
@@ -75,7 +71,6 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
      * @param string $uri The endpoint URI
      * @param array $body The body attributes
      * @return Request The Request object
-     * @throws RequestException
      */
     public function createPutRequest(string $uri, array $body = []): Request {
         return $this->createRequest('PUT', $uri, $body);
@@ -86,7 +81,6 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
      *
      * @param string $uri The endpoint URI
      * @return Request The Request object
-     * @throws RequestException
      */
     public function createDeleteRequest(string $uri): Request {
         return $this->createRequest('DELETE', $uri);
