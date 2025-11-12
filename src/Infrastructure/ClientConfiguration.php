@@ -27,7 +27,6 @@ namespace Alma\API\Infrastructure;
 
 use Alma\API\Domain\ValueObject\Environment;
 use InvalidArgumentException;
-use Psr\Log\LoggerInterface;
 
 class ClientConfiguration
 {
