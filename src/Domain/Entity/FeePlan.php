@@ -111,8 +111,8 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInt
 
         // If the purchase amount is below the minimum override or above the maximum override, it is not eligible
         if (
-            $purchaseAmount < $this->getMinPurchaseAmount(true) ||
-            $purchaseAmount > $this->getMaxPurchaseAmount(true))
+            $purchaseAmount < $this->getMinPurchaseAmount() ||
+            $purchaseAmount > $this->getMaxPurchaseAmount())
         {
             return false;
         }
@@ -202,18 +202,18 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInt
 
     /**
      * Get the Fixed Merchant Fees applied to this fee plan.
-     * @return int|null
+     * @return int
      */
-    public function getMerchantFeeFixed(): ?int
+    public function getMerchantFeeFixed(): int
     {
         return $this->merchantFeeFixed;
     }
 
     /**
      * Get the Variable Merchant Fees applied to this fee plan.
-     * @return int|null
+     * @return int
      */
-    public function getMerchantFeeVariable(): ?int
+    public function getMerchantFeeVariable(): int
     {
         return $this->merchantFeeVariable;
     }
@@ -221,9 +221,9 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInt
 
     /**
      * Get the Variable Customer Fees applied to this fee plan.
-     * @return int|null
+     * @return int
      */
-    public function getCustomerFeeVariable(): ?int
+    public function getCustomerFeeVariable(): int
     {
         return $this->customerFeeVariable;
     }

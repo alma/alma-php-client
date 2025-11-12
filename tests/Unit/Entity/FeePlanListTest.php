@@ -19,7 +19,7 @@ class FeePlanListTest extends TestCase
 
         // Pay now plans
         $feePlanList->add($this->feePlanFactory(1,0,0)) ;
-        // Pay-later plans
+        // Pay later plans
         $feePlanList->add( $this->feePlanFactory(1,2,0));
         $feePlanList->add($this->feePlanFactory(1,0,15));
         // Pnx plans
@@ -33,8 +33,8 @@ class FeePlanListTest extends TestCase
         $this->assertInstanceOf(FeePlan::class, $feePlanList->getByPlanKey('general_2_0_0'));
         $this->assertCount(3, $feePlanList->filterFeePlanList(['pnx']));
         $this->assertCount(2, $feePlanList->filterFeePlanList(['credit']));
-        $this->assertCount(2, $feePlanList->filterFeePlanList(['pay-later']));
-        $this->assertCount(1, $feePlanList->filterFeePlanList(['pay-now']));
+        $this->assertCount(2, $feePlanList->filterFeePlanList(['paylater']));
+        $this->assertCount(1, $feePlanList->filterFeePlanList(['paynow']));
         $this->assertCount(0, $feePlanList->filterFeePlanList(['never']));
     }
 

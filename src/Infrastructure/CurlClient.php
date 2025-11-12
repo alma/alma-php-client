@@ -30,6 +30,9 @@ use Alma\API\Infrastructure\Exception\DependenciesException;
 use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class CurlClient implements ClientInterface
 {
@@ -43,9 +46,12 @@ class CurlClient implements ClientInterface
     /** @var array */
     private array $errors = [];
 
-    public function __construct(ClientConfiguration $config)
+    use LoggerAwareTrait;
+
+    public function __construct(ClientConfiguration $config, LoggerInterface $logger = null)
     {
         $this->config = $config;
+        $this->logger = $logger ?? new NullLogger();
 
         // @codeCoverageIgnoreStart
         try {
@@ -77,7 +83,6 @@ class CurlClient implements ClientInterface
      * @param RequestInterface $request The HTTP request to send.
      * @return ResponseInterface The HTTP response received.
      * @throws ClientException
-     * @throws RequestException
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
@@ -87,6 +92,7 @@ class CurlClient implements ClientInterface
         }
 
         $url = $this->config->getEnvironment()->getBaseUri() . $request->getUri()->getPath();
+        $this->logger->debug('Sending request to: ' . $request->getUri()->getPath());
         $query = $request->getUri()->getQuery();
         if (!empty($query)) {
             $url .= '?' . $query;

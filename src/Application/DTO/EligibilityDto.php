@@ -29,11 +29,11 @@ class EligibilityDto implements DtoInterface {
 
     /**
      * Set the eligibility queries. Can be empty and all Eligibilities will be returned.
-     * @param array $queries
+     * @param EligibilityQueryDto $query The eligibility query DTO.
      * @return $this
      */
-    public function setQueries(array $queries): self {
-        $this->queries = $queries;
+    public function addQuery(EligibilityQueryDto $query): self {
+        $this->queries[] = $query->toArray();
         return $this;
     }
 

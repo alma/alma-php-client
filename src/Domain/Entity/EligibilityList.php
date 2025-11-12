@@ -3,6 +3,7 @@
 namespace Alma\API\Domain\Entity;
 
 use Alma\API\Domain\Entity\Eligibility;
+use Alma\API\Domain\ValueObject\PaymentMethod;
 use ArrayObject;
 
 class EligibilityList extends ArrayObject
@@ -39,22 +40,22 @@ class EligibilityList extends ArrayObject
     public function filterEligibilityList($paymentMethod): EligibilityList
     {
         switch ($paymentMethod) {
-            case 'credit':
+            case PaymentMethod::CREDIT:
                 $eligibilityList = new EligibilityList(array_values(array_filter($this->getArrayCopy(), function(Eligibility $eligibility) {
                     return $eligibility->isCredit();
                 })));
                 break;
-            case 'pnx':
+            case PaymentMethod::PNX:
                 $eligibilityList = new EligibilityList(array_values(array_filter($this->getArrayCopy(), function(Eligibility $eligibility) {
                     return $eligibility->isPnXOnly();
                 })));
                 break;
-            case 'pay-later':
+            case PaymentMethod::PAY_LATER:
                 $eligibilityList = new EligibilityList(array_values(array_filter($this->getArrayCopy(), function(Eligibility $eligibility) {
                     return $eligibility->isPayLaterOnly();
                 })));
                 break;
-            case 'pay-now':
+            case PaymentMethod::PAY_NOW:
                 $eligibilityList = new EligibilityList(array_values(array_filter($this->getArrayCopy(), function(Eligibility $eligibility) {
                     return $eligibility->isPayNow();
                 })));

@@ -3,6 +3,7 @@
 namespace Alma\API\Tests\Unit\Endpoint;
 
 use Alma\API\Application\DTO\EligibilityDto;
+use Alma\API\Application\DTO\EligibilityQueryDto;
 use Alma\API\Infrastructure\Endpoint\EligibilityEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\EligibilityEndpointException;
@@ -85,48 +86,22 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
         return [
             [[
                 'params' => (new EligibilityDto(15000))
-                    ->setQueries([
-                        [
-                            'deferred_days'      => 0,
-                            'deferred_months'    => 0,
-                            'deferred_trigger'   => false,
-                            'installments_count' => 3,
-                        ],
-                    ]),
+                    ->addQuery((new EligibilityQueryDto(3))->setDeferredDays(0)->setDeferredMonths(0)),
                 'response_code' => 200,
                 'is_error' => false,
                 'eligibility' => true
             ]],
             [[
                 'params' => (new EligibilityDto(1500))
-                    ->setQueries([
-                        [
-                            'deferred_days'      => 0,
-                            'deferred_months'    => 0,
-                            'deferred_trigger'   => false,
-                            'installments_count' => 3,
-                        ]
-                    ]),
+                    ->addQuery((new EligibilityQueryDto(3))->setDeferredDays(0)->setDeferredMonths(0)),
                 'response_code' => 200,
                 'is_error' => false,
                 'eligibility' => false
             ]],
             [[
                 'params' => (new EligibilityDto(15000))
-                    ->setQueries([
-                        [
-                            'deferred_days'      => 0,
-                            'deferred_months'    => 0,
-                            'deferred_trigger'   => false,
-                            'installments_count' => 3,
-                        ],
-                        [
-                            'deferred_days'      => 0,
-                            'deferred_months'    => 0,
-                            'deferred_trigger'   => false,
-                            'installments_count' => 4,
-                        ]
-                    ]),
+                    ->addQuery((new EligibilityQueryDto(3))->setDeferredDays(0)->setDeferredMonths(0))
+                    ->addQuery((new EligibilityQueryDto(4))->setDeferredDays(0)->setDeferredMonths(0)),
                 'response_code' => 200,
                 'is_error' => false,
                 'eligibility' => false

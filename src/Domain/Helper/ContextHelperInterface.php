@@ -33,7 +33,7 @@ interface ContextHelperInterface
      * Check if we are on the cart, product or checkout page.
      * @return bool
      */
-    public static function isCartProductOrCheckoutPage(): bool;
+    public static function isShop(): bool;
 
     /**
      * Defines if the current request is an admin request.
