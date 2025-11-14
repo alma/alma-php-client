@@ -25,7 +25,7 @@ class EligibilityQueryDto implements DtoInterface {
 
     public function setDeferredDays(int $deferredDays): self {
         if ($deferredDays < 0) {
-            throw new InvalidArgumentException("Installments count must be positive.");
+            throw new InvalidArgumentException("Deferred days count must be positive.");
         }
         $this->deferredDays = $deferredDays;
         return $this;
@@ -33,7 +33,7 @@ class EligibilityQueryDto implements DtoInterface {
 
     public function setDeferredMonths(int $deferredMonths): self {
         if ($deferredMonths < 0) {
-            throw new InvalidArgumentException("Installments count must be positive.");
+            throw new InvalidArgumentException("Deferred months must be positive.");
         }
         $this->deferredMonths = $deferredMonths;
         return $this;

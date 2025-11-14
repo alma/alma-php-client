@@ -2,8 +2,7 @@
 
 namespace Alma\API\Application\DTO;
 
-
-use Alma\API\Infrastructure\Exception\ParametersException;
+use InvalidArgumentException;
 
 class RefundDto implements DtoInterface {
     private ?int $amount = null;
@@ -13,11 +12,11 @@ class RefundDto implements DtoInterface {
     /**
      * @param int $amount
      * @return $this
-     * @throws ParametersException
+     * @throws InvalidArgumentException
      */
     public function setAmount(int $amount): self {
         if ($amount < 0) {
-            throw new ParametersException("Refund amount cannot be negative.");
+            throw new InvalidArgumentException("Refund amount cannot be negative.");
         }
         $this->amount = $amount;
         return $this;
