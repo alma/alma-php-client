@@ -16,7 +16,7 @@ on:
 jobs:
   ci:
     name: Linting, tests and coverage
-    runs-on: ubuntu-24.04
+    runs-on: alma
 
     strategy:
       fail-fast: false
