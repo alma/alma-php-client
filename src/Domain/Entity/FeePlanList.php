@@ -5,13 +5,12 @@ namespace Alma\API\Domain\Entity;
 use Alma\API\Domain\Adapter\FeePlanInterface;
 use Alma\API\Domain\Adapter\FeePlanListInterface;
 use Alma\API\Domain\ValueObject\PaymentMethod;
-use Alma\Gateway\Application\Entity\Form\FeePlanConfiguration;
 use ArrayObject;
 use OutOfBoundsException;
 
 class FeePlanList extends ArrayObject implements FeePlanListInterface
 {
-    public function __construct($array = [], $flags = 0, $iteratorClass = "ArrayIterator")
+    public function __construct($array = [], int $flags = 0, string $iteratorClass = "ArrayIterator")
     {
         parent::__construct(
             array_filter($array, function($item) { return $item instanceof FeePlanInterface; }),
@@ -20,11 +19,23 @@ class FeePlanList extends ArrayObject implements FeePlanListInterface
         );
     }
 
+    /**
+     * Add a FeePlan to the FeePlanList.
+     *
+     * @param FeePlanInterface $feePlan
+     * @return void
+     */
     public function add(FeePlanInterface $feePlan): void
     {
         $this[] = $feePlan;
     }
 
+    /**
+     * Add a list of FeePlans to the FeePlanList.
+     *
+     * @param FeePlanListInterface $feePlanList
+     * @return void
+     */
     public function addList(FeePlanListInterface $feePlanList): void
     {
         foreach ($feePlanList as $feePlan) {

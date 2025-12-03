@@ -2,8 +2,6 @@
 
 namespace Alma\API\Domain\Adapter;
 
-use Alma\API\Infrastructure\Exception\ParametersException;
-
 interface FeePlanInterface {
 
     /**
@@ -18,19 +16,6 @@ interface FeePlanInterface {
      * @return bool
      */
     public function isEligible(int $purchaseAmount): bool;
-
-    /**
-     * Check if this fee plan is:
-     * - enabled by the merchant.
-     * @return bool
-     */
-    public function isEnabled(): bool;
-
-    /**
-     * Enable this fee plan.
-     * @return void
-     */
-    public function enable() : void;
 
     /**
      * Check if this fee plan is:
@@ -100,4 +85,10 @@ interface FeePlanInterface {
      * @return string
      */
     public function getKind(): string;
+
+    /**
+     * Get the label this fee plan applies to.
+     * @return string
+     */
+    public function getLabel(): string;
 }

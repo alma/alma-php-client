@@ -4,10 +4,24 @@ namespace Alma\API\Domain\Adapter;
 
 use Alma\API\Infrastructure\Exception\ParametersException;
 
-interface FeePlanAdapterInterface {
+interface FeePlanAdapterLocalConfigurationAwareInterface
+{
+    /**
+     * Enable this fee plan.
+     * @return void
+     */
+    public function enable(): void;
+
+    /**
+     * Check if this fee plan is:
+     * - enabled by the merchant.
+     * @return bool
+     */
+    public function isEnabled(): bool;
 
     /**
      * Get the minimum purchase amount allowed for this fee plan.
+     *
      * @return int
      */
     public function getOverrideMinPurchaseAmount(): int;
@@ -24,6 +38,7 @@ interface FeePlanAdapterInterface {
 
     /**
      * Get the maximum purchase amount allowed for this fee plan.
+     *
      * @return int
      */
     public function getOverrideMaxPurchaseAmount(): int;
@@ -37,4 +52,16 @@ interface FeePlanAdapterInterface {
      * @throws ParametersException
      */
     public function setOverrideMaxPurchaseAmount( int $overrideMaxPurchaseAmount ): void;
+
+    /**
+     * Reset the override min value to its default.
+     * @return void
+     */
+    public function resetOverrideMinPurchaseAmount(): void;
+
+    /**
+     * Reset the override max value to its default.
+     * @return void
+     */
+    public function resetOverrideMaxPurchaseAmount(): void;
 }

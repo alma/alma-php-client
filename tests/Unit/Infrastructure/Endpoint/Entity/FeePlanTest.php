@@ -62,21 +62,7 @@ class FeePlanTest extends TestCase
 
     public function testEligibilityWithoutOverride()
     {
-        $this->AllowedFeePlan->enable();
         $this->assertTrue($this->AllowedFeePlan->isEligible(self::VALID_AMOUNT));
         $this->assertFalse($this->AllowedFeePlan->isEligible(self::INVALID_AMOUNT));
-    }
-
-    public function testisAvailable()
-    {
-        // A plan that is allowed is available only when enabled
-        $this->assertFalse($this->AllowedFeePlan->isAvailable());
-        $this->AllowedFeePlan->enable();
-        $this->assertTrue($this->AllowedFeePlan->isAvailable());
-
-        // A plan that is not allowed is never available
-        $this->assertFalse($this->NoAllowedFeePlan->isAvailable());
-        $this->NoAllowedFeePlan->enable();
-        $this->assertFalse($this->NoAllowedFeePlan->isAvailable());
     }
 }
