@@ -69,9 +69,6 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInt
     /** @var int Minimum purchase amount allowed for this fee plan */
     protected int $minPurchaseAmount;
 
-    /** @var bool Is this fee plan enabled by merchant? True by default */
-    protected bool $enabled = false;
-
     /** Mapping of required fields */
     protected array $requiredFields =  [
         'allowed'                      => 'allowed',
@@ -122,29 +119,12 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInt
 
     /**
      * Check if this fee plan is:
-     * - enabled by the merchant.
-     * @return bool
-     */
-    public function isEnabled(): bool {
-        return $this->enabled;
-    }
-
-    /**
-     * Enable this fee plan.
-     * @return void
-     */
-    public function enable() : void {
-        $this->enabled = true;
-    }
-
-    /**
-     * Check if this fee plan is:
      * - allowed by Alma
      * - enabled by the merchant
      * @return bool
      */
     public function isAvailable(): bool {
-        return $this->isAllowed() && $this->isEnabled();
+        return $this->isAllowed();
     }
 
     /**
@@ -235,5 +215,19 @@ class FeePlan extends AbstractEntity implements PaymentPlanInterface, FeePlanInt
     public function getKind(): string
     {
         return self::KIND_GENERAL;
+    }
+
+    /**
+     * Get the payment method this fee plan applies to.
+     * @return string
+     */
+    public function getLabel(): string {
+        if ( $this->isPayNow() ) {
+            return 'Pay now';
+        } elseif ( $this->isPayLaterOnly() ) {
+            return sprintf( '+%d', $this->getDeferredDays() );
+        } else {
+            return sprintf( '%dx', $this->getInstallmentsCount() );
+        }
     }
 }

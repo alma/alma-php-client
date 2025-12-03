@@ -6,8 +6,20 @@ use OutOfBoundsException;
 
 interface FeePlanListInterface
 {
+    /**
+     * Add a FeePlan to the FeePlanList.
+     *
+     * @param FeePlanInterface $feePlan
+     * @return void
+     */
     public function add(FeePlanInterface $feePlan): void;
 
+    /**
+     * Add a list of FeePlans to the FeePlanList.
+     *
+     * @param FeePlanListInterface $feePlanList
+     * @return void
+     */
     public function addList(FeePlanListInterface $feePlanList): void;
 
     /**
