@@ -18,6 +18,9 @@ class RefundDto implements DtoInterface {
         if ($amount < 0) {
             throw new InvalidArgumentException("Refund amount cannot be negative.");
         }
+        if ($amount === 0) {
+            $amount = null;
+        }
         $this->amount = $amount;
         return $this;
     }
