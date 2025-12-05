@@ -29,24 +29,6 @@ interface OrderAdapterInterface {
     public function getMerchantReference(): string;
 
     /**
-     * Get the remaining refund amount.
-     * This method calculates the remaining refund amount by subtracting the total refunded amount from
-     * the total order amount.
-     *
-     * @return int The remaining refund amount in cents.
-     */
-    public function getRemainingRefundAmount(): int;
-
-    /**
-     * Check if the order is fully refunded.
-     * This method checks if the remaining refund amount is zero, indicating that the order has been
-     * fully refunded.
-     *
-     * @return bool True if the order is fully refunded, false otherwise.
-     */
-    public function isFullyRefunded(): bool;
-
-    /**
      * Check if the order is paid with Alma payment method.
      * This method checks if the order's payment method is one of the Alma payment methods.
      *
