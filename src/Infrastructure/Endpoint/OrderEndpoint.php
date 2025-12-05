@@ -28,7 +28,6 @@ namespace Alma\API\Infrastructure\Endpoint;
 use Alma\API\Domain\Entity\Order;
 use Alma\API\Infrastructure\Exception\Endpoint\OrderEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Helper\ArrayHelper;
 use Alma\API\Infrastructure\PaginatedResult;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -59,7 +58,7 @@ class OrderEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPutRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId", $orderData);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }
 
@@ -97,7 +96,7 @@ class OrderEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::ORDERS_ENDPOINT . "/$orderId/shipment", $trackingData);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }
 
@@ -134,7 +133,7 @@ class OrderEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1, $args);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }
 
@@ -162,7 +161,7 @@ class OrderEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId");
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }
 

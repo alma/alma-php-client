@@ -30,7 +30,6 @@ use Alma\API\Domain\Entity\Eligibility;
 use Alma\API\Domain\Entity\EligibilityList;
 use Alma\API\Infrastructure\Exception\Endpoint\EligibilityEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 
@@ -54,8 +53,6 @@ class EligibilityEndpoint extends AbstractEndpoint
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new EligibilityEndpointException($e->getMessage(), $request);
-        } catch (RequestException $e) {
-            throw new EligibilityEndpointException($e->getMessage());
         }
 
         if ($response->isError()) {

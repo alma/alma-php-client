@@ -32,7 +32,6 @@ use Alma\API\Domain\Entity\FeePlanList;
 use Alma\API\Domain\Entity\Merchant;
 use Alma\API\Infrastructure\Exception\Endpoint\MerchantEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class MerchantEndpoint extends AbstractEndpoint
@@ -52,7 +51,7 @@ class MerchantEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::EXTENDED_DATA_ENDPOINT);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new MerchantEndpointException($e->getMessage(), $request);
         }
 
@@ -97,7 +96,7 @@ class MerchantEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::FEE_PLANS_ENDPOINT, $queryParams);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new MerchantEndpointException($e->getMessage(), $request);
         }
 
@@ -155,7 +154,7 @@ class MerchantEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::BUSINESS_EVENTS_ENDPOINT, $eventData);
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new MerchantEndpointException($e->getMessage(), $request);
         }
         if ($response->isError()) {

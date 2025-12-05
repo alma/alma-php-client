@@ -27,7 +27,6 @@ namespace Alma\API\Infrastructure;
 
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\DependenciesException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerAwareTrait;

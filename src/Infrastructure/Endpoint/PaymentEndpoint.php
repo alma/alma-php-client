@@ -33,7 +33,6 @@ use Alma\API\Domain\Entity\Order;
 use Alma\API\Domain\Entity\Payment;
 use Alma\API\Infrastructure\Exception\Endpoint\PaymentEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class PaymentEndpoint extends AbstractEndpoint
