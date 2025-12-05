@@ -10,7 +10,6 @@ use Alma\API\Infrastructure\Endpoint\MerchantEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\MerchantEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
@@ -123,24 +122,6 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws MerchantEndpointException|ParametersException
-     */
-    public function testMeRequestException()
-    {
-        // Mocks
-        $merchantServiceMock = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $merchantServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(MerchantEndpointException::class);
-        $merchantServiceMock->me();
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws MerchantEndpointException|ParametersException
@@ -192,24 +173,6 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->merchantService->getFeePlanList();
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws MerchantEndpointException|ParametersException
-     */
-    public function testFeePlansRequestException()
-    {
-        // Mocks
-        $merchantServiceMock = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $merchantServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(MerchantEndpointException::class);
-        $merchantServiceMock->getFeePlanList();
     }
 
     /**
@@ -303,24 +266,6 @@ class MerchantEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->merchantService->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDto('42'));
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws MerchantEndpointException
-     */
-    public function testSendBusinessEventRequestException()
-    {
-        // Mocks
-        $merchantServiceMock = Mockery::mock(MerchantEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $merchantServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(MerchantEndpointException::class);
-        $merchantServiceMock->sendCartInitiatedBusinessEvent(new CartInitiatedBusinessEventDto('42'));
     }
 
     /**

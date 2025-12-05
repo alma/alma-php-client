@@ -7,7 +7,6 @@ use Alma\API\Application\DTO\EligibilityQueryDto;
 use Alma\API\Infrastructure\Endpoint\EligibilityEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\EligibilityEndpointException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 
@@ -184,30 +183,6 @@ class EligibilityEndpointTest extends AbstractEndpointSetUp
         // Mocks
         $this->clientMock->shouldReceive('sendRequest')
             ->andThrow(ClientException::class);
-
-        // EligibilityService
-        $eligibilityServiceMock = Mockery::mock(EligibilityEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $eligibilityServiceMock->shouldReceive('createPostRequest')
-            ->with(EligibilityEndpoint::ELIGIBILITY_ENDPOINT, ['purchase_amount' => 10000])
-            ->once();
-
-        // Call
-        $this->expectException(EligibilityEndpointException::class);
-        $eligibilityServiceMock->getEligibilityList(new EligibilityDto(10000));
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws EligibilityEndpointException
-     */
-    public function testEligibilityRequestException()
-    {
-        // Mocks
-        $this->clientMock->shouldReceive('sendRequest')
-            ->andThrow(new RequestException('Request exception'));
 
         // EligibilityService
         $eligibilityServiceMock = Mockery::mock(EligibilityEndpoint::class, [$this->clientMock])

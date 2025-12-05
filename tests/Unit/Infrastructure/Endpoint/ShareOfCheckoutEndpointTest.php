@@ -5,7 +5,6 @@ namespace Alma\API\Tests\Unit\Infrastructure\Endpoint;
 use Alma\API\Infrastructure\Endpoint\ShareOfCheckoutEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\ShareOfCheckoutEndpointException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
@@ -83,26 +82,6 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws ShareOfCheckoutEndpointException
-     */
-    public function testShareRequestException(): void
-    {
-        // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $shareOfCheckoutServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
-
-        // Expectations
-        $this->expectException(ShareOfCheckoutEndpointException::class);
-
-        // Call
-        $shareOfCheckoutServiceMock->share(['data' => 'test']);
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws ShareOfCheckoutEndpointException
@@ -152,26 +131,6 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws ShareOfCheckoutEndpointException
-     */
-    public function testGetLastUpdateDatesRequestException(): void
-    {
-        // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $shareOfCheckoutServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Expectations
-        $this->expectException(ShareOfCheckoutEndpointException::class);
-
-        // Call
-        $shareOfCheckoutServiceMock->getLastUpdateDates();
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws ShareOfCheckoutEndpointException
@@ -218,26 +177,6 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws ShareOfCheckoutEndpointException
-     */
-    public function testAddConsentRequestException(): void
-    {
-        // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $shareOfCheckoutServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Expectations
-        $this->expectException(ShareOfCheckoutEndpointException::class);
-
-        // Call
-        $shareOfCheckoutServiceMock->addConsent();
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws ShareOfCheckoutEndpointException
@@ -281,26 +220,6 @@ class ShareOfCheckoutEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->shareOfCheckoutServiceMock->removeConsent();
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws ShareOfCheckoutEndpointException
-     */
-    public function testRemoveConsentRequestException(): void
-    {
-        // Mocks
-        $shareOfCheckoutServiceMock = Mockery::mock(ShareOfCheckoutEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $shareOfCheckoutServiceMock->shouldReceive('createDeleteRequest')->andThrow(new RequestException("request error"));
-
-        // Expectations
-        $this->expectException(ShareOfCheckoutEndpointException::class);
-
-        // Call
-        $shareOfCheckoutServiceMock->removeConsent();
     }
 
     /**

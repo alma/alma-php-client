@@ -5,7 +5,6 @@ namespace Alma\API\Tests\Unit\Infrastructure\Endpoint;
 use Alma\API\Infrastructure\Endpoint\ConfigurationEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\ConfigurationEndpointException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
@@ -63,24 +62,6 @@ class ConfigurationEndpointTest extends AbstractEndpointSetUp
         // Call
 		$this->configurationServiceMock->sendIntegrationsConfigurationsUrl(self::URL);
 	}
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws ConfigurationEndpointException
-     */
-    public function testSendIntegrationsConfigurationsUrlRequestException()
-    {
-        // Mocks
-        $configurationServiceMock = Mockery::mock(ConfigurationEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $configurationServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(ConfigurationEndpointException::class);
-        $configurationServiceMock->sendIntegrationsConfigurationsUrl('url');
-    }
 
     /**
      * Ensure we can catch ClientException

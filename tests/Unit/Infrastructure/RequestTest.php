@@ -2,8 +2,6 @@
 
 namespace Alma\API\Tests\Unit\Infrastructure;
 
-use Alma\API\Helper\StreamHelper;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Request;
 use GuzzleHttp\Psr7\Stream;
 use GuzzleHttp\Psr7\Uri;
@@ -20,9 +18,6 @@ class RequestTest extends TestCase
         return new Stream($resourceFromString);
     }
 
-    /**
-     * @throws RequestException
-     */
     public function testBody()
     {
         $request = new Request("GET", "https://example.com", [], 'the body');
@@ -31,9 +26,6 @@ class RequestTest extends TestCase
         $this->assertEquals("the new body", $request->getBody()->getContents());
     }
 
-    /**
-     * @throws RequestException
-     */
     public function testTargetAndUri()
     {
         $request = new Request("GET", "https://example.com", [], 'the body');

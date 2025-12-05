@@ -5,7 +5,6 @@ namespace Alma\API\Tests\Unit\Infrastructure;
 use Alma\API\Infrastructure\ClientConfiguration;
 use Alma\API\Infrastructure\CurlClient;
 use Alma\API\Infrastructure\Exception\ClientException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Request;
 use Alma\API\Infrastructure\Response;
 use GuzzleHttp\Psr7\Stream;
@@ -105,7 +104,7 @@ EOF;
 
     /**
      * Ensure we can do send Requests
-     * @throws ClientException|RequestException
+     * @throws ClientException
      */
     public function testSendRequest()
     {
@@ -118,7 +117,6 @@ EOF;
 
     /**
      * Ensure we can do send Requests
-     * @throws RequestException
      */
     public function testSendRequestWithError()
     {

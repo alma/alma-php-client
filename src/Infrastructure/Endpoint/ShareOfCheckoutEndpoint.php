@@ -3,7 +3,6 @@
 namespace Alma\API\Infrastructure\Endpoint;
 
 use Alma\API\Infrastructure\Exception\Endpoint\ShareOfCheckoutEndpointException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class ShareOfCheckoutEndpoint extends AbstractEndpoint
@@ -23,7 +22,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPutRequest(self::SHARE_OF_CHECKOUT_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 
@@ -45,7 +44,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::SHARE_OF_CHECKOUT_ENDPOINT);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 
@@ -66,7 +65,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::SHARE_OF_CHECKOUT_CONSENT_ENDPOINT);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 
@@ -88,7 +87,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createDeleteRequest(self::SHARE_OF_CHECKOUT_CONSENT_ENDPOINT);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
 

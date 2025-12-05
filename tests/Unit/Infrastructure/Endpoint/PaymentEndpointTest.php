@@ -11,7 +11,6 @@ use Alma\API\Domain\Entity\Payment;
 use Alma\API\Infrastructure\Endpoint\PaymentEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\PaymentEndpointException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
@@ -173,28 +172,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testCreatePaymentRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->create(
-            new PaymentDto(1000),
-            new OrderDto(),
-            new CustomerDto()
-        );
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws PaymentEndpointException
@@ -247,24 +224,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testCancelPaymentRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->cancel('id_1234');
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws PaymentEndpointException
@@ -307,24 +266,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         // Assertions
         $this->assertInstanceOf(Payment::class, $this->paymentService->fetch('id_1234'));
 
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testFetchPaymentRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->fetch('id_1234');
     }
 
     /**
@@ -373,24 +314,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testEditPaymentRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->edit('id_1234');
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws PaymentEndpointException
@@ -434,24 +357,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         $this->assertNull($this->paymentService->flagAsPotentialFraud('id_1234'));
         $this->assertNull($this->paymentService->flagAsPotentialFraud('id_1234', 'reason'));
 
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testFlagAsPotentialFraudRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->flagAsPotentialFraud('id_1234');
     }
 
     /**
@@ -527,24 +432,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testAddOrderRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->addOrder('id_1234');
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws PaymentEndpointException
@@ -592,28 +479,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
             'status'
         ));
 
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testAddOrderStatusByMerchantOrderReferenceRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->addOrderStatusByMerchantOrderReference(
-            'payment_id',
-            'merchant_order_reference',
-            'status'
-        );
     }
 
     /**
@@ -667,24 +532,6 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
         // Assertions
         $this->assertTrue($this->paymentService->sendSms('id_1234'));
 
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws PaymentEndpointException
-     */
-    public function testSendSmsRequestException()
-    {
-        // Mocks
-        $paymentServiceMock = Mockery::mock(PaymentEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $paymentServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(PaymentEndpointException::class);
-        $paymentServiceMock->sendSms('id_1234');
     }
 
     /**

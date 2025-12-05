@@ -4,8 +4,6 @@ namespace Alma\API\Domain\Adapter;
 
 interface ProductAdapterInterface
 {
-    public function __call( string $name, array $arguments );
-
     /**
      * Get the product ID.
      *

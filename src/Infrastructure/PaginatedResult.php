@@ -24,7 +24,6 @@
 
 namespace Alma\API\Infrastructure;
 
-use Alma\API\Infrastructure\Exception\RequestException;
 use Iterator;
 
 class PaginatedResult implements Iterator
@@ -54,35 +53,56 @@ class PaginatedResult implements Iterator
         $this->nextPageCallback = $nextPageCallback;
     }
 
+    /**
+     * Rewind the iterator.
+     * @return void
+     */
     public function rewind(): void
     {
         $this->position = 0;
     }
 
+    /**
+     * Return the current entity.
+     * @return mixed
+     */
     public function current()
     {
         return $this->entities[$this->position];
     }
 
+    /**
+     * Return the current entity key.
+     * @return int The current entity key.
+     */
     public function key(): int
     {
         return $this->position;
     }
 
+    /**
+     * Move to the next entity.
+     * @return void
+     */
     public function next(): void
     {
         ++$this->position;
     }
 
+    /**
+     * Check if there is a next entity.
+     * @return bool
+     */
     public function valid(): bool
     {
         return isset($this->entities[$this->position]);
     }
 
     /**
-     * @throws RequestException
+     * Move to the next page.
+     * @return self
      */
-    public function nextPage()
+    public function nextPage(): PaginatedResult
     {
         $callback = $this->nextPageCallback;
         if (!$callback || !array_key_exists('has_more', $this->response->getJson())) {

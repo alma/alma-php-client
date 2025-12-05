@@ -3,12 +3,10 @@
 namespace Alma\API\Tests\Unit\Infrastructure\Endpoint;
 
 use Alma\API\Domain\Entity\DataExport;
-use Alma\API\Helper\StreamHelper;
 use Alma\API\Infrastructure\Endpoint\DataExportEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\DataExportEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
@@ -103,24 +101,6 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws DataExportEndpointException
-     */
-    public function testCreateDataExportRequestException()
-    {
-        // Mocks
-        $dataExportServiceMock = Mockery::mock(DataExportEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $dataExportServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(DataExportEndpointException::class);
-        $dataExportServiceMock->create('payments');
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws DataExportEndpointException
@@ -166,24 +146,6 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->dataExportsService->fetch(123);
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws DataExportEndpointException
-     */
-    public function testFetchDataExportRequestException()
-    {
-        // Mocks
-        $dataExportServiceMock = Mockery::mock(DataExportEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(DataExportEndpointException::class);
-        $dataExportServiceMock->fetch(123);
     }
 
     /**
@@ -246,25 +208,6 @@ class DataExportEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->dataExportsService->download(123, 'pdf');
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws DataExportEndpointException
-     * @throws ParametersException
-     */
-    public function testDownloadDataExportRequestException()
-    {
-        // Mocks
-        $dataExportServiceMock = Mockery::mock(DataExportEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $dataExportServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(DataExportEndpointException::class);
-        $dataExportServiceMock->download(123, 'csv');
     }
 
     /**

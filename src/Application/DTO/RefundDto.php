@@ -10,14 +10,18 @@ class RefundDto implements DtoInterface {
     private string $comment = '';
 
     /**
-     * @param int $amount
+     * Set a positive amount if you need a partial amount.
+     * Amount can be not set if you want a full refund.
+     *
+     * @param int $amount A positive integer representing the refund amount in cents.
      * @return $this
      * @throws InvalidArgumentException
      */
     public function setAmount(int $amount): self {
-        if ($amount < 0) {
-            throw new InvalidArgumentException("Refund amount cannot be negative.");
+        if ($amount <= 0) {
+            throw new InvalidArgumentException("Refund amount cannot be negative or zero.");
         }
+
         $this->amount = $amount;
         return $this;
     }

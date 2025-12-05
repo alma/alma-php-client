@@ -26,7 +26,6 @@
 namespace Alma\API\Infrastructure\Endpoint;
 
 use Alma\API\Infrastructure\Exception\Endpoint\WebhookEndpointException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Helper\WebhookHelper;
 use Psr\Http\Client\ClientExceptionInterface;
 
@@ -49,7 +48,7 @@ class WebhookEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::WEBHOOKS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new WebhookEndpointException($e->getMessage(), $request);
         }
 
@@ -72,7 +71,7 @@ class WebhookEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new WebhookEndpointException($e->getMessage(), $request);
         }
 
@@ -97,7 +96,7 @@ class WebhookEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createDeleteRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new WebhookEndpointException($e->getMessage(), $request);
         }
         if ($response->isError()) {

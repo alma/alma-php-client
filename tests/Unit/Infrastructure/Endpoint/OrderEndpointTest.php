@@ -6,7 +6,6 @@ use Alma\API\Domain\Entity\Order;
 use Alma\API\Infrastructure\Endpoint\OrderEndpoint;
 use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\OrderEndpointException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Alma\API\Infrastructure\Helper\ArrayHelper;
 use Alma\API\Infrastructure\PaginatedResult;
 use Alma\API\Infrastructure\Response;
@@ -188,24 +187,6 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws OrderEndpointException
-     */
-    public function testUpdateOrderRequestException()
-    {
-        // Mocks
-        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $orderServiceMock->shouldReceive('createPutRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(OrderEndpointException::class);
-        $orderServiceMock->update('order_id');
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws OrderEndpointException
@@ -265,24 +246,6 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws OrderEndpointException
-     */
-    public function testAddTrackingRequestException()
-    {
-        // Mocks
-        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $orderServiceMock->shouldReceive('createPostRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(OrderEndpointException::class);
-        $orderServiceMock->addTracking('order_id', 'carrier', 'tracking_number', 'tracking_url');
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws OrderEndpointException
@@ -333,24 +296,6 @@ class OrderEndpointTest extends AbstractEndpointSetUp
     }
 
     /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws OrderEndpointException
-     */
-    public function testFetchAllOrdersRequestException()
-    {
-        // Mocks
-        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $orderServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(OrderEndpointException::class);
-        $orderServiceMock->fetchAll();
-    }
-
-    /**
      * Ensure we can catch ClientException
      * @return void
      * @throws OrderEndpointException
@@ -395,24 +340,6 @@ class OrderEndpointTest extends AbstractEndpointSetUp
 
         // Call
         $this->orderServiceMock->fetch('order_id');
-    }
-
-    /**
-     * Ensure we can catch RequestException
-     * @return void
-     * @throws OrderEndpointException
-     */
-    public function testFetchOrderRequestException()
-    {
-        // Mocks
-        $orderServiceMock = Mockery::mock(OrderEndpoint::class, [$this->clientMock])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $orderServiceMock->shouldReceive('createGetRequest')->andThrow(new RequestException("request error"));
-
-        // Call
-        $this->expectException(OrderEndpointException::class);
-        $orderServiceMock->fetch('order_id');
     }
 
     /**

@@ -28,7 +28,6 @@ namespace Alma\API\Infrastructure\Endpoint;
 use Alma\API\Domain\Entity\DataExport;
 use Alma\API\Infrastructure\Exception\Endpoint\DataExportEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class DataExportEndpoint extends AbstractEndpoint
@@ -51,7 +50,7 @@ class DataExportEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::DATA_EXPORTS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new DataExportEndpointException($e->getMessage(), $request);
         }
 
@@ -82,7 +81,7 @@ class DataExportEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . '/' . $reportId);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new DataExportEndpointException($e->getMessage(), $request);
         }
 
@@ -119,7 +118,7 @@ class DataExportEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . sprintf('/%s', $reportId), ['format' => $format]);
             $response = $this->client->sendRequest($request);
-        } catch (ClientExceptionInterface|RequestException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new DataExportEndpointException($e->getMessage(), $request);
         }
 

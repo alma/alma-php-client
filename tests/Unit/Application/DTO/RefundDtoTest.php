@@ -29,15 +29,22 @@ class RefundDtoTest extends TestCase
     public function testPartialRefundConstructDto()
     {
         $this->refund->setAmount(5000)
-            ->setMerchantReference('order_123_refund_1')
+            ->setMerchantReference('order_123_refund_2')
             ->setComment('Customer comment');
-        $this->assertEquals(['amount' => 5000, 'merchant_reference' => 'order_123_refund_1', 'comment' => 'Customer comment'], $this->refund->toArray());
+        $this->assertEquals(['amount' => 5000, 'merchant_reference' => 'order_123_refund_2', 'comment' => 'Customer comment'], $this->refund->toArray());
     }
 
     public function testSetInvalidRefundAmountThrowsException()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Refund amount cannot be negative.");
+        $this->expectExceptionMessage("Refund amount cannot be negative or zero.");
         $this->refund->setAmount(-5000);
+    }
+
+    public function testSetZeroRefundAmountThrowsException()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Refund amount cannot be negative or zero.");
+        $this->refund->setAmount(0);
     }
 }

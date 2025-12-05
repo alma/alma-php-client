@@ -33,7 +33,6 @@ use Alma\API\Domain\Entity\Order;
 use Alma\API\Domain\Entity\Payment;
 use Alma\API\Infrastructure\Exception\Endpoint\PaymentEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
-use Alma\API\Infrastructure\Exception\RequestException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class PaymentEndpoint extends AbstractEndpoint
@@ -62,7 +61,7 @@ class PaymentEndpoint extends AbstractEndpoint
         try {
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT, $data);
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -92,7 +91,7 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = $this->createPutRequest(self::PAYMENTS_ENDPOINT . sprintf('/%s/cancel', $id));
 
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -114,7 +113,7 @@ class PaymentEndpoint extends AbstractEndpoint
         try {
             $request = $this->createGetRequest(self::PAYMENTS_ENDPOINT . "/$id");
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -144,7 +143,7 @@ class PaymentEndpoint extends AbstractEndpoint
         try {
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id", $data);
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -179,7 +178,7 @@ class PaymentEndpoint extends AbstractEndpoint
         try {
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/potential-fraud", $data);
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -203,7 +202,7 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$paymentId/refund", $refundDto->toArray());
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -240,7 +239,7 @@ class PaymentEndpoint extends AbstractEndpoint
                 $request = null;
                 $request = $this->createPutRequest(self::PAYMENTS_ENDPOINT . "/$id/orders", array("order" => $orderData));
                 $response = $this->client->sendRequest($request);
-            } catch (RequestException|ClientExceptionInterface $e) {
+            } catch (ClientExceptionInterface $e) {
                 throw new PaymentEndpointException($e->getMessage(), $request);
             }
         }
@@ -276,7 +275,7 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/orders", array("order" => $orderData));
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -319,7 +318,7 @@ class PaymentEndpoint extends AbstractEndpoint
                 ['status' => $status, 'is_shipped' => $isShipped]
             );
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
@@ -345,7 +344,7 @@ class PaymentEndpoint extends AbstractEndpoint
             $request = null;
             $request = $this->createPostRequest(self::PAYMENTS_ENDPOINT . "/$id/send-sms");
             $response = $this->client->sendRequest($request);
-        } catch (RequestException|ClientExceptionInterface $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new PaymentEndpointException($e->getMessage(), $request);
         }
 
