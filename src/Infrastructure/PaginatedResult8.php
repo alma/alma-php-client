@@ -26,7 +26,7 @@ namespace Alma\API\Infrastructure;
 
 use Iterator;
 
-class PaginatedResult implements Iterator
+class PaginatedResult8 implements Iterator
 {
     /** @var int */
     protected int $position = 0;
@@ -66,7 +66,7 @@ class PaginatedResult implements Iterator
      * Return the current entity.
      * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->entities[$this->position];
     }
@@ -100,7 +100,7 @@ class PaginatedResult implements Iterator
 
     /**
      * Move to the next page.
-     * @return self
+     * @return PaginatedResult
      */
     public function nextPage(): PaginatedResult
     {

@@ -167,7 +167,7 @@ class PaymentEndpoint extends AbstractEndpoint
      * @return void
      * @throws PaymentEndpointException
      */
-    public function flagAsPotentialFraud(string $id, string $reason = null): void
+    public function flagAsPotentialFraud(string $id, ?string $reason = null): void
     {
         $request = null;
         $data = [];

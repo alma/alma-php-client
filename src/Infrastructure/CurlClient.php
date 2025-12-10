@@ -47,7 +47,7 @@ class CurlClient implements ClientInterface
 
     use LoggerAwareTrait;
 
-    public function __construct(ClientConfiguration $config, LoggerInterface $logger = null)
+    public function __construct(ClientConfiguration $config, ?LoggerInterface $logger = null)
     {
         $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
@@ -159,7 +159,7 @@ class CurlClient implements ClientInterface
     }
 
     /** @codeCoverageIgnore Curl Wrapper used to test sendRequest function */
-    public function init(string $url = null): bool
+    public function init(?string $url = null): bool
     {
         $this->curlClient = curl_init($url);
         return $this->curlClient !== false;

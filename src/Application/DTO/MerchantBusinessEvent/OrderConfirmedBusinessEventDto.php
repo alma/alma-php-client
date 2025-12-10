@@ -44,17 +44,15 @@ class OrderConfirmedBusinessEventDto
      * @param bool $wasBNPLEligible
      * @param string $orderId
      * @param string $cartId
-     * @param string | null $almaPaymentId
      * @throws ParametersException
      */
-    public function __construct(bool $isAlmaP1X, bool $isAlmaBNPL, bool $wasBNPLEligible, string $orderId, string $cartId, string $almaPaymentId = null)
+    public function __construct(bool $isAlmaP1X, bool $isAlmaBNPL, bool $wasBNPLEligible, string $orderId, string $cartId)
     {
         $this->setIsAlmaP1X($isAlmaP1X);
         $this->setIsAlmaBNPL($isAlmaBNPL);
         $this->setWasBNPLEligible($wasBNPLEligible);
         $this->setOrderId($orderId);
         $this->setCartId($cartId);
-        $this->setAlmaPaymentId($almaPaymentId);
         $this->validateData();
     }
 
@@ -118,7 +116,7 @@ class OrderConfirmedBusinessEventDto
         $this->cartId = $cartId;
     }
 
-    private function setAlmaPaymentId(?string $almaPaymentId): void
+    private function setAlmaPaymentId(string $almaPaymentId): void
     {
         $this->almaPaymentId = $almaPaymentId;
     }

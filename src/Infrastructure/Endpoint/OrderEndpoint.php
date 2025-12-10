@@ -29,12 +29,13 @@ use Alma\API\Domain\Entity\Order;
 use Alma\API\Infrastructure\Exception\Endpoint\OrderEndpointException;
 use Alma\API\Infrastructure\Exception\ParametersException;
 use Alma\API\Infrastructure\Helper\ArrayHelper;
-use Alma\API\Infrastructure\PaginatedResult;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
+use Alma\API\Infrastructure\PaginatedResultCompatibilityTrait;
 
 class OrderEndpoint extends AbstractEndpoint
 {
+    use PaginatedResultCompatibilityTrait;
     const ORDERS_ENDPOINT_V1 = '/v1/orders';
     const ORDERS_ENDPOINT = '/v2/orders';
     private ArrayHelper $arrayUtils;
@@ -113,7 +114,7 @@ class OrderEndpoint extends AbstractEndpoint
      * @return PaginatedResult
      * @throws OrderEndpointException
      */
-    public function fetchAll(int $limit = 20, string $startingAfter = null, array $filters = array()): PaginatedResult
+    public function fetchAll(int $limit = 20, ?string $startingAfter = null, array $filters = array()): PaginatedResult
     {
         $args = array(
             'limit' => $limit,

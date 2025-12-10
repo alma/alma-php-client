@@ -33,6 +33,16 @@ includes:
     vars:
       PHP_VERSION: "8.3"
       PHPUNIT_FILE: phpunit.dist.8.xml
+  "8.4":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "8.4"
+      PHPUNIT_FILE: phpunit.dist.8.xml
+  "8.5":
+    taskfile: Taskfile.php.yml
+    vars:
+      PHP_VERSION: "8.5"
+      PHPUNIT_FILE: phpunit.dist.8.xml
 
 tasks:
   default:
