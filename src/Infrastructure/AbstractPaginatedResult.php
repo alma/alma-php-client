@@ -26,7 +26,7 @@ namespace Alma\API\Infrastructure;
 
 use Iterator;
 
-class PaginatedResult implements Iterator
+abstract class AbstractPaginatedResult
 {
     /** @var int */
     protected int $position = 0;
@@ -38,7 +38,7 @@ class PaginatedResult implements Iterator
      * @var callable
      */
     protected $nextPageCallback;
-    private $entities;
+    protected $entities;
 
     /**
      * PaginatedResults constructor.
@@ -60,15 +60,6 @@ class PaginatedResult implements Iterator
     public function rewind(): void
     {
         $this->position = 0;
-    }
-
-    /**
-     * Return the current entity.
-     * @return mixed
-     */
-    public function current()
-    {
-        return $this->entities[$this->position];
     }
 
     /**
@@ -96,19 +87,5 @@ class PaginatedResult implements Iterator
     public function valid(): bool
     {
         return isset($this->entities[$this->position]);
-    }
-
-    /**
-     * Move to the next page.
-     * @return self
-     */
-    public function nextPage(): PaginatedResult
-    {
-        $callback = $this->nextPageCallback;
-        if (!$callback || !array_key_exists('has_more', $this->response->getJson())) {
-            return new self(new Response(204), null);
-        }
-
-        return $callback(array_slice($this->entities, -1, 1)[0]['id']);
     }
 }

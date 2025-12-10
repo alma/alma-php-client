@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class EnvironmentTest extends TestCase
 {
-    public function environmentModesProvider(): array
+    public static function environmentModesProvider(): array
     {
         return [
             ['live', Environment::LIVE_API_URL],
