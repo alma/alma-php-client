@@ -26,28 +26,66 @@ namespace Alma\API\Infrastructure;
 
 use Iterator;
 
-class PaginatedResult8 extends abstractPaginatedResult implements Iterator
+abstract class AbstractPaginatedResult
 {
+    /** @var int */
+    protected int $position = 0;
+
+    /** @var ResponseInterface */
+    protected ResponseInterface $response;
+
     /**
-     * Return the current entity.
-     * @return mixed
+     * @var callable
      */
-    public function current(): mixed
+    protected $nextPageCallback;
+    protected $entities;
+
+    /**
+     * PaginatedResults constructor.
+     *
+     * @param Response $response
+     * @param callable|null $nextPageCallback
+     */
+    public function __construct(ResponseInterface $response, ?callable $nextPageCallback)
     {
-        return $this->entities[$this->position];
+        $this->response         = $response;
+        $this->entities         = $response->getJson()['data'] ?? [];
+        $this->nextPageCallback = $nextPageCallback;
     }
 
     /**
-     * Move to the next page.
-     * @return PaginatedResult8
+     * Rewind the iterator.
+     * @return void
      */
-    public function nextPage(): PaginatedResult8
+    public function rewind(): void
     {
-        $callback = $this->nextPageCallback;
-        if (!$callback || !array_key_exists('has_more', $this->response->getJson())) {
-            return new self(new Response(204), null);
-        }
+        $this->position = 0;
+    }
 
-        return $callback(array_slice($this->entities, -1, 1)[0]['id']);
+    /**
+     * Return the current entity key.
+     * @return int The current entity key.
+     */
+    public function key(): int
+    {
+        return $this->position;
+    }
+
+    /**
+     * Move to the next entity.
+     * @return void
+     */
+    public function next(): void
+    {
+        ++$this->position;
+    }
+
+    /**
+     * Check if there is a next entity.
+     * @return bool
+     */
+    public function valid(): bool
+    {
+        return isset($this->entities[$this->position]);
     }
 }

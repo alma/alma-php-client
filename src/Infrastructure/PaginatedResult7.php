@@ -26,42 +26,8 @@ namespace Alma\API\Infrastructure;
 
 use Iterator;
 
-class PaginatedResult7 implements Iterator
+class PaginatedResult7 extends abstractPaginatedResult implements Iterator
 {
-    /** @var int */
-    protected int $position = 0;
-
-    /** @var ResponseInterface */
-    protected ResponseInterface $response;
-
-    /**
-     * @var callable
-     */
-    protected $nextPageCallback;
-    private $entities;
-
-    /**
-     * PaginatedResults constructor.
-     *
-     * @param Response $response
-     * @param callable|null $nextPageCallback
-     */
-    public function __construct(ResponseInterface $response, ?callable $nextPageCallback)
-    {
-        $this->response         = $response;
-        $this->entities         = $response->getJson()['data'] ?? [];
-        $this->nextPageCallback = $nextPageCallback;
-    }
-
-    /**
-     * Rewind the iterator.
-     * @return void
-     */
-    public function rewind(): void
-    {
-        $this->position = 0;
-    }
-
     /**
      * Return the current entity.
      * @return mixed
@@ -72,37 +38,10 @@ class PaginatedResult7 implements Iterator
     }
 
     /**
-     * Return the current entity key.
-     * @return int The current entity key.
-     */
-    public function key(): int
-    {
-        return $this->position;
-    }
-
-    /**
-     * Move to the next entity.
-     * @return void
-     */
-    public function next(): void
-    {
-        ++$this->position;
-    }
-
-    /**
-     * Check if there is a next entity.
-     * @return bool
-     */
-    public function valid(): bool
-    {
-        return isset($this->entities[$this->position]);
-    }
-
-    /**
      * Move to the next page.
-     * @return PaginatedResult
+     * @return PaginatedResult7
      */
-    public function nextPage(): PaginatedResult
+    public function nextPage(): PaginatedResult7
     {
         $callback = $this->nextPageCallback;
         if (!$callback || !array_key_exists('has_more', $this->response->getJson())) {
