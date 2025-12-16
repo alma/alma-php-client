@@ -91,7 +91,7 @@ class CurlClient implements ClientInterface
         }
 
         $url = $this->config->getEnvironment()->getBaseUri() . $request->getUri()->getPath();
-        $this->logger->debug('Sending request to: ' . $request->getUri()->getPath());
+        $this->logger->debug('Sending request to: ' . $request->getUri()->getPath() . '<br />' . json_encode(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)));
         $query = $request->getUri()->getQuery();
         if (!empty($query)) {
             $url .= '?' . $query;
@@ -123,7 +123,7 @@ class CurlClient implements ClientInterface
         // Getting the HTTP status code and headers
         $statusCode = $this->getInfo( CURLINFO_HTTP_CODE);
         $responseHeaders = $this->getInfo( CURLINFO_HEADER_SIZE);
-        $httpVersion = $this->getInfo(CURLINFO_HTTP_VERSION);
+        $httpVersion = $this->getHttpVersion($this->getInfo(CURLINFO_HTTP_VERSION));
         $headerString = substr($response, 0, $responseHeaders);
         $bodyContent = substr($response, $responseHeaders);
         $this->close();
@@ -181,6 +181,26 @@ class CurlClient implements ClientInterface
     public function getInfo(int $option = 0)
     {
         return curl_getinfo($this->curlClient, $option);
+    }
+
+    public function getHttpVersion(string $curlHttpVersion)
+    {
+        switch ($curlHttpVersion) {
+            case CURL_HTTP_VERSION_1_0:
+                $httpVersion = '1.0';
+                break;
+            case CURL_HTTP_VERSION_2_0:
+            case CURL_HTTP_VERSION_2TLS:
+            case CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE:
+                $httpVersion = '2.0';
+                break;
+            case CURL_HTTP_VERSION_1_1:
+            default:
+                $httpVersion = '1.1';
+                break;
+        }
+
+        return $httpVersion;
     }
 
     /** @codeCoverageIgnore Curl Wrapper used to test sendRequest function */

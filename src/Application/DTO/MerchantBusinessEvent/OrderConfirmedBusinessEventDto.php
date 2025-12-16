@@ -39,20 +39,22 @@ class OrderConfirmedBusinessEventDto
      * For non alma payment, almaPaymentId should be null
      * For Alma payment, almaPaymentId should be a string
      *
-     * @param bool $isAlmaP1X
-     * @param bool $isAlmaBNPL
-     * @param bool $wasBNPLEligible
-     * @param string $orderId
-     * @param string $cartId
+     * @param bool $isAlmaP1X Whether the order was paid with Alma P1X
+     * @param bool $isAlmaBNPL Whether the order was paid with Alma BNPL
+     * @param bool $wasBNPLEligible Whether the order was eligible for BNPL
+     * @param string $orderId The order identifier
+     * @param string $cartId The cart identifier
+     * @param string|null $almaPaymentId Mandatory for Alma payments, should be null for non Alma payments
      * @throws ParametersException
      */
-    public function __construct(bool $isAlmaP1X, bool $isAlmaBNPL, bool $wasBNPLEligible, string $orderId, string $cartId)
+    public function __construct(bool $isAlmaP1X, bool $isAlmaBNPL, bool $wasBNPLEligible, string $orderId, string $cartId, string $almaPaymentId = '')
     {
         $this->setIsAlmaP1X($isAlmaP1X);
         $this->setIsAlmaBNPL($isAlmaBNPL);
         $this->setWasBNPLEligible($wasBNPLEligible);
         $this->setOrderId($orderId);
         $this->setCartId($cartId);
+        $this->setAlmaPaymentId($almaPaymentId);
         $this->validateData();
     }
 
@@ -76,7 +78,7 @@ class OrderConfirmedBusinessEventDto
             (empty($this->orderId)) ||
             (empty($this->cartId)) ||
             // Alma payment id should be absent for non Alma payments
-            (!$this->isAlmaPayment() && !is_null($this->almaPaymentId))
+            (!$this->isAlmaPayment() && !empty($this->almaPaymentId))
         )
         {
             throw new ParametersException('Invalid data type in OrderConfirmedBusinessEvent constructor');

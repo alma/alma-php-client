@@ -38,13 +38,6 @@ class OrderEndpoint extends AbstractEndpoint
     use PaginatedResultCompatibilityTrait;
     const ORDERS_ENDPOINT_V1 = '/v1/orders';
     const ORDERS_ENDPOINT = '/v2/orders';
-    private ArrayHelper $arrayUtils;
-
-    public function __construct(ClientInterface $client)
-    {
-        parent::__construct($client);
-        $this->arrayUtils = new ArrayHelper();
-    }
 
     /**
      * @param string $orderId

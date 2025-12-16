@@ -8,6 +8,8 @@ use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\OrderEndpointException;
 use Alma\API\Infrastructure\Helper\ArrayHelper;
 use Alma\API\Infrastructure\PaginatedResult;
+use Alma\API\Infrastructure\PaginatedResult7;
+use Alma\API\Infrastructure\PaginatedResult8;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
@@ -271,10 +273,17 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->times(5)->andReturn($this->fetchAllResponseMock);
 
         // Assertions
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll());
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll(20, 'starting_after'));
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll(1)->nextPage());
+        if (PHP_VERSION_ID < 80000) {
+            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll());
+            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll(20, 'starting_after'));
+            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
+            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll(1)->nextPage());
+        } else {
+            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll());
+            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll(20, 'starting_after'));
+            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
+            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll(1)->nextPage());
+        }
     }
 
     /**

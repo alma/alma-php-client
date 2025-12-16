@@ -2,13 +2,17 @@
 
 namespace Alma\API\Tests\Unit\Infrastructure;
 
-use Alma\API\Infrastructure\PaginatedResult;
+use Alma\API\Infrastructure\PaginatedResult7;
+use Alma\API\Infrastructure\PaginatedResult8;
+use Alma\API\Infrastructure\PaginatedResultCompatibilityTrait;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class PaginatedResultTest extends TestCase
 {
+    use PaginatedResultCompatibilityTrait;
+
     const FIRST_ITEMS_RESPONSE_JSON = '{
         "data": [
             {
@@ -52,12 +56,21 @@ class PaginatedResultTest extends TestCase
         $nextResponseMock->shouldReceive('getJson')->andReturn(json_decode(self::NEXT_ITEMS_RESPONSE_JSON, true));
 
         // PaginatedResult
-        $paginatedResult = new PaginatedResult(
-            $responseMock,
-            function () use ($nextResponseMock) {
-                return new PaginatedResult($nextResponseMock, null);
-            }
-        );
+        if (PHP_VERSION_ID < 80000) {
+            $paginatedResult = new PaginatedResult7(
+                $responseMock,
+                function () use ($nextResponseMock) {
+                    return new PaginatedResult7($nextResponseMock, null);
+                }
+            );
+        } else {
+            $paginatedResult = new PaginatedResult8(
+                $responseMock,
+                function () use ($nextResponseMock) {
+                    return new PaginatedResult8($nextResponseMock, null);
+                }
+            );
+        }
 
         // Assertions
         $this->assertEquals(["comment" => "comment 1","id" => "1"], $paginatedResult->current());
