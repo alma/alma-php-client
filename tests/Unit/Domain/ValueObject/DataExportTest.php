@@ -15,7 +15,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('complete');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, true);
 
         $this->assertTrue($dataExport->isComplete());
@@ -26,7 +28,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('complete');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, false);
 
         $this->assertFalse($dataExport->isComplete());
@@ -37,7 +41,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('created');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, 1633024800);
 
         $this->assertEquals(1633024800, $dataExport->getCreated());
@@ -48,7 +54,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('csvUrl');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, 'https://example.com/export.csv');
 
         $this->assertEquals('https://example.com/export.csv', $dataExport->getCsvUrl());
@@ -59,7 +67,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('type');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, 'payments');
 
         $this->assertEquals('payments', $dataExport->getType());
@@ -70,7 +80,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('updated');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, 1633025800);
 
         $this->assertEquals(1633025800, $dataExport->getUpdated());
@@ -81,7 +93,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('end');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, 1633024800);
 
         $this->assertEquals(1633024800, $dataExport->getEnd());
@@ -93,7 +107,9 @@ class DataExportTest extends TestCase
         $dataExport = new DataExport([]);
         $reflection = new \ReflectionClass($dataExport);
         $property = $reflection->getProperty('start');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($dataExport, 1633024800);
 
         $this->assertEquals(1633024800, $dataExport->getStart());

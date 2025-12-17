@@ -17,9 +17,18 @@ RUN apt update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-RUN case ${PHP_VERSION} in \
-        8.0|8.1|8.2|8.3 ) pecl install xdebug-3.3.2 && docker-php-ext-enable xdebug;; \
-        *) pecl install xdebug-2.9.8 && docker-php-ext-enable xdebug;; \
+RUN case "${PHP_VERSION}" in \
+        7.* ) \
+            echo "Installing Xdebug 2.9.8 for PHP ${PHP_VERSION}"; \
+            pecl install xdebug-2.9.8 && docker-php-ext-enable xdebug \
+        ;; \
+        8.0|8.1|8.2|8.3 ) \
+            echo "Installing Xdebug 3.3.2 for PHP ${PHP_VERSION}"; \
+            pecl install xdebug-3.3.2 && docker-php-ext-enable xdebug \
+        ;; \
+        * ) \
+            echo "PHP ${PHP_VERSION} >= 8.4 — skipping Xdebug installation"; \
+        ;; \
     esac
 
 RUN usermod -u 1000 www-data

@@ -4,7 +4,8 @@ namespace Alma\API\Tests\Integration\Infrastructure\Endpoint;
 
 use Alma\API\Domain\Entity\Order;
 use Alma\API\Infrastructure\Endpoint\OrderEndpoint;
-use Alma\API\Infrastructure\PaginatedResult;
+use Alma\API\Infrastructure\PaginatedResult7;
+use Alma\API\Infrastructure\PaginatedResult8;
 
 class OrderEndpointTest extends AbstractEndpointTest
 {
@@ -17,9 +18,13 @@ class OrderEndpointTest extends AbstractEndpointTest
 
     public function testFetchAll(): string
     {
-        /** @var PaginatedResult $orders */
+        /** @var PaginatedResult7 $orders */
         $orders = $this->endpoint->fetchAll(1);
-        $this->assertInstanceOf(PaginatedResult::class, $orders);
+        if (PHP_VERSION_ID < 80000) {
+            $this->assertInstanceOf(PaginatedResult7::class, $orders);
+        } else {
+            $this->assertInstanceOf(PaginatedResult8::class, $orders);
+        }
         return $orders->current()['id'];
     }
 

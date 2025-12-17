@@ -8,6 +8,8 @@ use Alma\API\Infrastructure\Exception\ClientException;
 use Alma\API\Infrastructure\Exception\Endpoint\OrderEndpointException;
 use Alma\API\Infrastructure\Helper\ArrayHelper;
 use Alma\API\Infrastructure\PaginatedResult;
+use Alma\API\Infrastructure\PaginatedResult7;
+use Alma\API\Infrastructure\PaginatedResult8;
 use Alma\API\Infrastructure\Response;
 use Mockery;
 use Mockery\Mock;
@@ -271,10 +273,15 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->times(5)->andReturn($this->fetchAllResponseMock);
 
         // Assertions
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll());
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll(20, 'starting_after'));
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
-        $this->assertInstanceOf(PaginatedResult::class, $this->orderServiceMock->fetchAll(1)->nextPage());
+        $classname = PaginatedResult8::class;
+        if (PHP_VERSION_ID < 80000) {
+            $classname = PaginatedResult7::class;
+        }
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll());
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll(20, 'starting_after'));
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll(1)->nextPage());
+
     }
 
     /**
