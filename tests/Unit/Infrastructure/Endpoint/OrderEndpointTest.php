@@ -273,17 +273,15 @@ class OrderEndpointTest extends AbstractEndpointSetUp
         $this->clientMock->shouldReceive('sendRequest')->times(5)->andReturn($this->fetchAllResponseMock);
 
         // Assertions
+        $classname = PaginatedResult8::class;
         if (PHP_VERSION_ID < 80000) {
-            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll());
-            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll(20, 'starting_after'));
-            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
-            $this->assertInstanceOf(PaginatedResult7::class, $this->orderServiceMock->fetchAll(1)->nextPage());
-        } else {
-            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll());
-            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll(20, 'starting_after'));
-            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
-            $this->assertInstanceOf(PaginatedResult8::class, $this->orderServiceMock->fetchAll(1)->nextPage());
+            $classname = PaginatedResult7::class;
         }
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll());
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll(20, 'starting_after'));
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll(20, null, ['status' => 'pending']));
+        $this->assertInstanceOf($classname, $this->orderServiceMock->fetchAll(1)->nextPage());
+
     }
 
     /**

@@ -156,7 +156,6 @@ class Response implements ResponseInterface
     {
         $data = json_decode($this->body, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            // Gérer l'erreur de décodage JSON (throw new \Exception, par exemple)
             return null;
         }
         return $data;
