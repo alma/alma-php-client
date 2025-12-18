@@ -39,8 +39,12 @@ trait PaymentPlanTrait
             $paymentMethod = PaymentMethod::PNX;
         } elseif ($this->isPayLaterOnly()) {
             $paymentMethod = PaymentMethod::PAY_LATER;
-        } else {
+        } elseif ($this->isPayNow()) {
             $paymentMethod = PaymentMethod::PAY_NOW;
+        } elseif ($this->isBothPnxAndPayLater()) {
+            $paymentMethod = 'pnx_and_paylater';
+        } else {
+            $paymentMethod = 'unknown';
         }
         return $paymentMethod;
     }

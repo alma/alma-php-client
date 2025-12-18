@@ -24,6 +24,7 @@ class PaymentPlanTraitTest extends TestCase
                     'is_pnx_only' => true,
                     'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => false,
+                    'payment_method' => 'pnx',
                 ]
             ],
             'paylater_deferred_months' => [
@@ -39,6 +40,7 @@ class PaymentPlanTraitTest extends TestCase
                     'is_pnx_only' => false,
                     'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => false,
+                    'payment_method' => 'paylater',
                 ]
             ],
             'paylater_deferred_days' => [
@@ -54,6 +56,7 @@ class PaymentPlanTraitTest extends TestCase
                     'is_pnx_only' => false,
                     'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => false,
+                    'payment_method' => 'paylater',
                 ]
             ],
             'pnx_and_paylater' => [
@@ -69,6 +72,7 @@ class PaymentPlanTraitTest extends TestCase
                     'is_pnx_only' => false,
                     'is_both_pnx_and_pay_later' => true,
                     'is_pay_now' => false,
+                    'payment_method' => 'pnx_and_paylater',
                 ]
             ],
             'pay_now' => [
@@ -84,6 +88,7 @@ class PaymentPlanTraitTest extends TestCase
                     'is_pnx_only' => false,
                     'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => true,
+                    'payment_method' => 'paynow',
                 ]
             ]
         ];
@@ -137,5 +142,6 @@ class PaymentPlanTraitTest extends TestCase
         $this->assertEquals($expected['is_pnx_only'], $paymentPlanImplementation->isPnXOnly());
         $this->assertEquals($expected['is_both_pnx_and_pay_later'], $paymentPlanImplementation->isBothPnxAndPayLater());
         $this->assertEquals($expected['is_pay_now'], $paymentPlanImplementation->isPayNow());
+        $this->assertEquals($expected['payment_method'], $paymentPlanImplementation->getPaymentMethod());
     }
 }
