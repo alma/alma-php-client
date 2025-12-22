@@ -22,7 +22,6 @@ class PaymentPlanTraitTest extends TestCase
                     'plan_key' => 'general_4_0_0',
                     'is_pay_later_only' => false,
                     'is_pnx_only' => true,
-                    'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => false,
                     'payment_method' => 'pnx',
                 ]
@@ -38,7 +37,6 @@ class PaymentPlanTraitTest extends TestCase
                     'plan_key' => 'general_1_0_3',
                     'is_pay_later_only' => true,
                     'is_pnx_only' => false,
-                    'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => false,
                     'payment_method' => 'paylater',
                 ]
@@ -54,25 +52,8 @@ class PaymentPlanTraitTest extends TestCase
                     'plan_key' => 'general_1_30_0',
                     'is_pay_later_only' => true,
                     'is_pnx_only' => false,
-                    'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => false,
                     'payment_method' => 'paylater',
-                ]
-            ],
-            'pnx_and_paylater' => [
-                'params' => [
-                    'kind' => 'general',
-                    'installments_count' => 3,
-                    'deferred_days' => 15,
-                    'deferred_months' => 0,
-                ],
-                'expected' => [
-                    'plan_key' => 'general_3_15_0',
-                    'is_pay_later_only' => false,
-                    'is_pnx_only' => false,
-                    'is_both_pnx_and_pay_later' => true,
-                    'is_pay_now' => false,
-                    'payment_method' => 'pnx_and_paylater',
                 ]
             ],
             'pay_now' => [
@@ -86,7 +67,6 @@ class PaymentPlanTraitTest extends TestCase
                     'plan_key' => 'general_1_0_0',
                     'is_pay_later_only' => false,
                     'is_pnx_only' => false,
-                    'is_both_pnx_and_pay_later' => false,
                     'is_pay_now' => true,
                     'payment_method' => 'paynow',
                 ]
@@ -140,7 +120,6 @@ class PaymentPlanTraitTest extends TestCase
         $this->assertEquals($expected['plan_key'], $paymentPlanImplementation->getPlanKey());
         $this->assertEquals($expected['is_pay_later_only'], $paymentPlanImplementation->isPayLaterOnly());
         $this->assertEquals($expected['is_pnx_only'], $paymentPlanImplementation->isPnXOnly());
-        $this->assertEquals($expected['is_both_pnx_and_pay_later'], $paymentPlanImplementation->isBothPnxAndPayLater());
         $this->assertEquals($expected['is_pay_now'], $paymentPlanImplementation->isPayNow());
         $this->assertEquals($expected['payment_method'], $paymentPlanImplementation->getPaymentMethod());
     }

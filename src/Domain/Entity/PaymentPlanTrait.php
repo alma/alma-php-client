@@ -3,6 +3,7 @@
 namespace Alma\API\Domain\Entity;
 
 use Alma\API\Domain\ValueObject\PaymentMethod;
+use InvalidArgumentException;
 
 /**
  * Trait PaymentPlanTrait
@@ -39,12 +40,8 @@ trait PaymentPlanTrait
             $paymentMethod = PaymentMethod::PNX;
         } elseif ($this->isPayLaterOnly()) {
             $paymentMethod = PaymentMethod::PAY_LATER;
-        } elseif ($this->isPayNow()) {
-            $paymentMethod = PaymentMethod::PAY_NOW;
-        } elseif ($this->isBothPnxAndPayLater()) {
-            $paymentMethod = 'pnx_and_paylater';
         } else {
-            $paymentMethod = 'unknown';
+            $paymentMethod = PaymentMethod::PAY_NOW;
         }
         return $paymentMethod;
     }
