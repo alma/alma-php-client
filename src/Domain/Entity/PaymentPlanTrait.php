@@ -3,7 +3,6 @@
 namespace Alma\API\Domain\Entity;
 
 use Alma\API\Domain\ValueObject\PaymentMethod;
-use InvalidArgumentException;
 
 /**
  * Trait PaymentPlanTrait
