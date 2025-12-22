@@ -89,9 +89,6 @@ EOF;
         return new Stream($resourceFromString);
     }
 
-    /**
-     * @throws ClientException
-     */
     public function testConfig()
     {
         $client = new CurlClient($this->clientConfiguration);

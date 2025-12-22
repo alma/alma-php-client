@@ -2,6 +2,8 @@
 
 namespace Alma\API\Domain\Entity;
 
+use Alma\API\Domain\ValueObject\PaymentMethod;
+
 /**
  * Trait PaymentPlanTrait
  *
@@ -22,6 +24,25 @@ trait PaymentPlanTrait
             is_null($this->getDeferredDays()) ? '0' : $this->getDeferredDays(),
             is_null($this->getDeferredMonths()) ? '0' : $this->getDeferredMonths()
         );
+    }
+
+    /**
+     * Get the payment method this payment plan applies to.
+     *
+     * @return string
+     */
+    public function getPaymentMethod(): string
+    {
+        if ($this->isCredit()) {
+            $paymentMethod = PaymentMethod::CREDIT;
+        } elseif ($this->isPnXOnly()) {
+            $paymentMethod = PaymentMethod::PNX;
+        } elseif ($this->isPayLaterOnly()) {
+            $paymentMethod = PaymentMethod::PAY_LATER;
+        } else {
+            $paymentMethod = PaymentMethod::PAY_NOW;
+        }
+        return $paymentMethod;
     }
 
     /**
