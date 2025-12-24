@@ -26,7 +26,7 @@ namespace Alma\API\Infrastructure;
 
 use Iterator;
 
-class PaginatedResult7 extends abstractPaginatedResult implements Iterator
+class PaginatedResult7 extends AbstractPaginatedResult implements Iterator
 {
     /**
      * Return the current entity.
