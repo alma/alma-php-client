@@ -10,5 +10,5 @@ interface BusinessEventsRepositoryInterface
      * @param int $cartId
      * @return bool
      */
-    public function isCartIdValid(int $cartId): bool;
+    public function alreadyExist(int $cartId): bool;
 }
