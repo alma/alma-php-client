@@ -31,12 +31,16 @@
   ],
   "autoload": {
     "psr-4": {
-      "Alma\\API\\": "src/"
+      "Alma\\Client\\": "src/Client",
+      "Alma\\Plugin\\": "src/Plugin"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Alma\\API\\Tests\\": "tests/"
+      "Alma\\Client\\Tests\\Integration\\": "tests/Client/Integration",
+      "Alma\\Plugin\\Tests\\Integration\\": "tests/Plugin/Integration",
+      "Alma\\Client\\Tests\\Unit\\": "tests/Client/Unit",
+      "Alma\\Plugin\\Tests\\Unit\\": "tests/Plugin/Unit"
     }
   },
   "config": {
