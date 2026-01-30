@@ -17,11 +17,11 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
 
     /**
      * Init the Endpoint
-     * @param ClientInterface $Client The Client to use with the Endpoint
+     * @param ClientInterface $client The Client to use with the Endpoint
      */
     public function __construct(ClientInterface $client)
     {
-        $this->Client = $client;
+        $this->client = $client;
         $this->logger = new NullLogger();
     }
 
