@@ -21,7 +21,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPutRequest(self::SHARE_OF_CHECKOUT_ENDPOINT, $data);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
@@ -43,7 +43,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::SHARE_OF_CHECKOUT_ENDPOINT);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
@@ -64,7 +64,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPostRequest(self::SHARE_OF_CHECKOUT_CONSENT_ENDPOINT);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }
@@ -86,7 +86,7 @@ class ShareOfCheckoutEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createDeleteRequest(self::SHARE_OF_CHECKOUT_CONSENT_ENDPOINT);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new ShareOfCheckoutEndpointException($e->getMessage(), $request);
         }

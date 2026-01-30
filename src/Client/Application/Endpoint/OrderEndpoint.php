@@ -51,7 +51,7 @@ class OrderEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPutRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId", $orderData);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }
@@ -89,7 +89,7 @@ class OrderEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPostRequest(self::ORDERS_ENDPOINT . "/$orderId/shipment", $trackingData);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }
@@ -126,7 +126,7 @@ class OrderEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1, $args);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }
@@ -154,7 +154,7 @@ class OrderEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::ORDERS_ENDPOINT_V1 . "/$orderId");
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new OrderEndpointException($e->getMessage(), $request);
         }

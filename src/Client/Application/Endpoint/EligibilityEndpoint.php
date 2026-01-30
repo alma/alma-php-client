@@ -50,7 +50,7 @@ class EligibilityEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPostRequest(self::ELIGIBILITY_ENDPOINT, $eligibilityDto->toArray());
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new EligibilityEndpointException($e->getMessage(), $request);
         }

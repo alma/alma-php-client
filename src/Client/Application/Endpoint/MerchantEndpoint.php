@@ -50,7 +50,7 @@ class MerchantEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::EXTENDED_DATA_ENDPOINT);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new MerchantEndpointException($e->getMessage(), $request);
         }
@@ -95,7 +95,7 @@ class MerchantEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::FEE_PLANS_ENDPOINT, $queryParams);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new MerchantEndpointException($e->getMessage(), $request);
         }
@@ -153,7 +153,7 @@ class MerchantEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPostRequest(self::BUSINESS_EVENTS_ENDPOINT, $eventData);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new MerchantEndpointException($e->getMessage(), $request);
         }

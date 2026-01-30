@@ -49,7 +49,7 @@ class DataExportEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPostRequest(self::DATA_EXPORTS_ENDPOINT, $data);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new DataExportEndpointException($e->getMessage(), $request);
         }
@@ -80,7 +80,7 @@ class DataExportEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . '/' . $reportId);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new DataExportEndpointException($e->getMessage(), $request);
         }
@@ -117,7 +117,7 @@ class DataExportEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::DATA_EXPORTS_ENDPOINT . sprintf('/%s', $reportId), ['format' => $format]);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new DataExportEndpointException($e->getMessage(), $request);
         }

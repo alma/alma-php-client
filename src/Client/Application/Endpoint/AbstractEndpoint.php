@@ -34,7 +34,7 @@ abstract class AbstractEndpoint implements LoggerAwareInterface
      */
     private function createRequest(string $method, string $uri, array $body = []): Request {
         $headers = [
-            'Authorization' => ['Alma-Auth ' . $this->Client->getConfig()->getApiKey()]
+            'Authorization' => ['Alma-Auth ' . $this->client->getConfig()->getApiKey()]
         ];
         return new Request($method, $uri, $headers, json_encode($body));
     }

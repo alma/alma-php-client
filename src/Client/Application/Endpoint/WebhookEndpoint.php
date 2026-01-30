@@ -47,7 +47,7 @@ class WebhookEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPostRequest(self::WEBHOOKS_ENDPOINT, $data);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new WebhookEndpointException($e->getMessage(), $request);
         }
@@ -70,7 +70,7 @@ class WebhookEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createGetRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new WebhookEndpointException($e->getMessage(), $request);
         }
@@ -95,7 +95,7 @@ class WebhookEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createDeleteRequest(self::WEBHOOKS_ENDPOINT . sprintf("/%s", $id));
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new WebhookEndpointException($e->getMessage(), $request);
         }

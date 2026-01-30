@@ -41,7 +41,7 @@ class ConfigurationEndpoint extends AbstractEndpoint
         try {
             $request = null;
             $request = $this->createPutRequest(self::CONFIGURATION_API_ENDPOINT, ["collect_data_url" => $url]);
-            $response = $this->Client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             throw new ConfigurationEndpointException($e->getMessage(), $request);
         }
