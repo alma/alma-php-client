@@ -43,4 +43,11 @@ interface FeePlanListAdapterInterface
      * @return FeePlanListAdapterInterface
      */
     public function filterEnabled(): FeePlanListAdapterInterface;
+
+    /**
+     * Returns a FeePlanList containing only available FeePlans (allowed by Alma).
+     *
+     * @return FeePlanListAdapterInterface
+     */
+    public function filterAvailable(): FeePlanListAdapterInterface;
 }
