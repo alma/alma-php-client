@@ -24,4 +24,11 @@ interface ProductAdapterInterface
      * @return array An array of category IDs.
      */
     public function getCategoryIds(): array;
+
+    /**
+     * Get the category slugs associated with the product.
+     *
+     * @return array An array of category slugs.
+     */
+    public function getCategorySlugs(): array;
 }
