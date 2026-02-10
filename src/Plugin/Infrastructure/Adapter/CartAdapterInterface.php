@@ -19,9 +19,9 @@ interface CartAdapterInterface
     public function emptyCart(): void;
 
     /**
-     * Get the cart items categories.
+     * Get the cart items categories slugs.
      *
-     * @return array An array of cart items categories.
+     * @return array An array of cart items categories slugs.
      */
-    public function getCartItemsCategories(): array;
+    public function getCartItemsCategoriesSlugs(): array;
 }
