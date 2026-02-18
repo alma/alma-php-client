@@ -30,6 +30,7 @@ use InvalidArgumentException;
 
 class ClientConfiguration
 {
+    const VERSION = '3.0.0';
     private string $apiKey;
     private array $userAgentComponents = [];
     private array $config = [];
@@ -60,6 +61,7 @@ class ClientConfiguration
         } catch (InvalidArgumentException $e) {
             $this->addError("Invalid configuration: " . $e->getMessage());
         }
+        $this->initUserAgent();
     }
 
     /**
@@ -215,5 +217,12 @@ class ClientConfiguration
 
     public function getErrors(): array {
         return array_values($this->errors);
+    }
+
+    private function initUserAgent()
+    {
+        $phpVersion = rtrim(str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION), '-');
+        $this->addUserAgentComponent('PHP', $phpVersion);
+        $this->addUserAgentComponent('Alma for PHP', self::VERSION);
     }
 }

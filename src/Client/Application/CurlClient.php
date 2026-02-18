@@ -35,7 +35,6 @@ use Psr\Log\NullLogger;
 
 class CurlClient implements ClientInterface
 {
-    const VERSION = '3.0.0';
 
     private ClientConfiguration $config;
 
