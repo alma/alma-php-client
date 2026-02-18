@@ -10,7 +10,7 @@ class ClientConfigurationTest extends TestCase
 {
     /** @var ClientConfiguration */
     private ClientConfiguration $clientConfig;
-    
+
     public function setUp(): void
     {
         parent::setUp();
@@ -169,6 +169,7 @@ class ClientConfigurationTest extends TestCase
             ]
         ];
     }
+
     /**
      * @dataProvider timeoutConfigDataProvider
      * @return void
@@ -196,8 +197,10 @@ class ClientConfigurationTest extends TestCase
 
     public function testAddUserAgentComponent()
     {
-        $this->clientConfig->addUserAgentComponent('alma-php-sdk', '1.0.0');
-        $this->assertEquals('alma-php-sdk/1.0.0', $this->clientConfig->getUserAgentString());
+        $phpVersion = rtrim(str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION), '-');
+
+        $this->clientConfig->addUserAgentComponent('wc-version', '1.0.0');
+        $this->assertEquals(sprintf('wc-version/1.0.0; Alma for PHP/%s; PHP/%s', ClientConfiguration::VERSION, $phpVersion), $this->clientConfig->getUserAgentString());
     }
 
     /**
