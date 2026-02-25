@@ -111,7 +111,7 @@ class MerchantEndpoint extends AbstractEndpoint
             } catch (ParametersException $e) {
                 throw new MerchantEndpointException($e->getMessage(), $request, $response);
             }
-            $feePlanList->add($feePlan);
+            $feePlanList->Add($feePlan);
         }
 
         return $feePlanList;
