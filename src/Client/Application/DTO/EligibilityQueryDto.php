@@ -16,8 +16,8 @@ class EligibilityQueryDto implements DtoInterface {
     }
 
     public function setInstallmentsCount(int $installmentsCount): self {
-        if ($installmentsCount <= 0 || $installmentsCount > 12) {
-            throw new InvalidArgumentException("Installments count must be between 1 and 12.");
+        if ($installmentsCount <= 0) {
+            throw new InvalidArgumentException("Installments count must be positive.");
         }
         $this->installmentsCount = $installmentsCount;
         return $this;
