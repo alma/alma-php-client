@@ -1,21 +1,28 @@
 ARG PHP_VERSION
 
-FROM composer:2 as composer
+FROM composer:2.2 as composer
 FROM php:${PHP_VERSION}-fpm
 
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update sources.list to outdated Debian archives
-RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list && \
-    sed -i s/security.debian.org/archive.debian.org/g /etc/apt/sources.list && \
-    sed -i s/stretch-updates/stretch/g /etc/apt/sources.list
+RUN find /etc/apt -name "*.list" -exec sed -i \
+    -e 's|deb.debian.org|archive.debian.org|g' \
+    -e 's|security.debian.org|archive.debian.org|g' \
+    -e 's|stretch-updates|stretch|g' \
+    -e '/stretch\/updates/d' \
+    {} \; && \
+    rm -rf /var/lib/apt/lists/* && \
+    echo "deb [trusted=yes] http://archive.debian.org/debian stretch main" > /etc/apt/sources.list && \
+    echo "deb [trusted=yes] http://archive.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list
 
 # Install dependencies
-RUN apt update && \
-    apt install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     git \
     zip \
     unzip \
+    jq \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
@@ -29,11 +36,20 @@ RUN groupmod -g 1000 www-data
 
 RUN mkdir -p /app/vendor && chown -R www-data:www-data /app
 
-USER www-data
-WORKDIR /app
-
 COPY --link .docker/php.ini /usr/local/etc/php/php.ini
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-COPY --link composer.json ./
-RUN composer install --prefer-dist --no-progress
+COPY --link composer.json /app/composer.json
+
+# Patch composer.json for PHP 5.6 compatibility:
+# - remove roave/security-advisories (conflicts with phpunit ^5)
+# - pin phpunit to ^5.7
+RUN jq 'del(."require-dev"."roave/security-advisories") | ."require-dev"."phpunit/phpunit" = "^5.7" | .require."psr/log" = "^1" | ."require-dev"."doctrine/instantiator" = "1.0.5"' \
+    /app/composer.json > /app/composer.tmp.json && \
+    mv /app/composer.tmp.json /app/composer.json && \
+    chown www-data:www-data /app/composer.json
+
+USER www-data
+WORKDIR /app
+
+RUN composer install --prefer-dist --no-progress --ignore-platform-reqs
