@@ -31,6 +31,9 @@ class CartItemDto implements DtoInterface {
     }
 
     public function setTitle(string $title): self {
+        if (empty($title)) {
+            throw new InvalidArgumentException("Title can't be empty.");
+        }
         $this->title = $title;
         return $this;
     }

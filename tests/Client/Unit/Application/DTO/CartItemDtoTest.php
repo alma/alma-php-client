@@ -51,6 +51,11 @@ class CartItemDtoTest extends TestCase
         new CartItemDto(1, -1, 'My product');
     }
 
+    public function testInvalidTitle() {
+        $this->expectException(InvalidArgumentException::class);
+        new CartItemDto(1, 25, '');
+}
+
     public function testInvalidUrlIsIgnored()
     {
         $cartItemDto = (new CartItemDto(1, 25, 'My product'))->setUrl('invalid-url');
