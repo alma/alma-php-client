@@ -22,12 +22,9 @@ class CartItemDtoTest extends TestCase
             'requires_shipping' => true,
         ];
 
-        $cartItemDto = (new CartItemDto($data['quantity'], $data['line_price'], $data['picture_url']))
+        $cartItemDto = (new CartItemDto($data['quantity'], $data['line_price'], $data['title']))
             ->setSku($data['sku'])
-            ->setTitle($data['title'])
-            ->setQuantity($data['quantity'])
             ->setUnitPrice($data['unit_price'])
-            ->setLinePrice($data['line_price'])
             ->setCategories($data['categories'])
             ->setUrl($data['url'])
             ->setPictureUrl($data['picture_url'])
@@ -39,30 +36,56 @@ class CartItemDtoTest extends TestCase
     public function testInvalidQuantity()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new CartItemDto(1, 25, 'https://example.com/image.jpg'))->setQuantity(0);
+        new CartItemDto(0, 25, 'My product');
     }
 
     public function testInvalidUnitPrice()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new CartItemDto(1, 25, 'https://example.com/image.jpg'))->setUnitPrice(-1);
+        (new CartItemDto(1, 25, 'My product'))->setUnitPrice(-1);
     }
 
     public function testInvalidLinePrice()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new CartItemDto(1, 25, 'https://example.com/image.jpg'))->setLinePrice(-1);
+        new CartItemDto(1, -1, 'My product');
     }
 
-    public function testInvalidUrl()
-    {
+    public function testInvalidTitle() {
         $this->expectException(InvalidArgumentException::class);
-        (new CartItemDto(1, 25, 'https://example.com/image.jpg'))->setUrl('invalid-url');
+        new CartItemDto(1, 25, '');
+}
+
+    public function testInvalidUrlIsIgnored()
+    {
+        $cartItemDto = (new CartItemDto(1, 25, 'My product'))->setUrl('invalid-url');
+        $this->assertArrayNotHasKey('url', $cartItemDto->toArray());
     }
 
-    public function testInvalidPictureUrl()
+    public function testInvalidPictureUrlIsIgnored()
     {
-        $this->expectException(InvalidArgumentException::class);
-        (new CartItemDto(1, 25, 'https://example.com/image.jpg'))->setPictureUrl('invalid-url');
+        $cartItemDto = (new CartItemDto(1, 25, 'My product'))->setPictureUrl('invalid-url');
+        $this->assertArrayNotHasKey('picture_url', $cartItemDto->toArray());
+    }
+
+    public function testNullPictureUrl()
+    {
+        $cartItemDto = new CartItemDto(1, 25, 'My product');
+        $result = $cartItemDto->toArray();
+        $this->assertArrayNotHasKey('picture_url', $result);
+    }
+
+    public function testEmptyPictureUrl()
+    {
+        $cartItemDto = (new CartItemDto(1, 25, 'My product'))->setPictureUrl('');
+        $result = $cartItemDto->toArray();
+        $this->assertArrayNotHasKey('picture_url', $result);
+    }
+
+    public function testWithoutPictureUrl()
+    {
+        $cartItemDto = new CartItemDto(1, 25, 'My product');
+        $result = $cartItemDto->toArray();
+        $this->assertArrayNotHasKey('picture_url', $result);
     }
 }

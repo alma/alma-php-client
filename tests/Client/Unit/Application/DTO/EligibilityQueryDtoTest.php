@@ -23,7 +23,7 @@ class EligibilityQueryDtoTest extends TestCase
         $this->assertEquals($data, $eligibilityDto->toArray());
     }
 
-    public function testSetInvalidInstallmentsCountThrowsException()
+    public function testSetNegativeInstallmentsCountThrowsException()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Installments count must be positive.");
