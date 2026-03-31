@@ -6,7 +6,7 @@ use InvalidArgumentException;
 
 class CartItemDto implements DtoInterface {
     private ?string $sku = null;
-    private ?string $title = null;
+    private string $title;
     private int $quantity;
     private ?int $unitPrice = null;
     private int $linePrice;
@@ -17,10 +17,12 @@ class CartItemDto implements DtoInterface {
 
     public function __construct(
         int $quantity,
-        int $linePrice
+        int $linePrice,
+        string $title
     ) {
         $this->setQuantity($quantity);
         $this->setLinePrice($linePrice);
+        $this->setTitle($title);
     }
 
     public function setSku(string $sku): self {

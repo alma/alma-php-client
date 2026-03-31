@@ -61,10 +61,10 @@ class PaymentDtoTest extends TestCase
 
         $cartItemDto = (new CartItemDto(
             $data['cart']['items'][0]['quantity'],
-            $data['cart']['items'][0]['line_price'])
-        )
+            $data['cart']['items'][0]['line_price'],
+            $data['cart']['items'][0]['title']
+        ))
             ->setSku($data['cart']['items'][0]['sku'])
-            ->setTitle($data['cart']['items'][0]['title'])
             ->setUnitPrice($data['cart']['items'][0]['unit_price'])
             ->setCategories($data['cart']['items'][0]['categories'])
             ->setUrl($data['cart']['items'][0]['url'])
