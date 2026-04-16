@@ -2,9 +2,9 @@
 
 namespace Alma\Client\Domain\Entity;
 
+use Alma\Client\Domain\ValueObject\PaymentMethod;
 use Alma\Plugin\Infrastructure\Adapter\FeePlanInterface;
 use Alma\Plugin\Infrastructure\Adapter\FeePlanListInterface;
-use Alma\Client\Domain\ValueObject\PaymentMethod;
 use ArrayObject;
 use OutOfBoundsException;
 
@@ -13,7 +13,9 @@ class FeePlanList extends ArrayObject implements FeePlanListInterface
     public function __construct($array = [], int $flags = 0, string $iteratorClass = "ArrayIterator")
     {
         parent::__construct(
-            array_filter($array, function($item) { return $item instanceof FeePlanInterface; }),
+            array_filter($array, function ($item) {
+                return $item instanceof FeePlanInterface;
+            }),
             $flags,
             $iteratorClass
         );
@@ -51,7 +53,7 @@ class FeePlanList extends ArrayObject implements FeePlanListInterface
      */
     public function getByPlanKey(string $planKey): FeePlanInterface
     {
-        $filter = array_values(array_filter($this->getArrayCopy(), function($feePlan) use ($planKey) {
+        $filter = array_values(array_filter($this->getArrayCopy(), function ($feePlan) use ($planKey) {
             return $feePlan->getPlanKey() === $planKey;
         }));
         return $filter[0];
@@ -66,22 +68,22 @@ class FeePlanList extends ArrayObject implements FeePlanListInterface
     {
         $feePlanList = new FeePlanList();
         if (in_array(PaymentMethod::CREDIT, $paymentMethod)) {
-            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function (FeePlan $feePlan) {
                 return $feePlan->isCredit();
             }))));
         }
         if (in_array(PaymentMethod::PNX, $paymentMethod)) {
-            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function (FeePlan $feePlan) {
                 return $feePlan->isPnXOnly();
             }))));
         }
         if (in_array(PaymentMethod::PAY_LATER, $paymentMethod)) {
-            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function (FeePlan $feePlan) {
                 return $feePlan->isPayLaterOnly();
             }))));
         }
         if (in_array(PaymentMethod::PAY_NOW, $paymentMethod)) {
-            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+            $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function (FeePlan $feePlan) {
                 return $feePlan->isPayNow();
             }))));
         }
@@ -89,17 +91,20 @@ class FeePlanList extends ArrayObject implements FeePlanListInterface
         return $feePlanList;
     }
 
+
     /**
-     * Returns a FeePlanList containing only enabled FeePlans.
+     * Returns a list of Fee Plans that are only allowed.
      *
      * @return FeePlanListInterface
      */
-    public function filterEnabled(): FeePlanListInterface
+    public function filterAllowed(): FeePlanListInterface
     {
-        $feePlanList = new FeePlanList();
-        $feePlanList->addList(new FeePlanList(array_values(array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
-            return $feePlan->isEnabled();
-        }))));
-        return $feePlanList;
+        return new FeePlanList(
+            array_values(
+                array_filter($this->getArrayCopy(), function(FeePlan $feePlan) {
+                    return $feePlan->isAllowed();
+                })
+            )
+        );
     }
 }
