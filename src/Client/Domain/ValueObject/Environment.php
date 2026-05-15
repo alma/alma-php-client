@@ -27,9 +27,14 @@ final class Environment {
      * @param string $customApiUrl The custom API URL, required if mode is custom
      */
     public function __construct(string $mode, string $customApiUrl = '') {
-        // Check mode
-        if (!in_array($mode, [self::LIVE_MODE, self::TEST_MODE, self::CUSTOM_MODE])) {
-            $mode = self::LIVE_MODE;
+        if (!in_array($mode, [self::LIVE_MODE, self::TEST_MODE, self::CUSTOM_MODE], true)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid environment mode "%s". Allowed values are: %s.',
+                    $mode,
+                    implode(', ', [self::LIVE_MODE, self::TEST_MODE, self::CUSTOM_MODE])
+                )
+            );
         }
         if ($mode === self::CUSTOM_MODE && empty($customApiUrl)) {
             throw new InvalidArgumentException('Custom API URL must be provided for custom mode.');

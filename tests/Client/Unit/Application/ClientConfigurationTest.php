@@ -4,6 +4,7 @@ namespace Alma\Client\Tests\Unit\Application;
 
 use Alma\Client\Application\ClientConfiguration;
 use Alma\Client\Domain\ValueObject\Environment;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ClientConfigurationTest extends TestCase
@@ -24,14 +25,14 @@ class ClientConfigurationTest extends TestCase
     }
 
     /**
-     * Ensure we can't create a ClientConfiguration with an invalid mode,
-     * and it defaults to LIVE_MODE
+     * Ensure that creating an Environment with an invalid mode throws an InvalidArgumentException.
      * @return void
      */
     public function testInvalidMode()
     {
-        $clientConfiguration = new ClientConfiguration('sk_test_xxxxxxxxxxxx', new Environment('INVALID_MODE'));
-        $this->assertEquals(new Environment(Environment::LIVE_MODE), $clientConfiguration->getEnvironment());
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid environment mode "INVALID_MODE". Allowed values are: live, test, custom.');
+        new Environment('INVALID_MODE');
     }
 
     /**

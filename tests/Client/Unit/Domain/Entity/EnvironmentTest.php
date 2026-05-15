@@ -28,11 +28,25 @@ class EnvironmentTest extends TestCase
         $this->assertEquals(Uri::fromString($expectedUrl), $environment->getBaseUri());
     }
 
-    public function testInvalidModeDefaultsToLive()
+    public static function invalidModesProvider(): array
     {
-        $environment = new Environment('invalid_mode');
-        $this->assertEquals(Environment::LIVE_MODE, $environment->getMode());
-        $this->assertEquals(Uri::fromString(Environment::LIVE_API_URL), $environment->getBaseUri());
+        return [
+            ['invalid_mode'],
+            ['Live'],
+            ['Test'],
+            ['LIVE'],
+        ];
+    }
+
+    /** @dataProvider invalidModesProvider */
+    public function testInvalidModeThrowsException(string $invalidMode)
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'Invalid environment mode "%s". Allowed values are: live, test, custom.',
+            $invalidMode
+        ));
+        new Environment($invalidMode);
     }
 
     public function testCustomModeWithoutUrlThrowsException()
