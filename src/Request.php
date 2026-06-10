@@ -176,7 +176,9 @@ class Request
         }
 
         $response = new Response($this->curlHandle, $curl_res);
-        curl_close($this->curlHandle);
+        if (PHP_MAJOR_VERSION < 8) {
+            curl_close($this->curlHandle);
+        }
         return $response;
     }
 
