@@ -61,6 +61,11 @@ class Payment extends AbstractEntity
      */
     const FRAUD_STATE_ERROR = 'state_error';
 
+    const PROCESSING_STATUS_AWAITING_AUTHORIZATION = 'awaiting_authorization';
+    const PROCESSING_STATUS_AUTHORIZED = 'authorized';
+    const PROCESSING_STATUS_CAPTURED = 'captured';
+    const PROCESSING_STATUS_CANCELED = 'canceled';
+
 
     /** @var int  Amount already refunded for the payment */
     protected int $amountRefunded;
@@ -101,6 +106,9 @@ class Payment extends AbstractEntity
     /** @var int Cart amount, excluding Alma fees */
     protected int $purchaseAmount;
 
+    /** @var string|null Processing status (authorized, captured, awaiting_authorization, canceled). */
+    protected ?string $processingStatus = null;
+
     /** @var string Payment status. */
     protected string $state;
 
@@ -127,7 +135,9 @@ class Payment extends AbstractEntity
     ];
 
     /** Mapping of optional fields */
-    protected array $optionalFields = [];
+    protected array $optionalFields = [
+        'processingStatus' => 'processing_status',
+    ];
 
 
     /**
@@ -256,6 +266,15 @@ class Payment extends AbstractEntity
     public function getPurchaseAmount(): int
     {
         return $this->purchaseAmount;
+    }
+
+    /**
+     * Returns the payment processing status (authorized, captured, awaiting_authorization, canceled), or null if not set.
+     * @return string|null
+     */
+    public function getProcessingStatus(): ?string
+    {
+        return $this->processingStatus;
     }
 
     /**
