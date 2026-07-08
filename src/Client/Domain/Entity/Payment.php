@@ -65,8 +65,11 @@ class Payment extends AbstractEntity
     const PROCESSING_STATUS_AUTHORIZED = 'authorized';
     const PROCESSING_STATUS_CAPTURED = 'captured';
     const PROCESSING_STATUS_CANCELED = 'canceled';
-    const PROCESSING_STATUS_CANCELATION_REASON = 'cancelation_reason';
-
+    const CANCELATION_REASON_REQUESTED_BY_MERCHANT = "requested_by_merchant";
+    const CANCELATION_REASON_REQUESTED_BY_CUSTOMER = "requested_by_customer";
+    const CANCELATION_REASON_AUTHORIZATION_EXPIRED = "authorization_expired";
+    const CANCELATION_REASON_EXPIRED = "expired";
+    const CANCELATION_REASON_DECLINED = "declined";
 
     /** @var int  Amount already refunded for the payment */
     protected int $amountRefunded;
