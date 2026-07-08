@@ -111,7 +111,10 @@ class Payment extends AbstractEntity
     protected int $purchaseAmount;
 
     /** @var string|null Processing status (authorized, captured, awaiting_authorization, canceled). */
-    protected ?string $processingStatus = null;
+    protected ?string $processingStatus;
+
+    /** @var string|null Cancelation reason (requested_by_merchant, requested_by_customer, authorization_expired, expired, declined). */
+    protected ?string $cancelationReason;
 
     /** @var string Payment status. */
     protected string $state;
@@ -141,6 +144,7 @@ class Payment extends AbstractEntity
     /** Mapping of optional fields */
     protected array $optionalFields = [
         'processingStatus' => 'processing_status',
+        'cancelationReason' => 'cancelation_reason',
     ];
 
 
@@ -273,12 +277,21 @@ class Payment extends AbstractEntity
     }
 
     /**
-     * Returns the payment processing status (authorized, captured, awaiting_authorization, canceled), or null if not set.
-     * @return string|null
+     * Returns the payment processing status (authorized, captured, awaiting_authorization, canceled).
+     * @return string
      */
     public function getProcessingStatus(): ?string
     {
         return $this->processingStatus;
+    }
+
+    /**
+     * Returns the payment cancelation reason (requested_by_merchant, requested_by_customer, authorization_expired, expired, declined).
+     * @return string
+     */
+    public function getCancelationReason(): ?string
+    {
+        return $this->cancelationReason;
     }
 
     /**
