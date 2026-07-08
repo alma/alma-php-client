@@ -65,6 +65,7 @@ class Payment extends AbstractEntity
     const PROCESSING_STATUS_AUTHORIZED = 'authorized';
     const PROCESSING_STATUS_CAPTURED = 'captured';
     const PROCESSING_STATUS_CANCELED = 'canceled';
+    const PROCESSING_STATUS_CANCELATION_REASON = 'cancelation_reason';
 
 
     /** @var int  Amount already refunded for the payment */
