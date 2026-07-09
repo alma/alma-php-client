@@ -111,10 +111,10 @@ class Payment extends AbstractEntity
     protected int $purchaseAmount;
 
     /** @var string|null Processing status (authorized, captured, awaiting_authorization, canceled). */
-    protected ?string $processingStatus;
+    protected string $processingStatus;
 
     /** @var string|null Cancelation reason (requested_by_merchant, requested_by_customer, authorization_expired, expired, declined). */
-    protected ?string $cancelationReason;
+    protected string $cancelationReason;
 
     /** @var string Payment status. */
     protected string $state;
@@ -139,14 +139,9 @@ class Payment extends AbstractEntity
         'purchaseAmount'     => 'purchase_amount',
         'state'              => 'state',
         'url'                => 'url',
+        'processingStatus'   => 'processing_status',
+        'cancelationReason'  => 'cancelation_reason',
     ];
-
-    /** Mapping of optional fields */
-    protected array $optionalFields = [
-        'processingStatus' => 'processing_status',
-        'cancelationReason' => 'cancelation_reason',
-    ];
-
 
     /**
      * Returns the amount already refunded for the payment, in cents.
