@@ -110,11 +110,11 @@ class Payment extends AbstractEntity
     /** @var int Cart amount, excluding Alma fees */
     protected int $purchaseAmount;
 
-    /** @var string|null Processing status (authorized, captured, awaiting_authorization, canceled). */
+    /** @var string Processing status (authorized, captured, awaiting_authorization, canceled). */
     protected string $processingStatus;
 
     /** @var string|null Cancelation reason (requested_by_merchant, requested_by_customer, authorization_expired, expired, declined). */
-    protected string $cancelationReason;
+    protected ?string $cancelationReason = null;
 
     /** @var string Payment status. */
     protected string $state;
@@ -140,7 +140,11 @@ class Payment extends AbstractEntity
         'state'              => 'state',
         'url'                => 'url',
         'processingStatus'   => 'processing_status',
-        'cancelationReason'  => 'cancelation_reason',
+    ];
+
+    /** Mapping of optional fields */
+    protected array $optionalFields = [
+        'cancelationReason' => 'cancelation_reason',
     ];
 
     /**
