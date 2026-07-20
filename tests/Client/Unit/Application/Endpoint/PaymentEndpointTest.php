@@ -80,6 +80,7 @@ class PaymentEndpointTest extends AbstractEndpointSetUp
           }
        ],
        "purchase_amount":11733,
+       "processing_status":"authorized",
        "state":"paid",
        "url":"https://test.alma.eu/payments/v2/payments/payment_xxxxxx"
     }';
