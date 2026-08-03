@@ -61,6 +61,15 @@ class Payment extends AbstractEntity
      */
     const FRAUD_STATE_ERROR = 'state_error';
 
+    const PROCESSING_STATUS_AWAITING_AUTHORIZATION = 'awaiting_authorization';
+    const PROCESSING_STATUS_AUTHORIZED = 'authorized';
+    const PROCESSING_STATUS_CAPTURED = 'captured';
+    const PROCESSING_STATUS_CANCELED = 'canceled';
+    const CANCELATION_REASON_REQUESTED_BY_MERCHANT = "requested_by_merchant";
+    const CANCELATION_REASON_REQUESTED_BY_CUSTOMER = "requested_by_customer";
+    const CANCELATION_REASON_AUTHORIZATION_EXPIRED = "authorization_expired";
+    const CANCELATION_REASON_EXPIRED = "expired";
+    const CANCELATION_REASON_DECLINED = "declined";
 
     /** @var int  Amount already refunded for the payment */
     protected int $amountRefunded;
@@ -101,6 +110,12 @@ class Payment extends AbstractEntity
     /** @var int Cart amount, excluding Alma fees */
     protected int $purchaseAmount;
 
+    /** @var string Processing status (authorized, captured, awaiting_authorization, canceled). */
+    protected string $processingStatus;
+
+    /** @var string|null Cancelation reason (requested_by_merchant, requested_by_customer, authorization_expired, expired, declined). */
+    protected ?string $cancelationReason = null;
+
     /** @var string Payment status. */
     protected string $state;
 
@@ -124,11 +139,13 @@ class Payment extends AbstractEntity
         'purchaseAmount'     => 'purchase_amount',
         'state'              => 'state',
         'url'                => 'url',
+        'processingStatus'   => 'processing_status',
     ];
 
     /** Mapping of optional fields */
-    protected array $optionalFields = [];
-
+    protected array $optionalFields = [
+        'cancelationReason' => 'cancelation_reason',
+    ];
 
     /**
      * Returns the amount already refunded for the payment, in cents.
@@ -256,6 +273,24 @@ class Payment extends AbstractEntity
     public function getPurchaseAmount(): int
     {
         return $this->purchaseAmount;
+    }
+
+    /**
+     * Returns the payment processing status (authorized, captured, awaiting_authorization, canceled).
+     * @return string
+     */
+    public function getProcessingStatus(): ?string
+    {
+        return $this->processingStatus;
+    }
+
+    /**
+     * Returns the payment cancelation reason (requested_by_merchant, requested_by_customer, authorization_expired, expired, declined).
+     * @return string
+     */
+    public function getCancelationReason(): ?string
+    {
+        return $this->cancelationReason;
     }
 
     /**
