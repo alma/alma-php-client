@@ -48,6 +48,13 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
+      # roave/security-advisories (@dev) conflicts with every PHPUnit version
+      # installable on PHP < 7.2, making dependency resolution impossible there.
+      # The advisory guard still runs on the modern PHP legs of the matrix.
+      - name: Drop security advisories guard on legacy PHP
+        if: contains(fromJson('["5.6", "7.0", "7.1"]'), matrix.php)
+        run: composer remove --dev --no-update roave/security-advisories
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
