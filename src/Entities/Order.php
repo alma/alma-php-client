@@ -25,6 +25,8 @@
 
 namespace Alma\API\Entities;
 
+use Alma\API\Exceptions\ParametersException;
+
 class Order
 {
     /** @var string ID of the Payment owning this Order
@@ -96,6 +98,13 @@ class Order
 
     public function __construct($orderDataArray)
     {
+        // The API error payloads are strings; without this guard a raw error
+        // response reaching the constructor would surface as a TypeError
+        // (an Error, not an Exception) and escape every catch block (#256).
+        if (!is_array($orderDataArray)) {
+            throw new ParametersException("Order data must be an array.");
+        }
+
         $this->comment = $orderDataArray['comment'];
         $this->createdAt = $orderDataArray['created'];
         $this->customerUrl = $orderDataArray['customer_url'];
