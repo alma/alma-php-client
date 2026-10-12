@@ -15,10 +15,10 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install taskfile.dev
-        uses: arduino/setup-task@b91d5d2c96a56797b48ac1e0e89220bf64044611 # v2
+        uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v3.0.0
         with:
           version: 3.x
           repo-token: ${{ github.token }}
@@ -85,7 +85,7 @@ jobs:
             https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.fetch-release-draft.outputs.id }}/assets?name=alma-php-client.zip
 
       - name: Publish Github release
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           # target_commitish is set to refs/heads/develop by release-drafter as we need to retrieve pull requests merged into develop
           # We need to override it to refs/heads/main to point to the last commit of main branch instead of develop branch
@@ -113,7 +113,7 @@ jobs:
             cc <@khadija.cherif>
 
       - name: Send changelog to Slack
-        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_RELEASE_CHANGELOG_BOT_TOKEN }}
