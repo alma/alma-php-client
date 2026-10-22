@@ -3,6 +3,7 @@
 namespace Unit\Entities;
 
 use Alma\API\Entities\Order;
+use Alma\API\Exceptions\ParametersException;
 use PHPUnit\Framework\TestCase;
 
 class OrderTest extends TestCase
@@ -27,6 +28,12 @@ class OrderTest extends TestCase
         $this->assertEquals($orderData['id'], $order->id);
         $this->assertEquals($orderData['id'], $order->getExternalId());
         $this->assertEquals($orderData['updated'], $order->getUpdatedAt());
+    }
+
+    public function testOrderRejectsNonArrayPayload()
+    {
+        $this->expectException(ParametersException::class);
+        new Order("an API error payload is a string, not an order");
     }
 
 

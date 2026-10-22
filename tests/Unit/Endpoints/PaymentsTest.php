@@ -264,7 +264,7 @@ class PaymentsTest extends TestCase
      * Mock ClientContext, Response and Request to allow us to test
      * Payment without sending any requests but returns an error
      */
-    private function mockServerRequestError()
+    private function mockServerRequestError($requestMethod = 'post')
     {
         // ClientContext
         $clientContext = Mockery::mock(ClientContext::class);
@@ -282,8 +282,8 @@ class PaymentsTest extends TestCase
 
         // Request
         $requestMock = Mockery::mock(Request::class);
-        $requestMock->shouldReceive('setRequestBody');
-        $requestMock->shouldReceive('post')->andReturn($responseMock);
+        $requestMock->shouldReceive('setRequestBody')->andReturnSelf();
+        $requestMock->shouldReceive($requestMethod)->andReturn($responseMock);
         return $requestMock;
     }
 
@@ -450,6 +450,32 @@ class PaymentsTest extends TestCase
 
         /* Test */
         $payments->fullRefund($id);
+    }
+
+    /**
+     * An error response on addOrder must surface as RequestError (declared in
+     * the docblock), not as a TypeError from Entities\Order fed with a string.
+     */
+    public function testAddOrderRequestError()
+    {
+        // Input
+        $clientContext = Mockery::mock(ClientContext::class);
+        $id = "some_id";
+
+        // Payment
+        $payments = Mockery::mock(Payments::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $payments->shouldReceive('request')
+            ->with("/v1/payments/$id/orders")
+            ->once()
+            ->andReturn($this->mockServerRequestError('put'));
+        $payments->setClientContext($clientContext);
+
+        $this->expectException(RequestError::class);
+
+        /* Test */
+        $payments->addOrder($id, array("merchant_reference" => "some_external_id"));
     }
 
     /**

@@ -338,6 +338,10 @@ class Payments extends Base
             $res = $req->put();
         }
 
+        if ($res->isError()) {
+            throw new RequestError($res->errorMessage, null, $res);
+        }
+
         return new Order(end($res->json));
     }
 
