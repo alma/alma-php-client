@@ -49,7 +49,7 @@ repos:
         pass_filenames: false # Passing files explicitely override semgrepignore
 
   - repo: https://github.com/alma/pre-commit-hooks
-    rev: 1.1.2
+    rev: v2.0.0
     hooks:
       - id: check-branch-name
         args:
