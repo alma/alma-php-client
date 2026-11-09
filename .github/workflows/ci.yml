@@ -48,6 +48,13 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
+      # roave/security-advisories (@dev) conflicts with every PHPUnit version
+      # installable on PHP < 7.2, making dependency resolution impossible there.
+      # The advisory guard still runs on the modern PHP legs of the matrix.
+      - name: Drop security advisories guard on legacy PHP
+        if: contains(fromJson('["5.6", "7.0", "7.1"]'), matrix.php)
+        run: composer remove --dev --no-update roave/security-advisories
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
@@ -60,15 +67,6 @@ jobs:
           # Replace string in files
           string=': void'
           grep -r -l "$string" tests/ | xargs sed -i "s/$string//g"
-
-      - name: Set ReportPortal configuration
-        # ReportPortal agent only works for PHP 7.1, 7.2, 7.3 and 7.4
-        if: (github.ref_name == 'main' || github.ref_name == 'develop') && vars.REPORT_PORTAL_ENABLED == 'true' && contains(fromJson('["7.1", "7.2", "7.3", "7.4"]'), matrix.php)
-        run: ./tests/reportportal/reportportal_conf.sh
-        env:
-          REPORT_PORTAL_API_KEY: ${{ secrets.REPORT_PORTAL_API_KEY }}
-          REPORT_PORTAL_ENDPOINT: ${{ vars.REPORT_PORTAL_ENDPOINT }}
-          PHP_VERSION: ${{ matrix.php }}
 
       - name: PHPUnit
         run: |
