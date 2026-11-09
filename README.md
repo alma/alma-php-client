@@ -1,6 +1,8 @@
 Alma PHP API client
 =====================
 
+> **PHP 8.1 and earlier versions are no longer supported by the PHP project and are not recommended by Alma. These versions may contain unpatched security vulnerabilities.**
+
 This is the official PHP API client for [Alma](https://getalma.eu).
 
 This PHP API Client is being used in production on thousands of e-commerce websites and provides the necessary
