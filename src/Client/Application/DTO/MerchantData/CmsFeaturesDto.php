@@ -65,6 +65,10 @@ class CmsFeaturesDto  implements DtoInterface
      * @var bool | null
      */
     private $customWidgetCss;
+    /**
+     * @var array{name: string, position: int}[]|null  [['name' => 'paypal', 'position' => 2],['name' => 'paypal', 'position' => 2]]
+     */
+    private $paymentMethodsList;
 
     /**
      * CmsFeatures constructor.
@@ -80,6 +84,7 @@ class CmsFeaturesDto  implements DtoInterface
         $this->inPageActivated = $cmsFeaturesDataArray['in_page_activated'] ?? null;
         $this->logActivated = $cmsFeaturesDataArray['log_activated'] ?? null;
         $this->excludedCategories = $cmsFeaturesDataArray['excluded_categories'] ?? null;
+        $this->paymentMethodsList = isset($cmsFeaturesDataArray['payment_methods_list']) ? $cmsFeaturesDataArray['payment_methods_list'] : null;
         $this->paymentMethodPosition = $cmsFeaturesDataArray['payment_method_position'] ?? null;
         $this->specificFeatures = $cmsFeaturesDataArray['specific_features'] ?? null;
         $this->countryRestriction = $cmsFeaturesDataArray['country_restriction'] ?? null;
@@ -101,6 +106,7 @@ class CmsFeaturesDto  implements DtoInterface
             'in_page_activated' => $this->inPageActivated,
             'log_activated' => $this->logActivated,
             'excluded_categories' => $this->excludedCategories,
+            'payment_methods_list' => $this->paymentMethodsList,
             'payment_method_position' => $this->paymentMethodPosition,
             'specific_features' => $this->specificFeatures,
             'country_restriction' => $this->countryRestriction,

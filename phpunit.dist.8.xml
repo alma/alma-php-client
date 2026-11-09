@@ -32,7 +32,7 @@
 
   <source>
     <include>
-      <directory suffix=".php">./includes</directory>
+      <directory suffix=".php">./src</directory>
     </include>
   </source>
 
