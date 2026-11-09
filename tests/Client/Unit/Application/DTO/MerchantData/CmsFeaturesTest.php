@@ -31,7 +31,7 @@ class CmsFeaturesTest extends MockeryTestCase
 		$this->assertTrue($cmsFeatures->toArray()['widget_cart_activated']);
 		$this->assertFalse($cmsFeatures->toArray()['widget_product_activated']);
 		$this->assertEquals(['Plan A'], $cmsFeatures->toArray()['used_fee_plans']);
-		$this->assertEquals([['name' => 'alma', 'position' => 1], ['name' => 'paypal', 'position' => 2]], $cmsFeatures->getProperties()['payment_methods_list']);
+		$this->assertEquals([['name' => 'alma', 'position' => 1], ['name' => 'paypal', 'position' => 2]], $cmsFeatures->toArray()['payment_methods_list']);
 		$this->assertEquals(1, $cmsFeatures->toArray()['payment_method_position']);
 		$this->assertTrue($cmsFeatures->toArray()['in_page_activated']);
 		$this->assertFalse($cmsFeatures->toArray()['log_activated']);

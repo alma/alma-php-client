@@ -30,8 +30,8 @@ filepath="./composer.json"
 sed -i -E "s/\"version\": \"[0-9\.]+\"/\"version\": \"$version\"/g" $filepath
 
 ####################
-# Update file ./src/Client.php
+# Update file ./src/Client/Application/ClientConfiguration.php
 ####################
-filepath="./src/Client.php"
+filepath="./src/Client/Application/ClientConfiguration.php"
 # Update const VERSION
 sed -i -E "s/const VERSION = '[0-9\.]+'/const VERSION = '$version'/g" $filepath

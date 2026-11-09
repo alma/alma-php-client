@@ -57,13 +57,6 @@ jobs:
       - name: Ensure source code is linted
         run: composer exec phpcs -- src/
 
-      - name: Remove uncompliant statements in legacy code
-        if: contains(fromJson('["5.6", "7.0"]'), matrix.php)
-        run: |
-          # Replace string in files
-          string=': void'
-          grep -r -l "$string" tests/ | xargs sed -i "s/$string//g"
-
       - name: PHPUnit
         run: |
           case ${{ matrix.php }} in

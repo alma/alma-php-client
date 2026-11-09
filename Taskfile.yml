@@ -101,17 +101,10 @@ tasks:
 
   dist:
     desc: Build zip dist package using Docker
-    deps:
-      - lint:build
+    env:
+      PHP_VERSION: "8.3"
     cmds:
-      - docker compose run --rm php ./scripts/build.sh
-
-  php-compatibility:build:
-    desc: Build php-compatibility container (phpcs)
-    deps:
-      - php-compatibility:build
-    cmds:
-      - docker build -t php-compatibility:ps -f php-compatibility.Dockerfile .
+      - docker compose run --build --rm php ./scripts/build.sh
 
   php-compatibility:
     desc: Check compatibility code
