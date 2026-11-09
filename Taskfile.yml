@@ -94,6 +94,11 @@ tasks:
     cmds:
       - docker compose run --rm -T php composer exec phpcbf -- src/ tests/
 
+  php-compatibility:build:
+      desc: Build php-compatibility container (phpcs)
+      cmds:
+          - docker build -t php-compatibility:ps -f php-compatibility.Dockerfile .
+
   dist:
     desc: Build zip dist package using Docker
     deps:
@@ -110,6 +115,8 @@ tasks:
 
   php-compatibility:
     desc: Check compatibility code
+    deps:
+        - php-compatibility:build
     cmds:
       - docker compose run --rm -T php composer exec phpcs -- -p src --standard=PHPCompatibility -s --runtime-set testVersion 7.4-8.4 --ignore=\*/vendor/\*
 
