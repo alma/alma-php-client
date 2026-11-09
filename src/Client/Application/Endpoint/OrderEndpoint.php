@@ -119,7 +119,7 @@ class OrderEndpoint extends AbstractEndpoint
 
         if ($filters) {
             foreach ($filters as $key => $filter) {
-                $args[$key] = $filters;
+                $args[$key] = $filter;
             }
         }
 
