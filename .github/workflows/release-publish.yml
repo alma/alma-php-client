@@ -15,7 +15,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Install taskfile.dev
         uses: arduino/setup-task@b91d5d2c96a56797b48ac1e0e89220bf64044611 # v2
@@ -85,7 +85,7 @@ jobs:
             https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.fetch-release-draft.outputs.id }}/assets?name=alma-php-client.zip
 
       - name: Publish Github release
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           # target_commitish is set to refs/heads/develop by release-drafter as we need to retrieve pull requests merged into develop
           # We need to override it to refs/heads/main to point to the last commit of main branch instead of develop branch

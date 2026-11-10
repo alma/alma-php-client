@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## v3.0.3 - 2026-11-10
+
+### Changes
+
+### 🚀 New Features
+
+- Add `payment_methods_list` to CMS features (ported from 2.x)
+
+### 🐛 Bug Fixes
+
+- Fix `OrderEndpoint::fetchAll()` filters being sent as nested arrays instead of their values
+- Report the actual client version in the User-Agent (was stuck at 3.0.0)
+
+### 🔧 Maintenance
+
+- Make 3.x the main development line (develop merged into 3.0)
+- Fix `task dist` and the release version script for the 3.x layout
+- CI: skip `roave/security-advisories` on EOL PHP versions (< 8.2)
+
+#### Contributors
+
+@Benjamin-Freoua-Alma, @gdraynz and @remic-alma
+
 ## v2.6.1 - 2025-09-18
 
 ### Changes
@@ -235,6 +258,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   

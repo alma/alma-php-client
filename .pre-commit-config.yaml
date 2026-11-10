@@ -1,8 +1,11 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+default_language_version:
+  python: python3.11
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1024"]
@@ -18,21 +21,21 @@ repos:
         language: system
         pass_filenames: false
         entry:  task lint:fix
-        stages: [commit]
+        stages: [pre-commit]
 
       - id: coding-standard
         name: Check PHP coding standards
         language: system
         pass_filenames: false
         entry:  task lint
-        stages: [commit]
+        stages: [pre-commit]
 
       - id: php-compatibility
         name: Check the PHP compatibility
         language: system
         pass_filenames: false
         entry:  task php-compatibility
-        stages: [commit]
+        stages: [pre-commit]
 
   - repo: https://github.com/returntocorp/semgrep
     rev: v1.103.0
