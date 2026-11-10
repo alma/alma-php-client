@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v3.0.3 - 2026-11-10
+
+### Changes
+
+#### Contributors
+
+@Benjamin-Freoua-Alma, @gdraynz and @remic-alma
+
 ## v2.6.1 - 2025-09-18
 
 ### Changes
@@ -235,6 +243,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
