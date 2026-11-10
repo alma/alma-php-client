@@ -1,6 +1,8 @@
 Alma PHP API client
 =====================
 
+> **PHP 8.1 and earlier versions are no longer supported by the PHP project and are not recommended by Alma. These versions may contain unpatched security vulnerabilities.**
+
 This is the official PHP API client for [Alma](https://getalma.eu).
 
 This PHP API Client is being used in production on thousands of e-commerce websites and provides the necessary
@@ -42,7 +44,7 @@ An example of using the API client. (check [API documentation](https://docs.geta
 ### 1. instanciate client in test mode
 
 ```php
-$alma = new Alma\API\Client($apiKey, ['mode' => Alma\API\Client::TEST_MODE]);
+$alma = new \Alma\Client\Application\CurlClient($apiKey, ['mode' => \Alma\Client\Application\CurlClient::TEST_MODE]);
 ```
 
 ### 2. check eligibility
@@ -259,8 +261,8 @@ exit();
 // ...
 $payment = $alma->payments->fetch($paymentId);
 switch($payment->state) {
-    case Alma\API\Entities\Payment::STATE_IN_PROGRESS: break;
-    case Alma\API\Entities\Payment::STATE_PAID: break;
+    case \Alma\Client\Domain\Entity\Payment::STATE_IN_PROGRESS: break;
+    case \Alma\Client\Domain\Entity\Payment::STATE_PAID: break;
 }
 // ...
 ```
