@@ -6,11 +6,11 @@ on:
 jobs:
 
   create-release-pull-request:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
 
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
           persist-credentials: false
@@ -24,7 +24,7 @@ jobs:
           git reset --hard develop
 
       - name: Create release draft
-        uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6.1.0
+        uses: release-drafter/release-drafter@978bb0b30c5ee8cdd332ced253758157150d43f0 # v7.10.0
         id: release-drafter
         with:
           # release-drafter should be based on develop to get the correct content as pull requests are merged into develop
