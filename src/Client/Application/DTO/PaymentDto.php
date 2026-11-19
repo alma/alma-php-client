@@ -25,7 +25,7 @@ class PaymentDto implements DtoInterface {
     private ?array $billingAddress = null;
     private ?array $shippingAddress = null;
     private ?array $cart = null;
-    private array $requestedProducts = [];
+    private ?array $requestedProducts = null;
 
     /**
      * PaymentDto constructor.
