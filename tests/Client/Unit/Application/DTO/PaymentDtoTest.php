@@ -111,6 +111,7 @@ class PaymentDtoTest extends TestCase
             ->addRequestedProduct(new RequestedProductDto(4));
 
         $this->assertSame([
+            'installments_count' => null,
             'purchase_amount' => 30000,
             'requested_products' => [
                 ['installments_count' => 1, 'deferred_days' => 30],
@@ -118,6 +119,15 @@ class PaymentDtoTest extends TestCase
                 ['installments_count' => 4],
             ],
         ], $paymentDto->toArray());
+    }
+
+    public function testPaymentDtoWithRequestedProductsKeepsAnExplicitInstallmentsCount(): void
+    {
+        $paymentDto = (new PaymentDto(30000))
+            ->setInstallmentsCount(3)
+            ->addRequestedProduct(new RequestedProductDto(3));
+
+        $this->assertSame(3, $paymentDto->toArray()['installments_count']);
     }
 
     public function testPaymentDtoWithoutRequestedProductsOmitsTheField(): void
