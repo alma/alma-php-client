@@ -25,6 +25,7 @@ class PaymentDto implements DtoInterface {
     private ?array $billingAddress = null;
     private ?array $shippingAddress = null;
     private ?array $cart = null;
+    private ?array $requestedProducts = null;
 
     /**
      * PaymentDto constructor.
@@ -123,13 +124,22 @@ class PaymentDto implements DtoInterface {
     }
 
     /**
+     * Restrict the plans offered on Alma's payment page to the requested ones.
+     * Without an installments count, installments_count is sent as null so that the customer chooses the plan at Alma.
+     */
+    public function addRequestedProduct(RequestedProductDto $product): self {
+        $this->requestedProducts[] = $product->toArray();
+        return $this;
+    }
+
+    /**
      * Convert the Dto to an array.
      * This method prepares the DTO for serialization or API requests.
      *
      * @return array
      */
     public function toArray(): array {
-        return array_filter([
+        $payload = array_filter([
             'installments_count'   => $this->installmentsCount,
             'deferred_months'      => $this->deferredMonths,
             'deferred_days'        => $this->deferredDays,
@@ -146,8 +156,17 @@ class PaymentDto implements DtoInterface {
             'billing_address'      => $this->billingAddress,
             'shipping_address'     => $this->shippingAddress,
             'cart'                 => $this->cart,
-        ], function($value) {
+            'requested_products'   => $this->requestedProducts,
+        ],function($value) {
             return $value !== null && $value !== '' && !(is_array($value) && empty($value));
         });
+
+        // Alma only lets the customer choose among the requested products when installments_count is sent as null:
+        // an absent installments_count defaults to 3 installments.
+        if ($this->requestedProducts !== null && $this->installmentsCount === null) {
+            $payload = ['installments_count' => null] + $payload;
+        }
+
+        return $payload;
     }
 }

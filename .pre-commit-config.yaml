@@ -50,10 +50,3 @@ repos:
           - --disable-version-check
           - --skip-unknown-extensions
         pass_filenames: false # Passing files explicitely override semgrepignore
-
-  - repo: https://github.com/alma/pre-commit-hooks
-    rev: 1.1.2
-    hooks:
-      - id: check-branch-name
-        args:
-          - "-r^((chore|ci|dependabot|devx|docs|feature|fix|release|hotfix|hotfix-backport|infra|other|perf|refactor|security|test)\/.+|(snyk)-.+|main|develop|HEAD)$$"

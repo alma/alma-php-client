@@ -6,6 +6,7 @@ use Alma\Client\Application\DTO\AddressDto;
 use Alma\Client\Application\DTO\CartDto;
 use Alma\Client\Application\DTO\CartItemDto;
 use Alma\Client\Application\DTO\PaymentDto;
+use Alma\Client\Application\DTO\RequestedProductDto;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -100,6 +101,38 @@ class PaymentDtoTest extends TestCase
             ->setCart($cartDto);
 
         $this->assertEquals($data, $paymentDto->toArray());
+    }
+
+    public function testPaymentDtoWithRequestedProductsAndNoInstallmentsCount(): void
+    {
+        $paymentDto = (new PaymentDto(30000))
+            ->addRequestedProduct((new RequestedProductDto(1))->setDeferredDays(30))
+            ->addRequestedProduct(new RequestedProductDto(3))
+            ->addRequestedProduct(new RequestedProductDto(4));
+
+        $this->assertSame([
+            'installments_count' => null,
+            'purchase_amount' => 30000,
+            'requested_products' => [
+                ['installments_count' => 1, 'deferred_days' => 30],
+                ['installments_count' => 3],
+                ['installments_count' => 4],
+            ],
+        ], $paymentDto->toArray());
+    }
+
+    public function testPaymentDtoWithRequestedProductsKeepsAnExplicitInstallmentsCount(): void
+    {
+        $paymentDto = (new PaymentDto(30000))
+            ->setInstallmentsCount(3)
+            ->addRequestedProduct(new RequestedProductDto(3));
+
+        $this->assertSame(3, $paymentDto->toArray()['installments_count']);
+    }
+
+    public function testPaymentDtoWithoutRequestedProductsOmitsTheField(): void
+    {
+        $this->assertArrayNotHasKey('requested_products', (new PaymentDto(30000))->toArray());
     }
 
     public function testPaymentDtoException()
