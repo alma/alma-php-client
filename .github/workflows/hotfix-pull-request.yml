@@ -39,7 +39,7 @@ jobs:
             });
 
       - name: Update CHANGELOG.md file
-        uses: stefanzweifel/changelog-updater-action@a938690fad7edf25368f37e43a1ed1b34303eb36 # v1.12.0
+        uses: stefanzweifel/changelog-updater-action@f7c43fed0c8760b25199be6eae5c28fc22830ec6 # v1.13.3
         with:
           latest-version: ${{ steps.release-drafter.outputs.tag_name }}
           release-notes: "### 🐛 Bug Fixes\n ${{ inputs.changelog-message }}\n"
