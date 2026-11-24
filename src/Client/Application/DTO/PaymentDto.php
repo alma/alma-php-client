@@ -139,7 +139,11 @@ class PaymentDto implements DtoInterface {
      * @return array
      */
     public function toArray(): array {
-        $payload = array_filter([
+        // Alma only lets the customer choose among the requested products when installments_count is sent as null:
+        // an absent installments_count defaults to 3 installments.
+        $keepsNullInstallmentsCount = $this->requestedProducts !== null;
+
+        return array_filter([
             'installments_count'   => $this->installmentsCount,
             'deferred_months'      => $this->deferredMonths,
             'deferred_days'        => $this->deferredDays,
@@ -157,16 +161,12 @@ class PaymentDto implements DtoInterface {
             'shipping_address'     => $this->shippingAddress,
             'cart'                 => $this->cart,
             'requested_products'   => $this->requestedProducts,
-        ],function($value) {
+        ], function ($value, $key) use ($keepsNullInstallmentsCount) {
+            if ($key === 'installments_count' && $keepsNullInstallmentsCount) {
+                return true;
+            }
+
             return $value !== null && $value !== '' && !(is_array($value) && empty($value));
-        });
-
-        // Alma only lets the customer choose among the requested products when installments_count is sent as null:
-        // an absent installments_count defaults to 3 installments.
-        if ($this->requestedProducts !== null && $this->installmentsCount === null) {
-            $payload = ['installments_count' => null] + $payload;
-        }
-
-        return $payload;
+        }, ARRAY_FILTER_USE_BOTH);
     }
 }
