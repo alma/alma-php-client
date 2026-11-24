@@ -135,6 +135,11 @@ class PaymentDtoTest extends TestCase
         $this->assertArrayNotHasKey('requested_products', (new PaymentDto(30000))->toArray());
     }
 
+    public function testPaymentDtoWithoutRequestedProductsOmitsTheInstallmentsCount(): void
+    {
+        $this->assertArrayNotHasKey('installments_count', (new PaymentDto(30000))->toArray());
+    }
+
     public function testPaymentDtoException()
     {
         $this->expectException(InvalidArgumentException::class);
