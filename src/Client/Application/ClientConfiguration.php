@@ -30,7 +30,7 @@ use InvalidArgumentException;
 
 class ClientConfiguration
 {
-    const VERSION = '3.0.3';
+    const VERSION = '3.1.0';
     private string $apiKey;
     private array $userAgentComponents = [];
     private array $config = [];

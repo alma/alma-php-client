@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v3.1.0 - 2026-11-24
+
+### Changes
+
+### 🚀 New Features
+
+- Let a payment restrict the plans offered on Alma's payment page (#269)
+
+### 🐛 Bug Fixes
+
+- Let the customer choose among the requested plans on Alma's payment page (#270)
+
+#### Contributors
+
+@Benjamin-Freoua-Alma, @oscar-alma, @webaaz and [github-actions[bot]](https://github.com/apps/github-actions)
+
 ## v3.0.3 - 2026-11-10
 
 ### Changes
@@ -258,6 +274,7 @@
     } catch (RequestError $e) {
         // Handle errors
     }
+  
   
   
   
